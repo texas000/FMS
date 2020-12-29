@@ -97,14 +97,14 @@ export async function getServerSideProps({req, query}) {
   // FETCH OIM DATA FROM FREIGHT STREAM
   const FETCH = await fetch(`${process.env.BASE_URL}api/forwarding/oceanDetail`, {headers: {reference: query.Detail, import: 1}})
   const FJSON = await FETCH.json();
-  console.log(FJSON)
+  // console.log(FJSON)
 
   // FETCH FILE DATA FROM SYNOLOGY
   const Fetch = await fetch(`${process.env.BASE_URL}api/files/FORWARDING/${query.Detail}`)
   var Files=null;
   if(Fetch.status===200) {
     Files = await Fetch.json()
-    console.log(Files)
+    // console.log(Files)
   }
 
   // FETCH EXTRA DATA FROM FMS
@@ -112,7 +112,7 @@ export async function getServerSideProps({req, query}) {
   var Extra=null;
   if(EX_Fetch.status==200) {
     Extra = await EX_Fetch.json()
-    console.log(Extra)
+    // console.log(Extra)
   }
 
   //LOG

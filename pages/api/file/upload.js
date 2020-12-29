@@ -4,7 +4,7 @@ const { createClient } = require("webdav");
 
 export default async (req, res) => {
     const client = createClient(
-        "http://192.168.1.3:5005",
+        `http://${process.env.JWDB_SVR}:5005`,
         {
             username: "ryan",
             password: process.env.FTP_KEY,
