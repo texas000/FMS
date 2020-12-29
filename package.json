@@ -8,8 +8,6 @@
     "serverDev": "node server.js",
     "build": "next build",
     "start": "next start -p 80",
-    "export": "next export",
-    "postbuild": "next-on-netlify",
     "docker": "docker build . -t fms_sarah_version1.0.4"
   },
   "keywords": [],

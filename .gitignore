@@ -1,5 +1,3 @@
 node_modules
 .next
-out_functions
-out_publish
 next.config.js
