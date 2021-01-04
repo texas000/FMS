@@ -11,8 +11,12 @@ export default async (req, res) => {
         }
     );
     
+    var dir = './public/temp';
+    if(!fs.existsSync(dir)) {
+        fs.mkdirSync(dir);
+    }
     const form = new formidable.IncomingForm();
-    // console.log("FORM DEFINED")
+
     form.uploadDir = './public/temp';
     form.keepExtensions=true;
     form.parse(req, async (err, fields, files) => {
