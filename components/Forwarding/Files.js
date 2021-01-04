@@ -2,9 +2,11 @@ import {useDropzone} from 'react-dropzone'
 import { Badge, Col, Row, Button, Alert } from "reactstrap"
 import fetch from 'node-fetch'
 import axios, { post } from 'axios'
-
+import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 export const Files = ({FilePath, FILE}) => {
+    const router = useRouter()
     // ACCEPTED FILE FORMAT
     // PDF, IMAGE, EXCEL, DOCS, MSG
     const acceptFileType = 'image/*, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .msg, .pdf';
@@ -20,7 +22,6 @@ export const Files = ({FilePath, FILE}) => {
         borderColor: '#eeeeee',
         borderStyle: 'dashed',
         backgroundColor: '#fafafa',
-        fontFamily: 'Roboto',
         color: '#bdbdbd',
         outline: 'none',
         transition: 'border .24s ease-in-out'
@@ -96,7 +97,7 @@ export const Files = ({FilePath, FILE}) => {
           <Col sm="9" className="pt-1">
             <div {...getRootProps({ style })}>
               <input {...getInputProps()} />
-              <p style={{ fontFamily: "Roboto" }}>UPLOAD FILES</p>
+              <p>UPLOAD FILES</p>
             </div>
             {files.length > 0 && (
               <Alert className="mt-2" color="warning">
@@ -123,19 +124,22 @@ export const Files = ({FilePath, FILE}) => {
           <Col>
             {FILE &&
               FILE.map((ga) => (
+                <Link href="#" as={process.env.DOWNLOADABLE+ga.filename} key={ga.basename}>
+                  <a target="_blank" rel="noreferrer">
                 <Button
-                  key={ga.basename}
                   size="sm"
-                  target="__empty"
-                  href={`${process.env.DOWNLOADABLE}${ga.filename}`}
                   className="mr-2 mb-1"
                   color="primary"
-                  style={{fontFamily: 'Roboto', overflow: 'hidden', textOverflow: 'ellipsis'}}
+                  style={{overflow: 'hidden', textOverflow: 'ellipsis'}}
                   outline
-                >
+                  >
+                  {/* onClick={()=>router.push(`${process.env.DOWNLOADABLE}${ga.filename}`)} */}
+                  {/* href={`${process.env.DOWNLOADABLE}${ga.filename}`} */}
                   <i className="fa fa-file mr-2"></i>
                   {ga.basename.length>8?ga.basename.substring(0,5)+".."+ga.basename.substring(ga.basename.length-4, ga.basename.length):ga.basename}
                 </Button>
+                  </a>
+                </Link>
               ))}
           </Col>
         </Row>

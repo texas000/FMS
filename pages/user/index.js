@@ -58,12 +58,9 @@ const Index = ({Cookie, User}) => {
        <Layout TOKEN={TOKEN} TITLE="USER">
          <Row>
            <Col>
-             <h3
-               style={{ fontFamily: "Roboto, sans-serif", fontWeight: "700" }}
-             >
+             <h3>
                User Information
              </h3>
-             <p>개인정보 관리</p>
              <p className="text-right">
                Recent Login {moment(TOKEN.iat * 1000).format("LLL")}
              </p>
@@ -76,7 +73,6 @@ const Index = ({Cookie, User}) => {
                <Row className="mx-4 mt-4">
                  <Col>
                    <h4>Employee Contact Information</h4>
-                   <p>직원 연락망</p>
                  </Col>
                </Row>
                <Row className="mx-2">
@@ -261,7 +257,6 @@ const Index = ({Cookie, User}) => {
                    <Row className="mt-4 ml-4">
                      <Col>
                        <h4>Profile</h4>
-                       <p>프로필</p>
                        <Button
                          outline
                          style={{
@@ -469,20 +464,6 @@ const Index = ({Cookie, User}) => {
          {/* <Button className="mt-4" onClick={() => router.push("/user/account")}>
            MY ACCOUNTS
          </Button> */}
-         <style jsx>
-           {`
-             @font-face {
-               font-family: "NEXON Lv2 Gothic";
-               src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff")
-                 format("woff");
-               font-weight: normal;
-               font-style: normal;
-             }
-             * {
-               font-family: "NEXON Lv2 Gothic";
-             }
-           `}
-         </style>
        </Layout>
      );
    } else {

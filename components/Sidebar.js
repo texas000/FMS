@@ -14,7 +14,7 @@ const Sidebar = ({level}) => {
   
   const desktopView = {
     background: "#fff",
-    backgroundImage: 'linear-gradient(to top, #bdffe2 0%, #ffad8a 100%)',
+    backgroundImage: 'linear-gradient(to left, #BDBBBE 0%, #9D9EA3 100%)',
     borderRight: "1px solid #ddd",
     boxShadow: '1px 2px 2px #DCDCDC',
     position: "fixed",
@@ -32,7 +32,7 @@ const Sidebar = ({level}) => {
   const mobileIcon = {textAlign: 'left'}
   const desktopIcon = {textAlign: 'center'}
 
-  const TextStyle = {paddingRight: 20, color: 'DarkGoldenRod'}
+  const TextStyle = {paddingRight: 20, color: 'white'}
   return (
     <>
       <SideNav

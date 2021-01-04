@@ -19,22 +19,24 @@ const Head = ({ REF, POST, PIC, EMAIL }) => {
       <>
         <Row>
           <Col>
-            <h2 style={{fontFamily: "Roboto"}}>{REF}</h2>
+            <h2>{REF}</h2>
             <Button
-              className="mr-2"
+              className="mr-2 py-0"
               size="sm"
-              color="primary"
+              color="info"
               style={{ borderRadius: 0 }}
               onClick={Clipboard}
+              outline
             >
               <i className="fa fa-share"></i> Share
             </Button>
             <Button
-              className="mr-2"
+              className="mr-2 py-0"
               size="sm"
               color="danger"
               style={{ borderRadius: 0 }}
               onClick={() => router.back()}
+              outline
             >
               <i className="fa fa-reply"></i> Back
             </Button>
@@ -99,12 +101,6 @@ const Head = ({ REF, POST, PIC, EMAIL }) => {
           </Col>
         </Row>
         <hr />
-        <style jsx>{`
-          h2, a, span, p {
-            font-family: 'roboto';
-            font-weight: 1000;
-          }
-          `}</style>
       </>
     );}
 export default Head;

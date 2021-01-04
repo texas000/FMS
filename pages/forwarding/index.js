@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
 import paginationFactory from 'react-bootstrap-table2-paginator';
+import filterFactory, {textFilter} from 'react-bootstrap-table2-filter';
 import moment from "moment";
 
 const Index = ({ Cookie, Re }) => {
@@ -80,6 +81,7 @@ const Index = ({ Cookie, Re }) => {
       style: { textAlign: "center", width: "10%" },
       headerStyle: { fontSize: "0.8rem", width: "10%", textAlign: "center" },
       sort: true,
+      filter: textFilter()
     },
     {
       dataField: "MASTER_BLNO",
@@ -100,6 +102,7 @@ const Index = ({ Cookie, Re }) => {
       text: "CUSTOMER",
       style: columnStyle,
       headerStyle: { fontSize: "0.8rem", textAlign: "center" },
+      hidden: true,
       sort: true,
     },
     {
@@ -107,6 +110,7 @@ const Index = ({ Cookie, Re }) => {
       text: "SHIPPER",
       style: columnStyle,
       headerStyle: { fontSize: "0.8rem", textAlign: "center" },
+      hidden: true,
       sort: true,
     },
     {
@@ -114,7 +118,7 @@ const Index = ({ Cookie, Re }) => {
       text: "POST",
       style: columnStyle,
       sort: true,
-      headerStyle: { width: "7%", fontSize: "0.8em", textAlign: "center" },
+      headerStyle: { fontSize: "0.8em", textAlign: "center" },
       formatter: (cell) => {
         if (moment(cell).isSameOrBefore(moment())) {
           return (
@@ -132,7 +136,7 @@ const Index = ({ Cookie, Re }) => {
       text: "ETD",
       style: columnStyle,
       sort: true,
-      headerStyle: { width: "7%", fontSize: "0.8em", textAlign: "center" },
+      headerStyle: { fontSize: "0.8em", textAlign: "center" },
       formatter: (cell) => {
         if (moment(cell).isSameOrBefore(moment())) {
           return (
@@ -150,7 +154,7 @@ const Index = ({ Cookie, Re }) => {
       text: "ETA",
       style: columnStyle,
       sort: true,
-      headerStyle: { width: "7%", fontSize: "0.8em", textAlign: "center" },
+      headerStyle: { fontSize: "0.8em", textAlign: "center" },
       formatter: (cell) => {
         if (moment(cell).isSameOrBefore(moment())) {
           return (
@@ -167,8 +171,9 @@ const Index = ({ Cookie, Re }) => {
       dataField: "U1ID",
       text: "PIC",
       style: columnStyle,
-      headerStyle: { fontSize: "0.8rem", width: "6%", textAlign: "center" },
+      headerStyle: { fontSize: "0.8rem", width: "8%", textAlign: "center" },
       sort: true,
+      filter: textFilter()
     },
   ];
 
@@ -204,54 +209,69 @@ const Index = ({ Cookie, Re }) => {
     </div>
   );
 
+  const pageButtonRenderer = ({
+    page,
+    active,
+    disabled,
+    title,
+    onPageChange
+  }) => {
+    const handleClick = (e) => {
+      e.preventDefault();
+      onPageChange(page);
+    }
+    return (
+      <li className="page-item" key={page}>
+        <a href="#" onClick={handleClick} className={active ? 'btn btn-info' : 'btn'}>{page}</a>
+      </li>
+    )
+  }
+
   if (TOKEN && TOKEN.group) {
     return (
-      <Layout TOKEN={TOKEN} TITLE="FORWARDING">
-        <h3 className="mb-4 forwarding">
-          Forwarding Search
-        </h3>
-        {/* SERACH BAR */}
-        <Row className="mb-4">
-          <Col>
+      <Layout TOKEN={TOKEN} TITLE="Forwarding">
+        <div className="d-flex flex-sm-row justify-content-between">
+          <div className="flex-column">
+            <h3 className="mb-4 forwarding">
+            Forwarding
+          </h3>
+          </div>
+          <div className="flex-column">
             <Input
-              title="search"
-              placeholder="SEARCH OCEAN, AIR, OTHERS"
-              bsSize="sm"
+              title="searchs"
+              className="border-1 small mx-1"
+              placeholder="Search for reference.."
               onChange={(e) => setSearch(e.target.value)}
               onKeyPress={(e) => {
                 if (e.key == "Enter") getResult();
               }}
-              style={{
-                width: "100%",
-                borderRadius: "24px",
-                paddingLeft: "38px",
-                paddingTop: "20px",
-                paddingBottom: "20px",
-              }}
+              style={{width: '38vw'}}
               autoFocus={true}
             />
-            <i className="fa fa-search"></i>
-          </Col>
-          <Col>
+            {/* <i className="fa fa-search"></i> */}
+            </div>
+            <div className="flex-column">
             <Button
               color="primary"
               onClick={getResult}
               disabled={!search}
               className="search-button"
               outline
+              size="sm"
             >
               Search
             </Button>
-          </Col>
-        </Row>
+          </div>
+        </div>
+        {/* SERACH BAR */}
         {/* SEARCH BAR END */}
+        <Card className="bg-transparent border-0">
         <Row>
           {/* DISPLAY SEARCH RESULT */}          
           <ToolkitProvider
             keyField="RowNo"
             bordered={false}
             columns={column}
-            wrapperClasses="table-responsive"
             data={Re}
             exportCSV
             search
@@ -263,9 +283,12 @@ const Index = ({ Cookie, Re }) => {
                   hover
                   striped
                   condensed
+                  wrapperClasses="table-responsive"
+                  filter={ filterFactory() }
                   noDataIndication={indication}
                   pagination={paginationFactory({
                     showTotal: true,
+                    pageButtonRenderer,
                     paginationTotalRenderer: customTotal,
                     sizePerPageRenderer
                   })}
@@ -274,33 +297,21 @@ const Index = ({ Cookie, Re }) => {
             )}
           </ToolkitProvider>
         </Row>
+        </Card>
         <style global jsx>
           {`
-            @font-face {
-              font-family: "NEXON Lv2 Gothic";
-              src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff")
-                format("woff");
-              font-weight: normal;
-              font-style: normal;
-            }
-            .forwarding {
-              font-family: "NEXON Lv2 Gothic";
-            }
-            * {
-              font-family: "Roboto";
-            }
             .page-link {
               border-radius: 0;
             }
-            .fa-search {
-              position: absolute;
-              top: 12px;
-              left: 30px;
-            }
             .search-button {
-              padding-top: 10px !important;
-              padding-bottom: 10px !important;
+              padding-top: 8px !important;
+              padding-bottom: 8px !important;
             }
+            {/* @media screen and (max-width: 768px) {
+              .search-button {
+                display: none;
+              } 
+            } */}
             .react-bootstrap-table table {
               table-layout: auto !important;
             }

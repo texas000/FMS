@@ -63,11 +63,11 @@ const Index = ({Cookie}) => {
    if(TOKEN && TOKEN.group) {
      return (
        <>
-         <Layout TOKEN={TOKEN} TITLE="CALENDAR">
+         <Layout TOKEN={TOKEN} TITLE="Calendar">
            <Row>
              <Col>
-             <h3 style={{ fontFamily: "Roboto, sans-serif", fontWeight: "700" }}>
-                Calendar <span className="text-secondary">Under Development</span>
+             <h3>
+                Calendar
              </h3>
            <Calendar
              selectable

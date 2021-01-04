@@ -1,11 +1,12 @@
 import {useRouter, withRouter} from 'next/router';
 import NProgress from 'nprogress';
 import { useEffect, useState } from 'react';
-import { Spinner } from 'reactstrap';
 import '../components/css/nprogress.css';
-import '@trendmicro/react-sidenav/dist/react-sidenav.css';
+// import '@trendmicro/react-sidenav/dist/react-sidenav.css';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import '../components/css/custom.css';
 import 'react-calendar/dist/Calendar.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 // import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 function MyApp({ Component, pageProps }) {
@@ -42,10 +43,7 @@ function MyApp({ Component, pageProps }) {
         }
       }, [])
     return (
-        <>
-        {/* {loading && <Spinner color="primary" />} */}
         <Component {...pageProps} />
-        </>
     )
 }
 export default MyApp;

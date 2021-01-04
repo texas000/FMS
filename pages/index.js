@@ -43,14 +43,6 @@ const About = ({Cookie}) => {
     // console.log(TOKEN)
     !TOKEN && router.push("/login");
     setLoaded(true)
-    //HANDLE LOADING PAGE
-    // const Start = (url) => {
-    //   console.log('App is staring to: ', url)
-    // }
-
-    // return () => {
-    //   router.events.on('routeChangeStart', Start)
-    // }
    }, [])
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -84,7 +76,7 @@ const About = ({Cookie}) => {
         <video playsInline autoPlay muted loop style={{position: 'absolute', right: '0', bottom: '0', minWidth: '100%', minHeight: '100%'}}>
           <source src={item.src} type="video/mp4" />
         </video>
-        <CarouselCaption captionText={item.caption} captionHeader={item.altText} style={{position: 'absolute', top: '50%'}}/>
+        <CarouselCaption captionText={item.caption} captionHeader={item.altText}/>
       </CarouselItem>
     );
   });
@@ -94,11 +86,7 @@ const About = ({Cookie}) => {
        <React.Fragment>
          <Head>
            <link
-             rel="stylesheet"
-             href="https://bootswatch.com/4/litera/bootstrap.min.css"
-           />
-           <link
-             href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
              rel="stylesheet"
            />
            <link
@@ -136,7 +124,7 @@ const About = ({Cookie}) => {
                  paddingRight: "150px",
                }}
              >
-               <span className="carousel-control-prev-icon h5 mb-4">PREV</span>
+               <span className="carousel-control-prev-icon mb-4">PREV</span>
                <br />
                <span className="carousel-arrow-prev"></span>
              </a>
@@ -153,20 +141,23 @@ const About = ({Cookie}) => {
                  paddingRight: "150px",
                }}
              >
-               <span className="carousel-control-next-icon h5 mb-4">NEXT</span>
+               <span className="carousel-control-next-icon mb-4">NEXT</span>
                <br />
                <span className="carousel-arrow-next"></span>
              </a>
            </Carousel>
 
-           <Container fluid style={{ paddingTop: "10rem"}}>
-             <Row style={{ paddingBottom: "5rem"}}>
+           <Container fluid style={{ paddingTop: "10rem" }}>
+             <Row style={{ paddingBottom: "5rem" }}>
                <Col sm="12" md={{ size: 6, offset: 3 }} className="text-center">
                  <h4 className="text-muted mb-4">OUTSTANDING SERVICES</h4>
                  <h1>LOVE US</h1>
                </Col>
              </Row>
-             <Row className="mt-4" style={{paddingLeft: '6rem', paddingRight: '6rem'}}>
+             <Row
+               className="mt-4"
+               style={{ paddingLeft: "6rem", paddingRight: "6rem" }}
+             >
                <Col
                  sm="3"
                  className="text-center mt-2 mb-4 pl-4 pr-4 border-right"
@@ -230,10 +221,7 @@ const About = ({Cookie}) => {
                    adipisicing elit.
                  </p>
                </Col>
-               <Col
-                 sm="3"
-                 className="text-center mt-2 mb-4 pl-4 pr-4"
-               >
+               <Col sm="3" className="text-center mt-2 mb-4 pl-4 pr-4">
                  <img
                    src="image/icons/truck_2.svg"
                    width="50em"
@@ -251,11 +239,15 @@ const About = ({Cookie}) => {
                  </p>
                </Col>
              </Row>
-            
-
 
              {/* SECOND ROW */}
-             <Row style={{ marginTop: "10rem", paddingLeft: '6rem', paddingRight: '6rem' }}>
+             <Row
+               style={{
+                 marginTop: "10rem",
+                 paddingLeft: "6rem",
+                 paddingRight: "6rem",
+               }}
+             >
                <Col style={{ padding: "0" }} lg="6">
                  <img
                    src="image/home-slider-01.jpg"
@@ -271,7 +263,7 @@ const About = ({Cookie}) => {
                      className="text-muted"
                      style={{
                        fontSize: "1.4rem",
-                       lineHeight: "3rem"
+                       lineHeight: "3rem",
                      }}
                    >
                      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
@@ -284,7 +276,13 @@ const About = ({Cookie}) => {
                </Col>
              </Row>
 
-             <Row style={{ paddingLeft: '6rem', paddingRight: '6rem', paddingBottom: '5rem' }}>
+             <Row
+               style={{
+                 paddingLeft: "6rem",
+                 paddingRight: "6rem",
+                 paddingBottom: "5rem",
+               }}
+             >
                <Col style={{ padding: "0" }} lg="6">
                  <div className="pt-4 pl-4 ml-4 mt-4 mr-4">
                    <h5 className="text-muted mb-4">OUTSTANDING SERVICES</h5>
@@ -313,87 +311,54 @@ const About = ({Cookie}) => {
                </Col>
              </Row>
 
-            {/* THRID ROW */}
-            <Row style={{paddingLeft: '6rem', paddingRight: '6rem', paddingTop: '8rem'}}>
-              <Col lg={6}>
-              <img src="https://preview.colorlib.com/theme/neos/images/img_1.jpg" />
-              </Col>
-              <Col lg={6}>
-                  <h3 className="pb-4">FREE TEMPLATES BY JAMES WORLDWIDE</h3>
-                  <p
-                     className="text-muted"
-                     style={{
-                       fontSize: "1.4rem",
-                       lineHeight: "3rem"
-                     }}
-                   >Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                     Eaque, nobis? Lorem ipsum dolor sit amet, consectetur
-                     adipisicing elit.Lorem ipsum dolor sit amet, consectetur
-                     adipisicing elit. Eaque, nobis? Lorem ipsum dolor sit amet,
-                     consectetur adipisicing elit.</p>
-              </Col>
-            </Row>
-            <Row style={{paddingLeft: '6rem', paddingRight: '6rem', paddingTop: '8rem', paddingBottom: '6rem'}}>
-              <Col lg={12}>
-                <h2 className="text-center mb-4 pb-4">RECENT NEWS</h2>
-              </Col>
-              <Col lg={4}>
-                <div className="ml-4 mr-4">
-                  <img src="https://preview.colorlib.com/theme/neos/images/img_1.jpg" width="95%" height="auto"/>
-                  <h5 className="mt-4">NEWS ABOUT COVID-19</h5>
-                  <p
-                     className="text-muted"
-                     style={{
-                       lineHeight: "3rem"
-                     }}
-                   >
-                     By James — Jan. 20, 2019
-                   </p>
+             {/* THRID ROW */}
+             <Row
+               style={{
+                 paddingLeft: "6rem",
+                 paddingRight: "6rem",
+                 paddingTop: "8rem",
+               }}
+             >
+               <Col lg={6}>
+                 <img className="img-thumbnail" src="https://preview.colorlib.com/theme/neos/images/img_1.jpg"/>
+               </Col>
+               <Col lg={6}>
+                 <h3 className="pb-4">FREE TEMPLATES BY JAMES WORLDWIDE</h3>
+                 <p
+                   className="text-muted"
+                   style={{
+                     fontSize: "1.4rem",
+                     lineHeight: "3rem",
+                   }}
+                 >
+                   Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                   Eaque, nobis? Lorem ipsum dolor sit amet, consectetur
+                   adipisicing elit.Lorem ipsum dolor sit amet, consectetur
+                   adipisicing elit. Eaque, nobis? Lorem ipsum dolor sit amet,
+                   consectetur adipisicing elit.
+                 </p>
+               </Col>
+             </Row>
+             <Row
+               style={{
+                 paddingLeft: "6rem",
+                 paddingRight: "6rem",
+                 paddingTop: "8rem",
+                 paddingBottom: "6rem",
+               }}
+             >
+               <Col lg={12}>
+                 <h2 className="text-center mb-4 pb-4">RECENT NEWS</h2>
+               </Col>
+               <Col lg={4}>
+                 <div className="ml-4 mr-4">
+                   <img
+                     src="https://preview.colorlib.com/theme/neos/images/img_1.jpg"
+                     width="95%"
+                     height="auto"
+                   />
+                   <h5 className="mt-4">NEWS ABOUT COVID-19</h5>
                    <p
-                     className="text-muted"
-                     style={{
-                       lineHeight: "3rem"
-                     }}
-                   >
-                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga, voluptate. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                     Eaque, nobis? Lorem ipsum dolor sit amet, consectetur
-                     adipisicing elit.Lorem ipsum dolor sit amet, consectetur
-                     adipisicing elit. Eaque, nobis? Lorem ipsum dolor sit amet,
-                     consectetur adipisicing elit.
-                   </p>
-                </div>
-              </Col>
-              <Col lg={4}>
-              <div className="ml-4 mr-4">
-                  <img src="https://preview.colorlib.com/theme/neos/images/img_2.jpg" width="95%" height="auto"/>
-                  <h5 className="mt-4">NEWS ABOUT COVID-19</h5>
-                  <p
-                     className="text-muted"
-                     style={{
-                       lineHeight: "3rem"
-                     }}
-                   >
-                     By James — Jan. 20, 2019
-                   </p>
-                   <p
-                     className="text-muted"
-                     style={{
-                       lineHeight: "3rem",
-                     }}
-                   >
-                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga, voluptate. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                     Eaque, nobis? Lorem ipsum dolor sit amet, consectetur
-                     adipisicing elit.Lorem ipsum dolor sit amet, consectetur
-                     adipisicing elit. Eaque, nobis? Lorem ipsum dolor sit amet,
-                     consectetur adipisicing elit.
-                   </p>
-                </div>
-              </Col>
-              <Col lg={4}>
-              <div className="ml-4 mr-4">
-                  <img src="https://preview.colorlib.com/theme/neos/images/img_3.jpg" width="95%" height="auto"/>
-                  <h5 className="mt-4">NEWS ABOUT COVID-19</h5>
-                  <p
                      className="text-muted"
                      style={{
                        lineHeight: "3rem",
@@ -407,57 +372,133 @@ const About = ({Cookie}) => {
                        lineHeight: "3rem",
                      }}
                    >
-                     Lorem ipsum dolor sit amet, consectetur adipisicing elit. Fuga, voluptate. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                     Eaque, nobis? Lorem ipsum dolor sit amet, consectetur
-                     adipisicing elit.Lorem ipsum dolor sit amet, consectetur
+                     Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                     Fuga, voluptate. Lorem ipsum dolor sit amet, consectetur
                      adipisicing elit. Eaque, nobis? Lorem ipsum dolor sit amet,
-                     consectetur adipisicing elit.
+                     consectetur adipisicing elit.Lorem ipsum dolor sit amet,
+                     consectetur adipisicing elit. Eaque, nobis? Lorem ipsum
+                     dolor sit amet, consectetur adipisicing elit.
                    </p>
-                </div>
-              </Col>
-            </Row>
+                 </div>
+               </Col>
+               <Col lg={4}>
+                 <div className="ml-4 mr-4">
+                   <img
+                     src="https://preview.colorlib.com/theme/neos/images/img_2.jpg"
+                     width="95%"
+                     height="auto"
+                   />
+                   <h5 className="mt-4">NEWS ABOUT COVID-19</h5>
+                   <p
+                     className="text-muted"
+                     style={{
+                       lineHeight: "3rem",
+                     }}
+                   >
+                     By James — Jan. 20, 2019
+                   </p>
+                   <p
+                     className="text-muted"
+                     style={{
+                       lineHeight: "3rem",
+                     }}
+                   >
+                     Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                     Fuga, voluptate. Lorem ipsum dolor sit amet, consectetur
+                     adipisicing elit. Eaque, nobis? Lorem ipsum dolor sit amet,
+                     consectetur adipisicing elit.Lorem ipsum dolor sit amet,
+                     consectetur adipisicing elit. Eaque, nobis? Lorem ipsum
+                     dolor sit amet, consectetur adipisicing elit.
+                   </p>
+                 </div>
+               </Col>
+               <Col lg={4}>
+                 <div className="ml-4 mr-4">
+                   <img
+                     src="https://preview.colorlib.com/theme/neos/images/img_3.jpg"
+                     width="95%"
+                     height="auto"
+                   />
+                   <h5 className="mt-4">NEWS ABOUT COVID-19</h5>
+                   <p
+                     className="text-muted"
+                     style={{
+                       lineHeight: "3rem",
+                     }}
+                   >
+                     By James — Jan. 20, 2019
+                   </p>
+                   <p
+                     className="text-muted"
+                     style={{
+                       lineHeight: "3rem",
+                     }}
+                   >
+                     Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                     Fuga, voluptate. Lorem ipsum dolor sit amet, consectetur
+                     adipisicing elit. Eaque, nobis? Lorem ipsum dolor sit amet,
+                     consectetur adipisicing elit.Lorem ipsum dolor sit amet,
+                     consectetur adipisicing elit. Eaque, nobis? Lorem ipsum
+                     dolor sit amet, consectetur adipisicing elit.
+                   </p>
+                 </div>
+               </Col>
+             </Row>
 
-            {/* FOOTER UP */}
-            <Row style={{backgroundColor: '#02b875', paddingTop: '5rem', paddingBottom: '6rem'}}>
-              <Col lg={12}>
-                <h2 className="text-white text-center mb-4">TRY FOR YOUR NEXT PROJECT</h2>
-              </Col>
-              <Col lg={12} style={{textAlign: 'center'}}>
-                <Button style={{backgroundColor: 'transparent', color: "white", borderRadius: '0', border: '3px solid #fff', fontWeight: '600'}}>CONTACT US</Button>
-              </Col>
-            </Row>
-            <Footer />
-
+             {/* FOOTER UP */}
+             <Row
+               style={{
+                 backgroundColor: "#02b875",
+                 paddingTop: "5rem",
+                 paddingBottom: "6rem",
+               }}
+             >
+               <Col lg={12}>
+                 <h2 className="text-white text-center mb-4">
+                   TRY FOR YOUR NEXT PROJECT
+                 </h2>
+               </Col>
+               <Col lg={12} style={{ textAlign: "center" }}>
+                 <Button
+                   style={{
+                     backgroundColor: "transparent",
+                     color: "white",
+                     borderRadius: "0",
+                     border: "3px solid #fff",
+                     fontWeight: "600",
+                   }}
+                 >
+                   CONTACT US
+                 </Button>
+               </Col>
+             </Row>
+             <Footer />
            </Container>
          </main>
-            <div className="loader-wrapper">
-              <span className="loader"><span className="loader-inner"></span></span>
-            </div>
+         <div className="loader-wrapper">
+           <span className="loader">
+             <span className="loader-inner"></span>
+           </span>
+         </div>
          <style global jsx>
            {`
-             * {
-              font-family: 'Roboto', sans-serif;
-             }
-             p {
-              font-family: 'Roboto';
-             }
-              {
+             {
                /* Hide Previous Icons */
              }
              .carousel-control-prev-icon {
-               position: absolute;
-               background-image: none;
-               padding-left: 5rem;
-               left: 0;
+               position: absolute !important;
+               background-image: none !important;
+               padding-left: 5rem !important;
+               left: 0 !important;
              }
               {
                /* Hide Next Icon */
              }
              .carousel-control-next-icon {
-               position: absolute;
-               background-image: none;
-               padding-right: 8rem;
-               right: 0;
+               position: absolute !important;
+               background-image: none !important;
+               padding-right: 8rem !important;
+               right: 0 !important;
              }
               {
                /* Carousel Slide Height */
@@ -522,12 +563,6 @@ const About = ({Cookie}) => {
                height: 100%;
                width: 75%;
              }
-             .carousel-caption h3 {
-               font-size: 7rem;
-             }
-             .carousel-caption p {
-               font-size: 2rem;
-             }
              .carousel-indicators li {
                margin-left: 7px;
                margin-right: 7px;
@@ -535,12 +570,8 @@ const About = ({Cookie}) => {
                height: 18px;
                border-radius: 100%;
              }
-             {/* p {
-               font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                 Roboto, Helvetica, Arial, sans-serif !important;
-             } */}
-             ::placeholder{
-              color: gray !important;
+             ::placeholder {
+               color: gray !important;
              }
            `}
          </style>

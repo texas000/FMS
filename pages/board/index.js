@@ -20,8 +20,6 @@ const Index = ({Cookie, Board}) => {
       {
         dataField: "ID",
         text: "ID",
-        headerStyle: { fontFamily: "NEXON Lv2 Gothic" }, 
-        style: {fontFamily: "NEXON Lv2 Gothic"},
         align: 'center',
         headerAlign: 'center',
         hidden: true,
@@ -30,16 +28,13 @@ const Index = ({Cookie, Board}) => {
       {
         dataField: "TITLE",
         text: "TITLE",
-        headerStyle: { fontFamily: "NEXON Lv2 Gothic" }, 
-        style: {fontFamily: "NEXON Lv2 Gothic"},
         align: 'center',
         headerAlign: 'center',
       },
       {
         dataField: "VIEWS",
         text: "VIEWS",
-        headerStyle: { width: '10%', fontFamily: "NEXON Lv2 Gothic" }, 
-        style: {fontFamily: "NEXON Lv2 Gothic"},
+        headerStyle: { width: '15%' }, 
         align: 'center',
         headerAlign: 'center',
         formatter: (cell)=>(cell ? cell : 0),
@@ -47,8 +42,7 @@ const Index = ({Cookie, Board}) => {
       {
         dataField: "TIME",
         text: "TIME",
-        headerStyle: { width: '20%', fontFamily: "NEXON Lv2 Gothic" }, 
-        style: {fontFamily: "NEXON Lv2 Gothic"},
+        headerStyle: { width: '30%' }, 
         align: 'center',
         headerAlign: 'center',
         formatter: (cell)=>(moment(cell).utc().format('LLL')),
@@ -83,48 +77,48 @@ const Index = ({Cookie, Board}) => {
          <Head>
            <meta charSet="utf-8" />
          </Head>
-         <Layout TOKEN={TOKEN} TITLE="BOARD">
+         <Layout TOKEN={TOKEN} TITLE="Board">
            <Row>
              <Col>
-               <h3 style={{fontFamily: 'Roboto, sans-serif', fontWeight: '700'}}>Board</h3>
-               <p>익명 사내 게시판</p>
-               <p className="text-center text-primary">익명 사내 게시판은 직원 간의 정보 공유 목적 / 기업문화 개선 제안 목적 / 고민 상담 목적으로 만들어졌습니다</p>
-               <p className="text-center">게시판 주의사항: 험담 금지, 칭찬 환영, 삭제 및 수정 불가</p>
-               <a style={{ position: "fixed", right: "2rem", top: "2rem", color: '#4582ec' }} onClick={() => setModal(true)}>
-                <span>작성하기</span>
-               <i
+               <div className="d-flex flex-sm-row justify-content-between">
+               <h3>Board</h3>
+               
+                <Button onClick={() => setModal(true)} size="sm" color="primary" outline>Write <i
                  className="fa fa-edit fa-lg ml-2"
-               ></i>
-               </a>
+               ></i></Button>
+               
+               </div>
+               {/* <p className="text-center text-primary">익명 사내 게시판은 직원 간의 정보 공유 / 기업문화 개선 제안 / 고민 상담 목적으로 만들어졌습니다</p> */}
+               {/* <p className="text-center">게시판 주의사항: 칭찬 환영, 삭제 및 수정 불가</p> */}
              </Col>
              <Modal isOpen={modal} toggle={toggle} size="lg">
                <ModalHeader
                  toggle={toggle}
                  className="pl-4"
-                 style={{ fontFamily: "NEXON Lv2 Gothic" }}
                >
-                 게시글 작성
+                 Share your idea..
                </ModalHeader>
                <ModalBody className="pt-4 px-4">
                  <InputGroup className="mb-2">
-                   <Input placeholder="TITLE" style={{ fontFamily: "NEXON Lv2 Gothic" }} onChange={e=>setTitle(encodeURIComponent(e.target.value))} />
+                   <Input placeholder="TITLE" onChange={e=>setTitle(encodeURIComponent(e.target.value))} />
                  </InputGroup>
                </ModalBody>
                <ModalBody className="px-4">
                  <InputGroup className="mb-2">
-                   <Input type="textarea" placeholder="TYPE HERE" style={{ fontFamily: "NEXON Lv2 Gothic", height: '20rem' }} onChange={e=>setBody(encodeURIComponent(e.target.value))} />
+                   <Input type="textarea" placeholder="TYPE HERE" style={{ height: '20rem' }} onChange={e=>setBody(encodeURIComponent(e.target.value))} />
                  </InputGroup>
                </ModalBody>
                <Button className="mx-4 my-4" color="success" onClick={addNew}>SUBMIT</Button>
              </Modal>
            </Row>
-           {/* {encodeURIComponent(text)} */}
+           <Card className="bg-transparent border-0">
            <Row className="my-4">
              <Col>
                <BootstrapTable
                  data={Board}
                  columns={columns}
                  rowEvents={rowEvents}
+                 wrapperClasses="table-responsive"
                  keyField="ID"
                  striped
                  hover
@@ -134,22 +128,7 @@ const Index = ({Cookie, Board}) => {
                />
              </Col>
            </Row>
-           <style jsx>
-             {`
-               @font-face {
-                 font-family: "NEXON Lv2 Gothic";
-                 src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff")
-                   format("woff");
-                 font-weight: normal;
-                 font-style: normal;
-               }
-               h1,
-               h4, h5,
-               p {
-                 font-family: "NEXON Lv2 Gothic";
-               }
-             `}
-           </style>
+           </Card>
          </Layout>
        </>
      );

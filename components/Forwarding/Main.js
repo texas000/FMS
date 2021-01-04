@@ -493,7 +493,7 @@ const Main = ({ TYPE, OTHER, Master, House, Containers, AP, FILES, USER, EXTRA }
 
           <style global jsx>
             {`
-              @font-face {
+              {/* @font-face {
                 font-family: "NEXON Lv2 Gothic";
                 src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff")
                   format("woff");
@@ -509,7 +509,7 @@ const Main = ({ TYPE, OTHER, Master, House, Containers, AP, FILES, USER, EXTRA }
               }
               table > th {
                 font-weight: 1000;
-              }
+              } */}
             `}
           </style>
         </Row>
@@ -639,7 +639,7 @@ const Main = ({ TYPE, OTHER, Master, House, Containers, AP, FILES, USER, EXTRA }
             </Col>
             <style global jsx>
               {`
-                  @font-face {
+                  {/* @font-face {
                   font-family: "NEXON Lv2 Gothic";
                   src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff")
                     format("woff");
@@ -655,7 +655,7 @@ const Main = ({ TYPE, OTHER, Master, House, Containers, AP, FILES, USER, EXTRA }
                 }
                 table > th {
                   font-weight: 1000;
-                }
+                } */}
               `}
             </style>
           </Row>
@@ -752,7 +752,7 @@ const Main = ({ TYPE, OTHER, Master, House, Containers, AP, FILES, USER, EXTRA }
             </Col>
             <style global jsx>
               {`
-                  @font-face {
+                  {/* @font-face {
                   font-family: "NEXON Lv2 Gothic";
                   src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff")
                     format("woff");
@@ -761,7 +761,7 @@ const Main = ({ TYPE, OTHER, Master, House, Containers, AP, FILES, USER, EXTRA }
                 }
                 * {
                   font-family: 'NEXON Lv2 Gothic';
-                }
+                } */}
                 .alert button {
                   padding-top: "1rem" !important;
                   padding-bottom: "1rem";

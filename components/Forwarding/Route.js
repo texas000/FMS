@@ -158,14 +158,6 @@ const Route = ({ ETD, ETA, FETA, LOADING, DISCHARGE, DEST }) => {
               </Row>
             )}
       </div>
-      <style jsx>
-        {`
-         p {
-          font-family: "Roboto", sans-serif;
-          font-size: 0.9rem;
-         }
-        `}
-      </style>
     </>
   );};
 

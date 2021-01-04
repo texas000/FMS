@@ -1,29 +1,28 @@
 import Head from "next/head";
 import Navbar from "./Navbar";
-import Sidebar from "./Sidebar";
+// import Sidebar from "./Sidebar";
+import Sidebar from "./Side";
 import { Container, Row } from "reactstrap";
 import{ useEffect } from 'react'
+import Top from "./Nav";
 
 const Layout = (props) => {
+  const [toggle, setToggle] = React.useState(true)
   const [mobile, setMobile] = React.useState(false)
   useEffect(() => {
     if(window.innerWidth<600) {
       setMobile(true)
+      setToggle(true)
     }
   }, [])
-  const mobileMargin = {marginLeft: '1.2rem'}
-  const desktopMargin = {marginLeft: '5rem'}
+  
   return (
-    <div>
+    <>
       <Head>
         <title>{props.TITLE||"JW"}</title>
         <link
-          rel="stylesheet"
-          href="https://bootswatch.com/4/litera/bootstrap.min.css"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
-          rel="stylesheet"
+             href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+             rel="stylesheet"
         />
         <link
           rel="stylesheet"
@@ -32,57 +31,30 @@ const Layout = (props) => {
           crossOrigin="anonymous"
         />
         <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png" />
         <link rel="manifest" href="/favicon/site.webmanifest" />
         <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5" />
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
       </Head>
 
-      <Navbar name={props.TOKEN && props.TOKEN.username.toUpperCase()} />
+      {/* <Navbar name={props.TOKEN && props.TOKEN.username.toUpperCase()} /> */}
 
-      <Container fluid={true}>
-        {/* <Row> */}
-          <Sidebar level={props.TOKEN && props.TOKEN.admin} />
-          <main role="main" style={mobile?mobileMargin:desktopMargin}>
-            {props.children}
-          </main>
-        {/* </Row> */}
-      </Container>
-
-      <style jsx global>
-        {`
-          * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-          }
-          body {
-            font-family: "Roboto", sans-serif;
-            background-color: #f9fafc;
-          }
-          p {
-            font-family: "Roboto", sans-serif;
-          }
-          li {
-            display: inline;
-          }
-          .breadcrumb {
-            background-color: transparent;
-          }
-          .nav {
-            list-style: none;
-          }
-          .nav-link {
-            text-decoration: none;
-          }
-          .sidenav---sidenav---_2tBP.sidenav---expanded---1KdUL {
-            min-width: 180px !important;
-          }
-        `}
-      </style>
-    </div>
+      
+        <div id="wrapper">
+          <Sidebar Token={props.TOKEN} toggle={toggle} setToggle={setToggle} isMobile={mobile} />          
+          {/* Content Wrapper */}
+          <div id="content-wrapper" className="d-flex flex-column">
+          <div id="content">
+            <Top Token={props.TOKEN} toggle={toggle} setToggle={setToggle} />
+            <Container fluid>
+              {props.children}
+            </Container>
+          </div>
+          </div>
+        </div>
+      </>
   );
 };
 

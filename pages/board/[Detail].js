@@ -14,8 +14,8 @@ const Detail = ({ Cookie, Board, Comments}) => {
   const A = Board.post
   useEffect(() => {
     !TOKEN && router.push("/login");
-    console.log(Board)
-    console.log(Comments)
+    // console.log(Board)
+    // console.log(Comments)
   });
 
   const addComments = async (comment) => {
@@ -29,84 +29,90 @@ const Detail = ({ Cookie, Board, Comments}) => {
   }
 
   return (
-    <>
-      <Layout TOKEN={TOKEN}>
-        <i id="back" className="fa fa-reply fa-lg" onClick={()=>router.back()}></i>
-        {Board && Board.status ? (
-          <>
-            <Container>
-              <Row className="mt-4">
-                <Col>
-                  <h1>{A.TITLE}</h1>
-                  <span
-                    style={{ position: "fixed", top: "2rem", right: "2rem" }}
-                  >
-                    {moment.utc(A.TIME).format("LLL")}
-                  </span>
-                </Col>
-              </Row>
-              <Row className="mt-4">
-                <Col lg={12}>
-                  <h5>{A.BODY}</h5>
-                </Col>
-                <hr />
-                <Col
-                  lg={12}
-                  style={{
-                    marginTop: "10rem",
-                    borderTop: "1px solid gray",
-                    paddingTop: "2rem",
-                  }}
-                >
-                  <h5>COMMENT</h5>
-                  <Row>
-                    <Col>
-                      <Input className="mt-4 mb-4" placeholder="TYPE HERE" onKeyPress={(e) => {if (e.key == "Enter") addComments(e.target.value);}}/>
-                    </Col>
-                    {/* <Col lg="2">
+		<>
+			<Layout TOKEN={TOKEN} TITLE="Board">
+				<div className="d-flex flex-sm-row justify-content-between">
+					<div>
+						<i
+							id="back"
+							className="fa fa-reply fa-lg"
+							onClick={() => router.back()}
+						></i>
+					</div>
+					<div>
+						<span>{moment.utc(A.TIME).format("LLL")}</span>
+					</div>
+				</div>
+				{Board && Board.status ? (
+					<>
+          <Container>
+						<Row className="my-4 mx-4">
+							<Col>
+								<h1>{A.TITLE}</h1>
+							</Col>
+						</Row>
+						<Row className="mt-4">
+							<Col lg={12}>
+								<h5 className="text-justify" style={{ lineHeight: "200%" }}>
+									{A.BODY}
+								</h5>
+							</Col>
+							<hr />
+							<Col
+								lg={12}
+								style={{
+									marginTop: "10rem",
+									borderTop: "1px solid gray",
+									paddingTop: "2rem",
+								}}
+							>
+								<h5>COMMENT</h5>
+								<Row>
+									<Col>
+										<Input
+											className="mt-4 mb-4"
+											placeholder="TYPE HERE"
+											onKeyPress={(e) => {
+												if (e.key == "Enter") addComments(e.target.value);
+											}}
+										/>
+									</Col>
+									{/* <Col lg="2">
                       <Button style={{position: 'absolute', top: '1.62rem', right: '0rem', borderRadius: '0'}}>SAVE</Button>
                     </Col> */}
-                  </Row>
-                  {Comments.status && 
-                  Comments.comments.map(ga=>(    
-                  <Row key={ga.ID} className="mt-3" lg={12} style={{marginTop: "10rem", borderBottom: "1px solid #EBEDEF"}}>
-                      <Col>
-                        <p style={{fontSize: '0.8rem'}}>{moment.utc(ga.TIME).calendar()}</p>
-                        <p style={{color: 'gray'}}>{ga.COMMENT}</p>
-                      </Col>
-                      <hr />
-                  </Row>
-                  ))
-                  }
-                </Col>
-              </Row>
+								</Row>
+								{Comments.status &&
+									Comments.comments.map((ga) => (
+										<Row
+											key={ga.ID}
+											className="mt-3"
+											lg={12}
+											style={{
+												marginTop: "10rem",
+												borderBottom: "1px solid #EBEDEF",
+											}}
+										>
+											<Col>
+												<p style={{ fontSize: "0.8rem" }}>
+													{moment.utc(ga.TIME).calendar()}
+												</p>
+												<p style={{ color: "gray" }}>{ga.COMMENT}</p>
+											</Col>
+											<hr />
+										</Row>
+									))}
+							</Col>
+						</Row>
             </Container>
-          </>
-        ) : (
-          <Container>
-            <h1>NOT EXIST</h1>
-          </Container>
-        )}
-        <style jsx>
-          {`
-            @font-face {
-              font-family: "NEXON Lv2 Gothic";
-              src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff")
-                format("woff");
-              font-weight: normal;
-              font-style: normal;
-            }
-            h1, h2, h3, h4, h5, p {
-              font-family: "NEXON Lv2 Gothic";
-            }
-            #back {
-              color: 'blue'
-            }
-          `}
-        </style>
-      </Layout>
-    </>
-  );
+					</>
+				) : (
+					<Container>
+						<h1>NOT EXIST</h1>
+					</Container>
+				)}
+			</Layout>
+		</>
+	);
 };
 
 export async function getServerSideProps({req, query}) {

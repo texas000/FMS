@@ -35,22 +35,13 @@ const Login = () => {
         },
         body: JSON.stringify({ token }),
       }).then((t) => t.json());
-      console.log(window.history.length);
 
       if (res.secretAdminCode) {
         setSecret(res.secretAdminCode);
-        if (window.history.length > 3) {
-          router.back();
-        } else {
-          router.push({ pathname: "/" });
-        }
+        router.push({ pathname: "/forwarding" });
       } else {
         setSecret("Nothing");
-        if (window.history.length > 3) {
-          router.back();
-        } else {
-          router.push({ pathname: "/" });
-        }
+        router.push({ pathname: "/forwarding" });
       }
     } else {
       setMessage("Invalid Username or Password!");
@@ -117,7 +108,7 @@ const Login = () => {
               value="Login"
               onClick={submitForm}
             />
-            <p className="error">{message}</p>
+            <p className="error" style={{fontSize: '1rem'}}>{message}</p>
             {/* <p className="error">{secret}</p> */}
           </form>
         </div>

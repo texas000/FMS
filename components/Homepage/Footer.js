@@ -3,7 +3,7 @@ const { Row, Col, Button, InputGroup, Input, InputGroupAddon, InputGroupText } =
 const Footer = () => {
     return (
       <>
-        <Row style={{ backgroundColor: "#3B3C36", paddingTop: "5rem", fontFamily: 'Roboto' }}>
+        <Row style={{ backgroundColor: "#3B3C36", paddingTop: "5rem" }}>
           <Col lg={4}>
             <div
               style={{

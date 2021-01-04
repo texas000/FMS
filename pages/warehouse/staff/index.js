@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import Layout from '../../../components/Layout'
 import { useRouter } from 'next/router';
 import Calendar from 'react-calendar';
-import { Button, Card, Col, Input, InputGroup, InputGroupAddon, InputGroupText, Label, Modal, ModalBody, ModalHeader, Row } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, Col, Input, InputGroup, InputGroupAddon, InputGroupText, Label, Modal, ModalBody, ModalHeader, Row } from 'reactstrap';
 import moment from 'moment';
 import BootstrapTable from 'react-bootstrap-table-next';
 import ToolkitProvider, {CSVExport} from 'react-bootstrap-table2-toolkit';
@@ -152,380 +152,363 @@ const Index = ({Cookie, Staff, Work}) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    console.log(Work);
+    // console.log(Work);
   }, []);
 
   if (TOKEN && TOKEN.group) {
     return (
-      <>
-        <Layout TOKEN={TOKEN} TITLE="STAFF">
-          {/* TOP HEADER */}
-          <h3 style={{ fontFamily: "Roboto, sans-serif", fontWeight: "700" }}>
-           Warehouse <span className="text-secondary">Staff Management</span>
-         </h3>
-          <Button
-            outline
-            style={{
-              borderRadius: 0,
-              position: "fixed",
-              top: "0.5rem",
-              right: "2rem",
-            }}
-            onClick={() => setModal(true)}
-          >
-            <i className="fa fa-user"></i> Upload Staff
-          </Button>
-          <Row className="py-4 justify-content-between">
-            <Col lg="9" className="col-auto mt-4">
-              <Card>
-                {/* TIME CLOCK - ADD / SAVE BUTTONS */}
-                <Row className="my-4 mx-4 justify-content-between">
-                  <Col className="col-auto">
-                    <h4>Add Time Clock</h4>
-                  </Col>
-                  <Col className="col-auto">
-                    <Button
-                      onClick={() => setModal2(true)}
-                      style={{ borderRadius: "0" }}
-                      outline
-                      color="primary"
-                    >
-                      <i className="fa fa-plus"></i> Add
-                    </Button>
-                    <Button
-                      style={{ borderRadius: "0" }}
-                      color="danger"
-                      className="mx-4"
-                      outline
-                      onClick={save}
-                    >
-                      <i className="fa fa-save"></i> Save
-                    </Button>
-                  </Col>
-                </Row>
-                {/* ADDED TIME CLOCK LIST */}
-                <Row className="my-4 mx-4">
-                  <Col sm="12" className="mt-4">
-                    {Clock.length > 0 &&
-                      Clock.map((ga, i) => (
-                        <Row className="mt-4" key={i}>
-                          <Col sm="2">
-                            <p style={{ marginBottom: "0" }}>{ga.S_NAME}</p>
-                            <span
-                              className="text-secondary"
-                              style={{ fontSize: "0.8rem" }}
-                            >
-                              {ga.S_AGENCY}
-                            </span>
-                          </Col>
-                          <Col>
-                            <InputGroup>
-                              <InputGroupAddon addonType="prepend">
-                                <InputGroupText
-                                  style={{
-                                    borderRadius: "0",
-                                    fontSize: "0.9rem",
-                                  }}
-                                >
-                                  IN
-                                </InputGroupText>
-                              </InputGroupAddon>
-                              <Input
-                                type="time"
-                                defaultValue={ga.START}
-                                style={{
-                                  borderRadius: "0",
-                                  fontSize: "0.9rem",
-                                }}
-                                onChange={(e) =>
-                                  (Clock[i].START = e.target.value)
-                                }
-                              />
-                            </InputGroup>
-                          </Col>
+			<>
+				<Layout TOKEN={TOKEN} TITLE="STAFF">
+					{/* TOP HEADER */}
+					<div className="d-flex flex-sm-row justify-content-between">
+						<h3>
+							<span className="text-secondary">Staff Management</span>
+						</h3>
 
-                          <Col>
-                            <InputGroup>
-                              <InputGroupAddon addonType="prepend">
-                                <InputGroupText
-                                  style={{
-                                    borderRadius: "0",
-                                    fontSize: "0.9rem",
-                                  }}
-                                >
-                                  OUT
-                                </InputGroupText>
-                              </InputGroupAddon>
-                              <Input
-                                type="time"
-                                defaultValue={ga.END}
-                                style={{
-                                  borderRadius: "0",
-                                  fontSize: "0.9rem",
-                                }}
-                                onChange={(e) =>
-                                  (Clock[i].END = e.target.value)
-                                }
-                              />
-                            </InputGroup>
-                          </Col>
+						<Button outline size="sm" onClick={() => setModal(true)}>
+							New Staff <i className="fa fa-user"></i>
+						</Button>
+					</div>
 
-                          <Col>
-                            <InputGroup>
-                              <InputGroupAddon addonType="prepend">
-                                <InputGroupText
-                                  style={{
-                                    borderRadius: "0",
-                                    fontSize: "0.9rem",
-                                  }}
-                                >
-                                  L IN
-                                </InputGroupText>
-                              </InputGroupAddon>
-                              <Input
-                                type="time"
-                                defaultValue={ga.LSTART}
-                                style={{
-                                  borderRadius: "0",
-                                  fontSize: "0.9rem",
-                                }}
-                                onChange={(e) =>
-                                  (Clock[i].LSTART = e.target.value)
-                                }
-                              />
-                            </InputGroup>
-                          </Col>
-                          <Col>
-                            <InputGroup>
-                              <InputGroupAddon addonType="prepend">
-                                <InputGroupText
-                                  style={{
-                                    borderRadius: "0",
-                                    fontSize: "0.9rem",
-                                  }}
-                                >
-                                  L OUT
-                                </InputGroupText>
-                              </InputGroupAddon>
-                              <Input
-                                type="time"
-                                defaultValue={ga.LEND}
-                                style={{
-                                  borderRadius: "0",
-                                  fontSize: "0.9rem",
-                                }}
-                                onChange={(e) =>
-                                  (Clock[i].LEND = e.target.value)
-                                }
-                              />
-                            </InputGroup>
-                          </Col>
-                        </Row>
-                      ))}
-                  </Col>
-                </Row>
-              </Card>
-            </Col>
-            {/* MAIN CALENDAR */}
-            <Col className="col-auto mt-4">
-              <Calendar
-                onChange={onChange}
-                value={value}
-                onClickDay={(e) => getWork(e)}
-              />
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              {Works ? (
-                <ToolkitProvider
-                  data={Works}
-                  columns={[
-                    {
-                      dataField: "STAFFING_NAME",
-                      text: "NAME",
-                      headerStyle: { fontFamily: "NEXON Lv2 Gothic" },
-                      headerAlign: "center",
-                    },
-                    {
-                      dataField: "STAFFING_AGENCY",
-                      text: "AGENCY",
-                      headerStyle: { fontFamily: "NEXON Lv2 Gothic" },
-                      headerAlign: "center",
-                    },
-                    {
-                      dataField: "WORK_DATE",
-                      text: "DATE",
-                      headerStyle: { fontFamily: "NEXON Lv2 Gothic" },
-                      headerAlign: "center",
-                      formatter: (cell) => moment.utc(cell).format("LL"),
-                      csvFormatter: (cell) => moment.utc(cell).format("LL"),
-                    },
-                    {
-                      dataField: "WORK_START",
-                      text: "START",
-                      headerAlign: "center",
-                      headerStyle: {
-                        width: "6%",
-                        fontFamily: "NEXON Lv2 Gothic",
-                      },
-                      formatter: (cell) => moment.utc(cell).format("LT"),
-                      csvFormatter: (cell) => moment.utc(cell).format("LT"),
-                    },
-                    {
-                      dataField: "WORK_END",
-                      text: "END",
-                      headerAlign: "center",
-                      headerStyle: {
-                        width: "7%",
-                        fontFamily: "NEXON Lv2 Gothic",
-                      },
-                      formatter: (cell) => moment.utc(cell).format("LT"),
-                      csvFormatter: (cell) => moment.utc(cell).format("LT"),
-                    },
-                    {
-                      dataField: "WORK_LUNCH_START",
-                      text: "LUNCH START",
-                      headerAlign: "center",
-                      headerStyle: {
-                        width: "7%",
-                        fontFamily: "NEXON Lv2 Gothic",
-                        fontSize: "11px",
-                        paddingBottom: "1rem",
-                      },
-                      formatter: (cell) => moment.utc(cell).format("LT"),
-                      csvFormatter: (cell) => moment.utc(cell).format("LT"),
-                    },
-                    {
-                      dataField: "WORK_LUNCH_END",
-                      text: "LUNCH END",
-                      headerAlign: "center",
-                      headerStyle: {
-                        width: "6%",
-                        fontFamily: "NEXON Lv2 Gothic",
-                        fontSize: "11px",
-                        paddingBottom: "1rem",
-                      },
-                      formatter: (cell) => moment.utc(cell).format("LT"),
-                      csvFormatter: (cell) => moment.utc(cell).format("LT"),
-                    },
-                    {
-                      dataField: "WORK_TOTAL_MINUTE",
-                      headerAlign: "center",
-                      text: "TIME",
-                      headerStyle: {
-                        width: "6%",
-                        fontFamily: "NEXON Lv2 Gothic",
-                      },
-                      formatter: (cell) =>
-                        `${Math.floor(cell / 60)}H ${cell % 60}M`,
-                    },
-                  ]}
-                  keyField="WORKLOG_ID"
-                  exportCSV={{ fileName: "STAFF_LOG.csv" }}
-                >
-                  {(props) => (
-                    <div>
-                      <MyExportCSV {...props.csvProps}>Export</MyExportCSV>
-                      <BootstrapTable {...props.baseProps} />
-                    </div>
-                  )}
-                </ToolkitProvider>
-              ) : (
-                <h4 className="text-danger text-center">
-                  No Data on {moment(value).format("LL")}
-                </h4>
-              )}
-            </Col>
-          </Row>
-          {/* {value && JSON.stringify(value)} */}
-          {/* {JSON.stringify(Clock)} */}
-
-          <Modal isOpen={modal} toggle={toggle} size="lg">
-            <ModalHeader toggle={toggle} className="pl-4">
-              ADD STAFF
-            </ModalHeader>
-            <ModalBody className="pt-4 px-4">
-              <InputGroup className="mb-2">
-                <Input
-                  placeholder="STAFF NAME"
-                  onChange={(e) => setStaffName(e.target.value)}
+					<Row className="py-4 justify-content-between">
+          <Col sm="4" className="mt-4">
+              <Card className="shadow mb-4">
+              <CardHeader className="py-3">
+                <h6 className="m-0 font-weight-bold text-primary">
+								  Select the date
+							  </h6>
+              </CardHeader>
+              {/* MAIN CALENDAR */}
+                <Calendar
+                  onChange={onChange}
+                  value={value}
+                  onClickDay={(e) => getWork(e)}
+                  className="border-0"
                 />
-              </InputGroup>
-            </ModalBody>
-            <ModalBody className="px-4">
-              <InputGroup className="mb-2">
-                <select
-                  onChange={(e) => setStaffAgency(e.target.value)}
-                  className="form-control"
-                >
-                  <option value={false}>Select Agency</option>
-                  <option>Consolidated Staffing Solution</option>
-                  <option>InstaWork</option>
-                  <option>Pro Logistix</option>
-                  <option>James Worldwide Staff</option>
-                </select>
-              </InputGroup>
-            </ModalBody>
-            <Button className="mx-4 my-4" color="success" onClick={addStaff}>
-              SUBMIT
-            </Button>
-          </Modal>
+              </Card>
+						</Col>
+						<Col sm="8" className="mt-4">
+							<Card className="shadow mb-4">
+                <CardHeader className="py-3">
+                <h6 className="m-0 font-weight-bold text-primary">
+								  Add Time Clock
+							  </h6>
+                </CardHeader>
+                <CardBody>
+								{/* TIME CLOCK - ADD / SAVE BUTTONS */}
+								<Row className="justify-content-between">
+									<Col className="text-right">
+										<Button
+											onClick={() => setModal2(true)}
+											outline
+											color="primary"
+										>
+											<i className="fa fa-plus"></i> Add
+										</Button>
+										<Button
+											color="danger"
+											className="mx-4"
+											outline
+											onClick={save}
+										>
+											<i className="fa fa-save"></i> Save
+										</Button>
+									</Col>
+								</Row>
+                </CardBody>
+								{/* ADDED TIME CLOCK LIST */}
+								<Row className="mb-4 mx-4">
+									<Col sm="12" className="mt-4">
+										{Clock.length > 0 &&
+											Clock.map((ga, i) => (
+												<Row className="mt-4" key={i}>
+													<Col sm="2">
+														<p style={{ marginBottom: "0" }}>{ga.S_NAME}</p>
+														<span
+															className="text-secondary"
+															style={{ fontSize: "0.8rem" }}
+														>
+															{ga.S_AGENCY}
+														</span>
+													</Col>
+													<Col>
+														<InputGroup>
+															<InputGroupAddon addonType="prepend">
+																<InputGroupText
+																	style={{
+																		borderRadius: "0",
+																		fontSize: "0.9rem",
+																	}}
+																>
+																	IN
+																</InputGroupText>
+															</InputGroupAddon>
+															<Input
+																type="time"
+																defaultValue={ga.START}
+																style={{
+																	borderRadius: "0",
+																	fontSize: "0.9rem",
+																}}
+																onChange={(e) =>
+																	(Clock[i].START = e.target.value)
+																}
+															/>
+														</InputGroup>
+													</Col>
 
-          <Modal isOpen={modal2} toggle={toggle2} size="lg">
-            <ModalHeader toggle={toggle2} className="pl-4">
-              SELECT STAFF TO ADD
-            </ModalHeader>
-            <ModalBody className="pt-4 px-4">
-              <BootstrapTable
-                data={StaffData}
-                bordered={false}
-                columns={[
-                  {
-                    dataField: "S_NAME",
-                    text: "NAME",
-                    headerStyle: { fontFamily: "NEXON Lv2 Gothic" },
-                  },
-                  { dataField: "S_AGENCY", text: "AGENCY" },
-                ]}
-                selectRow={{
-                  mode: "checkbox",
-                  clickToSelect: true,
-                  headerColumnStyle: {
-                    width: "39px",
-                    textAlign: "center",
-                    headerStyle: { fontFamily: "NEXON Lv2 Gothic" },
-                  },
-                  onSelectAll: handleOnSelectAll,
-                  onSelect: handleOnSelect,
-                }}
-                keyField="S_ID"
-              />
-            </ModalBody>
-          </Modal>
-          <style jsx>
-            {`
-              @font-face {
-                font-family: "NEXON Lv2 Gothic";
-                src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@2.1/NEXON Lv2 Gothic.woff")
-                  format("woff");
-                font-weight: normal;
-                font-style: normal;
-              }
-              h1,
-              h2,
-              h3,
-              h4,
-              h5,
-              p,
-              span {
-                font-family: "NEXON Lv2 Gothic";
-              }
-            `}
-          </style>
-        </Layout>
-      </>
-    );
+													<Col>
+														<InputGroup>
+															<InputGroupAddon addonType="prepend">
+																<InputGroupText
+																	style={{
+																		borderRadius: "0",
+																		fontSize: "0.9rem",
+																	}}
+																>
+																	OUT
+																</InputGroupText>
+															</InputGroupAddon>
+															<Input
+																type="time"
+																defaultValue={ga.END}
+																style={{
+																	borderRadius: "0",
+																	fontSize: "0.9rem",
+																}}
+																onChange={(e) =>
+																	(Clock[i].END = e.target.value)
+																}
+															/>
+														</InputGroup>
+													</Col>
+
+													<Col>
+														<InputGroup>
+															<InputGroupAddon addonType="prepend">
+																<InputGroupText
+																	style={{
+																		borderRadius: "0",
+																		fontSize: "0.9rem",
+																	}}
+																>
+																	L IN
+																</InputGroupText>
+															</InputGroupAddon>
+															<Input
+																type="time"
+																defaultValue={ga.LSTART}
+																style={{
+																	borderRadius: "0",
+																	fontSize: "0.9rem",
+																}}
+																onChange={(e) =>
+																	(Clock[i].LSTART = e.target.value)
+																}
+															/>
+														</InputGroup>
+													</Col>
+													<Col>
+														<InputGroup>
+															<InputGroupAddon addonType="prepend">
+																<InputGroupText
+																	style={{
+																		borderRadius: "0",
+																		fontSize: "0.9rem",
+																	}}
+																>
+																	L OUT
+																</InputGroupText>
+															</InputGroupAddon>
+															<Input
+																type="time"
+																defaultValue={ga.LEND}
+																style={{
+																	borderRadius: "0",
+																	fontSize: "0.9rem",
+																}}
+																onChange={(e) =>
+																	(Clock[i].LEND = e.target.value)
+																}
+															/>
+														</InputGroup>
+													</Col>
+												</Row>
+											))}
+									</Col>
+								</Row>
+							</Card>
+						</Col>
+					</Row>
+					
+          <Card className="shadow mb-4">
+          <CardHeader className="py-3">
+                <h6 className="m-0 font-weight-bold text-primary">
+								  History
+							  </h6>
+          </CardHeader>
+          <CardBody className="py-2">
+							{Works ? (
+								<ToolkitProvider
+									data={Works}
+									columns={[
+										{
+											dataField: "STAFFING_NAME",
+											text: "NAME",
+											headerAlign: "center",
+										},
+										{
+											dataField: "STAFFING_AGENCY",
+											text: "AGENCY",
+											headerAlign: "center",
+										},
+										{
+											dataField: "WORK_DATE",
+											text: "DATE",
+											headerAlign: "center",
+											formatter: (cell) => moment.utc(cell).format("LL"),
+											csvFormatter: (cell) => moment.utc(cell).format("LL"),
+										},
+										{
+											dataField: "WORK_START",
+											text: "START",
+											headerAlign: "center",
+											headerStyle: {
+												width: "6%",
+											},
+											formatter: (cell) => moment.utc(cell).format("LT"),
+											csvFormatter: (cell) => moment.utc(cell).format("LT"),
+										},
+										{
+											dataField: "WORK_END",
+											text: "END",
+											headerAlign: "center",
+											headerStyle: {
+												width: "7%",
+											},
+											formatter: (cell) => moment.utc(cell).format("LT"),
+											csvFormatter: (cell) => moment.utc(cell).format("LT"),
+										},
+										{
+											dataField: "WORK_LUNCH_START",
+											text: "LUNCH START",
+											headerAlign: "center",
+											headerStyle: {
+												width: "7%",
+												fontSize: "11px",
+												paddingBottom: "1rem",
+											},
+											formatter: (cell) => moment.utc(cell).format("LT"),
+											csvFormatter: (cell) => moment.utc(cell).format("LT"),
+										},
+										{
+											dataField: "WORK_LUNCH_END",
+											text: "LUNCH END",
+											headerAlign: "center",
+											headerStyle: {
+												width: "6%",
+												fontSize: "11px",
+												paddingBottom: "1rem",
+											},
+											formatter: (cell) => moment.utc(cell).format("LT"),
+											csvFormatter: (cell) => moment.utc(cell).format("LT"),
+										},
+										{
+											dataField: "WORK_TOTAL_MINUTE",
+											headerAlign: "center",
+											text: "TIME",
+											headerStyle: {
+												width: "6%",
+											},
+											formatter: (cell) =>
+												`${Math.floor(cell / 60)}H ${cell % 60}M`,
+										},
+									]}
+									keyField="WORKLOG_ID"
+									exportCSV={{ fileName: "STAFF_LOG.csv" }}
+								>
+									{(props) => (
+										<div>
+											<MyExportCSV {...props.csvProps}>Export</MyExportCSV>
+											<BootstrapTable {...props.baseProps} />
+										</div>
+									)}
+								</ToolkitProvider>
+							) : (
+								<h5 className="text-danger text-center">
+									No history on {moment(value).format("LL")}
+								</h5>
+							)}
+          </CardBody>
+          </Card>
+					{/* {value && JSON.stringify(value)} */}
+					{/* {JSON.stringify(Clock)} */}
+
+					<Modal isOpen={modal} toggle={toggle} size="lg">
+						<ModalHeader toggle={toggle} className="pl-4">
+							ADD STAFF
+						</ModalHeader>
+						<ModalBody className="pt-4 px-4">
+							<InputGroup className="mb-2">
+								<Input
+									placeholder="STAFF NAME"
+									onChange={(e) => setStaffName(e.target.value)}
+								/>
+							</InputGroup>
+						</ModalBody>
+						<ModalBody className="px-4">
+							<InputGroup className="mb-2">
+								<select
+									onChange={(e) => setStaffAgency(e.target.value)}
+									className="form-control"
+								>
+									<option value={false}>Select Agency</option>
+									<option>Consolidated Staffing Solution</option>
+									<option>InstaWork</option>
+									<option>Pro Logistix</option>
+									<option>James Worldwide Staff</option>
+								</select>
+							</InputGroup>
+						</ModalBody>
+						<Button className="mx-4 my-4" color="success" onClick={addStaff}>
+							SUBMIT
+						</Button>
+					</Modal>
+
+					<Modal isOpen={modal2} toggle={toggle2} size="lg">
+						<ModalHeader toggle={toggle2} className="pl-4">
+							SELECT STAFF TO ADD
+						</ModalHeader>
+						<ModalBody className="pt-4 px-4">
+							<BootstrapTable
+								data={StaffData}
+								bordered={false}
+								columns={[
+									{
+										dataField: "S_NAME",
+										text: "NAME",
+										headerStyle: { fontFamily: "NEXON Lv2 Gothic" },
+									},
+									{ dataField: "S_AGENCY", text: "AGENCY" },
+								]}
+								selectRow={{
+									mode: "checkbox",
+									clickToSelect: true,
+									headerColumnStyle: {
+										width: "39px",
+										textAlign: "center",
+										headerStyle: { fontFamily: "NEXON Lv2 Gothic" },
+									},
+									onSelectAll: handleOnSelectAll,
+									onSelect: handleOnSelect,
+								}}
+								keyField="S_ID"
+							/>
+						</ModalBody>
+					</Modal>
+				</Layout>
+			</>
+		);
   } else {
     return <p>Redirecting...</p>;
   }
