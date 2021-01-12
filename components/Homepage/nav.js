@@ -1,130 +1,102 @@
 import { useRouter } from "next/router";
+import Link from "next/link";
+
 const Navs = () => {
-  const router = useRouter()
+  const [navtoggle, setnavtoggle] = React.useState(false);
+  const router = useRouter();
   return (
     <nav
-      className="site-header sticky-top py-1"
-      style={{
-        zIndex: "100",
-        position: "absolute",
-        marginLeft: "auto",
-        marginRight: "auto",
-        left: "0",
-        right: "0",
-        backgroundColor: "transparent",
-        borderBottom: "2px solid rgba(255, 255, 255, .5)",
-      }}
+      className="navbar navbar-expand-lg fixed-top bg-transparent text-uppercase"
+      id="mainNav"
+      style={{ borderBottom: "1px solid #CBCBCB", position: "absolute" }}
     >
-      <div className="container d-flex flex-column flex-md-row justify-content-between">
-        <a
-          className="py-2"
-          href="#"
-          aria-label="Home"
-          onClick={() => router.push("/")}
+      <div className="container">
+        <Link href="/" replace>
+          <a className="navbar-brand js-scroll-trigger text-white">
+            <img
+              className="mx-auto d-block"
+              width="170px"
+              height="auto"
+              src="./image/logo-sm-white.png"
+            ></img>
+          </a>
+        </Link>
+
+        <button
+          className={`navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-trasnparent text-white border rounded ${
+            navtoggle && "collapsed"
+          }`}
+          onClick={() => setnavtoggle(!navtoggle)}
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded={navtoggle ? "true" : "false"}
+          aria-label="Toggle navigation"
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            className="d-block mx-auto"
-            role="img"
-            viewBox="0 0 24 24"
-            focusable="false"
-            color="#fff"
-          >
-            <title>Home</title>
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M14.31 8l5.74 9.94M9.69 8h11.48M7.38 12l5.74-9.94M9.69 16L3.95 6.06M14.31 16H2.83m13.79-4l-5.74 9.94"></path>
-          </svg>
-        </a>
-        <a
-          className="d-none d-md-inline-block menu-item"
-          href="#"
-          onClick={() => router.push("/about")}
+          Menu
+          <i className="fa fa-bars ml-2"></i>
+        </button>
+        <div
+          className={`collapse navbar-collapse ${navtoggle && "show"}`}
+          id="navbarResponsive"
         >
-          ABOUT
-        </a>
-        <a
-          className="d-none d-md-inline-block menu-item"
-          href="#"
-          onClick={() => router.push("/service")}
-          style={{ color: "#fff", fontSize: "1.5rem", fontWeight: "800" }}
-        >
-          SERVICES
-        </a>
-        <a
-          className="d-none d-md-inline-block menu-item"
-          href="#"
-          onClick={() => router.push("/shipment")}
-          style={{ color: "#fff", fontSize: "1.5rem", fontWeight: "800" }}
-        >
-          SHIPMENT
-        </a>
-        <a
-          className="d-none d-md-inline-block menu-item"
-          href="#"
-          onClick={() => router.push("/warehouse")}
-          style={{ color: "#fff", fontSize: "1.5rem", fontWeight: "800" }}
-        >
-          WAREHOUSE
-        </a>
-        <a
-          className="d-none d-md-inline-block menu-item"
-          href="#"
-          onClick={() => router.push("/branch")}
-          style={{ color: "#fff", fontSize: "1.5rem", fontWeight: "800" }}
-        >
-          BRANCH
-        </a>
-        <a
-          className="d-none d-md-inline-block menu-item"
-          href="#"
-          onClick={() => router.push("/forwarding")}
-          style={{ color: "#fff", fontSize: "1.5rem", fontWeight: "800" }}
-        >
-          DASHBOARD
-        </a>
+          <ul className="navbar-nav ml-auto">
+            <li className="nav-item mx-0 mx-lg-1">
+              <Link href="/about" replace>
+                <a className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white">
+                  About
+                </a>
+              </Link>
+            </li>
+            <li className="nav-item mx-0 mx-lg-1">
+              <Link href="/service" replace>
+                <a className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white">
+                  Service
+                </a>
+              </Link>
+            </li>
+            <li className="nav-item mx-0 mx-lg-1">
+              <a
+                className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
+                href="#"
+                onClick={() => router.push("/shipment")}
+              >
+                Shipment
+              </a>
+            </li>
+            <li className="nav-item mx-0 mx-lg-1">
+              <a
+                className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
+                href="#"
+                onClick={() => router.push("/warehouse")}
+              >
+                Warehouse
+              </a>
+            </li>
+            <li className="nav-item mx-0 mx-lg-1">
+              <a
+                className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
+                href="#"
+                onClick={() => router.push("/branch")}
+              >
+                Branch
+              </a>
+            </li>
+            <li className="nav-item mx-0 mx-lg-1">
+              <a
+                className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger text-white"
+                href="#"
+                onClick={() => router.push("/forwarding")}
+              >
+                Dashboard
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
-      <style jsx>
-        {`
-          .container > a {
-            position: relative;
-            color: white;
-            text-decoration: none;
-            font-size: 1.5rem;
-            font-weight: 800;
-            font-family: -apple-system, BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-          }
-           {
-            /* HOVER -> UNDERLINE */
-          }
-          .container > a:before {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 5px;
-            bottom: 0;
-            left: 0;
-            background-color: #fff;
-            visibility: hidden;
-            transform: scaleX(0);
-            transition: all 0.3s ease-in-out 0s;
-          }
-          .container > a:hover:before,
-          .container > a:focus:before {
-            visibility: visible;
-            transform: scaleX(1);
-          }
-        `}
-      </style>
     </nav>
   );
-}
-
+};
 
 export default Navs;
