@@ -21,24 +21,24 @@ export default async (req, res) => {
       });
       try {
         await pool.connect();
-        let result = await pool
-          .request()
-          .query(req.body);
+        let result = await pool.request().query(req.body);
         // console.log(result)
-        if (result.rowsAffected[result.rowsAffected.length-1]) {
-            res.status(200).json(result.recordset);
+        if (result.rowsAffected[result.rowsAffected.length - 1]) {
+          res.status(200).json(result.recordset);
         } else {
-            res.status(400).send(['EMPTY']);
+          res.status(400).send(["EMPTY"]);
         }
       } catch (err) {
-        console.log(err)
-        res.status(401).json({error: err.name, number: err.number, line: err.lineNumber})
+        console.log(err);
+        res
+          .status(401)
+          .json({ error: err.name, number: err.number, line: err.lineNumber });
       } finally {
         pool.close();
       }
     }
-    NEW()
-    resolve()
+    NEW();
+    resolve();
   });
 };
 
@@ -47,4 +47,3 @@ export const config = {
     externalResolver: true,
   },
 };
-

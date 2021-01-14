@@ -41,8 +41,8 @@ const About = ({ Cookie }) => {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    // console.log(TOKEN)
     setLoaded(true);
+    console.log(!!window.chrome.webstore || !!window.chrome.runtime);
   }, []);
 
   const [activeIndex, setActiveIndex] = useState(0);
@@ -641,6 +641,7 @@ About.getInitialProps = async ({ req }) => {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
+  console.log(req.headers["user-agent"]);  
   return {
     Cookie: cookies,
   };
