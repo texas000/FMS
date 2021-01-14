@@ -3,12 +3,23 @@ import React, { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import fetch from "node-fetch";
 import Layout from "../../components/Layout";
-import { Badge, Button, Card, Col, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Spinner } from "reactstrap";
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Input,
+  InputGroup,
+  InputGroupAddon,
+  InputGroupText,
+  Row,
+  Spinner,
+} from "reactstrap";
 import { useRouter } from "next/router";
 import BootstrapTable from "react-bootstrap-table-next";
-import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import paginationFactory from 'react-bootstrap-table2-paginator';
-import filterFactory, {textFilter} from 'react-bootstrap-table2-filter';
+import ToolkitProvider from "react-bootstrap-table2-toolkit";
+import paginationFactory from "react-bootstrap-table2-paginator";
+import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import moment from "moment";
 
 const Index = ({ Cookie, Re }) => {
@@ -19,17 +30,15 @@ const Index = ({ Cookie, Re }) => {
   function indication() {
     return (
       <span>
-        {router.query.search ? (
-          `Your search "${router.query.search}" did not match any documents.`
-        ) : (
-          `Please search something`
-        )}
+        {router.query.search
+          ? `Your search "${router.query.search}" did not match any documents.`
+          : `Please search something`}
       </span>
     );
   }
 
   const getResult = async () => {
-    // SET THE QUERY AT THE PATH - base/forwarding?query.search -> LOAD DATA FROM SERVER SIDE 
+    // SET THE QUERY AT THE PATH - base/forwarding?query.search -> LOAD DATA FROM SERVER SIDE
     router.push({ pathname: `/forwarding`, query: { search } });
   };
 
@@ -48,7 +57,11 @@ const Index = ({ Cookie, Re }) => {
     {
       dataField: "RefNO",
       text: "REF",
-      formatter: (cell) => <a href="#" style={{fontSize: '0.9em'}}>{cell}</a>,
+      formatter: (cell) => (
+        <a href="#" style={{ fontSize: "0.9em" }}>
+          {cell}
+        </a>
+      ),
       events: {
         onClick: (e, columns, columnIndex, row) => {
           row.MASTER_TABLE == "T_OIMMAIN" &&
@@ -81,7 +94,7 @@ const Index = ({ Cookie, Re }) => {
       style: { textAlign: "center", width: "10%" },
       headerStyle: { fontSize: "0.8rem", width: "10%", textAlign: "center" },
       sort: true,
-      filter: textFilter()
+      filter: textFilter(),
     },
     {
       dataField: "MASTER_BLNO",
@@ -173,39 +186,37 @@ const Index = ({ Cookie, Re }) => {
       style: columnStyle,
       headerStyle: { fontSize: "0.8rem", width: "8%", textAlign: "center" },
       sort: true,
-      filter: textFilter()
+      filter: textFilter(),
     },
   ];
 
   const customTotal = (from, to, size) => (
     <span className="react-bootstrap-table-pagination-total ml-2 text-secondary">
-      Showing { from } to { to } of { size } Results
+      Showing {from} to {to} of {size} Results
     </span>
   );
 
   const sizePerPageRenderer = ({
     options,
     currSizePerPage,
-    onSizePerPageChange
+    onSizePerPageChange,
   }) => (
     <div className="btn-group" role="group">
-      {
-        options.map((option) => {
-          const isSelect = currSizePerPage === `${option.page}`;
-          return (
-            <Button
-              key={ option.text }
-              type="button"
-              onClick={ () => onSizePerPageChange(option.page) }
-              style={{borderRadius: '0'}}
-              size="sm"
-              className={ `btn mb-2 ${isSelect ? 'btn-secondary' : 'btn-info'}` }
-            >
-              { option.text }
-            </Button>
-          );
-        })
-      }
+      {options.map((option) => {
+        const isSelect = currSizePerPage === `${option.page}`;
+        return (
+          <Button
+            key={option.text}
+            type="button"
+            onClick={() => onSizePerPageChange(option.page)}
+            style={{ borderRadius: "0" }}
+            size="sm"
+            className={`btn mb-2 ${isSelect ? "btn-secondary" : "btn-info"}`}
+          >
+            {option.text}
+          </Button>
+        );
+      })}
     </div>
   );
 
@@ -214,27 +225,31 @@ const Index = ({ Cookie, Re }) => {
     active,
     disabled,
     title,
-    onPageChange
+    onPageChange,
   }) => {
     const handleClick = (e) => {
       e.preventDefault();
       onPageChange(page);
-    }
+    };
     return (
       <li className="page-item" key={page}>
-        <a href="#" onClick={handleClick} className={active ? 'btn btn-info' : 'btn'}>{page}</a>
+        <a
+          href="#"
+          onClick={handleClick}
+          className={active ? "btn btn-info" : "btn"}
+        >
+          {page}
+        </a>
       </li>
-    )
-  }
+    );
+  };
 
   if (TOKEN && TOKEN.group) {
     return (
       <Layout TOKEN={TOKEN} TITLE="Forwarding">
         <div className="d-flex flex-sm-row justify-content-between">
           <div className="flex-column">
-            <h3 className="mb-4 forwarding">
-            Forwarding
-          </h3>
+            <h3 className="mb-4 forwarding">Forwarding</h3>
           </div>
           <div className="flex-column">
             <Input
@@ -245,12 +260,12 @@ const Index = ({ Cookie, Re }) => {
               onKeyPress={(e) => {
                 if (e.key == "Enter") getResult();
               }}
-              style={{width: '38vw'}}
+              style={{ width: "38vw" }}
               autoFocus={true}
             />
             {/* <i className="fa fa-search"></i> */}
-            </div>
-            <div className="flex-column">
+          </div>
+          <div className="flex-column">
             <Button
               color="primary"
               onClick={getResult}
@@ -266,37 +281,37 @@ const Index = ({ Cookie, Re }) => {
         {/* SERACH BAR */}
         {/* SEARCH BAR END */}
         <Card className="bg-transparent border-0">
-        <Row>
-          {/* DISPLAY SEARCH RESULT */}          
-          <ToolkitProvider
-            keyField="RowNo"
-            bordered={false}
-            columns={column}
-            data={Re}
-            exportCSV
-            search
-          >
-            {(props) => (
-              <Col>
-                <BootstrapTable
-                  {...props.baseProps}
-                  hover
-                  striped
-                  condensed
-                  wrapperClasses="table-responsive"
-                  filter={ filterFactory() }
-                  noDataIndication={indication}
-                  pagination={paginationFactory({
-                    showTotal: true,
-                    pageButtonRenderer,
-                    paginationTotalRenderer: customTotal,
-                    sizePerPageRenderer
-                  })}
-                />
-              </Col>
-            )}
-          </ToolkitProvider>
-        </Row>
+          <Row>
+            {/* DISPLAY SEARCH RESULT */}
+            <ToolkitProvider
+              keyField="RowNo"
+              bordered={false}
+              columns={column}
+              data={Re}
+              exportCSV
+              search
+            >
+              {(props) => (
+                <Col>
+                  <BootstrapTable
+                    {...props.baseProps}
+                    hover
+                    striped
+                    condensed
+                    wrapperClasses="table-responsive"
+                    filter={filterFactory()}
+                    noDataIndication={indication}
+                    pagination={paginationFactory({
+                      showTotal: true,
+                      pageButtonRenderer,
+                      paginationTotalRenderer: customTotal,
+                      sizePerPageRenderer,
+                    })}
+                  />
+                </Col>
+              )}
+            </ToolkitProvider>
+          </Row>
         </Card>
         <style global jsx>
           {`
@@ -307,11 +322,13 @@ const Index = ({ Cookie, Re }) => {
               padding-top: 8px !important;
               padding-bottom: 8px !important;
             }
-            {/* @media screen and (max-width: 768px) {
+             {
+              /* @media screen and (max-width: 768px) {
               .search-button {
                 display: none;
               } 
-            } */}
+            } */
+            }
             .react-bootstrap-table table {
               table-layout: auto !important;
             }
@@ -329,42 +346,22 @@ export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
-  
-  const searchResult = await fetch(
+  const resultFetch = await fetch(
     `${process.env.BASE_URL}api/forwarding/freightStreamSearch`,
     {
       headers: {
-        query: query.search || false,
-        name:
-          cookies.jamesworldwidetoken &&
-          jwt.decode(cookies.jamesworldwidetoken).username,
-        options: [
-          "CUSTOMER",
-          "MASTER_BLNO",
-          "CUSTOMER",
-          "CONSIGNEE",
-          "SHIPPER",
-          "MASTER_BLNO",
-          "HOUSE_BLNO",
-          "RefNO",
-        ],
+        query: query.search,
+        key: cookies.jamesworldwidetoken,
       },
     }
-  ).then(t=>{
-    if(t.status===200) {
-      return t.json()
-    } else {
-      return []
-    }
-  }).catch(err=>{
-    console.log(err)
-    return []
-  });
-  if(cookies.jamesworldwidetoken) {
-    console.log(jwt.decode(cookies.jamesworldwidetoken).username+` loaded forwarding${Object.keys(query).length? "/"+query.search : ""}`)
+  );
+  if (resultFetch.status === 200) {
+    // Pass data to the page via props
+    return { props: { Cookie: cookies, Re: await resultFetch.json() } };
+  } else {
+    // Pass data to the page via props
+    return { props: { Cookie: cookies, Re: [] } };
   }
-  // Pass data to the page via props
-  return { props: { Cookie: cookies, Re: searchResult } };
 }
 
 export default Index;

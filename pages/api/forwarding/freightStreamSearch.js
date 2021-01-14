@@ -1,6 +1,7 @@
 const sql = require("mssql");
+const jwt = require("jsonwebtoken");
 
-const SQLconfig = {
+const sqlConfig = {
   server: process.env.JWDB_SVR,
   database: process.env.JWDB_1,
   user: process.env.JWDB_USER,
@@ -14,53 +15,45 @@ const SQLconfig = {
 };
 
 export default async (req, res) => {
-  return new Promise((resolve) => {
-    async function NEW() {
-      const pool = new sql.ConnectionPool(SQLconfig);
-      pool.on("error", (err) => {
-        console.log("sql error", err);
-      });
-      try {
-        // THROW ERROR IF THERE IS NO USER
-        if (req.headers.name === undefined) throw new Error("PLEASE LOG IN");
-        // IF THERE IS NO QUERY, RETURN EMPTY ARRAY
-        if(req.headers.query=="false") res.status(200).end([]);
+  const token = jwt.decode(req.headers.key);
+  if (!token) {
+    res.status(401).send("Unauthorized");
+    return;
+  }
+  if (req.headers.query == "undefined") {
+    console.log("query is undefined");
+    res.status(201).send([]);
+    return;
+  } else {
+    var Squery = `SELECT TOP 100 * FROM V_JWI_SEARCH WHERE MASTER_ID<>'' 
+    AND (CUSTOMER LIKE '%${req.headers.query}%' OR MASTER_BLNO LIKE '%${req.headers.query}%'
+    OR CONSIGNEE LIKE '%${req.headers.query}%' OR HOUSE_BLNO LIKE '%${req.headers.query}%' OR RefNO LIKE '%${req.headers.query}%') ORDER BY ETD DESC;`;
 
-        var Squery = `SELECT TOP 100 * FROM V_JWI_SEARCH WHERE MASTER_ID<>''`;
-        const options = req.headers.options || false;
-        var option;
-        if (options) {
-          option = options.split(",");
-          option.map((data, i) => {
-            if (i) {
-              Squery += ` OR ${data} LIKE '%${req.headers.query}%'`;
-            } else {
-              Squery += ` AND ${data} LIKE '%${req.headers.query}%'`;
-            }
-          });
-        }
-        Squery += " ORDER BY ETD DESC;";
-        await pool.connect();
-        let result = await pool.request().query(Squery);
+    const searchResult = await sql
+      .connect(sqlConfig)
+      .then((pool) => {
+        return pool.request().query(Squery);
+      })
+      .then((result) => {
+        // MASTER
         if (result.rowsAffected[0]) {
-          // IF DATA EXISTS RETURN TRUE RESULT
-          const results = result.recordsets[0];
-          res.status(200).end(JSON.stringify(results));
-          resolve();
+          return result.recordsets[0];
         } else {
-          // IF DATA IS NOT EXIST RETURN FALSE RESULT          
           res.status(400).send([]);
+          return false;
         }
-      } catch (err) {
-        res.status(501).send({message: `Error Occured ${JSON.stringify(err)}`})
-      } finally {
-        pool.close();
-        resolve();
-      }
-    }
-    NEW();
-    resolve();
-  });
+      })
+      .catch((err) => {
+        console.log("ERROR FROM SEARCH");
+        console.log(err);
+        res.status(400).send(err);
+        return sql.close();
+      });
+
+    // SUCCESS, SEND THE OUTPUT
+    res.status(200).send(searchResult);
+    return sql.close();
+  }
 };
 export const config = {
   api: {

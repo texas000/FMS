@@ -641,7 +641,6 @@ About.getInitialProps = async ({ req }) => {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
-  console.log(req.headers["user-agent"]);  
   return {
     Cookie: cookies,
   };
