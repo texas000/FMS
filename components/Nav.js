@@ -275,7 +275,7 @@ const Top = ({Token, toggle, setToggle}) => {
 						</span>
 						<img
 							className="img-profile rounded-circle"
-							src="https://startbootstrap.github.io/startbootstrap-sb-admin-2/img/undraw_profile.svg"
+							src="/image/icons/sarah.svg"
 						/>
 					</a>
 					{/* <!-- Dropdown - User Information --> */}
