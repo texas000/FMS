@@ -1,121 +1,122 @@
-/*
-FILE: [DETAIL].JS
-
-OCEAN IMPORT AND EXPORT DETAIL PAGE
-
-CONSIST WITH THREE PART - HEAD, ROUTE, MAIN
-
-HEAD - HEADER / BACK, SHARE BUTTONS
-MAIN - [LEFT] OVERALL INFO WITH HOUSE, CONTAINER INFO
-ROUTE - DISCHARGE, ARRIVAL
-*/
 import cookie from "cookie";
 import Layout from "../../../components/Layout";
-import { Container, Row, Col, Button, Alert } from "reactstrap";
+import { Row, Col, Button, Alert } from "reactstrap";
 import { useRouter } from "next/router";
 import fetch from "node-fetch";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Head from "../../../components/Forwarding/Head";
-import Main from "../../../components/Forwarding/Main";
 import Route from "../../../components/Forwarding/Route";
 import moment from "moment";
 
 import jwt from "jsonwebtoken";
+import { Comment } from "../../../components/Forwarding/Comment";
+import Info from "../../../components/Forwarding/Info";
+import Forms from "../../../components/Forwarding/Forms";
+import Status from "../../../components/Forwarding/Status";
 
-const Detail = ({ Cookie, OCEAN, FILE, EXTRA }) => {
+const Detail = ({ Cookie, OIM, EXTRA }) => {
   const router = useRouter();
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
-  const [Master, setMaster] = useState(false);
-  const [House, setHouse] = useState(false);
-  const [Containers, setContainer] = useState(false);
-  const [AP, setAP] = useState(false);
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    if (OCEAN.status) {
-      setMaster(OCEAN.M);
-      setHouse(OCEAN.H);
-      setContainer(OCEAN.C);
-      setAP(OCEAN.A);
-      console.log(OCEAN);
-    } else {
-      setMaster(false);
-    }
+    // console.log(OIM);
   });
 
-  const mailSubject = `[JW] ${OCEAN.H[0].CUSTOMER} MBL# ${
-    OCEAN.M.F_MBLNo
-  } HBL# ${OCEAN.H[0].F_HBLNo} CNTR# ${
-    OCEAN.C && OCEAN.C.map((ga) => `${ga.F_ContainerNo}`)
-  } ETD ${moment(OCEAN.M.F_ETD).utc().format("l")} ETA ${moment(OCEAN.M.F_ETA)
-    .utc()
-    .format("l")} // ${OCEAN.M.F_RefNo}`;
-  const mailBody = `Dear ${OCEAN.H[0].CUSTOMER}
-  \nPlease note that there is an OCEAN SHIPMENT for ${
-    OCEAN.H[0].CUSTOMER
-  } scheduled to depart on ${moment(OCEAN.M.F_ETA).utc().format("LL")}.`;
-  var emailHref = `mailto:?cc=${
-    TOKEN && TOKEN.email
-  }&subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(
-    mailBody
-  )}`;
+  var mailSubject, mailBody, emailHref;
+  if (OIM.M) {
+    mailSubject =
+      OIM.H.length > 0
+        ? `[JW] ${OIM.H[0].CUSTOMER} MBL# ${OIM.M.F_MBLNo} HBL# ${OIM.H.map(
+            (na) => `${na.F_HBLNo}`
+          )} CNTR# ${
+            OIM.C && OIM.C.map((ga) => `${ga.F_ContainerNo}`)
+          } ETD ${moment(OIM.M.F_ETD).utc().format("l")} ETA ${moment(
+            OIM.M.F_ETA
+          )
+            .utc()
+            .format("l")} // ${OIM.M.F_RefNo}`
+        : "";
+
+    mailBody =
+      OIM.H.length > 0
+        ? `Dear ${OIM.H[0].CUSTOMER}
+      \nPlease note that there is an OCEAN EXPORT SHIPMENT for ${
+        OIM.H[0].CUSTOMER
+      } scheduled to depart on ${moment(OIM.M.F_ETA).utc().format("LL")}.`
+        : "";
+
+    emailHref =
+      OIM.H.length > 0
+        ? `mailto:?cc=${TOKEN && TOKEN.email}&subject=${encodeURIComponent(
+            mailSubject
+          )}&body=${encodeURIComponent(mailBody)}`
+        : "";
+  }
 
   if (TOKEN && TOKEN.group) {
     return (
       <>
-        <Layout TOKEN={TOKEN} TITLE={Master.F_RefNo}>
-          {Master ? (
-            <Container fluid={true}>
-              <Head
-                REF={Master.F_RefNo}
-                POST={Master.F_PostDate}
-                PIC={Master.F_U2ID}
-                EMAIL={emailHref}
-              />
-              <Row>
-                <Col lg={10}>
-                  <Main
-                    TYPE="OCEAN"
-                    Master={Master}
-                    House={House}
-                    Containers={Containers}
-                    AP={AP}
-                    FILES={FILE}
-                    USER={TOKEN}
-                    EXTRA={EXTRA}
-                  />
-                </Col>
-                <Col lg={2}>
-                  <Route
-                    ETA={Master.F_ETA}
-                    ETD={Master.F_ETD}
-                    DISCHARGE={Master.F_Discharge || Master.F_DisCharge}
-                    LOADING={Master.F_LoadingPort}
-                    DEST={Master.F_FinalDest}
-                  />
-                </Col>
-              </Row>
-            </Container>
-          ) : (
-            <Container fluid={true}>
-              <Row>
-                <Col className="text-center">
-                  <Alert color="danger">
-                    ERROR: {router.query.Detail} NOT FOUND!
-                  </Alert>
-                  <Button
-                    color="secondary"
-                    style={{ borderRadius: "0" }}
-                    onClick={() => router.back()}
-                  >
-                    Return To Page
-                  </Button>
-                </Col>
-              </Row>
-            </Container>
-          )}
-          {/* IF THE REFERENCE NUMBER IS NOT FOUND, DISPLAY ERROR PAGE */}
-        </Layout>
+        {OIM.M ? (
+          <Layout TOKEN={TOKEN} TITLE={OIM.M.F_RefNo}>
+            <Head
+              REF={OIM.M.F_RefNo}
+              POST={OIM.M.F_PostDate}
+              PIC={OIM.M.F_U2ID}
+              EMAIL={emailHref}
+            />
+            <Row>
+              <Col lg={10}>
+                <Row>
+                  <Info Master={OIM.M} House={OIM.H} Containers={OIM.C} />
+                  <Col md="6">
+                    <Forms
+                      Master={OIM.M}
+                      House={OIM.H}
+                      Containers={OIM.C}
+                      AP={OIM.A}
+                    />
+                    <Status
+                      Data={EXTRA.S}
+                      Ref={OIM.M.F_RefNo}
+                      Uid={TOKEN.uid}
+                    />
+                  </Col>
+                </Row>
+              </Col>
+              <Col lg={2}>
+                <Route
+                  ETA={OIM.M.F_ETA}
+                  ETD={OIM.M.F_ETD}
+                  FETA={OIM.M.F_FETA}
+                  DISCHARGE={OIM.M.F_DisCharge}
+                  LOADING={OIM.M.F_LoadingPort}
+                  DEST={OIM.M.F_FinalDest}
+                />
+              </Col>
+            </Row>
+
+            <Comment
+              comment={EXTRA.M}
+              reference={OIM.M.F_RefNo}
+              uid={TOKEN.uid}
+            />
+          </Layout>
+        ) : (
+          <Layout TOKEN={TOKEN} TITLE="Not Found">
+            <Row>
+              <Col className="text-center">
+                <Alert color="danger">
+                  ERROR: {router.query.Detail} NOT FOUND!
+                </Alert>
+                <Button color="secondary" onClick={() => router.back()}>
+                  Return To Previous Page
+                </Button>
+              </Col>
+            </Row>
+          </Layout>
+        )}
+        {/* IF THE REFERENCE NUMBER IS NOT FOUND, DISPLAY ERROR PAGE */}
       </>
     );
   } else {
@@ -128,41 +129,27 @@ export async function getServerSideProps({ req, query }) {
     req ? req.headers.cookie || "" : window.document.cookie
   );
 
-  // FETCH OEX DATA FROM FREIGHT STREAM
-  const FETCH = await fetch(
-    `${process.env.BASE_URL}api/forwarding/oceanDetail`,
+  // FETCH OIM DATA FROM FREIGHT STREAM
+  const fetchOim = await fetch(
+    `${process.env.BASE_URL}api/forwarding/getOexDetail`,
     { headers: { reference: query.Detail, key: cookies.jamesworldwidetoken } }
   );
-  const FJSON = await FETCH.json();
+  const Oim = await fetchOim.json();
 
-  // FETCH FILE DATA FROM SYNOLOGY
-  const Fetch = await fetch(
-    `${process.env.BASE_URL}api/files/FORWARDING/${query.Detail}`
-  );
-  var Files = null;
-  if (Fetch.status === 200) {
-    Files = await Fetch.json();
-  }
   // FETCH EXTRA DATA FROM FMS
-  const EX_Fetch = await fetch(
+  const fetchExtra = await fetch(
     `${process.env.BASE_URL}api/forwarding/getExtra`,
     { headers: { ref: query.Detail } }
   );
   var Extra = null;
-  if (EX_Fetch.status == 200) {
-    Extra = await EX_Fetch.json();
+  if (fetchExtra.status == 200) {
+    Extra = await fetchExtra.json();
+  } else {
+    Extra = { M: [], S: [] };
   }
 
-  //LOG
-  if (cookies.jamesworldwidetoken) {
-    console.log(
-      jwt.decode(cookies.jamesworldwidetoken).username +
-        " loaded forwarding/oex/" +
-        query.Detail
-    );
-  }
   return {
-    props: { Cookie: cookies, OCEAN: FJSON, FILE: Files, EXTRA: Extra },
+    props: { Cookie: cookies, OIM: Oim, EXTRA: Extra },
   };
 }
 

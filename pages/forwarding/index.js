@@ -3,18 +3,7 @@ import React, { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import fetch from "node-fetch";
 import Layout from "../../components/Layout";
-import {
-  Badge,
-  Button,
-  Card,
-  Col,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  Row,
-  Spinner,
-} from "reactstrap";
+import { Button, Card, Col, Input, Row } from "reactstrap";
 import { useRouter } from "next/router";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
@@ -22,7 +11,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import moment from "moment";
 
-const Index = ({ Cookie, Re }) => {
+const Index = ({ Cookie, Re, Notifications, Result }) => {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const router = useRouter();
   const [search, setSearch] = useState(false);
@@ -44,7 +33,10 @@ const Index = ({ Cookie, Re }) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    // console.log(Re)
+    // console.log(Re);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("notifications", JSON.stringify(Notifications));
+    }
   }, []);
 
   const columnStyle = {
@@ -97,6 +89,13 @@ const Index = ({ Cookie, Re }) => {
       filter: textFilter(),
     },
     {
+      dataField: "CUSTOMER",
+      text: "CUSTOMER",
+      style: columnStyle,
+      headerStyle: { fontSize: "0.8rem", textAlign: "center" },
+      sort: true,
+    },
+    {
       dataField: "MASTER_BLNO",
       text: "MBL",
       style: columnStyle,
@@ -133,14 +132,16 @@ const Index = ({ Cookie, Re }) => {
       sort: true,
       headerStyle: { fontSize: "0.8em", textAlign: "center" },
       formatter: (cell) => {
-        if (moment(cell).isSameOrBefore(moment())) {
-          return (
-            <div style={{ color: "gray" }}>{moment(cell).format("L")}</div>
-          );
-        } else {
-          return (
-            <div style={{ color: "blue" }}>{moment(cell).format("L")}</div>
-          );
+        if (cell) {
+          if (moment(cell).isSameOrBefore(moment())) {
+            return (
+              <div style={{ color: "gray" }}>{moment(cell).format("L")}</div>
+            );
+          } else {
+            return (
+              <div style={{ color: "blue" }}>{moment(cell).format("L")}</div>
+            );
+          }
         }
       },
     },
@@ -151,14 +152,16 @@ const Index = ({ Cookie, Re }) => {
       sort: true,
       headerStyle: { fontSize: "0.8em", textAlign: "center" },
       formatter: (cell) => {
-        if (moment(cell).isSameOrBefore(moment())) {
-          return (
-            <div style={{ color: "gray" }}>{moment(cell).format("L")}</div>
-          );
-        } else {
-          return (
-            <div style={{ color: "blue" }}>{moment(cell).format("L")}</div>
-          );
+        if (cell) {
+          if (moment(cell).isSameOrBefore(moment())) {
+            return (
+              <div style={{ color: "gray" }}>{moment(cell).format("L")}</div>
+            );
+          } else {
+            return (
+              <div style={{ color: "blue" }}>{moment(cell).format("L")}</div>
+            );
+          }
         }
       },
     },
@@ -169,19 +172,22 @@ const Index = ({ Cookie, Re }) => {
       sort: true,
       headerStyle: { fontSize: "0.8em", textAlign: "center" },
       formatter: (cell) => {
-        if (moment(cell).isSameOrBefore(moment())) {
-          return (
-            <div style={{ color: "gray" }}>{moment(cell).format("L")}</div>
-          );
-        } else {
-          return (
-            <div style={{ color: "blue" }}>{moment(cell).format("L")}</div>
-          );
+        if (cell) {
+          if (moment(cell).isSameOrBefore(moment())) {
+            return (
+              <div style={{ color: "gray" }}>{moment(cell).format("L")}</div>
+            );
+          } else {
+            return (
+              <div style={{ color: "blue" }}>{moment(cell).format("L")}</div>
+            );
+          }
         }
       },
     },
     {
-      dataField: "U1ID",
+      dataField: "U2ID",
+      // dataField: "U1ID",
       text: "PIC",
       style: columnStyle,
       headerStyle: { fontSize: "0.8rem", width: "8%", textAlign: "center" },
@@ -251,7 +257,7 @@ const Index = ({ Cookie, Re }) => {
           <div className="flex-column">
             <h3 className="mb-4 forwarding">Forwarding</h3>
           </div>
-          <div className="flex-column">
+          {/* <div className="flex-column">
             <Input
               title="searchs"
               className="border-1 small mx-1"
@@ -263,7 +269,6 @@ const Index = ({ Cookie, Re }) => {
               style={{ width: "38vw" }}
               autoFocus={true}
             />
-            {/* <i className="fa fa-search"></i> */}
           </div>
           <div className="flex-column">
             <Button
@@ -276,7 +281,7 @@ const Index = ({ Cookie, Re }) => {
             >
               Search
             </Button>
-          </div>
+          </div> */}
         </div>
         {/* SERACH BAR */}
         {/* SEARCH BAR END */}
@@ -298,6 +303,12 @@ const Index = ({ Cookie, Re }) => {
                     hover
                     striped
                     condensed
+                    defaultSorted={[
+                      {
+                        dataField: "POSTDATE",
+                        order: "desc",
+                      },
+                    ]}
                     wrapperClasses="table-responsive"
                     filter={filterFactory()}
                     noDataIndication={indication}
@@ -346,21 +357,72 @@ export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
-  const resultFetch = await fetch(
-    `${process.env.BASE_URL}api/forwarding/freightStreamSearch`,
-    {
-      headers: {
-        query: query.search,
-        key: cookies.jamesworldwidetoken,
+  var noti = [];
+  if (cookies.jamesworldwidetoken) {
+    const notification = await fetch(
+      `${process.env.BASE_URL}api/forwarding/navbarNotification`,
+      {
+        headers: {
+          uid: jwt.decode(cookies.jamesworldwidetoken).fsid,
+          key: cookies.jamesworldwidetoken,
+        },
+      }
+    );
+    noti = await notification.json();
+  }
+
+  // console.time("prev");
+  // const resultFetch = await fetch(
+  //   `${process.env.BASE_URL}api/forwarding/freightStreamSearch`,
+  //   {
+  //     headers: {
+  //       query: query.search,
+  //       key: cookies.jamesworldwidetoken,
+  //     },
+  //   }
+  // );
+  // const ReResult = await resultFetch.json();
+  // console.timeEnd("prev");
+  // if (resultFetch.status === 200) {
+  //   // Pass data to the page via props
+  //   return {
+  //     props: {
+  //       Cookie: cookies,
+  //       Re: ReResult,
+  //       Notifications: noti,
+  //     },
+  //   };
+  // } else {
+  //   // Pass data to the page via props
+  //   return { props: { Cookie: cookies, Re: [], Notifications: noti } };
+  // }
+
+  if (query.search === undefined) {
+    return {
+      props: {
+        Cookie: cookies,
+        Re: [],
+        Notifications: noti,
       },
-    }
-  );
-  if (resultFetch.status === 200) {
-    // Pass data to the page via props
-    return { props: { Cookie: cookies, Re: await resultFetch.json() } };
+    };
   } else {
-    // Pass data to the page via props
-    return { props: { Cookie: cookies, Re: [] } };
+    var result = [];
+    // console.time("fecth_time");
+    const fetchSearch = await fetch(
+      `http://jameswi.com:49996/api/fmssearch?key=${query.search}&casestatus=&`
+    );
+    if (fetchSearch.status === 200) {
+      result = await fetchSearch.json();
+    }
+    // const result = await test.json();
+    // console.timeEnd("fecth_time");
+    return {
+      props: {
+        Cookie: cookies,
+        Re: result,
+        Notifications: noti,
+      },
+    };
   }
 }
 

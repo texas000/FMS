@@ -1,7 +1,4 @@
 import cookie from "cookie";
-import React, { useEffect, useState } from "react";
-import jwt from "jsonwebtoken";
-import { useRouter } from "next/router";
 import Head from "next/head";
 import {
   Carousel,
@@ -35,18 +32,9 @@ const items = [
   },
 ];
 
-const About = ({ Cookie }) => {
-  const router = useRouter();
-  const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    setLoaded(true);
-    console.log(!!window.chrome.webstore || !!window.chrome.runtime);
-  }, []);
-
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [animating, setAnimating] = useState(false);
+const About = () => {
+  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [animating, setAnimating] = React.useState(false);
 
   const next = () => {
     if (animating) return;
@@ -109,7 +97,7 @@ const About = ({ Cookie }) => {
           integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
           crossOrigin="anonymous"
         />
-        <title>HOME</title>
+        <title>James Worldwide Inc.</title>
       </Head>
       <main className="loader">
         <Navs />
@@ -165,143 +153,79 @@ const About = ({ Cookie }) => {
           </a>
         </Carousel>
         {/* NO fluid */}
-        <Container fluid style={{ paddingTop: "10rem" }}>
-          <Row style={{ paddingBottom: "5rem" }}>
+        <Container>
+          <Row className="my-5">
             <Col sm="12" md={{ size: 6, offset: 3 }} className="text-center">
               {/* <h4 className="text-muted mb-4">WE MOVE</h4> */}
               <h1 className="text-muted">WE MOVE</h1>
             </Col>
           </Row>
-          {/* <Row>
-               <Col lg="4">
-                 <Card className="h-100">
-                   <CardImg top width="700" src="image/icons/money-bag-1.svg" />
-                   <CardBody>
-                     <h4 className="card-title">Project One</h4>
-                     <p className="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae.</p>
-                   </CardBody>
-                 </Card>
-               </Col>
-               <Col lg="4">
-                 <Card className="h-100">
-                   <CardImg top width="700" src="image/icons/money-bag-1.svg" />
-                   <CardBody>
-                     <h4 className="card-title">Project One</h4>
-                     <p className="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae.</p>
-                   </CardBody>
-                 </Card>
-               </Col>
-               <Col lg="4">
-                 <Card className="h-100">
-                   <CardImg top width="700px" height="400px" src="image/icons/money-bag-1.svg" alt />
-                   <CardBody>
-                     <h4 className="card-title">Project One</h4>
-                     <p className="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam viverra euismod odio, gravida pellentesque urna varius vitae.</p>
-                   </CardBody>
-                 </Card>
-               </Col>
-             </Row> */}
-          <Row
-            className="mt-4"
-            style={{ paddingLeft: "6rem", paddingRight: "6rem" }}
-          >
-            <Col
-              lg="3"
-              className="text-center mt-2 mb-4 pl-4 pr-4 border-right"
-            >
-              <img
-                src="./image/icons/money-bag-1.svg"
-                width="50em"
-                height="50em"
-                className="mb-4"
-              />
-              <h3 className="text-center mb-4">INCREASE REVENUE</h3>
+          <Row className="text-center my-4">
+            <Col lg="4">
+              <span className="fa-stack fa-2x mb-4">
+                <i
+                  className="fa fa-circle fa-stack-2x"
+                  style={{ color: "#e74a3b" }}
+                ></i>
+                <i className="fa fa-anchor fa-stack-1x fa-inverse"></i>
+              </span>
+              <h3 className="mb-4">OCEAN FREIGHT</h3>
               <p
-                className="text-center text-muted"
+                className="text-muted"
                 style={{ fontSize: "1.4rem", lineHeight: "3rem" }}
               >
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque,
-                nobis? Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                As a licensed Ocean Transportation and world-class Non-Vessel
+                Operating Common Carrier (NVOCC), James Worldwide provides full
+                ocean freight services to create the most highly adaptable,
+                reliable and customizable solutions in the industry.
               </p>
             </Col>
-            <Col
-              lg="3"
-              className="text-center mt-2 mb-4 pl-4 pr-4 border-right"
-            >
-              <img
-                src="./image/icons/bar-chart-7.svg"
-                width="50em"
-                height="50em"
-                className="mb-4"
-              />
-              <h3 className="text-center mb-4">ANALYTICS</h3>
+            <Col lg="4">
+              <span className="fa-stack fa-2x mb-4">
+                <i
+                  className="fa fa-circle fa-stack-2x"
+                  style={{ color: "#4e73df" }}
+                ></i>
+                <i className="fa fa-plane fa-stack-1x fa-inverse"></i>
+              </span>
+              <h3 className="mb-4">AIR FREIGHT</h3>
               <p
-                className="text-center text-muted"
+                className="text-muted"
                 style={{ fontSize: "1.4rem", lineHeight: "3rem" }}
               >
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque,
-                nobis? Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                As an International Air Transport Association (IATA) agent for
+                all major airlines, James Worldwide provides a complete
+                solutions of air logistics for shipments around the globe and
+                for a wide variety of commodities and industries.
               </p>
             </Col>
-            <Col
-              lg="3"
-              className="text-center mt-2 mb-4 pl-4 pr-4 border-right"
-            >
-              <img
-                src="./image/icons/loader_1.svg"
-                width="50em"
-                height="50em"
-                className="mb-4"
-              />
-              <h3 className="text-center mb-4">3 YEARS EXPERIENCE</h3>
+            <Col lg="4">
+              <span className="fa-stack fa-2x mb-4">
+                <i
+                  className="fa fa-circle fa-stack-2x"
+                  style={{ color: "#1cc88a" }}
+                ></i>
+                <i className="fa fa-truck fa-stack-1x fa-inverse"></i>
+              </span>
+              <h3 className="mb-4">TRUCKING</h3>
               <p
-                className="text-center text-muted"
-                style={{
-                  fontSize: "1.4rem",
-                  lineHeight: "3rem",
-                }}
-              >
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque,
-                nobis? Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              </p>
-            </Col>
-            <Col lg="3" className="text-center mt-2 mb-4 pl-4 pr-4">
-              <img
-                src="./image/icons/truck_2.svg"
-                width="50em"
-                height="50em"
-                className="mb-4"
-              />
-              <h3 className="text-center mb-4">FREE PACKAGE</h3>
-              <p
-                className="text-center text-muted"
+                className="text-muted"
                 style={{ fontSize: "1.4rem", lineHeight: "3rem" }}
               >
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eaque,
-                nobis? Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+                Our commitment to on-time and safe transportation of your cargo
+                has enabled James Worldwide to excel as an industry leader. Our
+                fleet provides local, regional and long haul trucking services
+                to meet your needs.
               </p>
             </Col>
           </Row>
-
+          <hr style={{ margin: "5rem" }} />
           {/* SECOND ROW */}
-          <Row
-            style={{
-              marginTop: "10rem",
-              paddingLeft: "6rem",
-              paddingRight: "6rem",
-            }}
-          >
-            <Col style={{ padding: "0" }} lg="6">
-              <img
-                src="./image/home-slider-01.jpg"
-                height="auto"
-                width="100%"
-              />
-            </Col>
-            <Col style={{ padding: "0" }} lg="6">
-              <div className="pt-4 pl-4 ml-4 mt-4 mr-4">
+          <Row className="py-4">
+            <Col lg="5" className="text-right">
+              <div>
                 <h5 className="text-muted mb-4">OUTSTANDING SERVICES</h5>
-                <h2>CLEAN DESIGN</h2>
+                <h2>WE SHIP</h2>
                 <p
                   className="text-muted"
                   style={{
@@ -309,27 +233,44 @@ const About = ({ Cookie }) => {
                     lineHeight: "3rem",
                   }}
                 >
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Eaque, nobis? Lorem ipsum dolor sit amet, consectetur
-                  adipisicing elit.Lorem ipsum dolor sit amet, consectetur
-                  adipisicing elit. Eaque, nobis? Lorem ipsum dolor sit amet,
-                  consectetur adipisicing elit.
+                  We handle shipments of a wide variety of commodities including
+                  but not limited to those shown here. Our highly experienced
+                  comprehensive resolution forecasts every scenario to minimize
+                  risk, implementing all aspects of transportation.
                 </p>
               </div>
             </Col>
+            <Col lg="7" className="text-center">
+              <img
+                src="./image/home-slider-01.jpg"
+                className="img-fluid mx-auto"
+                style={{
+                  overflow: "hidden",
+                  height: "400px",
+                  width: "400px",
+                  objectFit: "cover",
+                }}
+              />
+            </Col>
           </Row>
 
-          <Row
-            style={{
-              paddingLeft: "6rem",
-              paddingRight: "6rem",
-              paddingBottom: "5rem",
-            }}
-          >
-            <Col style={{ padding: "0" }} lg="6">
+          <Row className="py-4">
+            <Col style={{ padding: "0" }} lg="5">
+              <img
+                src="https://jamesworldwide.com/wp-content/uploads/2018/02/bg-ship-18.jpg"
+                className="img-fluid mx-auto"
+                style={{
+                  overflow: "hidden",
+                  height: "400px",
+                  width: "400px",
+                  objectFit: "cover",
+                }}
+              />
+            </Col>
+            <Col lg="7" className="text-left">
               <div className="pt-4 pl-4 ml-4 mt-4 mr-4">
-                <h5 className="text-muted mb-4">OUTSTANDING SERVICES</h5>
-                <h1>CLEAN DESIGN</h1>
+                <h5 className="text-muted mb-4">SERVICE PRODUCTS</h5>
+                <h2>GARMENT</h2>
                 <p
                   className="text-muted"
                   style={{
@@ -337,23 +278,15 @@ const About = ({ Cookie }) => {
                     lineHeight: "3rem",
                   }}
                 >
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                  Eaque, nobis? Lorem ipsum dolor sit amet, consectetur
-                  adipisicing elit.Lorem ipsum dolor sit amet, consectetur
-                  adipisicing elit. Eaque, nobis? Lorem ipsum dolor sit amet,
-                  consectetur adipisicing elit.
+                  The fashion and wearing apparel industry has leading-edge
+                  customers who require speed in a market with a high-turnover
+                  fashion cycle, which forces companies to strive to be first to
+                  market or face significant inventory buildup and markdowns.
                 </p>
               </div>
             </Col>
-            <Col style={{ padding: "0" }} lg="6">
-              <img
-                src="./image/home-slider-01.jpg"
-                height="auto"
-                width="100%"
-              />
-            </Col>
           </Row>
-
+          <hr style={{ margin: "5rem" }} />
           {/* THRID ROW */}
           <Row
             style={{
@@ -518,8 +451,8 @@ const About = ({ Cookie }) => {
               </Button>
             </Col>
           </Row>
-          <Footer />
         </Container>
+        <Footer />
       </main>
       <div className="loader-wrapper">
         <span className="loader">
@@ -635,15 +568,6 @@ const About = ({ Cookie }) => {
       </style>
     </React.Fragment>
   );
-};
-
-About.getInitialProps = async ({ req }) => {
-  const cookies = cookie.parse(
-    req ? req.headers.cookie || "" : window.document.cookie
-  );
-  return {
-    Cookie: cookies,
-  };
 };
 
 export default About;

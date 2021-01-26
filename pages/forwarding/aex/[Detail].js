@@ -1,115 +1,149 @@
-/*
-FILE: [DETAIL].JS
-
-AIR IMPORT AND EXPORT DETAIL PAGE
-
-CONSIST WITH THREE PART - HEAD, ROUTE, MAIN
-
-HEAD - HEADER / BACK, SHARE BUTTONS
-MAIN - [LEFT] OVERALL INFO WITH HOUSE, CONTAINER INFO
-ROUTE - DISCHARGE, ARRIVAL
-*/
-import cookie from 'cookie'
+import cookie from "cookie";
 import Layout from "../../../components/Layout";
-import { Container, Row, Col, Button, Alert } from "reactstrap";
+import { Row, Col, Button, Alert } from "reactstrap";
 import { useRouter } from "next/router";
 import fetch from "node-fetch";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Head from "../../../components/Forwarding/Head";
-import Main from "../../../components/Forwarding/Main";
 import Route from "../../../components/Forwarding/Route";
-import moment from 'moment';
-import jwt from 'jsonwebtoken'
+import moment from "moment";
 
-const Detail = ({ Cookie, AIR, FILE, EXTRA }) => {
-  const router = useRouter()
-  const TOKEN = jwt.decode(Cookie.jamesworldwidetoken)
-  const [Master, setMaster] = useState(false)
-  const [House, setHouse] = useState(false)
-  const [AP, setAP] = useState(false)
-  
+import jwt from "jsonwebtoken";
+import { Comment } from "../../../components/Forwarding/Comment";
+import Info from "../../../components/Forwarding/AirInfo";
+import Forms from "../../../components/Forwarding/Forms";
+import Status from "../../../components/Forwarding/Status";
+
+const Detail = ({ Cookie, AIM, EXTRA }) => {
+  const router = useRouter();
+  const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
+
   useEffect(() => {
     !TOKEN && router.push("/login");
-    if(AIR.status) {
-        setMaster(AIR.M)
-        setHouse(AIR.H)
-        setAP(AIR.A)
-        // console.log(AIR)
-    } else {
-        setMaster(false)
-    }
+    // console.log(AIM);
   });
 
-  const mailSubject = `[JW] ${AIR.H[0].CUSTOMER} MBL# ${AIR.M.F_MawbNo} HBL# ${AIR.H[0].F_HAWBNo} ETD ${moment(AIR.M.F_ETD).utc().format('l')} ETA ${moment(AIR.M.F_ETA).utc().format('l')} // ${AIR.M.F_RefNo}`
-  const mailBody= `Dear ${AIR.H[0].CUSTOMER}
-  \nPlease note that there is an OCEAN SHIPMENT for ${AIR.H[0].CUSTOMER} scheduled to depart on ${moment(AIR.M.F_ETA).utc().format('LL')}.`
-  var emailHref = `mailto:?cc=${TOKEN && TOKEN.email}&subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(mailBody)}`
+  var mailSubject, mailBody, emailHref;
+  if (AIM.M) {
+    mailSubject =
+      AIM.H.length > 0
+        ? `[JW] ${AIM.H[0].CUSTOMER} MAWBNO# ${AIM.M.F_MawbNo} HBL# ${AIM.H.map(
+            (na) => `${na.F_HAWBNo}`
+          )} ETD ${moment(AIM.M.F_ETD).utc().format("l")} ETA ${moment(
+            AIM.M.F_ETA
+          )
+            .utc()
+            .format("l")} // ${AIM.M.F_RefNo}`
+        : "";
 
-  if(TOKEN && TOKEN.group) {
-  return (
-    <>
-      <Layout TOKEN={TOKEN} TITLE={Master.F_RefNo}>
-        {Master ? (<Container fluid={true}>
-            <Head REF={Master.F_RefNo} POST={Master.F_PostDate} PIC={Master.F_U2ID} EMAIL={emailHref} />
+    mailBody =
+      AIM.H.length > 0
+        ? `Dear ${AIM.H[0].CUSTOMER}
+      \nPlease note that there is an AIR EXPORT SHIPMENT for ${
+        AIM.H[0].CUSTOMER
+      } scheduled to depart on ${moment(AIM.M.F_ETA).utc().format("LL")}.`
+        : "";
+
+    emailHref =
+      AIM.H.length > 0
+        ? `mailto:?cc=${TOKEN && TOKEN.email}&subject=${encodeURIComponent(
+            mailSubject
+          )}&body=${encodeURIComponent(mailBody)}`
+        : "";
+  }
+
+  if (TOKEN && TOKEN.group) {
+    return (
+      <>
+        {AIM.M ? (
+          <Layout TOKEN={TOKEN} TITLE={AIM.M.F_RefNo}>
+            <Head
+              REF={AIM.M.F_RefNo}
+              POST={AIM.M.F_PostDate}
+              PIC={AIM.M.F_U2ID}
+              EMAIL={emailHref}
+            />
             <Row>
               <Col lg={10}>
-                  <Main TYPE="AIR" Master={Master} House={House} FILES={FILE} AP={AP} USER={TOKEN} EXTRA={EXTRA} />
+                <Row>
+                  <Info Master={AIM.M} House={AIM.H} Containers={AIM.C} />
+                  <Col md="6">
+                    <Forms Master={AIM.M} House={AIM.H} AP={AIM.A} />
+                    <Status
+                      Data={EXTRA.S}
+                      Ref={AIM.M.F_RefNo}
+                      Uid={TOKEN.uid}
+                    />
+                  </Col>
+                </Row>
               </Col>
               <Col lg={2}>
-                  <Route ETA={Master.F_ETA} ETD={Master.F_ETD} DISCHARGE={Master.F_Discharge} LOADING={Master.F_LoadingPort}/>
+                <Route
+                  ETA={AIM.M.F_ETA}
+                  ETD={AIM.M.F_ETD}
+                  FETA={AIM.M.F_FETA}
+                  DISCHARGE={AIM.M.F_Discharge}
+                  LOADING={AIM.M.F_LoadingPort}
+                  DEST={AIM.M.F_FinalDest}
+                />
               </Col>
             </Row>
-            </Container>
+
+            <Comment
+              comment={EXTRA.M}
+              reference={AIM.M.F_RefNo}
+              uid={TOKEN.uid}
+            />
+          </Layout>
         ) : (
-            <Container fluid={true}>
+          <Layout TOKEN={TOKEN} TITLE="Not Found">
             <Row>
               <Col className="text-center">
                 <Alert color="danger">
                   ERROR: {router.query.Detail} NOT FOUND!
                 </Alert>
-                <Button
-                  color="secondary"
-                  style={{borderRadius: '0'}}
-                  onClick={() => router.back()}
-                >
-                  Return To Page
+                <Button color="secondary" onClick={() => router.back()}>
+                  Return To Previous Page
                 </Button>
               </Col>
             </Row>
-          </Container>
-        )
-        }
-      </Layout>
-    </>
-  )} else {
-    return (<p>Redirecting...</p>)
+          </Layout>
+        )}
+        {/* IF THE REFERENCE NUMBER IS NOT FOUND, DISPLAY ERROR PAGE */}
+      </>
+    );
+  } else {
+    return <p>Redirecting...</p>;
   }
 };
 
-export async function getServerSideProps({req, query}) {
-  const cookies = cookie.parse(req? req.headers.cookie || "" : window.document.cookie)
-  
-  // FETCH AEX DATA FROM FREIGHT STREAM
-  const FETCH = await fetch(`${process.env.BASE_URL}api/forwarding/airDetail`, {headers: {reference: query.Detail, import: 0}})
-  const FJSON = await FETCH.json();
+export async function getServerSideProps({ req, query }) {
+  const cookies = cookie.parse(
+    req ? req.headers.cookie || "" : window.document.cookie
+  );
 
-  // FETCH FILE DATA FROM SYNOLOGY
-  const Fetch = await fetch(`${process.env.BASE_URL}api/files/FORWARDING/${query.Detail}`)
-  var Files=null;
-  if(Fetch.status===200) {
-    Files = await Fetch.json()
-  }
+  // FETCH AIM DATA FROM FREIGHT STREAM
+  const fetchAim = await fetch(
+    `${process.env.BASE_URL}api/forwarding/getAexDetail`,
+    { headers: { reference: query.Detail, key: cookies.jamesworldwidetoken } }
+  );
+  const Aim = await fetchAim.json();
+
   // FETCH EXTRA DATA FROM FMS
-  const EX_Fetch = await fetch(`${process.env.BASE_URL}api/forwarding/getExtra`, {headers: {ref: query.Detail}})
-  var Extra=null;
-  if(EX_Fetch.status==200) {
-    Extra = await EX_Fetch.json()
+  const fetchExtra = await fetch(
+    `${process.env.BASE_URL}api/forwarding/getExtra`,
+    { headers: { ref: query.Detail } }
+  );
+  var Extra = null;
+  if (fetchExtra.status == 200) {
+    Extra = await fetchExtra.json();
+  } else {
+    Extra = { M: [], S: [] };
   }
-  //LOG
-  if(cookies.jamesworldwidetoken) {
-    console.log(jwt.decode(cookies.jamesworldwidetoken).username+` loaded forwarding/aex/`+query.Detail)
-  }
-  return { props: { Cookie: cookies, AIR: FJSON, FILE: Files, EXTRA: Extra } };
+
+  return {
+    props: { Cookie: cookies, AIM: Aim, EXTRA: Extra },
+  };
 }
 
 export default Detail;

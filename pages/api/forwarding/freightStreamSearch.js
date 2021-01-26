@@ -21,7 +21,6 @@ export default async (req, res) => {
     return;
   }
   if (req.headers.query == "undefined") {
-    console.log("query is undefined");
     res.status(201).send([]);
     return;
   } else {

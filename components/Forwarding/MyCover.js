@@ -87,37 +87,39 @@ export const MyCover = ({ master, house, containers }) => {
       first: "HOUSE#",
       second: "CUST REF#",
       data1: house
-        .map((ga, i) => `${ga.F_HBLNo} ${i % 2 === 1 ? "\n" : ""}`)
+        .map(
+          (ga, i) => `${ga.F_HBLNo || ga.F_HawbNo} ${i % 2 === 1 ? "\n" : ""}`
+        )
         .join(" "),
-      data2: house[0].F_CustRefNo,
+      data2: house.length && house[0].F_CustRefNo,
     },
     {
       row: 3,
       first: "AMS#",
       second: "PCS",
-      data1: house[0].F_AMSBLNO,
-      data2: house[0].F_PKGS || house[0].F_Pkgs,
+      data1: house.length && house[0].F_AMSBLNO,
+      data2: house.length && (house[0].F_PKGS || house[0].F_Pkgs),
     },
     {
       row: 4,
       first: "POL",
       second: "WEIGHTS",
       data1: master.F_LoadingPort,
-      data2: house[0].F_KGS,
+      data2: house.length && house[0].F_KGS,
     },
     {
       row: 5,
       first: "POD",
       second: "CBM",
-      data1: master.F_DisCharge,
-      data2: house[0].F_CBM,
+      data1: master.F_DisCharge || master.F_Discharge,
+      data2: house.length && house[0].F_CBM,
     },
     {
       row: 6,
       first: "AGENT",
       data1: master.AGENT,
       second: "VSL/FLT",
-      data2: master.F_Vessel,
+      data2: master.F_Vessel || master.F_FLTno,
     },
     {
       row: 7,
@@ -136,7 +138,7 @@ export const MyCover = ({ master, house, containers }) => {
   ];
 
   // Adding Containers to the upper table
-  containers.length &&
+  containers &&
     upperTableData.push({
       row: 9,
       first: "CONTAINER",
@@ -178,7 +180,7 @@ export const MyCover = ({ master, house, containers }) => {
                 MASTER#
               </TableCell>
               <TableCell style={styles.upperTableCol2}>
-                {master.F_MBLNo}
+                {master.F_MBLNo || master.F_MawbNo}
               </TableCell>
               <TableCell style={styles.upperTableCol1} weighting={0.295}>
                 JWI REF#
@@ -212,9 +214,9 @@ export const MyCover = ({ master, house, containers }) => {
         <View style={styles.section1}>
           <Text style={styles.title}>{master.F_RefNo}</Text>
           <Text style={styles.subhead}>
-            {house[0].CUSTOMER || "NO CUSTOMER"} -{" "}
-            {house[0].SHIPPER || "NO SHIPPER"} -{" "}
-            {house[0].CONSIGNEE || "NO CONSIGNEE"}
+            {house.length ? house[0].CUSTOMER || "NO CUSTOMER" : "NO HOUSE"} -{" "}
+            {house.length ? house[0].SHIPPER || "NO SHIPPER" : "NO HOUSE"} -{" "}
+            {house.length ? house[0].CONSIGNEE || "NO CONSIGNEE" : "NO HOUSE"}
           </Text>
           <Text style={styles.subhead}>
             {moment(master.F_ETD).utc().format("ll")} ~{" "}

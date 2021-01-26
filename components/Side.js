@@ -2,7 +2,7 @@ import { Collapse } from "reactstrap";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-const Sidebar = ({ Token, toggle, setToggle, isMobile }) => {
+const Sidebar = ({ Token, toggle, setToggle }) => {
   const router = useRouter();
   // Toggle the side navigation
   // const [toggle, setToggle] = React.useState(false)
@@ -19,7 +19,7 @@ const Sidebar = ({ Token, toggle, setToggle, isMobile }) => {
       <a
         className="sidebar-brand d-flex align-items-center justify-content-center"
         href="#"
-        onClick={() => router.push("/")}
+        onClick={() => router.push("/dashboard")}
       >
         <div className="sidebar-brand-icon">
           <img
@@ -38,7 +38,7 @@ const Sidebar = ({ Token, toggle, setToggle, isMobile }) => {
       <hr className="sidebar-divider my-0" />
 
       {/* <!-- Nav Item - Dashboard --> */}
-      <li className="nav-item active">
+      <li className={`nav-item ${router.pathname == "/dashboard" && "active"}`}>
         <a
           className="nav-link"
           href="#"
@@ -57,7 +57,9 @@ const Sidebar = ({ Token, toggle, setToggle, isMobile }) => {
 
       {/* Forwarding */}
 
-      <li className="nav-item">
+      <li
+        className={`nav-item ${router.pathname == "/forwarding" && "active"}`}
+      >
         <a
           className="nav-link"
           href="#"
@@ -69,21 +71,26 @@ const Sidebar = ({ Token, toggle, setToggle, isMobile }) => {
       </li>
 
       {/* Trucking */}
-
-      <li className="nav-item">
-        <a
-          className="nav-link"
-          href="#"
-          onClick={() => router.push("/forwarding/trucking")}
+      {Token.group < 223 && (
+        <li
+          className={`nav-item ${
+            router.pathname == "/forwarding/trucking" && "active"
+          }`}
         >
-          <i className="fa fa-truck"></i>
-          <span>Trucking</span>
-        </a>
-      </li>
+          <a
+            className="nav-link"
+            href="#"
+            onClick={() => router.push("/forwarding/trucking")}
+          >
+            <i className="fa fa-truck"></i>
+            <span>Trucking</span>
+          </a>
+        </li>
+      )}
 
       {/* Board */}
 
-      <li className="nav-item">
+      <li className={`nav-item ${router.pathname == "/board" && "active"}`}>
         <a className="nav-link" href="#" onClick={() => router.push("/board")}>
           <i className="fa fa-pencil"></i>
           <span>Board</span>
@@ -161,7 +168,7 @@ const Sidebar = ({ Token, toggle, setToggle, isMobile }) => {
       <div className="sidebar-heading">Addons</div>
 
       {/* <!-- Nav Item - Pages Collapse Menu --> */}
-      <li className="nav-item">
+      <li className={`nav-item`}>
         <a
           className="nav-link collapsed"
           href="#"
@@ -213,7 +220,11 @@ const Sidebar = ({ Token, toggle, setToggle, isMobile }) => {
 
       {/* <!-- Nav Item - Charts --> */}
       <li className="nav-item">
-        <a className="nav-link" href="charts.html">
+        <a
+          className="nav-link"
+          href="#"
+          onClick={() => alert("Chart page is under construction")}
+        >
           <i className="fa fa-desktop"></i>
           <span>Charts</span>
         </a>
@@ -221,7 +232,11 @@ const Sidebar = ({ Token, toggle, setToggle, isMobile }) => {
 
       {/* <!-- Nav Item - Tables --> */}
       <li className="nav-item">
-        <a className="nav-link" href="tables.html">
+        <a
+          className="nav-link"
+          href="#"
+          onClick={() => alert("Tables page is under construction")}
+        >
           <i className="fa fa-table"></i>
           <span>Tables</span>
         </a>

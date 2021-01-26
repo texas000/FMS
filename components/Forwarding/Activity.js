@@ -53,35 +53,52 @@ export const Activity = ({ REF, USER, EXTRA }) => {
     if (activeTab !== tab) setActiveTab(tab);
   };
 
-  // THIS IS UPDATE FOR CALENDAR
-  const updateCalendar = async (type, val) => {
-    console.log(val);
-    var columnName = "";
-    type === "last"
-      ? (columnName = "F_LastFreeDate")
-      : type === "picked"
-      ? (columnName = "F_PickedUpDate")
-      : (columnName = "F_EmptyReturnDate");
+  // UPDATE FOR CALENDAR
+  const onClickCal = async () => {
+    console.log("Calendar");
 
-    const value = `UPDATE T_FREIGHT_EXT SET ${columnName}='${val}', F_U2Date=GETDATE() WHERE F_RefNo='${REF}';
-        IF @@ROWCOUNT=0 INSERT INTO T_FREIGHT_EXT (F_RefNo, ${columnName}, F_U1ID, F_U2ID, F_U1Date, F_U2Date) VALUES('${REF}', '${val}', '${USER.uid}', '${USER.uid}', GETDATE(), GETDATE());
-        SELECT TOP 1 * FROM T_FREIGHT_EXT WHERE F_RefNo='${REF}';`;
+    const value = `UPDATE T_FREIGHT_EXT SET F_LastFreeDate=${
+      Last ? "'" + Last + "'" : "NULL"
+    }, F_PickedUpDate=${
+      Picked ? "'" + Picked + "'" : "NULL"
+    }, F_EmptyReturnDate=${
+      Empty ? "'" + Empty + "'" : "NULL"
+    }, F_U2Date=GETDATE() WHERE F_RefNo='${REF}';
+        IF @@ROWCOUNT=0 INSERT INTO T_FREIGHT_EXT (F_RefNo, F_LastFreeDate, F_PickedUpDate, F_EmptyReturnDate, F_U1ID, F_U2ID, F_U1Date, F_U2Date) VALUES('${REF}', ${
+      Last ? "'" + Last + "'" : "NULL"
+    }, ${Picked ? "'" + Picked + "'" : "NULL"}, ${
+      Empty ? "'" + Empty + "'" : "NULL"
+    }, '${USER.uid}', '${USER.uid}', GETDATE(), GETDATE());
+        SELECT * FROM T_FREIGHT_EXT WHERE F_RefNo='${REF}';`;
 
     const Fetch = await fetch("/api/forwarding/updateExtra", {
       body: value,
       method: "POST",
     }).then((t) => t.json());
-    if (Fetch[0].F_LastFreeDate != null) {
-      console.log(Fetch);
-      setLast(moment(Fetch[0].F_LastFreeDate).utc().format("yyyy-MM-DD"));
-    }
-    if (Fetch[0].F_PickedUpDate != null) {
-      setPicked(moment(Fetch[0].F_PickedUpDate).utc().format("yyyy-MM-DD"));
-    }
-    if (Fetch[0].F_EmptyReturnDate != null) {
-      setEmpty(moment(Fetch[0].F_EmptyReturnDate).utc().format("yyyy-MM-DD"));
-    }
+    console.log(Fetch);
   };
+  // UPDATE FOR STATUS
+  const onClickStatus = () => {
+    console.log("Status");
+
+    const value = `UPDATE T_FREIGHT_EXT SET F_PreAlert='${
+      C1 ? "1" : "0"
+    }', F_ISF='${C2 ? "1" : "0"}', F_OBL='${C3 ? "1" : "0"}', F_OceanFreight='${
+      C4 ? "1" : "0"
+    }', F_ArrivalNotice='${C5 ? "1" : "0"}', F_CrDb='${
+      C6 ? "1" : "0"
+    }', F_Arrival='${C7 ? "1" : "0"}',F_U2Date=GETDATE() WHERE F_RefNo='${REF}';
+        IF @@ROWCOUNT=0 INSERT INTO T_FREIGHT_EXT (F_RefNo, F_PreAlert, F_ISF, F_OBL, F_OceanFreight, F_ArrivalNotice, F_CrDb, F_Arrival, F_U1ID, F_U2ID, F_U1Date, F_U2Date) VALUES('${REF}', '${
+      C1 ? "1" : "0"
+    }', '${C2 ? "1" : "0"}', '${C3 ? "1" : "0"}', '${C4 ? "1" : "0"}', '${
+      C5 ? "1" : "0"
+    }', '${C6 ? "1" : "0"}', '${C7 ? "1" : "0"}', '${USER.uid}', '${
+      USER.uid
+    }', GETDATE(), GETDATE());
+        SELECT TOP 1 * FROM T_FREIGHT_EXT WHERE F_RefNo='${REF}';`;
+    console.log(value);
+  };
+
   const updateStatus = async (type, val) => {
     const selectData = [
       "F_PreAlert",
@@ -215,7 +232,6 @@ export const Activity = ({ REF, USER, EXTRA }) => {
 
   return (
     <>
-      <hr />
       <Row className="mb-4">
         <Col sm="3">
           <span className="text-warning">
@@ -234,7 +250,8 @@ export const Activity = ({ REF, USER, EXTRA }) => {
                 onClick={() => {
                   toggle("1");
                 }}
-                style={{ fontSize: "0.8rem" }}
+                href="#"
+                style={{ fontSize: "0.9rem" }}
               >
                 Comment
               </NavLink>
@@ -245,7 +262,8 @@ export const Activity = ({ REF, USER, EXTRA }) => {
                 onClick={() => {
                   toggle("2");
                 }}
-                style={{ fontSize: "0.8rem" }}
+                href="#"
+                style={{ fontSize: "0.9rem" }}
               >
                 Status
               </NavLink>
@@ -255,6 +273,7 @@ export const Activity = ({ REF, USER, EXTRA }) => {
       </Row>
       <Row style={{ display: "block", marginLeft: "5px" }}>
         <TabContent activeTab={activeTab}>
+          {/* Comment */}
           <TabPane tabId="1">
             <Row style={{ display: "block", width: "100%" }}>
               <Card body style={{ borderRadius: "0" }}>
@@ -335,14 +354,15 @@ export const Activity = ({ REF, USER, EXTRA }) => {
                     onKeyPress={(e) => {
                       if (e.key == "Enter") addComment();
                     }}
-                    autoFocus={true}
+                    autoFocus={false}
                   />
                   <InputGroupAddon addonType="append">
                     <InputGroupText>
                       <i className="fa fa-edit mr-1"></i>
                       <a
-                        href="#"
-                        style={{ fontSize: "0.8rem", color: "black" }}
+                        style={{
+                          fontSize: "0.8rem",
+                        }}
                         onClick={addComment}
                       >
                         Add Reply{" "}
@@ -353,6 +373,7 @@ export const Activity = ({ REF, USER, EXTRA }) => {
               </Card>
             </Row>
           </TabPane>
+          {/* Status */}
           <TabPane tabId="2">
             <Row style={{ width: "100%" }}>
               <Col sm="5">
@@ -363,6 +384,15 @@ export const Activity = ({ REF, USER, EXTRA }) => {
                       <i className="fa fa-calendar fa-stack-1x fa-inverse"></i>
                     </span>
                     CALENDAR
+                    <Button
+                      outline
+                      color="success"
+                      size="sm"
+                      className="float-right"
+                      onClick={onClickCal}
+                    >
+                      SAVE
+                    </Button>
                   </span>
                   <InputGroup size="sm" className="mt-4 mb-2">
                     <InputGroupAddon addonType="prepend">
@@ -374,11 +404,11 @@ export const Activity = ({ REF, USER, EXTRA }) => {
                       type="date"
                       name="date"
                       id="lastfree"
-                      placeholder="date placeholder"
                       value={Last ? Last : ""}
-                      onChange={(e) => updateCalendar("last", e.target.value)}
+                      onChange={(e) => setLast(e.target.value)}
                       style={{ fontSize: "0.8rem" }}
                     />
+                    {/* onChange={(e) => updateCalendar("last", e.target.value)} */}
                   </InputGroup>
                   <InputGroup size="sm" className="my-2">
                     <InputGroupAddon addonType="prepend">
@@ -391,8 +421,7 @@ export const Activity = ({ REF, USER, EXTRA }) => {
                       name="date"
                       id="picked"
                       value={Picked ? Picked : ""}
-                      placeholder="date placeholder"
-                      onChange={(e) => updateCalendar("picked", e.target.value)}
+                      onChange={(e) => setPicked(e.target.value)}
                       style={{ fontSize: "0.8rem" }}
                     />
                   </InputGroup>
@@ -407,8 +436,7 @@ export const Activity = ({ REF, USER, EXTRA }) => {
                       name="date"
                       id="empty"
                       value={Empty ? Empty : ""}
-                      placeholder="date placeholder"
-                      onChange={(e) => updateCalendar("empty", e.target.value)}
+                      onChange={(e) => setEmpty(e.target.value)}
                       style={{ fontSize: "0.8rem" }}
                     />
                   </InputGroup>
@@ -424,6 +452,15 @@ export const Activity = ({ REF, USER, EXTRA }) => {
                       </span>
                       STATUS
                     </span>
+                    <Button
+                      outline
+                      color="success"
+                      size="sm"
+                      className="float-right"
+                      onClick={onClickStatus}
+                    >
+                      SAVE
+                    </Button>
                     <div className="mt-4" style={{ fontSize: "1rem" }}>
                       <Row>
                         <Col sm="4">
@@ -434,14 +471,7 @@ export const Activity = ({ REF, USER, EXTRA }) => {
                             label="PRE ALERT"
                             className="mb-2"
                             checked={C1}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                //ARGUMENT - ARRAY VALUE, BOOLEAN
-                                updateStatus(0, 1);
-                              } else {
-                                updateStatus(0, 0);
-                              }
-                            }}
+                            onChange={(e) => setC1(!C1)}
                           />
                         </Col>
                         <Col sm="8">
@@ -450,10 +480,6 @@ export const Activity = ({ REF, USER, EXTRA }) => {
                             value={CM1 ? CM1 : ""}
                             placeholder="PRE ALERT"
                             bsSize="sm"
-                            onKeyPress={(e) => {
-                              if (e.key == "Enter")
-                                updateStatusComment(0, e.target.value);
-                            }}
                             onChange={(e) => setCM1(e.target.value)}
                           />
                         </Col>
@@ -663,6 +689,11 @@ export const Activity = ({ REF, USER, EXTRA }) => {
             </Row>
           </TabPane>
         </TabContent>
+        <style jsx>
+          {`
+           a:hover { cursor: "pointer" !important },
+          `}
+        </style>
       </Row>
     </>
   );

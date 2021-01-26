@@ -22,7 +22,6 @@ export default async (req, res) => {
       try {
         await pool.connect();
         let result = await pool.request().query(req.body);
-        // console.log(result)
         if (result.rowsAffected[result.rowsAffected.length - 1]) {
           res.status(200).json(result.recordset);
         } else {

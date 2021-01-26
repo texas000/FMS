@@ -20,20 +20,14 @@ export default async (req, res) => {
     return;
   }
 
-  const MASTER = `select (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID =T_OIMMAIN.F_Agent) as AGENT,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIMMAIN.F_Carrier) as CARRIER,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIMMAIN.F_CYLocation) as CYLOC,
-  * from T_OIMMAIN WHERE F_RefNo='${req.headers.reference}';`;
+  const MASTER = `select (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID =T_AOMMAIN.F_Agent) as AGENT,
+  * from T_AOMMAIN WHERE F_RefNo='${req.headers.reference}';`;
 
-  const HOUSE = `SELECT (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIHMAIN.F_Customer) as CUSTOMER,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIHMAIN.F_Consignee) as CONSIGNEE,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIHMAIN.F_Notify) as NOTIFY,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIHMAIN.F_Broker) as BROKER,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIHMAIN.F_Shipper) as SHIPPER, * FROM 
-  T_OIHMAIN WHERE F_OIMBLID=`;
-
-  const CONTAINER = `SELECT T_OIMCONTAINER.*, T_OIHCONTAINER.F_OIHBLID as F_OIHBLID from T_OIMCONTAINER
-   LEFT JOIN T_OIHCONTAINER on T_OIMCONTAINER.F_ID = T_OIHCONTAINER.F_OIMCntID where F_OIMBLID=`;
+  const HOUSE = `SELECT (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AOHMAIN.F_Customer) as CUSTOMER,
+        (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AOHMAIN.F_Consignee) as CONSIGNEE,
+        (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AOHMAIN.F_Shipper) as SHIPPER,
+        (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AOHMAIN.F_Notify) as NOTIFY,
+        * FROM T_AOHMAIN WHERE F_AOMBLID=`;
 
   var output = {};
 
@@ -59,7 +53,7 @@ export default async (req, res) => {
       res.status(400).send(err);
       return sql.close();
     });
-  //   console.log(master);
+  // console.log(master);
   output = { ...output, M: master };
 
   if (master) {
@@ -71,7 +65,6 @@ export default async (req, res) => {
         return pool.request().query(HOUSE + `'${master.F_ID}'`);
       })
       .then((result) => {
-        // console.log(result.rowsAffected);
         if (result.rowsAffected[0]) {
           return result.recordsets[0];
         } else {
@@ -86,35 +79,12 @@ export default async (req, res) => {
 
     output = { ...output, H: house };
 
-    // GET CONTAINER FROM MSSQL - DATA TYPE ARRAY
-    // GET CONTAINER FROM MSSQL - DATA TYPE ARRAY
-    const container = await sql
-      .connect(sqlConfig)
-      .then((pool) => {
-        return pool.request().query(CONTAINER + `'${master.F_ID}'`);
-      })
-      .then((result) => {
-        // console.log(result.rowsAffected);
-        if (result.rowsAffected[0]) {
-          return result.recordsets[0];
-        } else {
-          return [];
-        }
-      })
-      .catch((err) => {
-        console.log("ERROR FROM CONTAINER");
-        console.log(err);
-        res.status(400).send(err);
-      });
-
-    output = { ...output, C: container };
-
     if (house.length > 0) {
       var AP = house.map((ga, i) => {
         if (i) {
-          return ` OR F_TBID='${ga.F_ID}' AND F_TBName='T_OIHMAIN'`;
+          return ` OR F_TBID='${ga.F_ID}' AND F_TBName='T_AOHMAIN'`;
         } else {
-          return `F_TBID='${ga.F_ID}' AND F_TBName='T_OIHMAIN'`;
+          return `F_TBID='${ga.F_ID}' AND F_TBName='T_AOHMAIN'`;
         }
       });
       AP = AP.join("");
@@ -136,7 +106,6 @@ export default async (req, res) => {
           }
         })
         .catch((err) => {
-          // http://localhost:3000/forwarding/oim/OIM-44484
           console.log("ERROR FROM AP");
           console.log(err);
           res.status(400).send(err);

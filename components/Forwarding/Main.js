@@ -69,10 +69,10 @@ const Main = ({
         </Col>
         {TYPE == "OCEAN" ? (
           <Col sm="9" className="pt-1">
-            <ButtonGroup className="pr-3">
+            <ButtonGroup className="pr-3" aria-label="radio">
               <Button
                 size="sm"
-                outline
+                outline={APType !== "CHECK"}
                 color="primary"
                 onClick={() => setAPType("CHECK")}
               >
@@ -80,7 +80,7 @@ const Main = ({
               </Button>
               <Button
                 size="sm"
-                outline
+                outline={APType !== "CARD"}
                 color="primary"
                 onClick={() => setAPType("CARD")}
               >
@@ -88,7 +88,7 @@ const Main = ({
               </Button>
               <Button
                 size="sm"
-                outline
+                outline={APType !== "WIRE"}
                 color="primary"
                 onClick={() => setAPType("WIRE")}
               >
@@ -96,7 +96,7 @@ const Main = ({
               </Button>
               <Button
                 size="sm"
-                outline
+                outline={APType !== "ACH"}
                 color="primary"
                 onClick={() => setAPType("ACH")}
               >
@@ -364,126 +364,10 @@ const Main = ({
 
         {/* HOUSE */}
         <Col lg={6}>
-          {House &&
-            House.map((ga, i) => {
-              if (i < 2) {
-                return (
-                  <Card
-                    key={ga.F_ID}
-                    style={{ borderRadius: 0 }}
-                    className="px-3 mb-2 pt-2"
-                  >
-                    <CardHeader
-                      style={{ backgroundColor: "#fff" }}
-                      className="text-success py-1"
-                    >
-                      <Row className="py-0">
-                        <Col sm="9">House</Col>
-                        <Col>
-                          {House.length > 2 && i === 0 && (
-                            <Button
-                              color="success mt-0 mb-1"
-                              size="sm"
-                              onClick={houseToggle}
-                              style={{ borderRadius: "0" }}
-                              outline
-                            >
-                              Show More
-                            </Button>
-                          )}
-                        </Col>
-                      </Row>
-                    </CardHeader>
-                    <Table
-                      className="table-borderless mt-2 table-sm"
-                      style={{ fontSize: "0.8rem" }}
-                    >
-                      <tbody>
-                        <tr>
-                          <th className="text-success">HBL</th>
-                          <th className="text-secondary">{ga.F_HBLNo}</th>
-                        </tr>
-                        <tr>
-                          <th className="text-success">CUSTOMER</th>
-                          <th className="text-secondary">{ga.CUSTOMER}</th>
-                        </tr>
-                        <tr>
-                          <th className="text-success">SHIPPER</th>
-                          <th className="text-secondary">{ga.SHIPPER}</th>
-                        </tr>
-                        <tr>
-                          <th className="text-success">CONSIGNEE</th>
-                          <th className="text-secondary">{ga.CONSIGNEE}</th>
-                        </tr>
-                        <tr>
-                          <th className="text-success">NOTIFY</th>
-                          <th className="text-secondary">{ga.NOTIFY}</th>
-                        </tr>
-                        <tr>
-                          <th className="text-success">COMMODITY</th>
-                          <th className="text-secondary">{ga.F_Commodity}</th>
-                        </tr>
-                        <tr>
-                          <th className="text-success">PKG</th>
-                          <th className="text-secondary">{ga.F_MarkPkg}</th>
-                        </tr>
-                        <tr>
-                          <th className="text-success">KGS</th>
-                          <th className="text-secondary">
-                            {numberWithCommas(ga.F_KGS)}
-                          </th>
-                        </tr>
-                        <tr>
-                          <th className="text-success">CBM</th>
-                          <th className="text-secondary">
-                            {numberWithCommas(ga.F_CBM)}
-                          </th>
-                        </tr>
-                        <tr>
-                          <th className="text-success">REFERENCE</th>
-                          <th className="text-secondary">
-                            {ga.F_CustRefNo || "NO REFERENCE"}
-                          </th>
-                        </tr>
-                        {Containers.map((ele) => {
-                          if (ele.F_OIHBLID == ga.F_ID)
-                            return (
-                              <React.Fragment key={ga.F_ID + ele.F_ID}>
-                                <tr>
-                                  <th className="text-primary">CONTAINER</th>
-                                  <th className="text-secondary">
-                                    {ele.F_ContainerNo}
-                                  </th>
-                                </tr>
-                                <tr>
-                                  <th className="text-primary">TYPE</th>
-                                  <th className="text-secondary">
-                                    {ele.F_ConType}
-                                  </th>
-                                </tr>
-                                <tr>
-                                  <th className="text-primary">KGS</th>
-                                  <th className="text-secondary">
-                                    {numberWithCommas(ele.F_KGS)}
-                                  </th>
-                                </tr>
-                                <tr>
-                                  <th className="text-primary">PKG</th>
-                                  <th className="text-secondary">
-                                    {numberWithCommas(ga.F_PKGS) ||
-                                      numberWithCommas(ga.F_Pkgs)}
-                                  </th>
-                                </tr>
-                              </React.Fragment>
-                            );
-                        })}
-                      </tbody>
-                    </Table>
-                  </Card>
-                );
-              } else {
-                return (
-                  <Collapse isOpen={isHouseOpen}>
+          {House.length != 0
+            ? House.map((ga, i) => {
+                if (i < 2) {
+                  return (
                     <Card
                       key={ga.F_ID}
                       style={{ borderRadius: 0 }}
@@ -493,8 +377,21 @@ const Main = ({
                         style={{ backgroundColor: "#fff" }}
                         className="text-success py-1"
                       >
-                        <Row>
-                          <Col sm="9">House {ga.F_ID}</Col>
+                        <Row className="py-0">
+                          <Col sm="9">House</Col>
+                          <Col>
+                            {House.length > 2 && i === 0 && (
+                              <Button
+                                color="success mt-0 mb-1"
+                                size="sm"
+                                onClick={houseToggle}
+                                style={{ borderRadius: "0" }}
+                                outline
+                              >
+                                Show More
+                              </Button>
+                            )}
+                          </Col>
                         </Row>
                       </CardHeader>
                       <Table
@@ -532,11 +429,15 @@ const Main = ({
                           </tr>
                           <tr>
                             <th className="text-success">KGS</th>
-                            <th className="text-secondary">{ga.F_KGS}</th>
+                            <th className="text-secondary">
+                              {numberWithCommas(ga.F_KGS)}
+                            </th>
                           </tr>
                           <tr>
                             <th className="text-success">CBM</th>
-                            <th className="text-secondary">{ga.F_CBM}</th>
+                            <th className="text-secondary">
+                              {numberWithCommas(ga.F_CBM)}
+                            </th>
                           </tr>
                           <tr>
                             <th className="text-success">REFERENCE</th>
@@ -547,48 +448,150 @@ const Main = ({
                           {Containers.map((ele) => {
                             if (ele.F_OIHBLID == ga.F_ID)
                               return (
-                                <>
-                                  <React.Fragment
-                                    key={ele.F_ID + ele.F_OIHBLID}
-                                  >
-                                    <tr>
-                                      <th className="text-primary">
-                                        CONTAINER
-                                      </th>
-                                      <th className="text-secondary">
-                                        {ele.F_ContainerNo}
-                                      </th>
-                                    </tr>
-                                    <tr>
-                                      <th className="text-primary">TYPE</th>
-                                      <th className="text-secondary">
-                                        {ele.F_ConType}
-                                      </th>
-                                    </tr>
-                                    <tr>
-                                      <th className="text-primary">KGS</th>
-                                      <th className="text-secondary">
-                                        {numberWithCommas(ele.F_KGS)}
-                                      </th>
-                                    </tr>
-                                    <tr>
-                                      <th className="text-primary">PKG</th>
-                                      <th className="text-secondary">
-                                        {numberWithCommas(ga.F_PKGS) ||
-                                          numberWithCommas(ga.F_Pkgs)}
-                                      </th>
-                                    </tr>
-                                  </React.Fragment>
-                                </>
+                                <React.Fragment key={ga.F_ID + ele.F_ID}>
+                                  <tr>
+                                    <th className="text-primary">CONTAINER</th>
+                                    <th className="text-secondary">
+                                      {ele.F_ContainerNo}
+                                    </th>
+                                  </tr>
+                                  <tr>
+                                    <th className="text-primary">TYPE</th>
+                                    <th className="text-secondary">
+                                      {ele.F_ConType}
+                                    </th>
+                                  </tr>
+                                  <tr>
+                                    <th className="text-primary">KGS</th>
+                                    <th className="text-secondary">
+                                      {numberWithCommas(ele.F_KGS)}
+                                    </th>
+                                  </tr>
+                                  <tr>
+                                    <th className="text-primary">PKG</th>
+                                    <th className="text-secondary">
+                                      {numberWithCommas(ga.F_PKGS) ||
+                                        numberWithCommas(ga.F_Pkgs)}
+                                    </th>
+                                  </tr>
+                                </React.Fragment>
                               );
                           })}
                         </tbody>
                       </Table>
                     </Card>
-                  </Collapse>
-                );
-              }
-            })}
+                  );
+                } else {
+                  return (
+                    <Collapse isOpen={isHouseOpen}>
+                      <Card
+                        key={ga.F_ID}
+                        style={{ borderRadius: 0 }}
+                        className="px-3 mb-2 pt-2"
+                      >
+                        <CardHeader
+                          style={{ backgroundColor: "#fff" }}
+                          className="text-success py-1"
+                        >
+                          <Row>
+                            <Col sm="9">House {ga.F_ID}</Col>
+                          </Row>
+                        </CardHeader>
+                        <Table
+                          className="table-borderless mt-2 table-sm"
+                          style={{ fontSize: "0.8rem" }}
+                        >
+                          <tbody>
+                            <tr>
+                              <th className="text-success">HBL</th>
+                              <th className="text-secondary">{ga.F_HBLNo}</th>
+                            </tr>
+                            <tr>
+                              <th className="text-success">CUSTOMER</th>
+                              <th className="text-secondary">{ga.CUSTOMER}</th>
+                            </tr>
+                            <tr>
+                              <th className="text-success">SHIPPER</th>
+                              <th className="text-secondary">{ga.SHIPPER}</th>
+                            </tr>
+                            <tr>
+                              <th className="text-success">CONSIGNEE</th>
+                              <th className="text-secondary">{ga.CONSIGNEE}</th>
+                            </tr>
+                            <tr>
+                              <th className="text-success">NOTIFY</th>
+                              <th className="text-secondary">{ga.NOTIFY}</th>
+                            </tr>
+                            <tr>
+                              <th className="text-success">COMMODITY</th>
+                              <th className="text-secondary">
+                                {ga.F_Commodity}
+                              </th>
+                            </tr>
+                            <tr>
+                              <th className="text-success">PKG</th>
+                              <th className="text-secondary">{ga.F_MarkPkg}</th>
+                            </tr>
+                            <tr>
+                              <th className="text-success">KGS</th>
+                              <th className="text-secondary">{ga.F_KGS}</th>
+                            </tr>
+                            <tr>
+                              <th className="text-success">CBM</th>
+                              <th className="text-secondary">{ga.F_CBM}</th>
+                            </tr>
+                            <tr>
+                              <th className="text-success">REFERENCE</th>
+                              <th className="text-secondary">
+                                {ga.F_CustRefNo || "NO REFERENCE"}
+                              </th>
+                            </tr>
+                            {Containers.map((ele) => {
+                              if (ele.F_OIHBLID == ga.F_ID)
+                                return (
+                                  <>
+                                    <React.Fragment
+                                      key={ele.F_ID + ele.F_OIHBLID}
+                                    >
+                                      <tr>
+                                        <th className="text-primary">
+                                          CONTAINER
+                                        </th>
+                                        <th className="text-secondary">
+                                          {ele.F_ContainerNo}
+                                        </th>
+                                      </tr>
+                                      <tr>
+                                        <th className="text-primary">TYPE</th>
+                                        <th className="text-secondary">
+                                          {ele.F_ConType}
+                                        </th>
+                                      </tr>
+                                      <tr>
+                                        <th className="text-primary">KGS</th>
+                                        <th className="text-secondary">
+                                          {numberWithCommas(ele.F_KGS)}
+                                        </th>
+                                      </tr>
+                                      <tr>
+                                        <th className="text-primary">PKG</th>
+                                        <th className="text-secondary">
+                                          {numberWithCommas(ga.F_PKGS) ||
+                                            numberWithCommas(ga.F_Pkgs)}
+                                        </th>
+                                      </tr>
+                                    </React.Fragment>
+                                  </>
+                                );
+                            })}
+                          </tbody>
+                        </Table>
+                      </Card>
+                    </Collapse>
+                  );
+                }
+              })
+            : "NO HOUSE"}
           {/* CONTAINER */}
           {/* {Containers &&
               Containers[0].F_ContainerNo &&
