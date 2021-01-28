@@ -52,7 +52,7 @@ export default function dashboard({
                     my ocean import list
                   </div>
                   <ListGroup>
-                    {OimList.length ? (
+                    {OimList && OimList.length ? (
                       OimList.map((ga) => (
                         <ListGroupItem
                           key={ga.ID + ga.RefNo}
@@ -92,7 +92,7 @@ export default function dashboard({
                     my ocean export list
                   </div>
                   <ListGroup>
-                    {OomList.length ? (
+                    {OomList && OomList.length ? (
                       OomList.map((ga) => (
                         <ListGroupItem
                           key={ga.ID + ga.RefNo}
@@ -129,7 +129,7 @@ export default function dashboard({
                     my air import list
                   </div>
                   <ListGroup>
-                    {AimList.length ? (
+                    {AimList && AimList.length ? (
                       AimList.map((ga) => (
                         <ListGroupItem
                           key={ga.ID + ga.RefNo}
@@ -185,7 +185,7 @@ export default function dashboard({
                     my air export list
                   </div>
                   <ListGroup>
-                    {AomList.length ? (
+                    {AomList && AomList.length ? (
                       AomList.map((ga) => (
                         <ListGroupItem
                           key={ga.ID + ga.RefNo}
@@ -223,7 +223,7 @@ export default function dashboard({
             <div className="card-body">
               My Ocean Import
               <div className="text-white-50 small">
-                Total of {OimList.length}
+                Total of {OimList && OimList.length}
                 <br />
                 based on ETA from 2 weeks
               </div>
@@ -236,7 +236,7 @@ export default function dashboard({
             <div className="card-body">
               My Ocean Export
               <div className="text-white-50 small">
-                Total of {OomList.length}
+                Total of {OomList && OomList.length}
                 <br />
                 based on ETD from 2 weeks
               </div>
@@ -249,7 +249,7 @@ export default function dashboard({
             <div className="card-body">
               My Air Import
               <div className="text-white-50 small">
-                Total of {AimList.length}
+                Total of {AimList && AimList.length}
                 <br />
                 based on ETA from 2 weeks
               </div>
@@ -262,7 +262,7 @@ export default function dashboard({
             <div className="card-body">
               My Air Export
               <div className="text-white-50 small">
-                Total of {AomList.length}
+                Total of {AomList && AomList.length}
                 <br />
                 based on ETD from 2 weeks
               </div>

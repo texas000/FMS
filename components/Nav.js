@@ -294,7 +294,7 @@ const Top = ({ Token, toggle, setToggle }) => {
             <i className="fa fa-envelope fa-fw"></i>
             {/* <!-- Counter - Messages --> */}
             <span className="badge badge-danger badge-counter">
-              {Messages.length}
+              {Messages && Messages.length}
             </span>
           </a>
           {/* <!-- Dropdown - Messages --> */}
@@ -305,7 +305,8 @@ const Top = ({ Token, toggle, setToggle }) => {
             aria-labelledby="messagesDropdown"
           >
             <h6 className="dropdown-header">Message Center</h6>
-            {Messages.length &&
+            {Messages &&
+              Messages.length &&
               Messages.map((ga) => (
                 <a
                   className="dropdown-item d-flex align-items-center"
