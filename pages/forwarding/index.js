@@ -410,7 +410,6 @@ export async function getServerSideProps({ req, query }) {
       props: {
         Cookie: cookies,
         Re: [],
-        Notifications: noti,
       },
     };
   } else {
