@@ -234,7 +234,7 @@ const Top = ({ Token, toggle, setToggle }) => {
             <i className="fa fa-bell fa-fw"></i>
             {/* <!-- Counter - Alerts --> */}
             <span className="badge badge-danger badge-counter">
-              {Notifications.length}
+              {Notifications && Notifications.length}
             </span>
           </a>
           {/* <!-- Dropdown - Alerts --> */}
