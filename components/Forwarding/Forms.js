@@ -9,7 +9,7 @@ export const Forms = ({ Master, House, Containers, AP }) => {
   const [APType, setAPType] = React.useState("CHECK");
   React.useEffect(() => {
     setIsClient(true);
-  });
+  }, []);
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }

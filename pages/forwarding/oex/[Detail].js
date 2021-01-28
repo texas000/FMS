@@ -24,7 +24,7 @@ const Detail = ({ Cookie, OIM, EXTRA }) => {
   });
 
   var mailSubject, mailBody, emailHref;
-  if (OIM.M) {
+  if (OIM && OIM.M) {
     mailSubject =
       OIM.H.length > 0
         ? `[JW] ${OIM.H[0].CUSTOMER} MBL# ${OIM.M.F_MBLNo} HBL# ${OIM.H.map(
@@ -134,23 +134,29 @@ export async function getServerSideProps({ req, query }) {
     `${process.env.BASE_URL}api/forwarding/getOexDetail`,
     { headers: { reference: query.Detail, key: cookies.jamesworldwidetoken } }
   );
-  const Oim = await fetchOim.json();
+  if (fetchOim.status === 200) {
+    const Oim = await fetchOim.json();
 
-  // FETCH EXTRA DATA FROM FMS
-  const fetchExtra = await fetch(
-    `${process.env.BASE_URL}api/forwarding/getExtra`,
-    { headers: { ref: query.Detail } }
-  );
-  var Extra = null;
-  if (fetchExtra.status == 200) {
-    Extra = await fetchExtra.json();
+    // FETCH EXTRA DATA FROM FMS
+    const fetchExtra = await fetch(
+      `${process.env.BASE_URL}api/forwarding/getExtra`,
+      { headers: { ref: query.Detail } }
+    );
+    var Extra = null;
+    if (fetchExtra.status == 200) {
+      Extra = await fetchExtra.json();
+    } else {
+      Extra = { M: [], S: [] };
+    }
+
+    return {
+      props: { Cookie: cookies, OIM: Oim, EXTRA: Extra },
+    };
   } else {
-    Extra = { M: [], S: [] };
+    return {
+      props: { Cookie: cookies },
+    };
   }
-
-  return {
-    props: { Cookie: cookies, OIM: Oim, EXTRA: Extra },
-  };
 }
 
 export default Detail;

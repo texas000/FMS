@@ -34,9 +34,9 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
   useEffect(() => {
     !TOKEN && router.push("/login");
     // console.log(Re);
-    if (typeof window !== "undefined") {
-      localStorage.setItem("notifications", JSON.stringify(Notifications));
-    }
+    // if (typeof window !== "undefined") {
+    //   localStorage.setItem("notifications", JSON.stringify(Notifications));
+    // }
   }, []);
 
   const columnStyle = {
@@ -202,13 +202,21 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
     </span>
   );
 
+  const customSizePerPage = [
+    { page: 10, text: "10" },
+    { page: 50, text: "50" },
+    { page: 100, text: "100" },
+    { page: 200, text: "200" },
+    { page: 300, text: "300" },
+  ];
+
   const sizePerPageRenderer = ({
     options,
     currSizePerPage,
     onSizePerPageChange,
   }) => (
     <div className="btn-group" role="group">
-      {options.map((option) => {
+      {customSizePerPage.map((option) => {
         const isSelect = currSizePerPage === `${option.page}`;
         return (
           <Button
@@ -217,7 +225,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
             onClick={() => onSizePerPageChange(option.page)}
             style={{ borderRadius: "0" }}
             size="sm"
-            className={`btn mb-2 ${isSelect ? "btn-secondary" : "btn-info"}`}
+            className={`btn ${isSelect ? "btn-secondary" : "btn-warning"}`}
           >
             {option.text}
           </Button>
@@ -357,19 +365,19 @@ export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
-  var noti = [];
-  if (cookies.jamesworldwidetoken) {
-    const notification = await fetch(
-      `${process.env.BASE_URL}api/forwarding/navbarNotification`,
-      {
-        headers: {
-          uid: jwt.decode(cookies.jamesworldwidetoken).fsid,
-          key: cookies.jamesworldwidetoken,
-        },
-      }
-    );
-    noti = await notification.json();
-  }
+  // var noti = [];
+  // if (cookies.jamesworldwidetoken) {
+  //   const notification = await fetch(
+  //     `${process.env.BASE_URL}api/forwarding/navbarNotification`,
+  //     {
+  //       headers: {
+  //         uid: jwt.decode(cookies.jamesworldwidetoken).fsid,
+  //         key: cookies.jamesworldwidetoken,
+  //       },
+  //     }
+  //   );
+  //   noti = await notification.json();
+  // }
 
   // console.time("prev");
   // const resultFetch = await fetch(
@@ -420,7 +428,6 @@ export async function getServerSideProps({ req, query }) {
       props: {
         Cookie: cookies,
         Re: result,
-        Notifications: noti,
       },
     };
   }

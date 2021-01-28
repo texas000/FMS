@@ -4,8 +4,17 @@ import { useRouter } from "next/router";
 import jwt from "jsonwebtoken";
 import ListGroup from "reactstrap/lib/ListGroup";
 import ListGroupItem from "reactstrap/lib/ListGroupItem";
+import fetch from "node-fetch";
+import moment from "moment";
 
-export default function dashboard({ Cookie }) {
+export default function dashboard({
+  Cookie,
+  OimList,
+  OomList,
+  AimList,
+  AomList,
+  Board,
+}) {
   const router = useRouter();
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
 
@@ -13,7 +22,8 @@ export default function dashboard({ Cookie }) {
 
   React.useEffect(() => {
     if (typeof window !== "undefined") {
-      setOim(JSON.parse(localStorage.getItem("notifications")));
+      localStorage.setItem("notification", JSON.stringify(OimList));
+      localStorage.setItem("board", JSON.stringify(Board));
     }
   }, []);
   return (
@@ -39,15 +49,34 @@ export default function dashboard({ Cookie }) {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                    Earnings (Monthly)
+                    my ocean import list
                   </div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">
+                  <ListGroup>
+                    {OimList.length ? (
+                      OimList.map((ga) => (
+                        <ListGroupItem
+                          key={ga.ID + ga.RefNo}
+                          onClick={() =>
+                            router.push(`/forwarding/oim/${ga.RefNo}`)
+                          }
+                          href="#"
+                          action
+                          className="text-gray-800 text-xs btn btn-link"
+                        >
+                          {ga.RefNo} - Arrival {moment(ga.ETA).fromNow()}
+                        </ListGroupItem>
+                      ))
+                    ) : (
+                      <div className="mt-2 text-danger text-xs">No Result</div>
+                    )}
+                  </ListGroup>
+                  {/* <div className="h5 mb-0 font-weight-bold text-gray-800">
                     $40,000
-                  </div>
+                  </div> */}
                 </div>
-                <div className="col-auto">
+                {/* <div className="col-auto">
                   <i className="fa fa-calendar fa-2x text-gray-300"></i>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -60,15 +89,31 @@ export default function dashboard({ Cookie }) {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
-                    Earnings (Annual)
+                    my ocean export list
                   </div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">
-                    $215,000
-                  </div>
+                  <ListGroup>
+                    {OomList.length ? (
+                      OomList.map((ga) => (
+                        <ListGroupItem
+                          key={ga.ID + ga.RefNo}
+                          onClick={() =>
+                            router.push(`/forwarding/oex/${ga.RefNo}`)
+                          }
+                          href="#"
+                          action
+                          className="text-gray-800 text-xs btn btn-link"
+                        >
+                          {ga.RefNo} - Departure {moment(ga.ETA).fromNow()}
+                        </ListGroupItem>
+                      ))
+                    ) : (
+                      <div className="mt-2 text-danger text-xs">No Result</div>
+                    )}
+                  </ListGroup>
                 </div>
-                <div className="col-auto">
+                {/* <div className="col-auto">
                   <i className="fa fa-dollar fa-2x text-gray-300"></i>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -81,9 +126,28 @@ export default function dashboard({ Cookie }) {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs font-weight-bold text-info text-uppercase mb-1">
-                    Tasks
+                    my air import list
                   </div>
-                  <div className="row no-gutters align-items-center">
+                  <ListGroup>
+                    {AimList.length ? (
+                      AimList.map((ga) => (
+                        <ListGroupItem
+                          key={ga.ID + ga.RefNo}
+                          onClick={() =>
+                            router.push(`/forwarding/aim/${ga.RefNo}`)
+                          }
+                          href="#"
+                          action
+                          className="text-gray-800 text-xs btn btn-link"
+                        >
+                          {ga.RefNo} - Arrival {moment(ga.ETA).fromNow()}
+                        </ListGroupItem>
+                      ))
+                    ) : (
+                      <div className="mt-2 text-danger text-xs">No Result</div>
+                    )}
+                  </ListGroup>
+                  {/* <div className="row no-gutters align-items-center">
                     <div className="col-auto">
                       <div className="h5 mb-0 mr-3 font-weight-bold text-gray-800">
                         50%
@@ -101,11 +165,11 @@ export default function dashboard({ Cookie }) {
                         ></div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
-                <div className="col-auto">
+                {/* <div className="col-auto">
                   <i className="fa fa-clipboard fa-2x text-gray-300"></i>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -118,15 +182,89 @@ export default function dashboard({ Cookie }) {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                    Pending Requests
+                    my air export list
                   </div>
-                  <div className="h5 mb-0 font-weight-bold text-gray-800">
+                  <ListGroup>
+                    {AomList.length ? (
+                      AomList.map((ga) => (
+                        <ListGroupItem
+                          key={ga.ID + ga.RefNo}
+                          onClick={() =>
+                            router.push(`/forwarding/aex/${ga.RefNo}`)
+                          }
+                          href="#"
+                          action
+                          className="text-gray-800 text-xs btn btn-link"
+                        >
+                          {ga.RefNo} - Departure {moment(ga.ETA).fromNow()}
+                        </ListGroupItem>
+                      ))
+                    ) : (
+                      <div className="mt-2 text-danger text-xs">No Result</div>
+                    )}
+                  </ListGroup>
+                  {/* <div className="h5 mb-0 font-weight-bold text-gray-800">
                     18
-                  </div>
+                  </div> */}
                 </div>
-                <div className="col-auto">
+                {/* <div className="col-auto">
                   <i className="fa fa-comments fa-2x text-gray-300"></i>
-                </div>
+                </div> */}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Explain Row */}
+      <div className="row">
+        <div className="col-lg-3 mb-4">
+          <div className="card bg-primary text-white shadow">
+            <div className="card-body">
+              My Ocean Import
+              <div className="text-white-50 small">
+                Total of {OimList.length}
+                <br />
+                based on ETA from 2 weeks
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-lg-3 mb-4">
+          <div className="card bg-success text-white shadow">
+            <div className="card-body">
+              My Ocean Export
+              <div className="text-white-50 small">
+                Total of {OomList.length}
+                <br />
+                based on ETD from 2 weeks
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-lg-3 mb-4">
+          <div className="card bg-info text-white shadow">
+            <div className="card-body">
+              My Air Import
+              <div className="text-white-50 small">
+                Total of {AimList.length}
+                <br />
+                based on ETA from 2 weeks
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-lg-3 mb-4">
+          <div className="card bg-warning text-white shadow">
+            <div className="card-body">
+              My Air Export
+              <div className="text-white-50 small">
+                Total of {AomList.length}
+                <br />
+                based on ETD from 2 weeks
               </div>
             </div>
           </div>
@@ -134,18 +272,17 @@ export default function dashboard({ Cookie }) {
       </div>
 
       {/* // Content Row  */}
-
+      {/* // Area Chart  */}
+      {/* // Card Header - Dropdown  */}
+      {/* // Card Body  */}
       <div className="row">
-        {/* // Area Chart  */}
-        <div className="col-xl-8 col-lg-7">
+        {/* <div className="col-xl-8 col-lg-7">
           <div className="card shadow mb-4">
-            {/* // Card Header - Dropdown  */}
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
               <h6 className="m-0 font-weight-bold text-primary">
                 Example Artwork
               </h6>
             </div>
-            {/* // Card Body  */}
             <div className="card-body">
               <div className="text-center">
                 <img
@@ -153,28 +290,18 @@ export default function dashboard({ Cookie }) {
                   className="img-fluid"
                 />
               </div>
-              {/* <div className="row">
-                <div className="col-lg-6">
-                  <h1>a</h1>
-                </div>
-                <div className="col-lg-6">
-                  <h1>b</h1>
-                </div>
-              </div> */}
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* // Pie Chart  */}
-        <div className="col-xl-4 col-lg-5">
+        {/* <div className="col-xl-4 col-lg-5">
           <div className="card shadow mb-4">
-            {/* // Card Header - Dropdown  */}
             <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
               <h6 className="m-0 font-weight-bold text-primary">
                 Quick Access
               </h6>
             </div>
-            {/* // Card Body  */}
             <div className="card-body">
               <ListGroup>
                 {oim.map((ga) => (
@@ -191,14 +318,14 @@ export default function dashboard({ Cookie }) {
               </ListGroup>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
-
-      {/* // Content Row  */}
-      <div className="row">
+      <div>
+        {/* // Content Row  */}
         {/* // Content Column  */}
+        {/* // Project Card Example  */}
+        {/* <div className="row">
         <div className="col-lg-6 mb-4">
-          {/* // Project Card Example  */}
           <div className="card shadow mb-4">
             <div className="card-header py-3">
               <h6 className="m-0 font-weight-bold text-primary">Projects</h6>
@@ -270,10 +397,10 @@ export default function dashboard({ Cookie }) {
                 ></div>
               </div>
             </div>
-          </div>
+          </div> */}
 
-          {/* // Color System  */}
-          <div className="row">
+        {/* // Color System  */}
+        {/* <div className="row">
             <div className="col-lg-6 mb-4">
               <div className="card bg-primary text-white shadow">
                 <div className="card-body">
@@ -339,11 +466,11 @@ export default function dashboard({ Cookie }) {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="col-lg-6 mb-4">
           {/* // Illustrations  */}
-          <div className="card shadow mb-4">
+          {/* <div className="card shadow mb-4">
             <div className="card-header py-3">
               <h6 className="m-0 font-weight-bold text-primary">
                 Illustrations
@@ -351,8 +478,6 @@ export default function dashboard({ Cookie }) {
             </div>
             <div className="card-body">
               <div className="text-center">
-                {/* <img className="img-fluid px-3 px-sm-4 mt-3 mb-4" style={{width: "25rem"}}
-                                            src="img/undraw_posting_photo.svg" alt="" /> */}
               </div>
               <p>
                 Add some quality, svg illustrations to your project courtesy of{" "}
@@ -366,10 +491,10 @@ export default function dashboard({ Cookie }) {
                 Browse Illustrations on unDraw &rarr;
               </a>
             </div>
-          </div>
+          </div> */}
 
           {/* // Approach  */}
-          <div className="card shadow mb-4">
+          {/* <div className="card shadow mb-4">
             <div className="card-header py-3">
               <h6 className="m-0 font-weight-bold text-primary">
                 Development Approach
@@ -387,7 +512,7 @@ export default function dashboard({ Cookie }) {
                 the Bootstrap framework, especially the utility classes.
               </p>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </Layout>
@@ -395,9 +520,56 @@ export default function dashboard({ Cookie }) {
 }
 
 export async function getServerSideProps({ req }) {
-  const cookies = cookie.parse(
-    req ? req.headers.cookie || "" : window.document.cookie
-  );
+  const cookies = cookie.parse(req.headers.cookie || "");
+
+  const { fsid } = jwt.decode(cookies.jamesworldwidetoken);
+
   // Pass data to the page via props
-  return { props: { Cookie: cookies } };
+  const from = moment().subtract(14, "days").calendar();
+
+  const resOim = await fetch(
+    `http://jameswi.com:49996/api/oimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
+  );
+  var dataOim = [];
+  if (resOim.status == 200) {
+    dataOim = await resOim.json();
+  }
+
+  const resOom = await fetch(
+    `http://jameswi.com:49996/api/oommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
+  );
+  var dataOom = [];
+  if (resOom.status == 200) {
+    dataOom = await resOom.json();
+  }
+
+  const resAim = await fetch(
+    `http://jameswi.com:49996/api/aimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
+  );
+  var dataAim = [];
+  if (resAim.status == 200) {
+    dataAim = await resAim.json();
+  }
+
+  const resAom = await fetch(
+    `http://jameswi.com:49996/api/aommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
+  );
+  var dataAom = [];
+  if (resAom.status == 200) {
+    dataAom = await resAom.json();
+  }
+
+  const resBoard = await fetch(`${process.env.BASE_URL}api/board/getPostFive`);
+  const dataBoard = await resBoard.json();
+
+  return {
+    props: {
+      Cookie: cookies,
+      OimList: dataOim,
+      OomList: dataOom,
+      AimList: dataAim,
+      AomList: dataAom,
+      Board: dataBoard,
+    },
+  };
 }

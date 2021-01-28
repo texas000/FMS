@@ -18,11 +18,15 @@ const Top = ({ Token, toggle, setToggle }) => {
   const [search, setSearch] = React.useState(false);
   const [alertToggle, setalertToggle] = React.useState(false);
   const [messageToggle, setmessageToggle] = React.useState(false);
+  const [searchAlertToggle, setSearchAlertToggle] = React.useState(false);
   const [userToggle, setuserToggle] = React.useState(false);
+
   const [Notifications, setNotifications] = React.useState([]);
+  const [Messages, setMessages] = React.useState([]);
   React.useEffect(() => {
     if (typeof window !== "undefined") {
-      setNotifications(JSON.parse(localStorage.getItem("notifications")));
+      setNotifications(JSON.parse(localStorage.getItem("notification")));
+      setMessages(JSON.parse(localStorage.getItem("board")));
     }
   }, []);
 
@@ -109,6 +113,109 @@ const Top = ({ Token, toggle, setToggle }) => {
             </form>
           </div>
         </li>
+        <li
+          className="nav-item dropdown no-arrow mx-1"
+          onClick={() => setSearchAlertToggle((prev) => !prev)}
+        >
+          <a
+            className="nav-link dropdown-toggle"
+            href="#"
+            id="searchAlertDropdown"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded={searchAlertToggle}
+          >
+            <i className="fa fa-search fa-fw"></i>
+            {/* <!-- Counter - Alerts --> */}
+            <span className="badge badge-danger badge-counter">5</span>
+          </a>
+          <div
+            className={`dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in ${
+              searchAlertToggle && "show"
+            }`}
+            aria-labelledby="alertsDropdown"
+          >
+            <h6 className="dropdown-header">Search Center</h6>
+            <a
+              className="dropdown-item d-flex align-items-center"
+              href="#"
+              onClick={() => router.push("/forwarding?search=oim")}
+            >
+              <div className="mr-3">
+                <div className="icon-circle bg-primary">
+                  <i className="fa fa-ship text-white"></i>
+                </div>
+              </div>
+              <div>
+                <div className="small text-gray-500">Forwarding OIM search</div>
+                <span className="font-weight-bold text-primary">OIM</span>
+              </div>
+            </a>
+            <a
+              className="dropdown-item d-flex align-items-center"
+              href="#"
+              onClick={() => router.push("/forwarding?search=oex")}
+            >
+              <div className="mr-3">
+                <div className="icon-circle bg-primary">
+                  <i className="fa fa-ship text-white"></i>
+                </div>
+              </div>
+              <div>
+                <div className="small text-gray-500">Forwarding OEX search</div>
+                <span className="font-weight-bold text-primary">OEX</span>
+              </div>
+            </a>
+            <a
+              className="dropdown-item d-flex align-items-center"
+              href="#"
+              onClick={() => router.push("/forwarding?search=aim")}
+            >
+              <div className="mr-3">
+                <div className="icon-circle bg-primary">
+                  <i className="fa fa-plane text-white"></i>
+                </div>
+              </div>
+              <div>
+                <div className="small text-gray-500">Forwarding AIM search</div>
+                <span className="font-weight-bold text-success">AIM</span>
+              </div>
+            </a>
+            <a
+              className="dropdown-item d-flex align-items-center"
+              href="#"
+              onClick={() => router.push("/forwarding?search=aex")}
+            >
+              <div className="mr-3">
+                <div className="icon-circle bg-primary">
+                  <i className="fa fa-plane text-white"></i>
+                </div>
+              </div>
+              <div>
+                <div className="small text-gray-500">Forwarding AEX search</div>
+                <span className="font-weight-bold text-success">AEX</span>
+              </div>
+            </a>
+            <a
+              className="dropdown-item d-flex align-items-center"
+              href="#"
+              onClick={() => router.push("/forwarding?search=JWI250")}
+            >
+              <div className="mr-3">
+                <div className="icon-circle bg-primary">
+                  <i className="fa fa-flag text-white"></i>
+                </div>
+              </div>
+              <div>
+                <div className="small text-gray-500">
+                  Forwarding OTHER search
+                </div>
+                <span className="font-weight-bold">OTHER</span>
+              </div>
+            </a>
+          </div>
+        </li>
 
         {/* <!-- Nav Item - Alerts --> */}
         <li
@@ -126,7 +233,9 @@ const Top = ({ Token, toggle, setToggle }) => {
           >
             <i className="fa fa-bell fa-fw"></i>
             {/* <!-- Counter - Alerts --> */}
-            <span className="badge badge-danger badge-counter">5+</span>
+            <span className="badge badge-danger badge-counter">
+              {Notifications.length}
+            </span>
           </a>
           {/* <!-- Dropdown - Alerts --> */}
           <div
@@ -135,91 +244,15 @@ const Top = ({ Token, toggle, setToggle }) => {
             }`}
             aria-labelledby="alertsDropdown"
           >
-            <h6 className="dropdown-header">Alerts Center</h6>
-            <a
-              className="dropdown-item d-flex align-items-center"
-              href="#"
-              onClick={() => router.push("/forwarding?search=oim")}
-            >
-              <div className="mr-3">
-                <div className="icon-circle bg-success">
-                  <i className="fa fa-ship text-white"></i>
-                </div>
-              </div>
-              <div>
-                <div className="small text-gray-500">Forwarding OIM search</div>
-                <span className="font-weight-bold">OIM</span>
-              </div>
-            </a>
-            <a
-              className="dropdown-item d-flex align-items-center"
-              href="#"
-              onClick={() => router.push("/forwarding?search=oex")}
-            >
-              <div className="mr-3">
-                <div className="icon-circle bg-success">
-                  <i className="fa fa-ship text-white"></i>
-                </div>
-              </div>
-              <div>
-                <div className="small text-gray-500">Forwarding OEX search</div>
-                <span className="font-weight-bold">OEX</span>
-              </div>
-            </a>
-            <a
-              className="dropdown-item d-flex align-items-center"
-              href="#"
-              onClick={() => router.push("/forwarding?search=aim")}
-            >
-              <div className="mr-3">
-                <div className="icon-circle bg-success">
-                  <i className="fa fa-plane text-white"></i>
-                </div>
-              </div>
-              <div>
-                <div className="small text-gray-500">Forwarding AIM search</div>
-                <span className="font-weight-bold">AIM</span>
-              </div>
-            </a>
-            <a
-              className="dropdown-item d-flex align-items-center"
-              href="#"
-              onClick={() => router.push("/forwarding?search=aex")}
-            >
-              <div className="mr-3">
-                <div className="icon-circle bg-success">
-                  <i className="fa fa-plane text-white"></i>
-                </div>
-              </div>
-              <div>
-                <div className="small text-gray-500">Forwarding AEX search</div>
-                <span className="font-weight-bold">AEX</span>
-              </div>
-            </a>
-            <a
-              className="dropdown-item d-flex align-items-center"
-              href="#"
-              onClick={() => router.push("/forwarding?search=JWI250")}
-            >
-              <div className="mr-3">
-                <div className="icon-circle bg-success">
-                  <i className="fa fa-flag text-white"></i>
-                </div>
-              </div>
-              <div>
-                <div className="small text-gray-500">
-                  Forwarding OTHER search
-                </div>
-                <span className="font-weight-bold">OTHER</span>
-              </div>
-            </a>
+            <h6 className="dropdown-header">OIM Alerts Center</h6>
+
             {Notifications &&
               Notifications.map((ga) => (
                 <a
-                  key={ga.F_ID}
+                  key={ga.ID}
                   className="dropdown-item d-flex align-items-center"
                   href="#"
-                  onClick={() => router.push(`/forwarding/oim/${ga.F_RefNo}`)}
+                  onClick={() => router.push(`/forwarding/oim/${ga.RefNo}`)}
                 >
                   <div className="mr-3">
                     <div className="icon-circle bg-primary">
@@ -228,56 +261,19 @@ const Top = ({ Token, toggle, setToggle }) => {
                   </div>
                   <div>
                     <div className="small text-gray-500">
-                      {moment(ga.F_PostDate).format("LL")}
+                      Arriving {moment(ga.ETA).fromNow()}
                     </div>
-                    <span className="font-weight-bold">{ga.F_RefNo}</span>
+                    <span className="font-weight-bold">{ga.RefNo}</span>
                   </div>
                 </a>
               ))}
-
-            {/* <a className="dropdown-item d-flex align-items-center" href="#">
-              <div className="mr-3">
-                <div className="icon-circle bg-primary">
-                  <i className="fas fa-file-alt text-white"></i>
-                </div>
-              </div>
-              <div>
-                <div className="small text-gray-500">December 12, 2019</div>
-                <span className="font-weight-bold">
-                  A new monthly report is ready to download!
-                </span>
-              </div>
-            </a>
-            <a className="dropdown-item d-flex align-items-center" href="#">
-              <div className="mr-3">
-                <div className="icon-circle bg-success">
-                  <i className="fas fa-donate text-white"></i>
-                </div>
-              </div>
-              <div>
-                <div className="small text-gray-500">December 7, 2019</div>
-                $290.29 has been deposited into your account!
-              </div>
-            </a>
-            <a className="dropdown-item d-flex align-items-center" href="#">
-              <div className="mr-3">
-                <div className="icon-circle bg-warning">
-                  <i className="fas fa-exclamation-triangle text-white"></i>
-                </div>
-              </div>
-              <div>
-                <div className="small text-gray-500">December 2, 2019</div>
-                Spending Alert: We've noticed unusually high spending for your
-                account.
-              </div>
-            </a> */}
-
-            {/* <a
+            <a
               className="dropdown-item text-center small text-gray-500"
               href="#"
+              onClick={() => router.push("/dashboard")}
             >
-              Show All Alerts
-            </a> */}
+              Read More Messages
+            </a>
           </div>
         </li>
 
@@ -297,7 +293,9 @@ const Top = ({ Token, toggle, setToggle }) => {
           >
             <i className="fa fa-envelope fa-fw"></i>
             {/* <!-- Counter - Messages --> */}
-            <span className="badge badge-danger badge-counter">7</span>
+            <span className="badge badge-danger badge-counter">
+              {Messages.length}
+            </span>
           </a>
           {/* <!-- Dropdown - Messages --> */}
           <div
@@ -307,7 +305,31 @@ const Top = ({ Token, toggle, setToggle }) => {
             aria-labelledby="messagesDropdown"
           >
             <h6 className="dropdown-header">Message Center</h6>
-            <a className="dropdown-item d-flex align-items-center" href="#">
+            {Messages.length &&
+              Messages.map((ga) => (
+                <a
+                  className="dropdown-item d-flex align-items-center"
+                  href="#"
+                  onClick={() => router.push(`/board/${ga.ID}`)}
+                  key={ga.ID}
+                >
+                  <div className="dropdown-list-image mr-3">
+                    <img
+                      className="rounded-circle"
+                      src="/image/icons/sarah.svg"
+                      alt=""
+                    />
+                    <div className="status-indicator bg-success"></div>
+                  </div>
+                  <div className="font-weight-bold">
+                    <div className="text-truncate">{ga.TITLE}</div>
+                    <div className="small text-gray-500">
+                      {moment(ga.TIME).format("LL")}
+                    </div>
+                  </div>
+                </a>
+              ))}
+            {/* <a className="dropdown-item d-flex align-items-center" href="#">
               <div className="dropdown-list-image mr-3">
                 <img
                   className="rounded-circle"
@@ -374,10 +396,11 @@ const Top = ({ Token, toggle, setToggle }) => {
                 </div>
                 <div className="small text-gray-500">Chicken the Dog · 2w</div>
               </div>
-            </a>
+            </a> */}
             <a
               className="dropdown-item text-center small text-gray-500"
               href="#"
+              onClick={() => router.push("/board")}
             >
               Read More Messages
             </a>

@@ -26,26 +26,26 @@ export default (req, res) => {
                     FROM
                         T_OIMMAIN
                     WHERE
-                        F_ETA >= '2020-01-01') AS OIM, (
+                        F_ETA >= '2021-01-01') AS OIM, (
                         SELECT
                             COUNT(*) AS TOTAL
                         FROM
                             T_OOMMAIN
                         WHERE
-                            F_ETA >= '2020-01-01') AS OOM, (
+                            F_ETA >= '2021-01-01') AS OOM, (
                         SELECT
                             COUNT(*) AS TOTAL
                         FROM
                             T_AIMMAIN
                         WHERE
-                            F_ETA >= '2020-01-01') AS AIM,
+                            F_ETA >= '2021-01-01') AS AIM,
                         (
                         SELECT
                             COUNT(*) AS TOTAL
                         FROM
                             T_AOMMAIN
                         WHERE
-                            F_ETA >= '2020-01-01') AS AOM
+                            F_ETA >= '2021-01-01') AS AOM
             `,
           function (err, data) {
             if (err) console.log(err);

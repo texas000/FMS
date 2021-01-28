@@ -33,10 +33,32 @@ export const Status = ({ Data, Ref, Uid }) => {
     F_EmptyReturnDate: null,
   });
   React.useEffect(() => {
-    if (Data != null) {
+    if (Data === null) {
+      setSwitchData({
+        F_PreAlert: null,
+        F_PreAlertComment: null,
+        F_ISF: null,
+        F_ISFComment: null,
+        F_OBL: null,
+        F_OBLComment: null,
+        F_OceanFreight: null,
+        F_OceanFreightComment: null,
+        F_ArrivalNotice: null,
+        F_ArrivalNoticeComment: null,
+        F_CrDb: null,
+        F_CrDbComment: null,
+        F_Arrival: null,
+        F_ArrivalComment: null,
+        F_LastFreeDate: null,
+        F_PickedUpDate: null,
+        F_EmptyReturnDate: null,
+      });
+    } else {
       setSwitchData(Data);
     }
-  }, []);
+    console.log(Ref);
+    console.log(Data);
+  }, [Ref]);
 
   const onSaveStatus = async () => {
     const pre =
@@ -160,7 +182,8 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  defaultChecked={Data && Data.F_PreAlert === "1"}
+                  checked={switchData.F_PreAlert === null ? false : true}
+                  // defaultChecked={Data && Data.F_PreAlert === "1"}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null || null;
                     setSwitchData((prev) => ({
@@ -177,7 +200,6 @@ export const Status = ({ Data, Ref, Uid }) => {
               <Input
                 type="text"
                 placeholder="PRE ALERT"
-                defaultValue={switchData.F_PreAlertComment}
                 bsSize="sm"
                 className="text-xs"
                 onChange={(e) => {
@@ -187,6 +209,11 @@ export const Status = ({ Data, Ref, Uid }) => {
                     F_PreAlertComment: data,
                   }));
                 }}
+                value={
+                  switchData.F_PreAlertComment === null
+                    ? ""
+                    : switchData.F_PreAlertComment
+                }
               />
             </Col>
           </Row>
@@ -195,7 +222,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  defaultChecked={Data && Data.F_ISF === "1"}
+                  checked={switchData.F_ISF === null ? false : true}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
@@ -221,7 +248,11 @@ export const Status = ({ Data, Ref, Uid }) => {
                     F_ISFComment: data,
                   }));
                 }}
-                defaultValue={switchData.F_ISFComment}
+                value={
+                  switchData.F_ISFComment === null
+                    ? ""
+                    : switchData.F_ISFComment
+                }
               />
             </Col>
           </Row>
@@ -230,7 +261,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  defaultChecked={Data && Data.F_OBL === "1"}
+                  checked={switchData.F_OBL === null ? false : true}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
@@ -256,7 +287,11 @@ export const Status = ({ Data, Ref, Uid }) => {
                     F_OBLComment: data,
                   }));
                 }}
-                defaultValue={switchData.F_OBLComment}
+                value={
+                  switchData.F_OBLComment === null
+                    ? ""
+                    : switchData.F_OBLComment
+                }
               />
             </Col>
           </Row>
@@ -265,7 +300,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  defaultChecked={Data && Data.F_OceanFreight === "1"}
+                  checked={switchData.F_OceanFreight === null ? false : true}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
@@ -291,7 +326,11 @@ export const Status = ({ Data, Ref, Uid }) => {
                     F_OceanFreightComment: data,
                   }));
                 }}
-                defaultValue={switchData.F_OceanFreightComment}
+                value={
+                  switchData.F_OceanFreightComment === null
+                    ? ""
+                    : switchData.F_OBLComment
+                }
               />
             </Col>
           </Row>
@@ -300,7 +339,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  defaultChecked={Data && Data.F_ArrivalNotice === "1"}
+                  checked={switchData.F_ArrivalNotice === null ? false : true}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
@@ -326,7 +365,11 @@ export const Status = ({ Data, Ref, Uid }) => {
                     F_ArrivalNoticeComment: data,
                   }));
                 }}
-                defaultValue={switchData.F_ArrivalNoticeComment}
+                value={
+                  switchData.F_ArrivalNoticeComment === null
+                    ? ""
+                    : switchData.F_ArrivalNoticeComment
+                }
               />
             </Col>
           </Row>
@@ -335,7 +378,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  defaultChecked={Data && Data.F_CrDb === "1"}
+                  checked={switchData.F_CrDb === null ? false : true}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
@@ -361,7 +404,11 @@ export const Status = ({ Data, Ref, Uid }) => {
                     F_CrDbComment: data,
                   }));
                 }}
-                defaultValue={switchData.F_CrDbComment}
+                value={
+                  switchData.F_CrDbComment === null
+                    ? ""
+                    : switchData.F_CrDbComment
+                }
               />
             </Col>
           </Row>
@@ -370,7 +417,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  defaultChecked={Data && Data.F_Arrival === "1"}
+                  checked={switchData.F_Arrival === null ? false : true}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
@@ -396,7 +443,11 @@ export const Status = ({ Data, Ref, Uid }) => {
                     F_ArrivalComment: data,
                   }));
                 }}
-                defaultValue={switchData.F_ArrivalComment}
+                value={
+                  switchData.F_ArrivalComment === null
+                    ? ""
+                    : switchData.F_ArrivalComment
+                }
               />
             </Col>
           </Row>
@@ -419,7 +470,7 @@ export const Status = ({ Data, Ref, Uid }) => {
                   F_LastFreeDate: data,
                 }));
               }}
-              defaultValue={
+              value={
                 switchData.F_LastFreeDate != null
                   ? moment(switchData.F_LastFreeDate).utc().format("yyyy-MM-DD")
                   : ""
@@ -443,7 +494,7 @@ export const Status = ({ Data, Ref, Uid }) => {
                   F_PickedUpDate: data,
                 }));
               }}
-              defaultValue={
+              value={
                 switchData.F_PickedUpDate != null
                   ? moment(switchData.F_PickedUpDate).utc().format("yyyy-MM-DD")
                   : ""
@@ -467,7 +518,7 @@ export const Status = ({ Data, Ref, Uid }) => {
                   F_EmptyReturnDate: data,
                 }));
               }}
-              defaultValue={
+              value={
                 switchData.F_EmptyReturnDate != null
                   ? moment(switchData.F_EmptyReturnDate)
                       .utc()

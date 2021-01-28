@@ -124,126 +124,91 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 			</Collapse>
 		</li> */}
 
-      {/* <!-- Nav Item - Utilities Collapse Menu --> */}
-      {/* <li className="nav-item">
-			<a
-				className="nav-link collapsed"
-				href="#"
-				data-toggle="collapse"
-				data-target="#collapseUtilities"
-				aria-expanded="true"
-				aria-controls="collapseUtilities"
-			>
-				<i className="fa fa-wrench"></i>
-				<span>Utilities</span>
-			</a>
-			<div
-				id="collapseUtilities"
-				className="collapse"
-				aria-labelledby="headingUtilities"
-				data-parent="#accordionSidebar"
-			>
-				<div className="bg-white py-2 collapse-inner rounded">
-					<h6 className="collapse-header">Custom Utilities:</h6>
-					<a className="collapse-item" href="utilities-color.html">
-						Colors
-					</a>
-					<a className="collapse-item" href="utilities-border.html">
-						Borders
-					</a>
-					<a className="collapse-item" href="utilities-animation.html">
-						Animations
-					</a>
-					<a className="collapse-item" href="utilities-other.html">
-						Other
-					</a>
-				</div>
-			</div>
-		</li> */}
-
       {/* <!-- Divider --> */}
       <hr className="sidebar-divider" />
 
       {/* <!-- Heading --> */}
-      <div className="sidebar-heading">Addons</div>
-
       {/* <!-- Nav Item - Pages Collapse Menu --> */}
-      <li className={`nav-item`}>
-        <a
-          className="nav-link collapsed"
-          href="#"
-          onClick={() => setT1(!t1)}
-          data-toggle="collapse"
-          data-target="#collapsePages"
-          aria-expanded="true"
-          aria-controls="collapsePages"
-        >
-          <i className="fa fa-folder"></i>
-          <span>Pages</span>
-        </a>
-        <Collapse isOpen={t1}>
-          <div className="bg-white py-2 collapse-inner rounded">
-            <h6 className="collapse-header">Developing Pages</h6>
+      {Token.uid == 5 && (
+        <>
+          <div className="sidebar-heading">Addons</div>
+          <li className={`nav-item`}>
             <a
-              className="collapse-item"
+              className="nav-link collapsed"
               href="#"
-              onClick={() => router.push("/warehouse/staff")}
+              onClick={() => setT1(!t1)}
+              data-toggle="collapse"
+              data-target="#collapsePages"
+              aria-expanded="true"
+              aria-controls="collapsePages"
             >
-              Staff Manage
+              <i className="fa fa-folder"></i>
+              <span>Pages</span>
             </a>
+            <Collapse isOpen={t1}>
+              <div className="bg-white py-2 collapse-inner rounded">
+                <h6 className="collapse-header">Developing Pages</h6>
+                <a
+                  className="collapse-item"
+                  href="#"
+                  onClick={() => router.push("/warehouse/staff")}
+                >
+                  Staff Manage
+                </a>
+                <a
+                  className="collapse-item"
+                  href="#"
+                  onClick={() => router.push("/calendar")}
+                >
+                  Calendar
+                </a>
+                <div className="collapse-divider"></div>
+                <h6 className="collapse-header">Other Pages:</h6>
+                <a
+                  className="collapse-item"
+                  href="#"
+                  onClick={() => router.push("/dev/404")}
+                >
+                  404 Page
+                </a>
+                <a
+                  className="collapse-item"
+                  href="#"
+                  onClick={() => router.push("/dev/blank")}
+                >
+                  Blank Page
+                </a>
+              </div>
+            </Collapse>
+          </li>
+          {/* <!-- Nav Item - Charts --> */}
+          <li className="nav-item">
             <a
-              className="collapse-item"
+              className="nav-link"
               href="#"
-              onClick={() => router.push("/calendar")}
+              onClick={() => alert("Chart page is under construction")}
             >
-              Calendar
+              <i className="fa fa-desktop"></i>
+              <span>Charts</span>
             </a>
-            <div className="collapse-divider"></div>
-            <h6 className="collapse-header">Other Pages:</h6>
-            <a
-              className="collapse-item"
-              href="#"
-              onClick={() => router.push("/dev/404")}
-            >
-              404 Page
-            </a>
-            <a
-              className="collapse-item"
-              href="#"
-              onClick={() => router.push("/dev/blank")}
-            >
-              Blank Page
-            </a>
-          </div>
-        </Collapse>
-      </li>
+          </li>
 
-      {/* <!-- Nav Item - Charts --> */}
-      <li className="nav-item">
-        <a
-          className="nav-link"
-          href="#"
-          onClick={() => alert("Chart page is under construction")}
-        >
-          <i className="fa fa-desktop"></i>
-          <span>Charts</span>
-        </a>
-      </li>
+          {/* <!-- Nav Item - Tables --> */}
+          <li className="nav-item">
+            <a
+              className="nav-link"
+              href="#"
+              onClick={() => alert("Tables page is under construction")}
+            >
+              <i className="fa fa-table"></i>
+              <span>Tables</span>
+            </a>
+          </li>
 
-      {/* <!-- Nav Item - Tables --> */}
-      <li className="nav-item">
-        <a
-          className="nav-link"
-          href="#"
-          onClick={() => alert("Tables page is under construction")}
-        >
-          <i className="fa fa-table"></i>
-          <span>Tables</span>
-        </a>
-      </li>
-
-      {/* <!-- Divider --> */}
-      <hr className="sidebar-divider d-none d-md-block" />
+          {/* <!-- Divider --> */}
+          <hr className="sidebar-divider d-none d-md-block" />
+        </>
+      )}
 
       {/* <!-- Mobile View --> */}
       {/* <!-- Sidebar Toggler (Sidebar) --> */}

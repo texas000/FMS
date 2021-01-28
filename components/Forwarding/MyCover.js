@@ -20,11 +20,15 @@ const styles = StyleSheet.create({
   page: {
     flexDirection: "row",
   },
+  body: {
+    marginTop: "10px",
+  },
   logo: {
     position: "absolute",
-    left: "540px",
-    width: "50px",
-    height: "50px",
+    top: "0px",
+    left: "572px",
+    width: "35px",
+    height: "35px",
   },
   section: {
     top: "20px",
@@ -212,8 +216,8 @@ export const MyCover = ({ master, house, containers }) => {
           </Table>
         </View>
         <View style={styles.section1}>
-          <Text style={styles.title}>{master.F_RefNo}</Text>
-          <Text style={styles.subhead}>
+          {/* <Text style={styles.title}>{master.F_RefNo}</Text> */}
+          <Text style={styles.title}>
             {house.length ? house[0].CUSTOMER || "NO CUSTOMER" : "NO HOUSE"} -{" "}
             {house.length ? house[0].SHIPPER || "NO SHIPPER" : "NO HOUSE"} -{" "}
             {house.length ? house[0].CONSIGNEE || "NO CONSIGNEE" : "NO HOUSE"}

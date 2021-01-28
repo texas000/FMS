@@ -6,7 +6,6 @@ import fetch from "node-fetch";
 import { useEffect } from "react";
 import Head from "../../../components/Forwarding/Head";
 import Route from "../../../components/Forwarding/Route";
-import moment from "moment";
 
 import jwt from "jsonwebtoken";
 import { Comment } from "../../../components/Forwarding/Comment";
@@ -26,7 +25,7 @@ const Detail = ({ Cookie, OTHER, EXTRA }) => {
   if (TOKEN && TOKEN.group) {
     return (
       <>
-        {OTHER.M ? (
+        {OTHER && OTHER.M ? (
           <Layout TOKEN={TOKEN} TITLE={OTHER.M.F_RefNo}>
             <Head
               REF={OTHER.M.F_RefNo}
@@ -97,23 +96,28 @@ export async function getServerSideProps({ req, query }) {
     `${process.env.BASE_URL}api/forwarding/getOtherDetail`,
     { headers: { reference: query.Detail, key: cookies.jamesworldwidetoken } }
   );
-  const Other = await fetchOther.json();
+  if (fetchOther.status === 200) {
+    const Other = await fetchOther.json();
+    // FETCH EXTRA DATA FROM FMS
+    const fetchExtra = await fetch(
+      `${process.env.BASE_URL}api/forwarding/getExtra`,
+      { headers: { ref: query.Detail } }
+    );
+    var Extra = null;
+    if (fetchExtra.status == 200) {
+      Extra = await fetchExtra.json();
+    } else {
+      Extra = { M: [], S: [] };
+    }
 
-  // FETCH EXTRA DATA FROM FMS
-  const fetchExtra = await fetch(
-    `${process.env.BASE_URL}api/forwarding/getExtra`,
-    { headers: { ref: query.Detail } }
-  );
-  var Extra = null;
-  if (fetchExtra.status == 200) {
-    Extra = await fetchExtra.json();
+    return {
+      props: { Cookie: cookies, OTHER: Other, EXTRA: Extra },
+    };
   } else {
-    Extra = { M: [], S: [] };
+    return {
+      props: { Cookie: cookies },
+    };
   }
-
-  return {
-    props: { Cookie: cookies, OTHER: Other, EXTRA: Extra },
-  };
 }
 
 export default Detail;

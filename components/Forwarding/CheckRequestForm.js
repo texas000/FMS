@@ -29,7 +29,7 @@ export const CheckRequestForm = ({
   type,
 }) => (
   <Document>
-    <Page style={styles.body}>
+    <Page size="LETTER" style={styles.body}>
       <Text style={styles.title}>{type} REQUEST FORM</Text>
       {/* <Text style={{ fontSize: 10 }}>DATE: {today}</Text> */}
       <View
@@ -184,7 +184,7 @@ export const CheckRequestForm = ({
         <Table>
           <TableHeader>
             <TableCell style={styles.extraInfo}>
-              {`SHIPPER:\n\nCONSIGNEE:\n\nNOTIFY:\n\nCOMMODATY:\n\nPOD:\n\nPCS&UNITS:`}
+              {`SHIPPER:\n\nCONSIGNEE:\n\nNOTIFY:\n\nCOMMODITY:\n\nPOD:\n\nPCS&UNITS:`}
             </TableCell>
           </TableHeader>
         </Table>
@@ -244,7 +244,7 @@ const styles = StyleSheet.create({
   chargeDetail: {
     marginLeft: "10px",
     paddingTop: "20px",
-    paddingBottom: "250px",
+    paddingBottom: "200px",
     fontSize: 10,
     display: "flex",
     justifyContent: "flex-start",

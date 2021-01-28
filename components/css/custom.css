@@ -10177,7 +10177,8 @@
   .topbar .dropdown-list {
     padding: 0;
     border: none;
-    overflow: hidden;
+    overflow: auto;
+    max-height: 450px;
   }
   
   .topbar .dropdown-list .dropdown-header {
