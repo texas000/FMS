@@ -147,7 +147,7 @@ export default function dashboard({
                           <ListGroupItem
                             key={ga.ID + ga.REF}
                             onClick={() =>
-                              router.push(`/forwarding/oim/${ga.REF}`)
+                              router.push(`/forwarding/oex/${ga.REF}`)
                             }
                             href="#"
                             action
@@ -234,7 +234,7 @@ export default function dashboard({
                           <ListGroupItem
                             key={ga.ID + ga.REF}
                             onClick={() =>
-                              router.push(`/forwarding/oim/${ga.REF}`)
+                              router.push(`/forwarding/aim/${ga.REF}`)
                             }
                             href="#"
                             action
@@ -340,7 +340,7 @@ export default function dashboard({
                           <ListGroupItem
                             key={ga.ID + ga.REF}
                             onClick={() =>
-                              router.push(`/forwarding/oim/${ga.REF}`)
+                              router.push(`/forwarding/aex/${ga.REF}`)
                             }
                             href="#"
                             action
