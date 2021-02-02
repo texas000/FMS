@@ -10,7 +10,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
   const collapse = () => setToggle(!toggle);
   return (
     <ul
-      className={`navbar-nav bg-gradient-primary sidebar sidebar-dark accordion ${
+      className={`navbar-nav bg-gradient-primary sidebar sidebar-dark accordion d-print-none ${
         toggle && "toggled"
       }`}
       id="accordionSidebar"

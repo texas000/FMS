@@ -65,6 +65,10 @@ const Detail = ({ Cookie, OIM, EXTRA }) => {
               PIC={OIM.M.F_U2ID}
               EMAIL={emailHref}
             />
+            {/* Display only at print screen */}
+            <p className="d-none d-print-block">
+              Printed at {moment().format("lll")}
+            </p>
             <Row>
               <Col lg={10}>
                 <Row>

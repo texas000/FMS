@@ -22,7 +22,7 @@ export default async (req, res) => {
       });
       try {
         await pool.connect();
-        const QRY = `SELECT ID, TITLE, TIME, VIEWS FROM T_BOARD ORDER BY ID DESC;`;
+        const QRY = `SELECT (SELECT F_ACCOUNT FROM T_MEMBER WHERE T_BOARD.USERID=T_MEMBER.F_ID ) AS WRITER, ID, TITLE, TIME, VIEWS FROM T_BOARD ORDER BY ID DESC;`;
         let result = await pool.request().query(QRY);
         if (result.rowsAffected[0]) {
           res.status(200).end(JSON.stringify(result.recordsets[0]));

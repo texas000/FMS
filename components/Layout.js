@@ -55,6 +55,7 @@ const Layout = (props) => {
         />
         <meta name="msapplication-TileColor" content="#da532c" />
         <meta name="theme-color" content="#ffffff" />
+        <link rel="stylesheet" href="//cdn.quilljs.com/1.2.6/quill.snow.css" />
       </Head>
 
       {/* <Navbar name={props.TOKEN && props.TOKEN.username.toUpperCase()} /> */}

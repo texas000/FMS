@@ -42,7 +42,7 @@ export const Comment = ({ comment, reference, uid }) => {
 
   return (
     <Row>
-      <Col className="w-100 mt-4">
+      <Col className="w-100 my-4">
         <Card body className="shadow">
           {UpdatedComment.length > 0 ? (
             UpdatedComment.map((ga) => (

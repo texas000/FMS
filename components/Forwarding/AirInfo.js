@@ -14,7 +14,7 @@ export const Info = ({ Master, House, Containers }) => {
       <div className="card border-left-success shadow">
         <div className="card-header py-2 d-flex flex-row align-items-center justify-content-between">
           <div className="text-s font-weight-bold text-success text-uppercase">
-            <span className="fa-stack">
+            <span className="fa-stack d-print-none">
               <i className="fa fa-circle fa-stack-2x text-success"></i>
               <i className="fa fa-ship fa-stack-1x fa-inverse"></i>
             </span>
@@ -81,7 +81,7 @@ export const Info = ({ Master, House, Containers }) => {
                       : setSelectedHouse(i + 1)
                   }
                 >
-                  <span className="fa-stack">
+                  <span className="fa-stack d-print-none">
                     <i className="fa fa-circle fa-stack-2x text-primary"></i>
                     <i className="fa fa-home fa-stack-1x fa-inverse"></i>
                   </span>

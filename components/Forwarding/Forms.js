@@ -14,7 +14,7 @@ export const Forms = ({ Master, House, Containers, AP }) => {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
   return (
-    <div className="card border-left-info shadow">
+    <div className="card border-left-info shadow d-print-none">
       <div className="card-header py-2 d-flex flex-row align-items-center justify-content-between">
         <div className="text-s font-weight-bold text-info text-uppercase">
           <span className="fa-stack">

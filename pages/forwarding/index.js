@@ -33,10 +33,6 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    // console.log(Re);
-    // if (typeof window !== "undefined") {
-    //   localStorage.setItem("notifications", JSON.stringify(Notifications));
-    // }
   }, []);
 
   const columnStyle = {
@@ -84,36 +80,46 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
         },
       },
       style: { textAlign: "center", width: "10%" },
-      headerStyle: { fontSize: "0.8rem", width: "10%", textAlign: "center" },
+      headerStyle: { fontSize: "0.8rem", width: "10%" },
       sort: true,
-      filter: textFilter(),
+      filter: textFilter({
+        className: "text-xs d-none d-md-block",
+      }),
     },
     {
       dataField: "CUSTOMER",
       text: "CUSTOMER",
       style: columnStyle,
-      headerStyle: { fontSize: "0.8rem", textAlign: "center" },
+      headerStyle: {
+        fontSize: "0.8rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+      },
       sort: true,
+      filter: textFilter({
+        className: "text-xs",
+      }),
     },
     {
       dataField: "MASTER_BLNO",
       text: "MBL",
       style: columnStyle,
-      headerStyle: { fontSize: "0.8rem", textAlign: "center" },
+      headerStyle: { fontSize: "0.8rem" },
       sort: true,
     },
     {
       dataField: "HOUSE_BLNO",
       text: "HBL",
       style: columnStyle,
-      headerStyle: { fontSize: "0.8rem", textAlign: "center" },
+      headerStyle: { fontSize: "0.8rem" },
       sort: true,
     },
     {
       dataField: "CUSTOMER",
       text: "CUSTOMER",
       style: columnStyle,
-      headerStyle: { fontSize: "0.8rem", textAlign: "center" },
+      headerStyle: { fontSize: "0.8rem" },
       hidden: true,
       sort: true,
     },
@@ -121,7 +127,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       dataField: "SHIPPER",
       text: "SHIPPER",
       style: columnStyle,
-      headerStyle: { fontSize: "0.8rem", textAlign: "center" },
+      headerStyle: { fontSize: "0.8rem" },
       hidden: true,
       sort: true,
     },
@@ -130,7 +136,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       text: "POST",
       style: columnStyle,
       sort: true,
-      headerStyle: { fontSize: "0.8em", textAlign: "center" },
+      headerStyle: { fontSize: "0.8em" },
       formatter: (cell) => {
         if (cell) {
           if (moment(cell).isSameOrBefore(moment())) {
@@ -150,7 +156,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       text: "ETD",
       style: columnStyle,
       sort: true,
-      headerStyle: { fontSize: "0.8em", textAlign: "center" },
+      headerStyle: { fontSize: "0.8em" },
       formatter: (cell) => {
         if (cell) {
           if (moment(cell).isSameOrBefore(moment())) {
@@ -170,7 +176,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       text: "ETA",
       style: columnStyle,
       sort: true,
-      headerStyle: { fontSize: "0.8em", textAlign: "center" },
+      headerStyle: { fontSize: "0.8em" },
       formatter: (cell) => {
         if (cell) {
           if (moment(cell).isSameOrBefore(moment())) {
@@ -190,9 +196,11 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       // dataField: "U1ID",
       text: "PIC",
       style: columnStyle,
-      headerStyle: { fontSize: "0.8rem", width: "8%", textAlign: "center" },
+      headerStyle: { fontSize: "0.8rem", width: "8%" },
       sort: true,
-      filter: textFilter(),
+      filter: textFilter({
+        className: "text-xs d-none d-md-block",
+      }),
     },
   ];
 
@@ -351,6 +359,15 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
             .react-bootstrap-table table {
               table-layout: auto !important;
             }
+            .react-bootstrap-table-sort-order {
+              display: none;
+            }
+            .order {
+              display: none;
+            }
+            .table thead th {
+              vertical-align: top;
+            }
           `}
         </style>
       </Layout>
@@ -404,7 +421,6 @@ export async function getServerSideProps({ req, query }) {
   //   // Pass data to the page via props
   //   return { props: { Cookie: cookies, Re: [], Notifications: noti } };
   // }
-
   if (query.search === undefined) {
     return {
       props: {

@@ -22,14 +22,16 @@ export default async (req, res) => {
       });
       try {
         await pool.connect();
-        const QRY = `SELECT * FROM T_BOARD WHERE ID=${req.headers.reference}; UPDATE T_BOARD SET VIEWS=ISNULL(VIEWS, 0)+1 WHERE ID='${req.headers.reference}';`
-        let result = await pool
-          .request()
-          .query(QRY);
+        const QRY = `SELECT (SELECT F_ACCOUNT FROM T_MEMBER WHERE T_BOARD.USERID=T_MEMBER.F_ID ) AS WRITER, * FROM T_BOARD WHERE ID=${req.headers.reference}; UPDATE T_BOARD SET VIEWS=ISNULL(VIEWS, 0)+1 WHERE ID='${req.headers.reference}';`;
+        let result = await pool.request().query(QRY);
         if (result.rowsAffected[0]) {
-          res.status(200).end(JSON.stringify({status: true, post: result.recordsets[0][0]}));
+          res
+            .status(200)
+            .end(
+              JSON.stringify({ status: true, post: result.recordsets[0][0] })
+            );
         } else {
-          res.status(401).end(JSON.stringify({status: false}));
+          res.status(401).end(JSON.stringify({ status: false }));
         }
       } catch (err) {
         return { err: err };
@@ -37,8 +39,8 @@ export default async (req, res) => {
         pool.close();
       }
     }
-    NEW()
-    resolve()
+    NEW();
+    resolve();
   });
 };
 

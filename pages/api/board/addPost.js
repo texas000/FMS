@@ -22,23 +22,22 @@ export default async (req, res) => {
       });
       try {
         await pool.connect();
-        const QRY = `INSERT INTO T_BOARD (TITLE, BODY, TIME, SHOW) VALUES (${req.body});`
-        let result = await pool
-          .request()
-          .query(QRY);
+        const QRY = `INSERT INTO T_BOARD (TITLE, BODY, TIME, SHOW, VIEWS, USERID) VALUES (${req.body});`;
+        let result = await pool.request().query(QRY);
         if (result.rowsAffected[0]) {
-            res.status(200).end(JSON.stringify(result.recordsets[0]));
+          res.status(200).end(JSON.stringify(result.recordsets[0]));
         } else {
-            res.status(400).end(false);
+          res.status(400).end(false);
         }
       } catch (err) {
+        console.log(err);
         return { err: err };
       } finally {
         pool.close();
       }
     }
-    NEW()
-    resolve()
+    NEW();
+    resolve();
   });
 };
 

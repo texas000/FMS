@@ -156,10 +156,10 @@ export const Status = ({ Data, Ref, Uid }) => {
   };
 
   return (
-    <div className="card border-left-primary shadow mt-4">
+    <div className="card border-left-primary shadow mt-4 mb-4">
       <div className="card-header py-2 d-flex flex-row align-items-center justify-content-between">
         <div className="text-s font-weight-bold text-primary text-uppercase">
-          <span className="fa-stack">
+          <span className="fa-stack d-print-none">
             <i className="fa fa-circle fa-stack-2x text-primary"></i>
             <i className="fa fa-tasks fa-stack-1x fa-inverse"></i>
           </span>

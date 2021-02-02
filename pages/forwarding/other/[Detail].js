@@ -12,6 +12,7 @@ import { Comment } from "../../../components/Forwarding/Comment";
 import Info from "../../../components/Forwarding/OtherInfo";
 import Forms from "../../../components/Forwarding/Forms";
 import Status from "../../../components/Forwarding/Status";
+import moment from "moment";
 
 const Detail = ({ Cookie, OTHER, EXTRA }) => {
   const router = useRouter();
@@ -32,6 +33,10 @@ const Detail = ({ Cookie, OTHER, EXTRA }) => {
               POST={OTHER.M.F_PostDate}
               PIC={OTHER.M.F_U2ID}
             />
+            {/* Display only at print screen */}
+            <p className="d-none d-print-block">
+              Printed at {moment().format("lll")}
+            </p>
             <Row>
               <Col lg={10}>
                 <Row>

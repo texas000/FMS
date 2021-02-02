@@ -15,7 +15,7 @@ const Route = ({ ETD, ETA, FETA, LOADING, DISCHARGE, DEST }) => {
       <div className="card h-100 border-left-warning shadow">
         <div className="card-header py-2 d-flex flex-row align-items-center justify-content-between">
           <div className="text-s font-weight-bold text-warning text-uppercase">
-            <span className="fa-stack">
+            <span className="fa-stack d-print-none">
               <i className="fa fa-circle fa-stack-2x text-warning"></i>
               <i className="fa fa-truck fa-stack-1x fa-inverse"></i>
             </span>
@@ -24,7 +24,7 @@ const Route = ({ ETD, ETA, FETA, LOADING, DISCHARGE, DEST }) => {
         </div>
         <div className="card-body">
           <Row className="align-items-top mb-4">
-            <Col sm="2">
+            <Col sm="2" className="d-print-none">
               {/* POINTER FROM TOP TO BOTTOM */}
               <svg
                 height="4rem"
@@ -53,7 +53,7 @@ const Route = ({ ETD, ETA, FETA, LOADING, DISCHARGE, DEST }) => {
                 <i className="fa fa-home fa-stack-1x fa-inverse"></i>
               </span>
             </Col>
-            <Col className="mt-1" sm="10">
+            <Col className="mt-1">
               <div className="text-break text-center text-xs">{LOADING}</div>
 
               {ETD && (
@@ -71,7 +71,7 @@ const Route = ({ ETD, ETA, FETA, LOADING, DISCHARGE, DEST }) => {
           {ETA && (
             <>
               <Row className="align-items-top my-4">
-                <Col sm="2">
+                <Col sm="2" className="d-print-none">
                   <svg
                     height="4rem"
                     width="2.6rem"
@@ -119,7 +119,7 @@ const Route = ({ ETD, ETA, FETA, LOADING, DISCHARGE, DEST }) => {
           )}
           {DEST && (
             <Row className="align-items-top mt-4">
-              <Col sm="2">
+              <Col sm="2" className="d-print-none">
                 <span className="fa-stack fa-lg">
                   <i
                     className={`fa fa-circle fa-stack-2x ${

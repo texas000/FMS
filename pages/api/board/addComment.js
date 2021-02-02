@@ -22,14 +22,12 @@ export default async (req, res) => {
       });
       try {
         await pool.connect();
-        const QRY = `INSERT INTO T_BOARD_COMMENT (TBID, COMMENT, TIME) VALUES (${req.body});`
-        let result = await pool
-          .request()
-          .query(QRY);
+        const QRY = `INSERT INTO T_BOARD_COMMENT (TBID, COMMENT, TIME, USERID) VALUES (${req.body});`;
+        let result = await pool.request().query(QRY);
         if (result.rowsAffected[0]) {
-            res.status(200).end(JSON.stringify(result.recordsets[0]));
+          res.status(200).end(JSON.stringify(result.recordsets[0]));
         } else {
-            res.status(400).end(false);
+          res.status(400).end(false);
         }
       } catch (err) {
         return { err: err };
@@ -37,8 +35,8 @@ export default async (req, res) => {
         pool.close();
       }
     }
-    NEW()
-    resolve()
+    NEW();
+    resolve();
   });
 };
 

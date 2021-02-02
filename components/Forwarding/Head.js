@@ -2,7 +2,7 @@ import { Badge, Button, Col, Row } from "reactstrap";
 import { useRouter } from "next/router";
 import moment from "moment";
 
-const Head = ({ REF, POST, PIC, EMAIL }) => {
+const Head = ({ REF, POST, PIC, EMAIL, CUSTOMER }) => {
   const router = useRouter();
 
   const Clipboard = () => {
@@ -20,8 +20,11 @@ const Head = ({ REF, POST, PIC, EMAIL }) => {
     <>
       <Row>
         <Col>
-          <h3 className="text-gray-800 h4 font-weight-bold text-uppercase">
+          <h3 className="text-gray-800 h4 font-weight-bold text-uppercase d-inline">
             {REF}
+          </h3>
+          <h3 className="pl-2 text-primary h5 font-weight-bold text-uppercase d-inline">
+            {CUSTOMER}
           </h3>
         </Col>
         <Col className="text-right">
@@ -30,14 +33,14 @@ const Head = ({ REF, POST, PIC, EMAIL }) => {
             color="warning"
             onClick={Clipboard}
           >
-            <i className="fa fa-upload"></i> Share
+            <i className="fa fa-upload"></i> SHARE
           </Badge>
           <Badge
             className="text-xs mx-1 btn btn-link text-primary"
             color="warning"
             onClick={() => router.back()}
           >
-            <i className="fa fa-reply"></i> Back
+            <i className="fa fa-reply"></i> BACK
           </Badge>
           {/* <Button
             className="mr-2 py-0"
