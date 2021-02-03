@@ -64,6 +64,7 @@ const Detail = ({ Cookie, OIM, EXTRA }) => {
               POST={OIM.M.F_PostDate}
               PIC={OIM.M.F_U2ID}
               EMAIL={emailHref}
+              CUSTOMER={OIM.H.length ? OIM.H[0].CUSTOMER : false}
             />
             {/* Display only at print screen */}
             <p className="d-none d-print-block">

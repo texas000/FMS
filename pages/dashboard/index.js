@@ -76,13 +76,17 @@ export default function dashboard({
                               {ga.CUSTOMER}
                             </span>
                             <span
-                              className={`badge badge-pill ${
-                                moment(ga.ETA).diff(moment(), "days") >= 0
-                                  ? "badge-primary"
-                                  : "badge-danger"
+                              className={`font-weight-bold ${
+                                moment()
+                                  .startOf("day")
+                                  .diff(moment(ga.ETA).utc(), "days") >= 0
+                                  ? "text-danger"
+                                  : "text-primary"
                               }`}
                             >
-                              {moment(ga.ETA).diff(moment(), "days")}
+                              {moment()
+                                .startOf("day")
+                                .diff(moment(ga.ETA).utc(), "days")}
                             </span>
                           </ListGroupItem>
                         ))
@@ -166,6 +170,19 @@ export default function dashboard({
                               {ga.CUSTOMER}
                             </span>
                             <span
+                              className={`font-weight-bold ${
+                                moment()
+                                  .startOf("day")
+                                  .diff(moment(ga.ETD).utc(), "days") >= 0
+                                  ? "text-danger"
+                                  : "text-primary"
+                              }`}
+                            >
+                              {moment()
+                                .startOf("day")
+                                .diff(moment(ga.ETD).utc(), "days")}
+                            </span>
+                            {/* <span
                               className={`badge badge-pill ${
                                 moment(ga.ETD).diff(moment(), "days") >= 0
                                   ? "badge-primary"
@@ -173,7 +190,7 @@ export default function dashboard({
                               }`}
                             >
                               {moment(ga.ETD).diff(moment(), "days")}
-                            </span>
+                            </span> */}
                           </ListGroupItem>
                         ))
                       ) : (
@@ -253,6 +270,19 @@ export default function dashboard({
                               {ga.CUSTOMER}
                             </span>
                             <span
+                              className={`font-weight-bold ${
+                                moment()
+                                  .startOf("day")
+                                  .diff(moment(ga.ETA).utc(), "days") >= 0
+                                  ? "text-danger"
+                                  : "text-primary"
+                              }`}
+                            >
+                              {moment()
+                                .startOf("day")
+                                .diff(moment(ga.ETA).utc(), "days")}
+                            </span>
+                            {/* <span
                               className={`badge badge-pill ${
                                 moment(ga.ETA).diff(moment(), "days") >= 0
                                   ? "badge-primary"
@@ -260,7 +290,7 @@ export default function dashboard({
                               }`}
                             >
                               {moment(ga.ETA).diff(moment(), "days")}
-                            </span>
+                            </span> */}
                           </ListGroupItem>
                         ))
                       ) : (
@@ -359,6 +389,19 @@ export default function dashboard({
                               {ga.CUSTOMER}
                             </span>
                             <span
+                              className={`font-weight-bold ${
+                                moment()
+                                  .startOf("day")
+                                  .diff(moment(ga.ETD).utc(), "days") >= 0
+                                  ? "text-danger"
+                                  : "text-primary"
+                              }`}
+                            >
+                              {moment()
+                                .startOf("day")
+                                .diff(moment(ga.ETD).utc(), "days")}
+                            </span>
+                            {/* <span
                               className={`badge badge-pill ${
                                 moment(ga.ETD).diff(moment(), "days") >= 0
                                   ? "badge-primary"
@@ -366,7 +409,7 @@ export default function dashboard({
                               }`}
                             >
                               {moment(ga.ETD).diff(moment(), "days")}
-                            </span>
+                            </span> */}
                           </ListGroupItem>
                         ))
                       ) : (
