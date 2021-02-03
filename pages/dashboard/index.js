@@ -79,7 +79,7 @@ export default function dashboard({
                               className={`font-weight-bold ${
                                 moment()
                                   .startOf("day")
-                                  .diff(moment(ga.ETA).utc(), "days") >= 0
+                                  .diff(moment(ga.ETA).utc(), "days") < 0
                                   ? "text-danger"
                                   : "text-primary"
                               }`}
@@ -173,7 +173,7 @@ export default function dashboard({
                               className={`font-weight-bold ${
                                 moment()
                                   .startOf("day")
-                                  .diff(moment(ga.ETD).utc(), "days") >= 0
+                                  .diff(moment(ga.ETD).utc(), "days") < 0
                                   ? "text-danger"
                                   : "text-primary"
                               }`}
@@ -273,7 +273,7 @@ export default function dashboard({
                               className={`font-weight-bold ${
                                 moment()
                                   .startOf("day")
-                                  .diff(moment(ga.ETA).utc(), "days") >= 0
+                                  .diff(moment(ga.ETA).utc(), "days") < 0
                                   ? "text-danger"
                                   : "text-primary"
                               }`}
@@ -392,7 +392,7 @@ export default function dashboard({
                               className={`font-weight-bold ${
                                 moment()
                                   .startOf("day")
-                                  .diff(moment(ga.ETD).utc(), "days") >= 0
+                                  .diff(moment(ga.ETD).utc(), "days") < 0
                                   ? "text-danger"
                                   : "text-primary"
                               }`}
