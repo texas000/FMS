@@ -168,6 +168,11 @@ export const Forms = ({ Master, House, Containers, AP, User }) => {
                     pic={ga.F_U1ID}
                     today={moment().format("l")}
                     desc={ga.F_Descript}
+                    shipper={House ? House[0].SHIPPER : ""}
+                    notify={House ? House[0].NOTIFY : ""}
+                    consignee={House ? House[0].CONSIGNEE : ""}
+                    pod={Master.F_DisCharge || Master.F_Discharge}
+                    comm={Master.F_mCommodity}
                   />
                 }
               >

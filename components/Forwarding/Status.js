@@ -464,7 +464,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               id="lastfree"
               onChange={(e) => {
                 var data = e.target.value || null;
-                console.log(data);
+                // console.log(data);
                 setSwitchData((prev) => ({
                   ...prev,
                   F_LastFreeDate: data,

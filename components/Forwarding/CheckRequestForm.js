@@ -27,6 +27,11 @@ export const CheckRequestForm = ({
   today,
   desc,
   type,
+  shipper,
+  notify,
+  consignee,
+  comm,
+  pod,
 }) => (
   <Document>
     <Page size="LETTER" style={styles.body}>
@@ -184,7 +189,11 @@ export const CheckRequestForm = ({
         <Table>
           <TableHeader>
             <TableCell style={styles.extraInfo}>
-              {`SHIPPER:\n\nCONSIGNEE:\n\nNOTIFY:\n\nCOMMODITY:\n\nPOD:\n\nPCS&UNITS:`}
+              {`SHIPPER: ${shipper ? shipper : "NO SHIPPER"}\n\nCONSIGNEE: ${
+                consignee ? consignee : "NO CONSIGNEE"
+              }\n\nNOTIFY: ${notify ? notify : "NO NOTIFY"}\n\nCOMMODITY: ${
+                comm ? comm : "NO DATA"
+              }\n\nPOD: ${pod ? pod : "NO POD"}`}
             </TableCell>
           </TableHeader>
         </Table>
