@@ -42,7 +42,7 @@ const Detail = ({ Cookie, OTHER, EXTRA }) => {
                 <Row>
                   <Info Master={OTHER.M} />
                   <Col md="6">
-                    <Forms Master={OTHER.M} AP={OTHER.A} />
+                    <Forms Master={OTHER.M} AP={OTHER.A} User={TOKEN} />
                     <Status
                       Data={EXTRA.S}
                       Ref={OTHER.M.F_RefNo}

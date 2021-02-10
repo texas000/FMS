@@ -20,7 +20,6 @@ const Detail = ({ Cookie, AIM, EXTRA }) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    // console.log(AIM);
   });
 
   var mailSubject, mailBody, emailHref;
@@ -55,7 +54,7 @@ const Detail = ({ Cookie, AIM, EXTRA }) => {
   if (TOKEN && TOKEN.group) {
     return (
       <>
-        {AIM.M ? (
+        {AIM && AIM.M ? (
           <Layout TOKEN={TOKEN} TITLE={AIM.M.F_RefNo}>
             <Head
               REF={AIM.M.F_RefNo}
@@ -73,7 +72,12 @@ const Detail = ({ Cookie, AIM, EXTRA }) => {
                 <Row>
                   <Info Master={AIM.M} House={AIM.H} Containers={AIM.C} />
                   <Col md="6">
-                    <Forms Master={AIM.M} House={AIM.H} AP={AIM.A} />
+                    <Forms
+                      Master={AIM.M}
+                      House={AIM.H}
+                      AP={AIM.A}
+                      User={TOKEN}
+                    />
                     <Status
                       Data={EXTRA.S}
                       Ref={AIM.M.F_RefNo}

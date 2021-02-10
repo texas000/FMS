@@ -55,15 +55,15 @@ export default function dashboard({
                       {OimList && OimList.length ? (
                         OimList.map((ga) => (
                           <ListGroupItem
-                            key={ga.ID + ga.REF}
+                            key={ga.ID + ga.RefNo}
                             onClick={() =>
-                              router.push(`/forwarding/oim/${ga.REF}`)
+                              router.push(`/forwarding/oim/${ga.RefNo}`)
                             }
                             href="#"
                             action
                             className="d-flex justify-content-between align-items-center text-xs btn btn-link"
                           >
-                            <span className="font-weight-bold">{ga.REF}</span>
+                            <span className="font-weight-bold">{ga.RefNo}</span>
                             <span
                               className="text-gray-800"
                               style={{
@@ -73,7 +73,7 @@ export default function dashboard({
                                 overflow: "hidden",
                               }}
                             >
-                              {ga.CUSTOMER}
+                              {ga.Customer}
                             </span>
                             <span
                               className={`font-weight-bold ${
@@ -95,42 +95,8 @@ export default function dashboard({
                           No Result
                         </div>
                       )}
-                      {/* {OimList && OimList.length ? (
-                        OimList.map((ga) => (
-                          <ListGroupItem
-                            key={ga.ID + ga.RefNo}
-                            onClick={() =>
-                              router.push(`/forwarding/oim/${ga.RefNo}`)
-                            }
-                            href="#"
-                            action
-                            className="d-flex justify-content-between align-items-center text-gray-800 text-xs btn btn-link"
-                          >
-                            {ga.RefNo} {ga.Customer}
-                            <span
-                              className={`badge badge-pill ${
-                                moment(ga.ETA).diff(moment(), "days") >= 0
-                                  ? "badge-primary"
-                                  : "badge-danger"
-                              }`}
-                            >
-                              {moment(ga.ETA).diff(moment(), "days")}
-                            </span>
-                          </ListGroupItem>
-                        ))
-                      ) : (
-                        <div className="mt-2 text-danger text-xs">
-                          No Result
-                        </div>
-                      )} */}
                     </ListGroup>
-                    {/* <div className="h5 mb-0 font-weight-bold text-gray-800">
-                      $40,000
-                    </div> */}
                   </div>
-                  {/* <div className="col-auto">
-                    <i className="fa fa-calendar fa-2x text-gray-300"></i>
-                  </div> */}
                 </div>
               </div>
             </div>
@@ -149,15 +115,15 @@ export default function dashboard({
                       {OomList && OomList.length ? (
                         OomList.map((ga) => (
                           <ListGroupItem
-                            key={ga.ID + ga.REF}
+                            key={ga.ID + ga.RefNo}
                             onClick={() =>
-                              router.push(`/forwarding/oex/${ga.REF}`)
+                              router.push(`/forwarding/oex/${ga.RefNo}`)
                             }
                             href="#"
                             action
                             className="d-flex justify-content-between align-items-center text-xs btn btn-link"
                           >
-                            <span className="font-weight-bold">{ga.REF}</span>
+                            <span className="font-weight-bold">{ga.RefNo}</span>
                             <span
                               className="text-gray-800"
                               style={{
@@ -167,7 +133,7 @@ export default function dashboard({
                                 overflow: "hidden",
                               }}
                             >
-                              {ga.CUSTOMER}
+                              {ga.Customer}
                             </span>
                             <span
                               className={`font-weight-bold ${
@@ -182,15 +148,6 @@ export default function dashboard({
                                 .startOf("day")
                                 .diff(moment(ga.ETD).utc(), "days")}
                             </span>
-                            {/* <span
-                              className={`badge badge-pill ${
-                                moment(ga.ETD).diff(moment(), "days") >= 0
-                                  ? "badge-primary"
-                                  : "badge-danger"
-                              }`}
-                            >
-                              {moment(ga.ETD).diff(moment(), "days")}
-                            </span> */}
                           </ListGroupItem>
                         ))
                       ) : (
@@ -198,39 +155,8 @@ export default function dashboard({
                           No Result
                         </div>
                       )}
-                      {/* {OomList && OomList.length ? (
-                        OomList.map((ga) => (
-                          <ListGroupItem
-                            key={ga.ID + ga.RefNo}
-                            onClick={() =>
-                              router.push(`/forwarding/oex/${ga.RefNo}`)
-                            }
-                            href="#"
-                            action
-                            className="d-flex justify-content-between align-items-center text-gray-800 text-xs btn btn-link"
-                          >
-                            {ga.RefNo} {ga.Customer}
-                            <span
-                              className={`badge badge-pill ${
-                                moment(ga.ETD).diff(moment(), "days") >= 0
-                                  ? "badge-primary"
-                                  : "badge-danger"
-                              }`}
-                            >
-                              {moment(ga.ETD).diff(moment(), "days")}
-                            </span>
-                          </ListGroupItem>
-                        ))
-                      ) : (
-                        <div className="mt-2 text-danger text-xs">
-                          No Result
-                        </div>
-                      )} */}
                     </ListGroup>
                   </div>
-                  {/* <div className="col-auto">
-                    <i className="fa fa-dollar fa-2x text-gray-300"></i>
-                  </div> */}
                 </div>
               </div>
             </div>
@@ -249,15 +175,15 @@ export default function dashboard({
                       {AimList && AimList.length ? (
                         AimList.map((ga) => (
                           <ListGroupItem
-                            key={ga.ID + ga.REF}
+                            key={ga.ID + ga.RefNo}
                             onClick={() =>
-                              router.push(`/forwarding/aim/${ga.REF}`)
+                              router.push(`/forwarding/aim/${ga.RefNo}`)
                             }
                             href="#"
                             action
                             className="d-flex justify-content-between align-items-center text-xs btn btn-link"
                           >
-                            <span className="font-weight-bold">{ga.REF}</span>
+                            <span className="font-weight-bold">{ga.RefNo}</span>
                             <span
                               className="text-gray-800"
                               style={{
@@ -267,7 +193,7 @@ export default function dashboard({
                                 overflow: "hidden",
                               }}
                             >
-                              {ga.CUSTOMER}
+                              {ga.Customer}
                             </span>
                             <span
                               className={`font-weight-bold ${
@@ -282,15 +208,6 @@ export default function dashboard({
                                 .startOf("day")
                                 .diff(moment(ga.ETA).utc(), "days")}
                             </span>
-                            {/* <span
-                              className={`badge badge-pill ${
-                                moment(ga.ETA).diff(moment(), "days") >= 0
-                                  ? "badge-primary"
-                                  : "badge-danger"
-                              }`}
-                            >
-                              {moment(ga.ETA).diff(moment(), "days")}
-                            </span> */}
                           </ListGroupItem>
                         ))
                       ) : (
@@ -298,58 +215,8 @@ export default function dashboard({
                           No Result
                         </div>
                       )}
-                      {/* {AimList && AimList.length ? (
-                        AimList.map((ga) => (
-                          <ListGroupItem
-                            key={ga.ID + ga.RefNo}
-                            onClick={() =>
-                              router.push(`/forwarding/aim/${ga.RefNo}`)
-                            }
-                            href="#"
-                            action
-                            className="d-flex justify-content-between align-items-center text-gray-800 text-xs btn btn-link"
-                          >
-                            {ga.RefNo} {ga.Customer}
-                            <span
-                              className={`badge badge-pill ${
-                                moment(ga.ETA).diff(moment(), "days") >= 0
-                                  ? "badge-primary"
-                                  : "badge-danger"
-                              }`}
-                            >
-                              {moment(ga.ETA).diff(moment(), "days")}
-                            </span>
-                          </ListGroupItem>
-                        ))
-                      ) : (
-                        <div className="mt-2 text-danger text-xs">
-                          No Result
-                        </div>
-                      )} */}
                     </ListGroup>
-                    {/* <div className="row no-gutters align-items-center">
-                      <div className="col-auto">
-                        <div className="h5 mb-0 mr-3 font-weight-bold text-gray-800">
-                          50%
-                        </div>
-                      </div>
-                      <div className="col">
-                        <div className="progress progress-sm mr-2">
-                          <div
-                            className="progress-bar bg-info"
-                            role="progressbar"
-                            style={{ width: "50%" }}
-                            aria-valuenow="50"
-                            aria-valuemin="0"
-                            aria-valuemax="100"
-                          ></div>
-                        </div>
-                      </div>
-                    </div> */}
                   </div>
-                  {/* <div className="col-auto">
-                    <i className="fa fa-clipboard fa-2x text-gray-300"></i>
-                  </div> */}
                 </div>
               </div>
             </div>
@@ -368,15 +235,15 @@ export default function dashboard({
                       {AomList && AomList.length ? (
                         AomList.map((ga) => (
                           <ListGroupItem
-                            key={ga.ID + ga.REF}
+                            key={ga.ID + ga.RefNo}
                             onClick={() =>
-                              router.push(`/forwarding/aex/${ga.REF}`)
+                              router.push(`/forwarding/aex/${ga.RefNo}`)
                             }
                             href="#"
                             action
                             className="d-flex justify-content-between align-items-center text-xs btn btn-link"
                           >
-                            <span className="font-weight-bold">{ga.REF}</span>
+                            <span className="font-weight-bold">{ga.RefNo}</span>
                             <span
                               className="text-gray-800"
                               style={{
@@ -386,7 +253,7 @@ export default function dashboard({
                                 overflow: "hidden",
                               }}
                             >
-                              {ga.CUSTOMER}
+                              {ga.Customer}
                             </span>
                             <span
                               className={`font-weight-bold ${
@@ -401,15 +268,6 @@ export default function dashboard({
                                 .startOf("day")
                                 .diff(moment(ga.ETD).utc(), "days")}
                             </span>
-                            {/* <span
-                              className={`badge badge-pill ${
-                                moment(ga.ETD).diff(moment(), "days") >= 0
-                                  ? "badge-primary"
-                                  : "badge-danger"
-                              }`}
-                            >
-                              {moment(ga.ETD).diff(moment(), "days")}
-                            </span> */}
                           </ListGroupItem>
                         ))
                       ) : (
@@ -772,122 +630,121 @@ export async function getServerSideProps({ req }) {
 
     // Pass data to the page via props
     const from = moment().subtract(14, "days").calendar();
-
-    const resOim = await fetch(`${process.env.BASE_URL}api/dashboard/oim`, {
-      headers: { key: cookies.jamesworldwidetoken, from: from },
-    });
-    var dataOim = [];
-    if (resOim.status == 200) {
-      dataOim = await resOim.json();
-    }
-
-    const resOom = await fetch(`${process.env.BASE_URL}api/dashboard/oom`, {
-      headers: { key: cookies.jamesworldwidetoken, from: from },
-    });
-    var dataOom = [];
-    if (resOom.status == 200) {
-      dataOom = await resOom.json();
-    }
-
-    const resAim = await fetch(`${process.env.BASE_URL}api/dashboard/aim`, {
-      headers: { key: cookies.jamesworldwidetoken, from: from },
-    });
-    var dataAim = [];
-    if (resAim.status == 200) {
-      dataAim = await resAim.json();
-    }
-
-    const resAom = await fetch(`${process.env.BASE_URL}api/dashboard/aom`, {
-      headers: { key: cookies.jamesworldwidetoken, from: from },
-    });
-    var dataAom = [];
-    if (resAom.status == 200) {
-      dataAom = await resAom.json();
-    }
-
-    // const resOim = await fetch(
-    //   `http://jameswi.com:49996/api/oimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
-    // );
+    // const resOim = await fetch(`${process.env.BASE_URL}api/dashboard/oim`, {
+    //   headers: { key: cookies.jamesworldwidetoken, from: from },
+    // });
     // var dataOim = [];
     // if (resOim.status == 200) {
     //   dataOim = await resOim.json();
-    //   if (dataOim.length) {
-    //     dataOim.map(async (ga, i) => {
-    //       const resOih = await fetch(
-    //         `http://jameswi.com:49996/api/oihmain?oimblid=${ga.ID}`
-    //       );
-    //       if (resOih.status == 200) {
-    //         var OIH = await resOih.json();
-    //         dataOim[i].Customer = OIH[0].Customer_SName;
-    //       } else {
-    //         dataOim[i].Customer = "NO CUSTOMER";
-    //       }
-    //     });
-    //   }
     // }
 
-    // const resOom = await fetch(
-    //   `http://jameswi.com:49996/api/oommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
-    // );
+    // const resOom = await fetch(`${process.env.BASE_URL}api/dashboard/oom`, {
+    //   headers: { key: cookies.jamesworldwidetoken, from: from },
+    // });
     // var dataOom = [];
     // if (resOom.status == 200) {
     //   dataOom = await resOom.json();
-    //   if (dataOom.length) {
-    //     dataOom.map(async (ga, i) => {
-    //       const resOoh = await fetch(
-    //         `http://jameswi.com:49996/api/oohmain?oomblid=${ga.ID}`
-    //       );
-    //       if (resOoh.status == 200) {
-    //         var OOH = await resOoh.json();
-    //         dataOom[i].Customer = OOH[0].Customer_SName;
-    //       } else {
-    //         dataOom[i].Customer = "NO CUSTOMER";
-    //       }
-    //     });
-    //   }
     // }
 
-    // const resAim = await fetch(
-    //   `http://jameswi.com:49996/api/aimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
-    // );
+    // const resAim = await fetch(`${process.env.BASE_URL}api/dashboard/aim`, {
+    //   headers: { key: cookies.jamesworldwidetoken, from: from },
+    // });
     // var dataAim = [];
     // if (resAim.status == 200) {
     //   dataAim = await resAim.json();
-    //   if (dataAim.length) {
-    //     dataAim.map(async (ga, i) => {
-    //       const resAih = await fetch(
-    //         `http://jameswi.com:49996/api/aihmain?aimblid=${ga.ID}`
-    //       );
-    //       if (resAih.status == 200) {
-    //         var AIH = await resAih.json();
-    //         dataAim[i].Customer = AIH[0].Customer_SName;
-    //       } else {
-    //         dataAim[i].Customer = "NO CUSTOMER";
-    //       }
-    //     });
-    //   }
     // }
 
-    // const resAom = await fetch(
-    //   `http://jameswi.com:49996/api/aommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
-    // );
+    // const resAom = await fetch(`${process.env.BASE_URL}api/dashboard/aom`, {
+    //   headers: { key: cookies.jamesworldwidetoken, from: from },
+    // });
     // var dataAom = [];
     // if (resAom.status == 200) {
     //   dataAom = await resAom.json();
-    //   if (dataAom.length) {
-    //     dataAom.map(async (ga, i) => {
-    //       const resAoh = await fetch(
-    //         `http://jameswi.com:49996/api/aohmain?aomblid=${ga.ID}`
-    //       );
-    //       if (resAoh.status == 200) {
-    //         var AOH = await resAoh.json();
-    //         dataAom[i].Customer = AOH[0].Customer_SName;
-    //       } else {
-    //         dataAom[i].Customer = "NO CUSTOMER";
-    //       }
-    //     });
-    //   }
     // }
+
+    const resOim = await fetch(
+      `http://jameswi.com:49996/api/oimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
+    );
+    var dataOim = [];
+    if (resOim.status == 200) {
+      dataOim = await resOim.json();
+      if (dataOim.length) {
+        dataOim.map(async (ga, i) => {
+          const resOih = await fetch(
+            `http://jameswi.com:49996/api/oihmain?oimblid=${ga.ID}`
+          );
+          if (resOih.status == 200) {
+            var OIH = await resOih.json();
+            dataOim[i].Customer = OIH[0].Customer_SName;
+          } else {
+            dataOim[i].Customer = "NO CUSTOMER";
+          }
+        });
+      }
+    }
+
+    const resOom = await fetch(
+      `http://jameswi.com:49996/api/oommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
+    );
+    var dataOom = [];
+    if (resOom.status == 200) {
+      dataOom = await resOom.json();
+      if (dataOom.length) {
+        dataOom.map(async (ga, i) => {
+          const resOoh = await fetch(
+            `http://jameswi.com:49996/api/oohmain?oomblid=${ga.ID}`
+          );
+          if (resOoh.status == 200) {
+            var OOH = await resOoh.json();
+            dataOom[i].Customer = OOH[0].Customer_SName;
+          } else {
+            dataOom[i].Customer = "NO CUSTOMER";
+          }
+        });
+      }
+    }
+
+    const resAim = await fetch(
+      `http://jameswi.com:49996/api/aimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
+    );
+    var dataAim = [];
+    if (resAim.status == 200) {
+      dataAim = await resAim.json();
+      if (dataAim.length) {
+        dataAim.map(async (ga, i) => {
+          const resAih = await fetch(
+            `http://jameswi.com:49996/api/aihmain?aimblid=${ga.ID}`
+          );
+          if (resAih.status == 200) {
+            var AIH = await resAih.json();
+            dataAim[i].Customer = AIH[0].Customer_SName;
+          } else {
+            dataAim[i].Customer = "NO CUSTOMER";
+          }
+        });
+      }
+    }
+
+    const resAom = await fetch(
+      `http://jameswi.com:49996/api/aommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
+    );
+    var dataAom = [];
+    if (resAom.status == 200) {
+      dataAom = await resAom.json();
+      if (dataAom.length) {
+        dataAom.map(async (ga, i) => {
+          const resAoh = await fetch(
+            `http://jameswi.com:49996/api/aohmain?aomblid=${ga.ID}`
+          );
+          if (resAoh.status == 200) {
+            var AOH = await resAoh.json();
+            dataAom[i].Customer = AOH[0].Customer_SName;
+          } else {
+            dataAom[i].Customer = "NO CUSTOMER";
+          }
+        });
+      }
+    }
 
     const resBoard = await fetch(
       `${process.env.BASE_URL}api/board/getPostFive`

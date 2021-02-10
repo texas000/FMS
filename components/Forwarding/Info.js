@@ -90,6 +90,14 @@ export const Info = ({ Master, House, Containers }) => {
                   <th className="text-secondary">{Master.F_FinalDest}</th>
                 </tr>
               )}
+              {Containers && (
+                <tr>
+                  <th className="text-success text-uppercase">
+                    # of Container
+                  </th>
+                  <th className="text-secondary">{Containers.length}</th>
+                </tr>
+              )}
             </tbody>
           </Table>
         </div>
@@ -168,7 +176,10 @@ export const Info = ({ Master, House, Containers }) => {
                       </tr>
                       {Containers &&
                         Containers.map((ele, i) => {
-                          if (ele.F_OIHBLID == ga.F_ID)
+                          if (
+                            ele.F_OIHBLID == ga.F_ID ||
+                            ele.F_OOHBLID == ga.F_ID
+                          )
                             return (
                               <React.Fragment key={i + ele.F_ID}>
                                 <tr>

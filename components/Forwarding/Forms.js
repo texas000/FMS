@@ -4,7 +4,7 @@ import CheckRequestForm from "./CheckRequestForm";
 import MyCover from "./MyCover";
 import moment from "moment";
 
-export const Forms = ({ Master, House, Containers, AP }) => {
+export const Forms = ({ Master, House, Containers, AP, User }) => {
   const [isClient, setIsClient] = React.useState(false);
   const [APType, setAPType] = React.useState("CHECK");
   React.useEffect(() => {
@@ -13,6 +13,49 @@ export const Forms = ({ Master, House, Containers, AP }) => {
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+
+  const mailThis = async () => {
+    var filteredHbl = "";
+    if (House) {
+      var hblArray = House.map(
+        (ga, i) =>
+          `<tr><td>HBL #${i + 1}</td><td>${ga.F_HBLNo || ga.F_HawbNo}</td></tr>`
+      );
+      filteredHbl = hblArray.join("");
+    }
+    var filteredContainers = "";
+    if (Containers) {
+      var containerArray = Containers.map(
+        (ga, i) =>
+          `<tr><td>Container #${i + 1}</td><td>${ga.F_ContainerNo}</td></tr>`
+      );
+      filteredContainers = containerArray.join("");
+    }
+    var fetchMailer = await fetch("/api/mailSend", {
+      headers: {
+        email: User.email,
+        subject: Master.F_RefNo,
+        contents: `<div style="font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";"><div style="display: none;">Automatically Generated from JWIUSA</div><a href="https://jwiusa.com"><img src="https://jamesworldwide.com/wp-content/uploads/2016/03/main-logo.png" width="150" height="30"></a><h2>${
+          House ? House[0].CUSTOMER : "NO CUSTOMER"
+        }</h2><table style="width: 100%;"><tr style="background-color: #dddddd;"><td>REF#</td><td>${
+          Master.F_RefNo
+        }</td></tr><tr><td>MBL</td><td>${
+          Master.F_MBLNo || Master.F_MawbNo
+        }</td></tr>${filteredHbl}${filteredContainers}<tr><td>ETD</td><td>${moment(
+          Master.F_ETD
+        )
+          .utc()
+          .format("ll")}</td></tr><tr><td>ETA</td><td>${moment(Master.F_ETA)
+          .utc()
+          .format("ll")}</td></tr></table></div>`,
+      },
+    });
+    if (fetchMailer.status) {
+      alert("MAIL SENT TO " + User.email);
+    } else {
+      alert("FAILED");
+    }
+  };
   return (
     <div className="card border-left-info shadow d-print-none">
       <div className="card-header py-2 d-flex flex-row align-items-center justify-content-between">
@@ -49,6 +92,15 @@ export const Forms = ({ Master, House, Containers, AP }) => {
                 </a>
               )}
             </BlobProvider>
+            <Button
+              size="sm"
+              className="text-xs ml-2"
+              outline
+              color="info"
+              onClick={mailThis}
+            >
+              <i className="fa fa-envelope mr-2"></i>MAIL
+            </Button>
           </ButtonGroup>
         )}
       </div>

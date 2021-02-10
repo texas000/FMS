@@ -252,7 +252,7 @@ const Top = ({ Token, toggle, setToggle }) => {
                   key={ga.ID}
                   className="dropdown-item d-flex align-items-center"
                   href="#"
-                  onClick={() => router.push(`/forwarding/oim/${ga.REF}`)}
+                  onClick={() => router.push(`/forwarding/oim/${ga.RefNo}`)}
                 >
                   <div className="mr-3">
                     <div className="icon-circle bg-primary">
@@ -260,12 +260,12 @@ const Top = ({ Token, toggle, setToggle }) => {
                     </div>
                   </div>
                   <div>
+                    <span className="font-weight-bold">{ga.RefNo}</span>
                     <div className="small text-gray-500">
-                      {ga.CUSTOMER}
+                      {ga.Customer}
                       <br />
                       Arrival {moment(ga.ETA).fromNow()}
                     </div>
-                    <span className="font-weight-bold">{ga.REF}</span>
                   </div>
                 </a>
               ))}

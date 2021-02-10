@@ -91,6 +91,7 @@ const About = () => {
           href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
           rel="stylesheet"
         />
+
         <link
           rel="stylesheet"
           href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -153,10 +154,101 @@ const About = () => {
           </a>
         </Carousel>
         {/* NO fluid */}
-        <Container>
+        <section className="showcase">
+          <div className="container-fluid p-0">
+            <h3
+              className="display-5 font-weight-bold text-center"
+              style={{ padding: "3rem" }}
+            >
+              We Move
+            </h3>
+            <div className="row no-gutters">
+              <div
+                className="col-lg-6 order-lg-2 text-white showcase-img"
+                style={{
+                  backgroundImage:
+                    "url(https://images.unsplash.com/photo-1585713181954-48d69dfb72e9?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1351&q=80)",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                }}
+              ></div>
+              <div
+                className="col-lg-6 order-lg-1 my-auto showcase-text"
+                style={{ padding: "5rem" }}
+              >
+                <h2>Ocean</h2>
+                <p className="lead mb-0">
+                  As a licensed Ocean Transportation and world-class Non-Vessel
+                  Operating Common Carrier (NVOCC), James Worldwide provides
+                  full ocean freight services to create the most highly
+                  adaptable, reliable and customizable solutions in the
+                  industry. Our years of experience, dedicated management team,
+                  globalized network, and partnerships provide reliable freight
+                  solutions on all the world’s oceans routes.
+                </p>
+              </div>
+            </div>
+            <div className="row no-gutters">
+              <div
+                className="col-lg-6 text-white showcase-img"
+                style={{
+                  backgroundImage:
+                    "url(https://images.unsplash.com/photo-1535872056568-126861caec36?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80)",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                }}
+              ></div>
+              <div
+                className="col-lg-6 my-auto showcase-text"
+                style={{ padding: "5rem" }}
+              >
+                <h2>Air</h2>
+                <p className="lead mb-0">
+                  As an International Air Transport Association (IATA) agent for
+                  all major airlines, James Worldwide provides a complete
+                  solutions of air logistics for shipments around the globe and
+                  for a wide variety of commodities and industries. At James
+                  Worldwide, we understand that airfreight is high priority
+                  consignments with premium and costly service. Our teams will
+                  help you with comprehensive solutions that focus on quick
+                  transit, constant communication, consolidation, and intermodal
+                  opportunities.
+                </p>
+              </div>
+            </div>
+            <div className="row no-gutters">
+              <div
+                className="col-lg-6 order-lg-2 text-white showcase-img"
+                style={{
+                  backgroundImage:
+                    "url(https://cdn.pixabay.com/photo/2020/10/01/17/11/store-5619201_960_720.jpg)",
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "center",
+                }}
+              ></div>
+              <div
+                className="col-lg-6 order-lg-1 my-auto showcase-text"
+                style={{ padding: "5rem" }}
+              >
+                <h2>Warehouse</h2>
+                <p className="lead mb-0">
+                  James Worldwide has experienced Licensed Customs Brokers that
+                  can file your Import Security Filing (ISF) and other
+                  import-entry-related information with U.S. Customs officials,
+                  monitoring your imports throughout the imports clearance
+                  process. Working with Customs (CBP), FDA, FCC, EPA, ATF, FSW,
+                  DOT, CSPC and all other government agencies allow us to
+                  provide you with comprehensive customs clearance support, and
+                  to help you achieve your business goals
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* <Container>
           <Row className="my-5">
             <Col sm="12" md={{ size: 6, offset: 3 }} className="text-center">
-              {/* <h4 className="text-muted mb-4">WE MOVE</h4> */}
               <h1 className="text-muted">WE MOVE</h1>
             </Col>
           </Row>
@@ -174,7 +266,7 @@ const About = () => {
                 className="text-muted"
                 style={{ fontSize: "1.4rem", lineHeight: "3rem" }}
               >
-                As a licensed Ocean Transportation and world-class Non-Vessel
+                As a licensed Ocean Transportation and worldclass Non-Vessel
                 Operating Common Carrier (NVOCC), James Worldwide provides full
                 ocean freight services to create the most highly adaptable,
                 reliable and customizable solutions in the industry.
@@ -220,7 +312,7 @@ const About = () => {
             </Col>
           </Row>
           <hr style={{ margin: "5rem" }} />
-          {/* SECOND ROW */}
+
           <Row className="py-4">
             <Col lg="5" className="text-right">
               <div>
@@ -243,7 +335,7 @@ const About = () => {
             <Col lg="7" className="text-center">
               <img
                 src="./image/home-slider-01.jpg"
-                className="img-fluid mx-auto"
+                className="img-fluid mx-auto delay-ls fadeIn"
                 style={{
                   overflow: "hidden",
                   height: "400px",
@@ -287,7 +379,8 @@ const About = () => {
             </Col>
           </Row>
           <hr style={{ margin: "5rem" }} />
-          {/* THRID ROW */}
+          
+
           <Row
             style={{
               paddingLeft: "6rem",
@@ -424,7 +517,7 @@ const About = () => {
             </Col>
           </Row>
 
-          {/* FOOTER UP */}
+          
           <Row
             style={{
               backgroundColor: "#02b875",
@@ -451,7 +544,7 @@ const About = () => {
               </Button>
             </Col>
           </Row>
-        </Container>
+        </Container> */}
         <Footer />
       </main>
       <div className="loader-wrapper">
@@ -563,6 +656,10 @@ const About = () => {
           }
           ::placeholder {
             color: gray !important;
+          }
+          .showcase .showcase-img {
+            min-height: 30rem;
+            background-size: cover;
           }
         `}
       </style>

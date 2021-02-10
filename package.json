@@ -1,7 +1,7 @@
 {
-  "name": "dockertest",
-  "version": "1.0.0",
-  "description": "",
+  "name": "fms",
+  "version": "1.0.3",
+  "description": "james worldwide forwarding management system",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
@@ -11,7 +11,7 @@
     "docker": "docker build . -t fms_sarah_version1.0.4"
   },
   "keywords": [],
-  "author": "",
+  "author": "james worldwide it team",
   "license": "ISC",
   "dependencies": {
     "@david.kucsai/react-pdf-table": "^0.3.0",
@@ -32,6 +32,7 @@
     "next": "^9.5.5",
     "next-on-netlify": "^2.6.3",
     "node-fetch": "^2.6.1",
+    "nodemailer": "^6.4.17",
     "nprogress": "^0.2.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",

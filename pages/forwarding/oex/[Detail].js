@@ -20,7 +20,7 @@ const Detail = ({ Cookie, OIM, EXTRA }) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    // console.log(OIM);
+    console.log(OIM);
   });
 
   var mailSubject, mailBody, emailHref;
@@ -57,7 +57,7 @@ const Detail = ({ Cookie, OIM, EXTRA }) => {
   if (TOKEN && TOKEN.group) {
     return (
       <>
-        {OIM.M ? (
+        {OIM && OIM.M ? (
           <Layout TOKEN={TOKEN} TITLE={OIM.M.F_RefNo}>
             <Head
               REF={OIM.M.F_RefNo}
@@ -80,6 +80,7 @@ const Detail = ({ Cookie, OIM, EXTRA }) => {
                       House={OIM.H}
                       Containers={OIM.C}
                       AP={OIM.A}
+                      User={TOKEN}
                     />
                     <Status
                       Data={EXTRA.S}
