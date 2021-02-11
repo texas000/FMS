@@ -1,15 +1,4 @@
-import {
-  Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButtonDropdown,
-  InputGroupText,
-} from "reactstrap";
+import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { useRouter } from "next/router";
 import moment from "moment";
 
@@ -24,9 +13,18 @@ const Top = ({ Token, toggle, setToggle }) => {
   const [Notifications, setNotifications] = React.useState([]);
   const [Messages, setMessages] = React.useState([]);
   React.useEffect(() => {
+    //When window type is defined, and local stroage is defined, get notification and board board data from local storage and set to state value, otherwise, set noti and message as empty array
     if (typeof window !== "undefined") {
-      setNotifications(JSON.parse(localStorage.getItem("notification")));
-      setMessages(JSON.parse(localStorage.getItem("board")));
+      if (localStorage.length) {
+        const noti = localStorage.getItem("notification");
+        if (noti != "undefined") {
+          setNotifications(JSON.parse(localStorage.getItem("notification")));
+        }
+        const board = localStorage.getItem("board");
+        if (board != "undefined") {
+          setMessages(JSON.parse(localStorage.getItem("board")));
+        }
+      }
     }
   }, []);
 
@@ -427,7 +425,7 @@ const Top = ({ Token, toggle, setToggle }) => {
             aria-expanded={userToggle}
           >
             <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-              {Token ? `${Token.first} ${Token.last}` : "Douglas McGee"}
+              {Token ? `${Token.first} ${Token.last}` : "Please Login"}
             </span>
             <img
               className="img-profile rounded-circle"

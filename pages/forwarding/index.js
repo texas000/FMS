@@ -34,6 +34,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
   useEffect(() => {
     !TOKEN && router.push("/login");
   }, []);
+  const headerSortingStyle = { backgroundColor: "#c9d5f5" };
 
   const columnStyle = {
     fontSize: "0.8em",
@@ -41,6 +42,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
     verticalAlign: "middle",
     wordWrap: "break-word",
   };
+
   const column = [
     {
       dataField: "RefNO",
@@ -85,6 +87,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       filter: textFilter({
         className: "text-xs d-none d-md-block",
       }),
+      headerSortingStyle,
     },
     {
       dataField: "CUSTOMER",
@@ -100,6 +103,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       filter: textFilter({
         className: "text-xs",
       }),
+      headerSortingStyle,
     },
     {
       dataField: "MASTER_BLNO",
@@ -107,6 +111,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       style: columnStyle,
       headerStyle: { fontSize: "0.8rem" },
       sort: true,
+      headerSortingStyle,
     },
     {
       dataField: "HOUSE_BLNO",
@@ -114,6 +119,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       style: columnStyle,
       headerStyle: { fontSize: "0.8rem" },
       sort: true,
+      headerSortingStyle,
     },
     {
       dataField: "CUSTOMER",
@@ -122,6 +128,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       headerStyle: { fontSize: "0.8rem" },
       hidden: true,
       sort: true,
+      headerSortingStyle,
     },
     {
       dataField: "SHIPPER",
@@ -130,26 +137,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       headerStyle: { fontSize: "0.8rem" },
       hidden: true,
       sort: true,
-    },
-    {
-      dataField: "POSTDATE",
-      text: "POST",
-      style: columnStyle,
-      sort: true,
-      headerStyle: { fontSize: "0.8em" },
-      formatter: (cell) => {
-        if (cell) {
-          if (moment(cell).isSameOrBefore(moment())) {
-            return (
-              <div style={{ color: "gray" }}>{moment(cell).format("L")}</div>
-            );
-          } else {
-            return (
-              <div style={{ color: "blue" }}>{moment(cell).format("L")}</div>
-            );
-          }
-        }
-      },
+      headerSortingStyle,
     },
     {
       dataField: "ETD",
@@ -157,6 +145,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       style: columnStyle,
       sort: true,
       headerStyle: { fontSize: "0.8em" },
+      headerSortingStyle,
       formatter: (cell) => {
         if (cell) {
           if (moment(cell).isSameOrBefore(moment())) {
@@ -177,6 +166,28 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       style: columnStyle,
       sort: true,
       headerStyle: { fontSize: "0.8em" },
+      headerSortingStyle,
+      formatter: (cell) => {
+        if (cell) {
+          if (moment(cell).isSameOrBefore(moment())) {
+            return (
+              <div style={{ color: "gray" }}>{moment(cell).format("L")}</div>
+            );
+          } else {
+            return (
+              <div style={{ color: "blue" }}>{moment(cell).format("L")}</div>
+            );
+          }
+        }
+      },
+    },
+    {
+      dataField: "POSTDATE",
+      text: "POST",
+      style: columnStyle,
+      sort: true,
+      headerStyle: { fontSize: "0.8em" },
+      headerSortingStyle,
       formatter: (cell) => {
         if (cell) {
           if (moment(cell).isSameOrBefore(moment())) {
@@ -198,6 +209,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       style: columnStyle,
       headerStyle: { fontSize: "0.8rem", width: "8%" },
       sort: true,
+      headerSortingStyle,
       filter: textFilter({
         className: "text-xs d-none d-md-block",
       }),
@@ -319,12 +331,6 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
                     hover
                     striped
                     condensed
-                    defaultSorted={[
-                      {
-                        dataField: "POSTDATE",
-                        order: "desc",
-                      },
-                    ]}
                     wrapperClasses="table-responsive"
                     filter={filterFactory()}
                     noDataIndication={indication}
@@ -334,6 +340,12 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
                       paginationTotalRenderer: customTotal,
                       sizePerPageRenderer,
                     })}
+                    // defaultSorted={[
+                    //   {
+                    //     dataField: "RefNo",
+                    //     order: "desc",
+                    //   },
+                    // ]}
                   />
                 </Col>
               )}

@@ -3,7 +3,21 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Cookie from "js-cookie";
 import Head from "next/head";
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/analytics";
+import { useAuthState } from "react-firebase-hooks/auth";
 
+const firebaseConfig = {
+  apiKey: "AIzaSyBWvOh5KL16jU-rD2mYt-OY7hIhnCMBZ60",
+  authDomain: "jw-web-ffaea.firebaseapp.com",
+  databaseURL: "https://jw-web-ffaea.firebaseio.com",
+  projectId: "jw-web-ffaea",
+  storageBucket: "jw-web-ffaea.appspot.com",
+  messagingSenderId: "579008207978",
+  appId: "1:579008207978:web:313c48437e50d7e5637e13",
+  measurementId: "G-GPMS588XP2",
+};
 const Login = () => {
   const router = useRouter();
 
@@ -13,7 +27,29 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState("");
   const [secret, setSecret] = useState("");
+  // if (!firebase.apps.length) {
+  //   firebase.initializeApp(firebaseConfig);
+  // } else {
+  //   firebase.app();
+  // }
+  // const auth = firebase.auth();
+  const signInWithGoogle = () => {
+    console.log("hello");
+    // const provider = new firebase.auth.GoogleAuthProvider();
+    // auth
+    //   .signInWithPopup(provider)
+    //   .then((result) => {
+    //     if (result.additionalUserInfo.isNewUser) {
+    //       alert("NEW USER");
+    //     } else {
+    //       console.log(result.user);
+    //     }
+    //   })
+    //   .catch((err) => console.log(err));
+  };
+
   useEffect(() => {
+    // console.log(auth.currentUser);
     Cookie.set("jamesworldwidetoken", "");
   }, []);
   async function submitForm() {
@@ -116,7 +152,21 @@ const Login = () => {
                   />
                 </div>
               </div>
+
               <a href="#">Forgot Password?</a>
+
+              <div
+                className="btn-primary py-2"
+                style={{ borderRadius: "1rem", display: "none" }}
+                onClick={signInWithGoogle}
+              >
+                Sign in with{"  "}
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1004px-Google_%22G%22_Logo.svg.png"
+                  style={{ height: "30px", width: "30px" }}
+                />
+              </div>
+
               <div className="center">
                 <input
                   type="submit"

@@ -19,6 +19,7 @@ export default function dashboard({
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
 
   React.useEffect(() => {
+    console.log("dashboard client side loaded");
     !TOKEN && router.push("/login");
     if (typeof window !== "undefined") {
       localStorage.setItem("notification", JSON.stringify(OimList));
@@ -662,10 +663,13 @@ export async function getServerSideProps({ req }) {
     //   dataAom = await resAom.json();
     // }
 
+    var dataOim = [];
+    var dataOom = [];
+    var dataAim = [];
+    var dataAom = [];
     const resOim = await fetch(
       `http://jameswi.com:49996/api/oimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
     );
-    var dataOim = [];
     if (resOim.status == 200) {
       dataOim = await resOim.json();
       if (dataOim.length) {
@@ -686,7 +690,7 @@ export async function getServerSideProps({ req }) {
     const resOom = await fetch(
       `http://jameswi.com:49996/api/oommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
     );
-    var dataOom = [];
+
     if (resOom.status == 200) {
       dataOom = await resOom.json();
       if (dataOom.length) {
@@ -707,7 +711,7 @@ export async function getServerSideProps({ req }) {
     const resAim = await fetch(
       `http://jameswi.com:49996/api/aimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
     );
-    var dataAim = [];
+
     if (resAim.status == 200) {
       dataAim = await resAim.json();
       if (dataAim.length) {
@@ -728,7 +732,7 @@ export async function getServerSideProps({ req }) {
     const resAom = await fetch(
       `http://jameswi.com:49996/api/aommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
     );
-    var dataAom = [];
+
     if (resAom.status == 200) {
       dataAom = await resAom.json();
       if (dataAom.length) {
