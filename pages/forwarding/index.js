@@ -122,15 +122,6 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "CUSTOMER",
-      text: "CUSTOMER",
-      style: columnStyle,
-      headerStyle: { fontSize: "0.8rem" },
-      hidden: true,
-      sort: true,
-      headerSortingStyle,
-    },
-    {
       dataField: "SHIPPER",
       text: "SHIPPER",
       style: columnStyle,

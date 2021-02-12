@@ -66,7 +66,67 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           onClick={() => router.push("/forwarding")}
         >
           <i className="fa fa-ship"></i>
-          <span>Forwarding</span>
+          <span>FS Search</span>
+        </a>
+      </li>
+
+      <li
+        className={`nav-item ${
+          router.pathname == "/forwarding/oim" && "active"
+        }`}
+      >
+        <a
+          className="nav-link"
+          href="#"
+          onClick={() => router.push("/forwarding/oim")}
+        >
+          <i className="fa fa-anchor"></i>
+          <span>Ocean Import</span>
+        </a>
+      </li>
+
+      <li
+        className={`nav-item ${
+          router.pathname == "/forwarding/oex" && "active"
+        }`}
+      >
+        <a
+          className="nav-link"
+          href="#"
+          onClick={() => router.push("/forwarding/oex")}
+        >
+          <i className="fa fa-anchor fa-flip-vertical"></i>
+          <span>Ocean Export</span>
+        </a>
+      </li>
+
+      <li
+        className={`nav-item ${
+          router.pathname == "/forwarding/aim" && "active"
+        }`}
+      >
+        <a
+          className="nav-link"
+          href="#"
+          onClick={() => router.push("/forwarding/aim")}
+        >
+          <i className="fa fa-plane"></i>
+          <span>Air Import</span>
+        </a>
+      </li>
+
+      <li
+        className={`nav-item ${
+          router.pathname == "/forwarding/aex" && "active"
+        }`}
+      >
+        <a
+          className="nav-link"
+          href="#"
+          onClick={() => router.push("/forwarding/aex")}
+        >
+          <i className="fa fa-plane fa-flip-vertical"></i>
+          <span>Air Export</span>
         </a>
       </li>
 

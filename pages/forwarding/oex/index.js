@@ -17,7 +17,7 @@ const Index = ({ Cookie, Result }) => {
   function indication() {
     return (
       <span className="font-weight-bold">
-        You do not have Ocean Import at the moment
+        You do not have Ocean Export at the moment
         {/* {router.query.search
           ? `Your search "${router.query.search}" did not match any documents.`
           : `Please search something`} */}
@@ -97,7 +97,7 @@ const Index = ({ Cookie, Result }) => {
 
   const column = [
     {
-      dataField: "oimmain.RefNo",
+      dataField: "oommain.RefNo",
       text: "REF",
       formatter: (cell) => (
         <a href="#" className="text-uppercase">
@@ -107,8 +107,8 @@ const Index = ({ Cookie, Result }) => {
       events: {
         onClick: (e, columns, columnIndex, row) => {
           router.push(
-            `/forwarding/oim/[Detail]`,
-            `/forwarding/oim/${row.oimmain.RefNo}`
+            `/forwarding/oex/[Detail]`,
+            `/forwarding/oex/${row.oommain.RefNo}`
           );
         },
       },
@@ -121,7 +121,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "oihmain.Customer_SName",
+      dataField: "oohmain.Customer_SName",
       text: "CUSTOMER",
       style: columnStyle,
       headerStyle: {
@@ -134,7 +134,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "oimmain.MBLNo",
+      dataField: "oommain.MBLNo",
       text: "MBL",
       style: columnStyle,
       headerStyle: { fontSize: "0.8rem" },
@@ -142,7 +142,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "oihmain.HBLNo",
+      dataField: "oohmain.HBLNo",
       text: "HBL",
       style: columnStyle,
       headerStyle: { fontSize: "0.8rem" },
@@ -150,7 +150,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "oihmain.Shipper_SName",
+      dataField: "oohmain.Shipper_SName",
       text: "SHIPPER",
       style: columnStyle,
       headerStyle: { fontSize: "0.8rem" },
@@ -159,7 +159,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "oimmain.ETD",
+      dataField: "oommain.ETD",
       text: "ETD",
       style: columnStyle,
       sort: true,
@@ -180,7 +180,7 @@ const Index = ({ Cookie, Result }) => {
       },
     },
     {
-      dataField: "oimmain.ETA",
+      dataField: "oommain.ETA",
       text: "ETA",
       style: columnStyle,
       sort: true,
@@ -201,7 +201,7 @@ const Index = ({ Cookie, Result }) => {
       },
     },
     {
-      dataField: "oimmain.PostDate",
+      dataField: "oommain.PostDate",
       text: "POST",
       style: columnStyle,
       sort: true,
@@ -222,7 +222,7 @@ const Index = ({ Cookie, Result }) => {
       },
     },
     {
-      dataField: "oimmain.U2ID",
+      dataField: "oommain.U2ID",
       // dataField: "U1ID",
       text: "PIC",
       style: columnStyle,
@@ -248,14 +248,14 @@ const Index = ({ Cookie, Result }) => {
       <Layout TOKEN={TOKEN}>
         <div className="d-flex flex-sm-row justify-content-between">
           <div className="flex-column">
-            <h3 className="mb-4 forwarding">Ocean Import</h3>
+            <h3 className="mb-4 forwarding">Ocean Export</h3>
           </div>
         </div>
         <Card className="bg-transparent border-0">
           <Row>
             {/* DISPLAY SEARCH RESULT */}
             <ToolkitProvider
-              keyField="oihmain.ID"
+              keyField="oohmain.ID"
               bordered={false}
               columns={column}
               data={Result}
@@ -300,7 +300,7 @@ export async function getServerSideProps({ req }) {
     const { fsid } = jwt.decode(cookies.jamesworldwidetoken);
     var result = [];
     const fetchSearch = await fetch(
-      `http://jameswi.com:49996/api/oimmain_leftjoin_oihmain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=&etdTo=&casestatus=`
+      `http://jameswi.com:49996/api/oommain_leftjoin_oohmain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=&etdTo=&casestatus=`
     );
     if (fetchSearch.status === 200) {
       result = await fetchSearch.json();

@@ -322,52 +322,92 @@ export default function dashboard({
         <div className="row">
           <div className="col-lg-3 mb-4">
             <div className="card bg-primary text-white shadow">
-              <div className="card-body">
-                My Ocean Import
-                <div className="text-white-50 small">
-                  Total of {OimList && OimList.length}
-                  <br />
-                  based on ETA from 2 weeks
+              <div className="card-body d-flex justify-content-between">
+                <div>
+                  My Ocean Import
+                  <div className="text-white-50 small">
+                    Total of {OimList && OimList.length}
+                    <br />
+                    based on ETA from 2 weeks
+                  </div>
                 </div>
+                <a href="#" onClick={() => router.push("/forwarding/oim")}>
+                  <div className="d-flex align-items-center">
+                    <span className="fa-stack fa-2x">
+                      <i className="fa fa-circle fa-stack-2x text-gray-100"></i>
+                      <i className="fa fa-anchor fa-stack-1x text-primary"></i>
+                    </span>
+                  </div>
+                </a>
               </div>
             </div>
           </div>
 
           <div className="col-lg-3 mb-4">
             <div className="card bg-success text-white shadow">
-              <div className="card-body">
-                My Ocean Export
-                <div className="text-white-50 small">
-                  Total of {OomList && OomList.length}
-                  <br />
-                  based on ETD from 2 weeks
+              <div className="card-body d-flex justify-content-between">
+                <div>
+                  My Ocean Export
+                  <div className="text-white-50 small">
+                    Total of {OomList && OomList.length}
+                    <br />
+                    based on ETD from 2 weeks
+                  </div>
                 </div>
+                <a href="#" onClick={() => router.push("/forwarding/oex")}>
+                  <div className="d-flex align-items-center">
+                    <span className="fa-stack fa-2x">
+                      <i className="fa fa-circle fa-stack-2x text-gray-100"></i>
+                      <i className="fa fa-anchor fa-flip-vertical fa-stack-1x text-success"></i>
+                    </span>
+                  </div>
+                </a>
               </div>
             </div>
           </div>
 
           <div className="col-lg-3 mb-4">
             <div className="card bg-info text-white shadow">
-              <div className="card-body">
-                My Air Import
-                <div className="text-white-50 small">
-                  Total of {AimList && AimList.length}
-                  <br />
-                  based on ETA from 2 weeks
+              <div className="card-body d-flex justify-content-between">
+                <div>
+                  My Air Import
+                  <div className="text-white-50 small">
+                    Total of {AimList && AimList.length}
+                    <br />
+                    based on ETA from 2 weeks
+                  </div>
                 </div>
+                <a href="#" onClick={() => router.push("/forwarding/aim")}>
+                  <div className="d-flex align-items-center">
+                    <span className="fa-stack fa-2x">
+                      <i className="fa fa-circle fa-stack-2x text-gray-100"></i>
+                      <i className="fa fa-plane fa-stack-1x text-info"></i>
+                    </span>
+                  </div>
+                </a>
               </div>
             </div>
           </div>
 
           <div className="col-lg-3 mb-4">
             <div className="card bg-warning text-white shadow">
-              <div className="card-body">
-                My Air Export
-                <div className="text-white-50 small">
-                  Total of {AomList && AomList.length}
-                  <br />
-                  based on ETD from 2 weeks
+              <div className="card-body d-flex justify-content-between">
+                <div>
+                  My Air Export
+                  <div className="text-white-50 small">
+                    Total of {AomList && AomList.length}
+                    <br />
+                    based on ETD from 2 weeks
+                  </div>
                 </div>
+                <a href="#" onClick={() => router.push("/forwarding/aex")}>
+                  <div className="d-flex align-items-center">
+                    <span className="fa-stack fa-2x">
+                      <i className="fa fa-circle fa-stack-2x text-gray-100"></i>
+                      <i className="fa fa-plane fa-flip-vertical fa-stack-1x text-warning"></i>
+                    </span>
+                  </div>
+                </a>
               </div>
             </div>
           </div>
