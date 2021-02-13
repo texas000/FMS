@@ -7,8 +7,7 @@
     "dev": "next dev",
     "serverDev": "node server.js",
     "build": "next build",
-    "start": "next start -p 80",
-    "docker": "docker build . -t fms_sarah_version1.0.4"
+    "start": "next start -p 80"
   },
   "keywords": [],
   "author": "james worldwide it team",

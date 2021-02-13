@@ -13,6 +13,7 @@ module.exports = withCSS({
     return config;
   },
   async redirects() {
+    //Temporary Redirect Index page to dashboard
     return [
       {
         source: "/",
