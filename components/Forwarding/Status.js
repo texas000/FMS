@@ -33,31 +33,13 @@ export const Status = ({ Data, Ref, Uid }) => {
     F_EmptyReturnDate: null,
   });
   React.useEffect(() => {
-    if (Data === null) {
-      setSwitchData({
-        F_PreAlert: null,
-        F_PreAlertComment: null,
-        F_ISF: null,
-        F_ISFComment: null,
-        F_OBL: null,
-        F_OBLComment: null,
-        F_OceanFreight: null,
-        F_OceanFreightComment: null,
-        F_ArrivalNotice: null,
-        F_ArrivalNoticeComment: null,
-        F_CrDb: null,
-        F_CrDbComment: null,
-        F_Arrival: null,
-        F_ArrivalComment: null,
-        F_LastFreeDate: null,
-        F_PickedUpDate: null,
-        F_EmptyReturnDate: null,
-      });
+    if (Data == null) {
+      console.log("STATUS DATA NOT EXIST");
     } else {
       setSwitchData(Data);
     }
-    console.log(Ref);
-    console.log(Data);
+    // console.log(Ref);
+    // console.log(Data);
   }, [Ref]);
 
   const onSaveStatus = async () => {
@@ -90,13 +72,28 @@ export const Status = ({ Data, Ref, Uid }) => {
         ? `N'${switchData.F_ArrivalComment.replace(/\'/g, "''")}'`
         : "NULL";
 
-    const boolpre = switchData.F_PreAlert ? "N'1'" : "NULL";
-    const boolisf = switchData.F_ISF ? "N'1'" : "NULL";
-    const boolobl = switchData.F_OBL ? "N'1'" : "NULL";
-    const boolof = switchData.F_OceanFreight ? "N'1'" : "NULL";
-    const boolan = switchData.F_ArrivalNotice ? "N'1'" : "NULL";
-    const boolcrdb = switchData.F_CrDb ? "N'1'" : "NULL";
-    const boolarr = switchData.F_Arrival ? "N'1'" : "NULL";
+    const boolpre =
+      switchData.F_PreAlert === null || switchData.F_PreAlert === "0"
+        ? "0"
+        : "N'1'";
+    const boolisf =
+      switchData.F_ISF === null || switchData.F_ISF === "0" ? "0" : "N'1'";
+    const boolobl =
+      switchData.F_OBL === null || switchData.F_OBL === "0" ? "0" : "N'1'";
+    const boolof =
+      switchData.F_OceanFreight === null || switchData.F_OceanFreight === "0"
+        ? "0"
+        : "N'1'";
+    const boolan =
+      switchData.F_ArrivalNotice === null || switchData.F_ArrivalNotice === "0"
+        ? "0"
+        : "N'1'";
+    const boolcrdb =
+      switchData.F_CrDb === null || switchData.F_CrDb === "0" ? "0" : "N'1'";
+    const boolarr =
+      switchData.F_Arrival === null || switchData.F_Arrival === "0"
+        ? "0"
+        : "N'1'";
 
     const freeday =
       switchData.F_LastFreeDate != null
@@ -182,7 +179,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_PreAlert === null ? false : true}
+                  checked={switchData.F_PreAlert === "1" ? true : false}
                   // defaultChecked={Data && Data.F_PreAlert === "1"}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null || null;
@@ -222,7 +219,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_ISF === null ? false : true}
+                  checked={switchData.F_ISF === "1" ? true : false}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
@@ -261,7 +258,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_OBL === null ? false : true}
+                  checked={switchData.F_OBL === "1" ? true : false}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
@@ -300,7 +297,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_OceanFreight === null ? false : true}
+                  checked={switchData.F_OceanFreight === "1" ? true : false}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
@@ -339,7 +336,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_ArrivalNotice === null ? false : true}
+                  checked={switchData.F_ArrivalNotice === "1" ? true : false}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
@@ -378,7 +375,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_CrDb === null ? false : true}
+                  checked={switchData.F_CrDb === "1" ? true : false}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
@@ -417,7 +414,7 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_Arrival === null ? false : true}
+                  checked={switchData.F_Arrival === "1" ? true : false}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : null;
                     setSwitchData((prev) => ({
