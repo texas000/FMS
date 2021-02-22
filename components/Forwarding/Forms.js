@@ -4,11 +4,12 @@ import CheckRequestForm from "./CheckRequestForm";
 import MyCover from "./MyCover";
 import moment from "moment";
 
-export const Forms = ({ Master, House, Containers, AP, User }) => {
+export const Forms = ({ Master, House, Containers, AP, User, Type }) => {
   const [isClient, setIsClient] = React.useState(false);
   const [APType, setAPType] = React.useState("CHECK");
   React.useEffect(() => {
     setIsClient(true);
+    console.log(Type);
   }, []);
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -75,6 +76,7 @@ export const Forms = ({ Master, House, Containers, AP, User }) => {
                   master={Master}
                   house={House || []}
                   containers={Containers}
+                  type={Type}
                 />
               }
             >
@@ -159,12 +161,8 @@ export const Forms = ({ Master, House, Containers, AP, User }) => {
                     oim={Master.F_RefNo}
                     customer={House ? House[0].CUSTOMER || OTHER.CUSTOMER : ""}
                     inv={ga.F_InvoiceNo}
-                    metd={moment(Master.F_ETD)
-                      .add(1, "days")
-                      .format("MM/DD/YY")}
-                    meta={moment(Master.F_ETA)
-                      .add(1, "days")
-                      .format("MM/DD/YY")}
+                    metd={moment(Master.F_ETD).utc().format("MM/DD/YY")}
+                    meta={moment(Master.F_ETA).utc().format("MM/DD/YY")}
                     pic={ga.F_U1ID}
                     today={moment().format("l")}
                     desc={ga.F_Descript}
@@ -173,6 +171,7 @@ export const Forms = ({ Master, House, Containers, AP, User }) => {
                     consignee={House ? House[0].CONSIGNEE : ""}
                     pod={Master.F_DisCharge || Master.F_Discharge}
                     comm={Master.F_mCommodity}
+                    // due={moment(ga.F_DueDate).utc().format("l")}
                   />
                 }
               >

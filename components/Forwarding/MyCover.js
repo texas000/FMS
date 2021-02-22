@@ -25,8 +25,8 @@ const styles = StyleSheet.create({
   },
   logo: {
     position: "absolute",
-    top: "0px",
-    left: "572px",
+    top: "710px",
+    left: "562px",
     width: "35px",
     height: "35px",
   },
@@ -84,46 +84,50 @@ const styles = StyleSheet.create({
   },
 });
 
-export const MyCover = ({ master, house, containers }) => {
-  var upperTableData = [
+export const MyCover = ({ master, house, containers, type }) => {
+  var upperTableOcean = [
     {
       row: 2,
       first: "HOUSE#",
-      second: "CUST REF#",
+      second: "COMMODITY",
       data1: house
-        .map(
-          (ga, i) => `${ga.F_HBLNo || ga.F_HawbNo} ${i % 2 === 1 ? "\n" : ""}`
-        )
+        .map((ga, i) => `${ga.F_HBLNo} ${i % 2 === 1 ? "\n" : ""}`)
         .join(" "),
-      data2: house.length && house[0].F_CustRefNo,
+      data2: master.F_mCommodity,
     },
     {
       row: 3,
       first: "AMS#",
-      second: "PCS",
-      data1: house.length && house[0].F_AMSBLNO,
-      data2: house.length && (house[0].F_PKGS || house[0].F_Pkgs),
+      second: "PKGS",
+      data1: house.map((ga) => `${ga.F_AMSBLNO} `).join(" "),
+      data2: house.reduce((sum, item) => {
+        return (sum = sum + item.F_PKGS);
+      }, 0),
     },
     {
       row: 4,
       first: "POL",
       second: "WEIGHTS",
       data1: master.F_LoadingPort,
-      data2: house.length && house[0].F_KGS,
+      data2: house.reduce((sum, item) => {
+        return (sum = sum + item.F_KGS);
+      }, 0),
     },
     {
       row: 5,
       first: "POD",
       second: "CBM",
-      data1: master.F_DisCharge || master.F_Discharge,
-      data2: house.length && house[0].F_CBM,
+      data1: master.F_DisCharge,
+      data2: house.reduce((sum, item) => {
+        return (sum = sum + item.F_CBM);
+      }, 0),
     },
     {
       row: 6,
       first: "AGENT",
       data1: master.AGENT,
-      second: "VSL/FLT",
-      data2: master.F_Vessel || master.F_FLTno,
+      second: "VSL NO",
+      data2: master.F_Vessel,
     },
     {
       row: 7,
@@ -141,9 +145,103 @@ export const MyCover = ({ master, house, containers }) => {
     },
   ];
 
+  var upperTableAir = [
+    {
+      row: 2,
+      first: "HOUSE#",
+      second: "COMMODITY",
+      data1: house
+        .map(
+          (ga, i) => `${ga.F_HBLNo || ga.F_HawbNo} ${i % 2 === 1 ? "\n" : ""}`
+        )
+        .join(" "),
+      data2: house.length && `${house[0].F_Description}(${house.length})`,
+    },
+    {
+      row: 3,
+      first: "AIRPORT",
+      second: "PKGS",
+      data1: `${master.F_LCode} - ${master.F_DCode}`,
+      data2: master.F_Pkgs,
+    },
+    {
+      row: 4,
+      first: "POL",
+      second: "WEIGHTS",
+      data1: master.F_LoadingPort,
+      data2: master.F_GrossWeight,
+    },
+    {
+      row: 5,
+      first: "POD",
+      second: "C WEIGHT",
+      data1: master.F_Discharge,
+      data2: master.F_ChgWeight,
+    },
+    {
+      row: 6,
+      first: "AGENT",
+      data1: master.AGENT,
+      second: "FLT NO",
+      data2: master.F_FLTno,
+    },
+    {
+      row: 7,
+      first: "CARRIER",
+      second: "P/C",
+      data1: master.CARRIER,
+      data2: master.F_PPCC,
+    },
+    {
+      row: 8,
+      first: "S/L",
+      second: "BL VENDOR",
+      data1: master.CARRIER,
+      data2: master.CYLOC,
+    },
+  ];
+
+  var upperTableOhter = [
+    {
+      row: 1,
+      first: "HOUSE#",
+      second: "COMMODITY",
+      data1: master.F_Hblno,
+      data2: master.F_Commodity,
+    },
+    {
+      row: 2,
+      first: "POL",
+      second: "TYPE",
+      data1: master.F_LoadingPort,
+      data2: master.F_Type,
+    },
+    {
+      row: 3,
+      first: "POD",
+      second: "PKGS",
+      data1: master.F_DisCharge,
+      data2: master.F_Pkgs,
+    },
+    {
+      row: 3,
+      first: "DESTINATION",
+      second: "UNIT",
+      data1: master.F_FinalDest,
+      data2: master.F_Punit,
+    },
+    {
+      row: 4,
+      first: "WEIGHT(LB)",
+      second: "WEIGHT(KG)",
+      data1: master.F_Lbs,
+      data2: master.F_Kgs,
+    },
+  ];
+
   // Adding Containers to the upper table
   containers &&
-    upperTableData.push({
+    upperTableOcean.push({
       row: 9,
       first: "CONTAINER",
       second: "SEAL#",
@@ -160,17 +258,71 @@ export const MyCover = ({ master, house, containers }) => {
         .join(" "),
     });
 
-  var lowerTableData = [
+  var lowerTableAir = [
+    {
+      first: "GATE IN",
+      second: "AIR FREIGHT",
+      data1: "",
+      data2: "",
+    },
+    { first: "DEPARTURE", second: "IMPORT\nSERVICE", data1: "", data2: "" },
+    { first: "CUSTOM", second: "STORAGE", data1: "", data2: "" },
+    {
+      first: "ARRIVAL/\nDISCHARGE",
+      second: "PAY METHOD",
+      data1: "",
+      data2: "",
+    },
+    { first: "TRUCKING", second: "ADDITIONAL", data1: "", data2: "" },
+    { first: "INVOICE", second: "CONFIRMED", data1: "", data2: "" },
+  ];
+
+  var lowerTableOcean = [
     {
       first: "ISF",
       second: "SURRENDER",
+      data1: "",
+      data2: "",
     },
-    { first: "DEPARTURE", second: "X-RAY" },
-    { first: "CUSTOM", second: "CET / MET" },
-    { first: "ARRIVAL/\nDISCHARGE", second: "DEMURRAGE" },
-    { first: "RAIL", second: "PER-DIEM" },
-    { first: "TRUCKING", second: "ADDITIONAL\nCHARGE" },
-    { first: "INVOICE", second: "CONFIRMED" },
+    { first: "DEPARTURE", second: "X-RAY", data1: "", data2: "" },
+    { first: "CUSTOM", second: "CET / MET", data1: "", data2: "" },
+    { first: "ARRIVAL/\nDISCHARGE", second: "DEMURRAGE", data1: "", data2: "" },
+    { first: "RAIL", second: "PER-DIEM", data1: "", data2: "" },
+    { first: "TRUCKING", second: "ADDITIONAL\nCHARGE", data1: "", data2: "" },
+    { first: "INVOICE", second: "CONFIRMED", data1: "", data2: "" },
+  ];
+
+  var lowerTableOther = [
+    {
+      first: "INTERNAL\nMEMO",
+      second: "TRUCK\nINVOICE",
+      data1: master.F_IMemo,
+      data2: "",
+    },
+    {
+      first: "PUBLIC\nMEMO",
+      second: "STORAGE\nINVOICE",
+      data1: master.F_PMemo,
+      data2: "",
+    },
+    {
+      first: "TRUCK\nARRANGE",
+      second: "PAYMENT\nRECEIVED",
+      data1: "",
+      data2: "",
+    },
+    {
+      first: "PICKED UP",
+      second: "ADDITIONAL",
+      data1: "",
+      data2: "",
+    },
+    {
+      first: "ARRIVAL",
+      second: "CONFIRMED",
+      data1: "",
+      data2: "",
+    },
   ];
 
   return (
@@ -178,18 +330,36 @@ export const MyCover = ({ master, house, containers }) => {
       <Page size="LETTER" style={styles.body}>
         <Image style={styles.logo} src="/image/JLOGO.png" fixed />
         <View style={styles.section}>
-          <Table data={upperTableData}>
+          <Table
+            data={
+              type === "ocean"
+                ? upperTableOcean
+                : type === "air"
+                ? upperTableAir
+                : upperTableOhter
+            }
+          >
             <TableHeader>
               <TableCell style={styles.upperTableCol1} weighting={0.295}>
                 MASTER#
               </TableCell>
-              <TableCell style={styles.upperTableCol2}>
-                {master.F_MBLNo || master.F_MawbNo}
+              <TableCell
+                style={{
+                  fontStyle: "9.5",
+                  padding: "0px 1px 0px 2px",
+                }}
+              >
+                {master.F_MBLNo || master.F_MawbNo || master.F_Mblno}
               </TableCell>
               <TableCell style={styles.upperTableCol1} weighting={0.295}>
                 JWI REF#
               </TableCell>
-              <TableCell style={styles.upperTableCol2}>
+              <TableCell
+                style={{
+                  fontStyle: "9.5",
+                  padding: "0px 1px 0px 2px",
+                }}
+              >
                 {master.F_RefNo}
               </TableCell>
             </TableHeader>
@@ -218,9 +388,19 @@ export const MyCover = ({ master, house, containers }) => {
         <View style={styles.section1}>
           {/* <Text style={styles.title}>{master.F_RefNo}</Text> */}
           <Text style={styles.title}>
-            {house.length ? house[0].CUSTOMER || "NO CUSTOMER" : "NO HOUSE"} -{" "}
-            {house.length ? house[0].SHIPPER || "NO SHIPPER" : "NO HOUSE"} -{" "}
-            {house.length ? house[0].CONSIGNEE || "NO CONSIGNEE" : "NO HOUSE"}
+            {type === "other"
+              ? `${master.CUSTOMER} ${master.F_C1 && `- ${master.F_C1}`} ${
+                  master.F_C2 && `- ${master.F_C2}`
+                }`
+              : `${
+                  house.length ? house[0].CUSTOMER || "NO CUSTOMER" : "NO HOUSE"
+                } - ${
+                  house.length ? house[0].SHIPPER || "NO SHIPPER" : "NO HOUSE"
+                } - ${
+                  house.length
+                    ? house[0].CONSIGNEE || "NO CONSIGNEE"
+                    : "NO HOUSE"
+                }`}
           </Text>
           <Text style={styles.subhead}>
             {moment(master.F_ETD).utc().format("ll")} ~{" "}
@@ -231,7 +411,15 @@ export const MyCover = ({ master, house, containers }) => {
         {/* LOWER TABLE START */}
 
         <View style={styles.section1}>
-          <Table data={lowerTableData}>
+          <Table
+            data={
+              type === "ocean"
+                ? lowerTableOcean
+                : type === "air"
+                ? lowerTableAir
+                : lowerTableOther
+            }
+          >
             <TableHeader>
               <TableCell style={styles.lowerTableHead}>
                 BASIC PROCESS/COMMENTS
@@ -244,13 +432,13 @@ export const MyCover = ({ master, house, containers }) => {
                 style={styles.lowerTableData}
                 getContent={(r) => r.first}
               />
-              <DataTableCell getContent={(r) => ""} />
+              <DataTableCell getContent={(r) => r.data1} />
               <DataTableCell
                 weighting={0.295}
                 style={styles.lowerTableData}
                 getContent={(r) => r.second}
               />
-              <DataTableCell getContent={(r) => ""} />
+              <DataTableCell getContent={(r) => r.data2} />
             </TableBody>
           </Table>
         </View>

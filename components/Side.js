@@ -148,6 +148,22 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
         </li>
       )}
 
+      {Token.group === 501 ||
+        (Token.group === 221 && (
+          <li
+            className={`nav-item ${router.pathname == "/account" && "active"}`}
+          >
+            <a
+              className="nav-link"
+              href="#"
+              onClick={() => router.push("/account")}
+            >
+              <i className="fa fa-dollar"></i>
+              <span>Account</span>
+            </a>
+          </li>
+        ))}
+
       {/* Board */}
 
       <li className={`nav-item ${router.pathname == "/board" && "active"}`}>

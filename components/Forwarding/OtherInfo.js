@@ -11,7 +11,7 @@ export const Info = ({ Master, House, Containers }) => {
   return (
     <Col lg={6}>
       {/* MASTER */}
-      <div className="card border-left-success shadow">
+      <div className="card border-left-success shadow mb-4">
         <div className="card-header py-2 d-flex flex-row align-items-center justify-content-between">
           <div className="text-s font-weight-bold text-success text-uppercase">
             <span className="fa-stack d-print-none">
@@ -44,9 +44,11 @@ export const Info = ({ Master, House, Containers }) => {
               </tr>
               <tr>
                 <th className="text-success text-uppercase">Package</th>
-                <th className="text-secondary">
-                  {Master.F_Pkgs} {Master.F_Punit}
-                </th>
+                <th className="text-secondary">{Master.F_Pkgs}</th>
+              </tr>
+              <tr>
+                <th className="text-success text-uppercase">Unit</th>
+                <th className="text-secondary">{Master.F_Punit}</th>
               </tr>
               <tr>
                 <th className="text-success text-uppercase">i memo</th>

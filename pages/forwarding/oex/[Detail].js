@@ -81,6 +81,7 @@ const Detail = ({ Cookie, OIM, EXTRA }) => {
                       Containers={OIM.C}
                       AP={OIM.A}
                       User={TOKEN}
+                      Type="ocean"
                     />
                     <Status
                       Data={EXTRA.S}
@@ -90,7 +91,7 @@ const Detail = ({ Cookie, OIM, EXTRA }) => {
                   </Col>
                 </Row>
               </Col>
-              <Col lg={2}>
+              <Col lg={2} className="mb-4">
                 <Route
                   ETA={OIM.M.F_ETA}
                   ETD={OIM.M.F_ETD}

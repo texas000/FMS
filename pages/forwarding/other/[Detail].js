@@ -20,7 +20,7 @@ const Detail = ({ Cookie, OTHER, EXTRA }) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    // console.log(OTHER);
+    console.log(OTHER);
   });
 
   if (TOKEN && TOKEN.group) {
@@ -42,16 +42,21 @@ const Detail = ({ Cookie, OTHER, EXTRA }) => {
                 <Row>
                   <Info Master={OTHER.M} />
                   <Col md="6">
-                    <Forms Master={OTHER.M} AP={OTHER.A} User={TOKEN} />
-                    <Status
+                    <Forms
+                      Master={OTHER.M}
+                      AP={OTHER.A}
+                      User={TOKEN}
+                      Type="other"
+                    />
+                    {/* <Status
                       Data={EXTRA.S}
                       Ref={OTHER.M.F_RefNo}
                       Uid={TOKEN.uid}
-                    />
+                    /> */}
                   </Col>
                 </Row>
               </Col>
-              <Col lg={2}>
+              <Col lg={2} className="mb-4">
                 <Route
                   ETA={OTHER.M.F_ETA}
                   ETD={OTHER.M.F_ETD}

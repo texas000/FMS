@@ -32,6 +32,7 @@ export const CheckRequestForm = ({
   consignee,
   comm,
   pod,
+  due,
 }) => (
   <Document>
     <Page size="LETTER" style={styles.body}>
@@ -132,9 +133,20 @@ export const CheckRequestForm = ({
         </Table>
       </View>
       <View style={styles.defaultMargin}>
-        <Table>
+        <Table
+          data={[
+            {
+              PAYABLE: vendor ? vendor : "NO VENDOR",
+              AMOUNT: `$${amt}`,
+              DUE: "",
+            },
+          ]}
+        >
           <TableHeader>
-            <TableCell style={styles.summary}>PAYABLE TO:</TableCell>
+            <TableCell style={styles.tableHeader}>PAYABLE TO</TableCell>
+            <TableCell style={styles.tableHeader}>AMOUNT</TableCell>
+            <TableCell style={styles.tableHeader}>DUE DATE</TableCell>
+            {/* <TableCell style={styles.summary}>PAYABLE TO:</TableCell>
             <TableCell
               isHeader={true}
               style={{
@@ -147,8 +159,19 @@ export const CheckRequestForm = ({
             >
               {vendor && vendor}
             </TableCell>
-            <TableCell style={styles.summary}>{`AMOUNT: $${amt}`}</TableCell>
+            <TableCell style={styles.summary}>{`AMOUNT: $${amt}`}</TableCell> */}
           </TableHeader>
+          <TableBody>
+            <DataTableCell
+              style={styles.textTable}
+              getContent={(r) => r.PAYABLE}
+            />
+            <DataTableCell
+              style={styles.textTable}
+              getContent={(r) => r.AMOUNT}
+            />
+            <DataTableCell style={styles.textTable} getContent={(r) => r.DUE} />
+          </TableBody>
         </Table>
       </View>
       <View style={styles.defaultMargin}>
@@ -235,8 +258,8 @@ const styles = StyleSheet.create({
   },
   textTable: {
     fontSize: 10,
-    paddingTop: "30px",
-    paddingBottom: "30px",
+    paddingTop: "20px",
+    paddingBottom: "20px",
     paddingLeft: "5px",
     paddingRight: "5px",
     justifyContent: "center",

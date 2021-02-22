@@ -23,7 +23,7 @@ const Route = ({ ETD, ETA, FETA, LOADING, DISCHARGE, DEST }) => {
           </div>
         </div>
         <div className="card-body">
-          <Row className="align-items-top mb-4">
+          <Row className="align-items-top">
             <Col sm="2" className="d-print-none">
               {/* POINTER FROM TOP TO BOTTOM */}
               <svg

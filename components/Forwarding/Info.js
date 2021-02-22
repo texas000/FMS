@@ -1,6 +1,6 @@
 import { Col, Table } from "reactstrap";
 
-export const Info = ({ Master, House, Containers }) => {
+export const Info = ({ Master, House, Containers, Profit }) => {
   const [selectedHouse, setSelectedHouse] = React.useState(0);
 
   function numberWithCommas(x) {
@@ -98,13 +98,23 @@ export const Info = ({ Master, House, Containers }) => {
                   <th className="text-secondary">{Containers.length}</th>
                 </tr>
               )}
+              {Profit.length != 0 && (
+                <tr>
+                  <th className="text-danger text-uppercase">
+                    {Profit.length} Error
+                  </th>
+                  <th className="text-danger text-uppercase">
+                    AP/AR must be typed at house level
+                  </th>
+                </tr>
+              )}
             </tbody>
           </Table>
         </div>
       </div>
 
       {/* HOUSE */}
-      <div className="accordion mt-4" id="accordionExample">
+      <div className="accordion my-4" id="accordionExample">
         {House.length != 0 ? (
           House.map((ga, i) => (
             <div className="card border-left-primary shadow" key={ga.F_ID}>

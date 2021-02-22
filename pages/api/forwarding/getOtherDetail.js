@@ -19,8 +19,7 @@ export default async (req, res) => {
     res.status(401).send("Unauthorized");
     return;
   }
-
-  const MASTER = `select (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_GENMAIN.F_Customer) as CUSTOMER ,* from T_GENMAIN WHERE F_RefNo='${req.headers.reference}';`;
+  const MASTER = `select (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_GENMAIN.F_Customer) as CUSTOMER, T_GENMAIN.*, T_AOTHERINFO.F_C1, T_AOTHERINFO.F_C2, T_AOTHERINFO.F_C3, T_AOTHERINFO.F_C4 from T_GENMAIN join T_AOTHERINFO on T_GENMAIN.F_ID = T_AOTHERINFO.F_TBID and T_AOTHERINFO.F_TBNAME='T_GENMAIN' WHERE F_RefNo='${req.headers.reference}';`;
 
   var output = {};
 
@@ -32,19 +31,19 @@ export default async (req, res) => {
       return pool.request().query(MASTER);
     })
     .then((result) => {
-      // MASTER
+      // console.log(result);
+      sql.close();
       if (result.rowsAffected[0]) {
         return result.recordsets[0][0];
       } else {
-        res.status(400).send([]);
-        return false;
+        return [];
       }
     })
     .catch((err) => {
       console.log("ERROR FROM MASTER");
       console.log(err);
       res.status(400).send(err);
-      return sql.close();
+      return false;
     });
   //   console.log(master);
   output = { ...output, M: master };

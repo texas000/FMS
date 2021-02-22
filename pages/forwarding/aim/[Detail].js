@@ -20,6 +20,7 @@ const Detail = ({ Cookie, AIM, EXTRA }) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
+    console.log(AIM);
   });
 
   var mailSubject, mailBody, emailHref;
@@ -77,6 +78,7 @@ const Detail = ({ Cookie, AIM, EXTRA }) => {
                       House={AIM.H}
                       AP={AIM.A}
                       User={TOKEN}
+                      Type="air"
                     />
                     <Status
                       Data={EXTRA.S}
@@ -86,7 +88,7 @@ const Detail = ({ Cookie, AIM, EXTRA }) => {
                   </Col>
                 </Row>
               </Col>
-              <Col lg={2}>
+              <Col lg={2} className="mb-4">
                 <Route
                   ETA={AIM.M.F_ETA}
                   ETD={AIM.M.F_ETD}

@@ -26,6 +26,7 @@ export default async (req, res) => {
   // * from T_OIMMAIN WHERE F_RefNo='${req.headers.reference}';`;
 
   const MASTER = `select (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID =T_AIMMAIN.F_Agent) as AGENT,
+  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AIMMAIN.F_Carrier) as CARRIER,
   (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AIMMAIN.F_FLocation) as CYLOC,
   * from T_AIMMAIN WHERE F_RefNo='${req.headers.reference}';`;
 

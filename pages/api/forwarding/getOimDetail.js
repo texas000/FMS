@@ -54,16 +54,37 @@ export default async (req, res) => {
       }
     })
     .catch((err) => {
-      console.log("ERROR FROM MASTER");
       console.log(err);
       res.status(400).send(err);
       return sql.close();
     });
-  //   console.log(master);
   output = { ...output, M: master };
 
   if (master) {
-    // GET HOUSE FROM MSSQL - DATA TYPE ARRAY
+    const profit = await sql
+      .connect(sqlConfig)
+      .then((pool) => {
+        return pool
+          .request()
+          .query(
+            `select * from V_Profit_M where F_TBNAME='T_OIMMAIN' AND F_TBID='${master.F_ID}';`
+          );
+      })
+      .then((result) => {
+        // console.log(result);
+        if (result.rowsAffected[0]) {
+          return result.recordsets[0];
+        } else {
+          return [];
+        }
+      })
+      .catch((err) => {
+        console.log("ERROR FROM HOUSE");
+        console.log(err);
+        res.status(400).send(err);
+      });
+    output = { ...output, P: profit };
+
     // GET HOUSE FROM MSSQL - DATA TYPE ARRAY
     const house = await sql
       .connect(sqlConfig)
