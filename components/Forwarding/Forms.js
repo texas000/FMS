@@ -159,7 +159,7 @@ export const Forms = ({ Master, House, Containers, AP, User, Type }) => {
                       Number.parseFloat(ga.F_InvoiceAmt).toFixed(2)
                     )}
                     oim={Master.F_RefNo}
-                    customer={House ? House[0].CUSTOMER || OTHER.CUSTOMER : ""}
+                    customer={House ? House[0].CUSTOMER : ""}
                     inv={ga.F_InvoiceNo}
                     metd={moment(Master.F_ETD).utc().format("MM/DD/YY")}
                     meta={moment(Master.F_ETA).utc().format("MM/DD/YY")}

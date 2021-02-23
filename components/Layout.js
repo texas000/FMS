@@ -47,6 +47,23 @@ const Layout = (props) => {
           sizes="16x16"
           href="/favicon/favicon-16x16.png"
         />
+        <meta
+          property="og:title"
+          content="JAMES WORLDWIDE INC, ADDING VALUES TO YOUR CARGO!"
+        ></meta>
+        <meta
+          name="description"
+          content="James Worldwide moves your cargo in the safest and fastest way possible, keeping you informed every step of the way and providing customized and innovative solutions."
+        ></meta>
+        <meta
+          property="og:description"
+          content="James Worldwide moves your cargo in the safest and fastest way possible, keeping you informed every step of the way and providing customized and innovative solutions."
+        ></meta>
+        <meta property="og:url" content="https://jwiusa.com"></meta>
+        <meta
+          property="og:image"
+          content="https://jwiusa.com/image/JLOGO.png"
+        ></meta>
         <link rel="manifest" href="/favicon/site.webmanifest" />
         <link
           rel="mask-icon"

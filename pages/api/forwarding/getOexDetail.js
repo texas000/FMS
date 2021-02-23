@@ -37,7 +37,6 @@ export default async (req, res) => {
   var output = {};
 
   // GET MASTER FROM MSSQL - DATA TYPE OBJECT
-  // GET MASTER FROM MSSQL - DATA TYPE OBJECT
   const master = await sql
     .connect(sqlConfig)
     .then((pool) => {
@@ -57,9 +56,7 @@ export default async (req, res) => {
       return sql.close();
       res.status(400).send(err);
     });
-  //   console.log(master);
   output = { ...output, M: master };
-
   if (master) {
     const profit = await sql
       .connect(sqlConfig)
@@ -121,6 +118,7 @@ export default async (req, res) => {
         }
       })
       .catch((err) => {
+        console.log("error from container");
         console.log(err);
         res.status(400).send(err);
       });
@@ -135,6 +133,7 @@ export default async (req, res) => {
           return `F_TBID='${ga.F_ID}' AND F_TBName='T_OOHMAIN'`;
         }
       });
+      AP = AP.join("");
       const ap = await sql
         .connect(sqlConfig)
         .then((pool) => {
@@ -145,7 +144,7 @@ export default async (req, res) => {
             );
         })
         .then((result) => {
-          // console.log(result.rowsAffected);
+          sql.close();
           if (result.rowsAffected[0]) {
             return result.recordsets[0];
           } else {
@@ -153,8 +152,9 @@ export default async (req, res) => {
           }
         })
         .catch((err) => {
+          console.log("error from ap");
           console.log(err);
-          res.status(400).send(err);
+          return [];
         });
       output = { ...output, A: ap };
     }

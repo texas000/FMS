@@ -20,7 +20,7 @@ const Detail = ({ Cookie, OIM, EXTRA }) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    console.log(OIM);
+    // console.log(OIM);
   });
 
   var mailSubject, mailBody, emailHref;
@@ -73,7 +73,12 @@ const Detail = ({ Cookie, OIM, EXTRA }) => {
             <Row>
               <Col lg={10}>
                 <Row>
-                  <Info Master={OIM.M} House={OIM.H} Containers={OIM.C} />
+                  <Info
+                    Master={OIM.M}
+                    House={OIM.H}
+                    Containers={OIM.C}
+                    Profit={OIM.P}
+                  />
                   <Col md="6">
                     <Forms
                       Master={OIM.M}

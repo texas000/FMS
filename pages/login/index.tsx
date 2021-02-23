@@ -27,25 +27,43 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState("");
   const [secret, setSecret] = useState("");
-  // if (!firebase.apps.length) {
-  //   firebase.initializeApp(firebaseConfig);
-  // } else {
-  //   firebase.app();
-  // }
-  // const auth = firebase.auth();
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  } else {
+    firebase.app();
+  }
+  const auth = firebase.auth();
   const signInWithGoogle = () => {
-    console.log("hello");
-    // const provider = new firebase.auth.GoogleAuthProvider();
-    // auth
-    //   .signInWithPopup(provider)
-    //   .then((result) => {
-    //     if (result.additionalUserInfo.isNewUser) {
-    //       alert("NEW USER");
-    //     } else {
-    //       console.log(result.user);
-    //     }
-    //   })
-    //   .catch((err) => console.log(err));
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth
+      .signInWithPopup(provider)
+      .then(async (result) => {
+        if (result.additionalUserInfo.isNewUser) {
+          alert("NEW USER");
+        } else {
+          const res = await fetch("api/login/withGoogle", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: `${result.user.email}` }),
+          })
+            .then((t) => t.json())
+            .catch((err) => console.log(err));
+
+          const token = res.token;
+          if (token) {
+            setMessage("");
+            const json = jwt.decode(token) as { [key: string]: string };
+            Cookie.set("jamesworldwidetoken", token);
+            setSuccess(`${json.username.toUpperCase()}, PLEASE WAIT...`);
+            router.push({ pathname: "/dashboard" });
+          } else {
+            alert("PLEASE CONTACT ADMIN TO LOGIN IT@JAMESWORLDWIDE.COM");
+          }
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
@@ -153,9 +171,11 @@ const Login = () => {
                 </div>
               </div>
 
-              <a href="#">Forgot Password?</a>
+              <a href="#" onClick={signInWithGoogle}>
+                Forgot Password?
+              </a>
 
-              <div
+              {/* <div
                 className="btn-primary py-2"
                 style={{ borderRadius: "1rem", display: "none" }}
                 onClick={signInWithGoogle}
@@ -165,7 +185,7 @@ const Login = () => {
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1004px-Google_%22G%22_Logo.svg.png"
                   style={{ height: "30px", width: "30px" }}
                 />
-              </div>
+              </div> */}
 
               <div className="center">
                 <input
