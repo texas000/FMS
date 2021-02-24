@@ -23,14 +23,14 @@ export default function dashboard({
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
 
   const firebaseConfig = {
-    apiKey: process.env.FIREBASE_API_KEY,
-    authDomain: process.env.FIREBASE_DOMAIN,
-    databaseURL: process.env.FIREBASE_DB,
-    projectId: process.env.FIREBASE_PROJECT,
-    storageBucket: process.env.FIREBASE_STORAGE,
-    messagingSenderId: process.env.FIREBASE_MESSAGING,
-    appId: process.env.FIREBASE_APP_ID,
-    measurementId: process.env.FIREBASE_MEASURE_ID,
+    apiKey: "AIzaSyBWvOh5KL16jU-rD2mYt-OY7hIhnCMBZ60",
+    authDomain: "jw-web-ffaea.firebaseapp.com",
+    databaseURL: "https://jw-web-ffaea.firebaseio.com",
+    projectId: "jw-web-ffaea",
+    storageBucket: "jw-web-ffaea.appspot.com",
+    messagingSenderId: "579008207978",
+    appId: "1:579008207978:web:313c48437e50d7e5637e13",
+    measurementId: "G-GPMS588XP2",
   };
 
   if (!firebase.apps.length) {
