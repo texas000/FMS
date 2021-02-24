@@ -21,7 +21,7 @@ export default function (req: NextApiRequest, res: NextApiResponse) {
       res.status(404).end();
     }
 
-    const { email } = req.body;
+    const { email, displayName, photoURL } = req.body;
 
     const pool = new sql.ConnectionPool(SQLconfig);
     pool.on("error", (err) => {
@@ -51,6 +51,8 @@ export default function (req: NextApiRequest, res: NextApiResponse) {
               first: result.recordset[0].F_FNAME,
               last: result.recordset[0].F_LNAME,
               fsid: result.recordset[0].F_FSID,
+              displayName: displayName,
+              photoURL: photoURL,
             },
             process.env.JWT_KEY
           ),

@@ -6,6 +6,10 @@ import ListGroup from "reactstrap/lib/ListGroup";
 import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import fetch from "node-fetch";
 import moment from "moment";
+import firebase from "firebase/app";
+import "firebase/auth";
+import "firebase/analytics";
+import "firebase/firestore";
 
 export default function dashboard({
   Cookie,
@@ -18,8 +22,40 @@ export default function dashboard({
   const router = useRouter();
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
 
+  const firebaseConfig = {
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_DOMAIN,
+    databaseURL: process.env.FIREBASE_DB,
+    projectId: process.env.FIREBASE_PROJECT,
+    storageBucket: process.env.FIREBASE_STORAGE,
+    messagingSenderId: process.env.FIREBASE_MESSAGING,
+    appId: process.env.FIREBASE_APP_ID,
+    measurementId: process.env.FIREBASE_MEASURE_ID,
+  };
+
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  } else {
+    firebase.app();
+  }
+  const [googleUser, setGoogleUser] = React.useState(false);
+  const [value, setValue] = React.useState(false);
   React.useEffect(() => {
-    console.log("dashboard client side loaded");
+    // console.log(TOKEN);
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        setGoogleUser(firebase.auth().currentUser);
+        // firebase
+        //   .firestore()
+        //   .collection("ppe")
+        //   .doc("JWGSAE_10001")
+        //   .onSnapshot((doc) => {
+        //     setValue(doc.data());
+        //   });
+      } else {
+        console.log("no google user");
+      }
+    });
     !TOKEN && router.push("/login");
     if (typeof window !== "undefined") {
       localStorage.setItem("notification", JSON.stringify(OimList));

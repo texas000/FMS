@@ -6,17 +6,16 @@ import Head from "next/head";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/analytics";
-import { useAuthState } from "react-firebase-hooks/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBWvOh5KL16jU-rD2mYt-OY7hIhnCMBZ60",
-  authDomain: "jw-web-ffaea.firebaseapp.com",
-  databaseURL: "https://jw-web-ffaea.firebaseio.com",
-  projectId: "jw-web-ffaea",
-  storageBucket: "jw-web-ffaea.appspot.com",
-  messagingSenderId: "579008207978",
-  appId: "1:579008207978:web:313c48437e50d7e5637e13",
-  measurementId: "G-GPMS588XP2",
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_DOMAIN,
+  databaseURL: process.env.FIREBASE_DB,
+  projectId: process.env.FIREBASE_PROJECT,
+  storageBucket: process.env.FIREBASE_STORAGE,
+  messagingSenderId: process.env.FIREBASE_MESSAGING,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASURE_ID,
 };
 const Login = () => {
   const router = useRouter();
@@ -46,7 +45,11 @@ const Login = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ email: `${result.user.email}` }),
+            body: JSON.stringify({
+              email: `${result.user.email}`,
+              displayName: result.user.displayName,
+              photoURL: result.user.photoURL,
+            }),
           })
             .then((t) => t.json())
             .catch((err) => console.log(err));
@@ -59,7 +62,7 @@ const Login = () => {
             setSuccess(`${json.username.toUpperCase()}, PLEASE WAIT...`);
             router.push({ pathname: "/dashboard" });
           } else {
-            alert("PLEASE CONTACT ADMIN TO LOGIN IT@JAMESWORLDWIDE.COM");
+            alert("PLEASE CONTACT ADMIN TO LOGIN - IT@JAMESWORLDWIDE.COM");
           }
         }
       })
@@ -175,17 +178,21 @@ const Login = () => {
                 Forgot Password?
               </a>
 
-              {/* <div
-                className="btn-primary py-2"
-                style={{ borderRadius: "1rem", display: "none" }}
+              <div
+                className="btn-primary btn-google text-center"
                 onClick={signInWithGoogle}
               >
-                Sign in with{"  "}
+                SIGN IN WITH {"  "}
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1004px-Google_%22G%22_Logo.svg.png"
-                  style={{ height: "30px", width: "30px" }}
+                  className="img-fluid"
+                  style={{
+                    height: "20px",
+                    width: "20px",
+                    marginLeft: "8px",
+                  }}
                 />
-              </div> */}
+              </div>
 
               <div className="center">
                 <input
@@ -414,7 +421,31 @@ const Login = () => {
             cursor: pointer;
             transition: 0.5s;
           }
+          .btn-google {
+            display: block;
+            width: 100%;
+            padding: 10px 0 10px 0;
+            border-radius: 25px;
+            background-image: linear-gradient(
+              to right,
+              #4e73df,
+              #4f80df,
+              #4e73df
+            );
+            outline: none;
+            border: none;
+            font-size: 1.2rem;
+            font-family: "Poppins", sans-serif;
+            text-transform: uppercase;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: 0.5s;
+          }
+
           .btn:hover {
+            background-position: right;
+          }
+          .btn-google:hover {
             background-position: right;
           }
           .input {

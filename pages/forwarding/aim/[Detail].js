@@ -20,7 +20,7 @@ const Detail = ({ Cookie, AIM, EXTRA }) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    console.log(AIM);
+    // console.log(AIM);
   });
 
   var mailSubject, mailBody, emailHref;

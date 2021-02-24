@@ -1,8 +1,9 @@
 import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { useRouter } from "next/router";
 import moment from "moment";
-
-const Top = ({ Token, toggle, setToggle }) => {
+import firebase from "firebase/app";
+import "firebase/auth";
+const Top = ({ Token, toggle, setToggle, google }) => {
   const router = useRouter();
   const [search, setSearch] = React.useState(false);
   const [alertToggle, setalertToggle] = React.useState(false);
@@ -33,6 +34,11 @@ const Top = ({ Token, toggle, setToggle }) => {
     router.push({ pathname: `/forwarding`, query: { search } });
   };
   const collapse = () => setToggle(!toggle);
+
+  function logout() {
+    firebase.auth().signOut();
+    router.push("/login");
+  }
 
   return (
     <nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow w-100">
@@ -425,11 +431,13 @@ const Top = ({ Token, toggle, setToggle }) => {
             aria-expanded={userToggle}
           >
             <span className="mr-2 d-none d-lg-inline text-gray-600 small">
-              {Token ? `${Token.first} ${Token.last}` : "Please Login"}
+              {Token
+                ? Token.displayName || `${Token.first} ${Token.last}`
+                : "Please Login"}
             </span>
             <img
               className="img-profile rounded-circle"
-              src="/image/icons/sarah.svg"
+              src={Token.photoURL || "/image/icons/sarah.svg"}
             />
           </a>
           {/* <!-- Dropdown - User Information --> */}
@@ -467,7 +475,7 @@ const Top = ({ Token, toggle, setToggle }) => {
             <a
               className="dropdown-item"
               href="#"
-              onClick={() => router.push("/login")}
+              onClick={logout}
               data-toggle="modal"
               data-target="#logoutModal"
             >
