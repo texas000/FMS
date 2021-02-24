@@ -29,13 +29,17 @@ export default function blank({ Cookie }) {
   function addMessages() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        firebase.firestore().collection("messages").add({
-          createdAt: firebase.firestore.Timestamp.now(),
-          photoURL: user.photoURL,
-          uid: user.uid,
-          displayName: user.displayName,
-          text: mytext,
-        });
+        firebase
+          .firestore()
+          .collection("messages")
+          .add({
+            createdAt: firebase.firestore.Timestamp.now(),
+            photoURL: user.photoURL,
+            uid: user.uid,
+            displayName: user.displayName,
+            text: mytext,
+          })
+          .then(setMytext(""));
       } else {
         alert("PLEASE LOGIN WITH GOOGLE ACCOUNT");
       }
@@ -281,6 +285,13 @@ export default function blank({ Cookie }) {
                 className="form-control border no-shadow no-rounded"
                 placeholder="Type your message here"
                 autoFocus={true}
+                value={mytext}
+                onKeyPress={(e) => {
+                  if (e.key == "Enter") {
+                    e.preventDefault();
+                    addMessages();
+                  }
+                }}
                 onChange={(e) => setMytext(e.target.value)}
               />
               <span className="input-group-btn">
