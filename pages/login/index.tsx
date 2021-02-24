@@ -38,9 +38,7 @@ const Login = () => {
     auth
       .signInWithPopup(provider)
       .then(async (result) => {
-        if (result.additionalUserInfo.isNewUser) {
-          alert("NEW USER");
-        } else {
+        if (result.user) {
           const res = await fetch("api/login/withGoogle", {
             method: "POST",
             headers: {
