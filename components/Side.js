@@ -173,6 +173,17 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
         </a>
       </li>
 
+      <li className={`nav-item ${router.pathname == "/dev/chat" && "active"}`}>
+        <a
+          className="nav-link"
+          href="#"
+          onClick={() => router.push("/dev/chat")}
+        >
+          <i className="fa fa-comment"></i>
+          <span>Chat</span>
+        </a>
+      </li>
+
       {/* <!-- Nav Item - Pages Collapse Menu --> */}
       {/* <li className="nav-item">
 			<a
