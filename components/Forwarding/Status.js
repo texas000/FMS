@@ -64,8 +64,8 @@ export const Status = ({ Data, Ref, Uid }) => {
     });
     if (fetchs.status === 200) {
       const save = await fetchs.json();
-      // console.log(save);
-      alert(`${save[0].RefNo} SAVED`);
+      console.log(save);
+      alert(`SUCCESS`);
     } else {
       alert(`ERROR ${fetchs.status}`);
     }
