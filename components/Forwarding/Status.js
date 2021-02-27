@@ -40,12 +40,13 @@ export const Status = ({ Data, Ref, Uid }) => {
   }, [Ref]);
 
   async function statusInfo() {
-    const fetchData = await fetch(
-      `http://jameswi.com:49996/v1/api/oimmain_ext?RefNo=${Ref}`
-    );
-    if (fetchData.status === 200) {
-      const Info = await fetchData.json();
-      console.log(Info);
+    const fetchs = await fetch("/api/forwarding/getFreightExt", {
+      headers: { ref: Ref },
+      method: "PUT",
+    });
+    if (fetchs.status === 200) {
+      const Info = await fetchs.json();
+      // console.log(Info);
       setSwitchData({
         ...Info[0],
         U1ID: Uid,
@@ -54,6 +55,21 @@ export const Status = ({ Data, Ref, Uid }) => {
     } else {
       console.log(fetchData.status);
     }
+
+    // const fetchData = await fetch(
+    //   `http://jameswi.com:49996/v1/api/oimmain_ext?RefNo=${Ref}`
+    // );
+    // if (fetchData.status === 200) {
+    //   const Info = await fetchData.json();
+    //   console.log(Info);
+    //   setSwitchData({
+    //     ...Info[0],
+    //     U1ID: Uid,
+    //     U2ID: Uid,
+    //   });
+    // } else {
+    //   console.log(fetchData.status);
+    // }
   }
 
   const onSaveStatus = async () => {
@@ -64,7 +80,7 @@ export const Status = ({ Data, Ref, Uid }) => {
     });
     if (fetchs.status === 200) {
       const save = await fetchs.json();
-      console.log(save);
+      // console.log(save);
       alert(`SUCCESS`);
     } else {
       alert(`ERROR ${fetchs.status}`);
