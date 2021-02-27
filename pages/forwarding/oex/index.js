@@ -300,7 +300,7 @@ export async function getServerSideProps({ req }) {
     const { fsid } = jwt.decode(cookies.jamesworldwidetoken);
     var result = [];
     const fetchSearch = await fetch(
-      `http://jameswi.com:49996/api/oommain_leftjoin_oohmain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=&etdTo=&casestatus=`
+      `${process.env.FS_BASEPATH}oommain_leftjoin_oohmain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=&etdTo=&casestatus=`
     );
     if (fetchSearch.status === 200) {
       result = await fetchSearch.json();

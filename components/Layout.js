@@ -64,7 +64,8 @@ const Layout = (props) => {
           property="og:image"
           content="https://jwiusa.com/image/JLOGO.png"
         ></meta>
-        <link rel="manifest" href="/favicon/site.webmanifest" />
+        {/* <link rel="manifest" href="/favicon/site.webmanifest" /> */}
+        <link rel="manifest" href="/manifest.json" />
         <link
           rel="mask-icon"
           href="/favicon/safari-pinned-tab.svg"

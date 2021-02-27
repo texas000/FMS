@@ -184,32 +184,12 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
         </a>
       </li>
 
-      {/* <!-- Nav Item - Pages Collapse Menu --> */}
-      {/* <li className="nav-item">
-			<a
-				className="nav-link collapsed"
-				onClick={() => setT1(!t1)}
-				href="#"
-				data-toggle="collapse"
-				data-target="#collapseTwo"
-				aria-expanded="true"
-				aria-controls="collapseTwo"
-			>
-				<i className="fa fa-cog"></i>
-				<span>Components</span>
-			</a>
-			<Collapse isOpen={t1}>
-				<div className="bg-white py-2 collapse-inner rounded">
-					<h6 className="collapse-header">Custom Components:</h6>
-					<a className="collapse-item" href="buttons.html">
-						Buttons
-					</a>
-					<a className="collapse-item" href="cards.html">
-						Cards
-					</a>
-				</div>
-			</Collapse>
-		</li> */}
+      <li className={`nav-item ${router.pathname == "/dev/po" && "active"}`}>
+        <a className="nav-link" href="#" onClick={() => router.push("/dev/po")}>
+          <i className="fa fa-briefcase"></i>
+          <span>PO</span>
+        </a>
+      </li>
 
       {/* <!-- Divider --> */}
       <hr className="sidebar-divider" />

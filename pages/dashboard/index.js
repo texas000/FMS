@@ -707,51 +707,20 @@ export async function getServerSideProps({ req }) {
 
     // Pass data to the page via props
     const from = moment().subtract(14, "days").calendar();
-    // const resOim = await fetch(`${process.env.BASE_URL}api/dashboard/oim`, {
-    //   headers: { key: cookies.jamesworldwidetoken, from: from },
-    // });
-    // var dataOim = [];
-    // if (resOim.status == 200) {
-    //   dataOim = await resOim.json();
-    // }
-
-    // const resOom = await fetch(`${process.env.BASE_URL}api/dashboard/oom`, {
-    //   headers: { key: cookies.jamesworldwidetoken, from: from },
-    // });
-    // var dataOom = [];
-    // if (resOom.status == 200) {
-    //   dataOom = await resOom.json();
-    // }
-
-    // const resAim = await fetch(`${process.env.BASE_URL}api/dashboard/aim`, {
-    //   headers: { key: cookies.jamesworldwidetoken, from: from },
-    // });
-    // var dataAim = [];
-    // if (resAim.status == 200) {
-    //   dataAim = await resAim.json();
-    // }
-
-    // const resAom = await fetch(`${process.env.BASE_URL}api/dashboard/aom`, {
-    //   headers: { key: cookies.jamesworldwidetoken, from: from },
-    // });
-    // var dataAom = [];
-    // if (resAom.status == 200) {
-    //   dataAom = await resAom.json();
-    // }
 
     var dataOim = [];
     var dataOom = [];
     var dataAim = [];
     var dataAom = [];
     const resOim = await fetch(
-      `http://jameswi.com:49996/api/oimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
+      `${process.env.FS_BASEPATH}oimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
     );
     if (resOim.status == 200) {
       dataOim = await resOim.json();
       if (dataOim.length) {
         dataOim.map(async (ga, i) => {
           const resOih = await fetch(
-            `http://jameswi.com:49996/api/oihmain?oimblid=${ga.ID}`
+            `${process.env.FS_BASEPATH}oihmain?oimblid=${ga.ID}`
           );
           if (resOih.status == 200) {
             var OIH = await resOih.json();
@@ -764,7 +733,7 @@ export async function getServerSideProps({ req }) {
     }
 
     const resOom = await fetch(
-      `http://jameswi.com:49996/api/oommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
+      `${process.env.FS_BASEPATH}oommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
     );
 
     if (resOom.status == 200) {
@@ -772,7 +741,7 @@ export async function getServerSideProps({ req }) {
       if (dataOom.length) {
         dataOom.map(async (ga, i) => {
           const resOoh = await fetch(
-            `http://jameswi.com:49996/api/oohmain?oomblid=${ga.ID}`
+            `${process.env.FS_BASEPATH}oohmain?oomblid=${ga.ID}`
           );
           if (resOoh.status == 200) {
             var OOH = await resOoh.json();
@@ -785,7 +754,7 @@ export async function getServerSideProps({ req }) {
     }
 
     const resAim = await fetch(
-      `http://jameswi.com:49996/api/aimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
+      `${process.env.FS_BASEPATH}aimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
     );
 
     if (resAim.status == 200) {
@@ -793,7 +762,7 @@ export async function getServerSideProps({ req }) {
       if (dataAim.length) {
         dataAim.map(async (ga, i) => {
           const resAih = await fetch(
-            `http://jameswi.com:49996/api/aihmain?aimblid=${ga.ID}`
+            `${process.env.FS_BASEPATH}aihmain?aimblid=${ga.ID}`
           );
           if (resAih.status == 200) {
             var AIH = await resAih.json();
@@ -806,7 +775,7 @@ export async function getServerSideProps({ req }) {
     }
 
     const resAom = await fetch(
-      `http://jameswi.com:49996/api/aommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
+      `${process.env.FS_BASEPATH}aommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
     );
 
     if (resAom.status == 200) {
@@ -814,7 +783,7 @@ export async function getServerSideProps({ req }) {
       if (dataAom.length) {
         dataAom.map(async (ga, i) => {
           const resAoh = await fetch(
-            `http://jameswi.com:49996/api/aohmain?aomblid=${ga.ID}`
+            `${process.env.FS_BASEPATH}aohmain?aomblid=${ga.ID}`
           );
           if (resAoh.status == 200) {
             var AOH = await resAoh.json();

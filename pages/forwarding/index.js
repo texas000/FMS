@@ -385,45 +385,6 @@ export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
-  // var noti = [];
-  // if (cookies.jamesworldwidetoken) {
-  //   const notification = await fetch(
-  //     `${process.env.BASE_URL}api/forwarding/navbarNotification`,
-  //     {
-  //       headers: {
-  //         uid: jwt.decode(cookies.jamesworldwidetoken).fsid,
-  //         key: cookies.jamesworldwidetoken,
-  //       },
-  //     }
-  //   );
-  //   noti = await notification.json();
-  // }
-
-  // console.time("prev");
-  // const resultFetch = await fetch(
-  //   `${process.env.BASE_URL}api/forwarding/freightStreamSearch`,
-  //   {
-  //     headers: {
-  //       query: query.search,
-  //       key: cookies.jamesworldwidetoken,
-  //     },
-  //   }
-  // );
-  // const ReResult = await resultFetch.json();
-  // console.timeEnd("prev");
-  // if (resultFetch.status === 200) {
-  //   // Pass data to the page via props
-  //   return {
-  //     props: {
-  //       Cookie: cookies,
-  //       Re: ReResult,
-  //       Notifications: noti,
-  //     },
-  //   };
-  // } else {
-  //   // Pass data to the page via props
-  //   return { props: { Cookie: cookies, Re: [], Notifications: noti } };
-  // }
   if (query.search === undefined) {
     return {
       props: {
@@ -435,7 +396,7 @@ export async function getServerSideProps({ req, query }) {
     var result = [];
     // console.time("fecth_time");
     const fetchSearch = await fetch(
-      `http://jameswi.com:49996/api/fmssearch?key=${query.search}&casestatus=&`
+      `${process.env.FS_BASEPATH}fmssearch?key=${query.search}&casestatus=&`
     );
     if (fetchSearch.status === 200) {
       result = await fetchSearch.json();

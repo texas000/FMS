@@ -1,154 +1,73 @@
 import {
-  Card,
-  FormGroup,
   Button,
   Row,
   Col,
   Input,
-  CustomInput,
   InputGroup,
   InputGroupAddon,
   InputGroupText,
 } from "reactstrap";
 import moment from "moment";
+import fetch from "node-fetch";
 
 export const Status = ({ Data, Ref, Uid }) => {
   const [switchData, setSwitchData] = React.useState({
-    F_PreAlert: null,
-    F_PreAlertComment: null,
-    F_ISF: null,
-    F_ISFComment: null,
-    F_OBL: null,
-    F_OBLComment: null,
-    F_OceanFreight: null,
-    F_OceanFreightComment: null,
-    F_ArrivalNotice: null,
-    F_ArrivalNoticeComment: null,
-    F_CrDb: null,
-    F_CrDbComment: null,
-    F_Arrival: null,
-    F_ArrivalComment: null,
-    F_LastFreeDate: null,
-    F_PickedUpDate: null,
-    F_EmptyReturnDate: null,
+    RefNo: "",
+    PreAlert: "0",
+    PreAlertComment: "",
+    ISF: "0",
+    ISFComment: "",
+    OBL: "0",
+    OBLComment: "",
+    OceanFreight: "0",
+    OceanFreightComment: "",
+    ArrivalNotice: "0",
+    ArrivalNoticeComment: "",
+    CrDb: "0",
+    CrDbComment: "",
+    Arrival: "0",
+    ArrivalComment: "",
+    LastFreeDate: "",
+    PickedUpDate: "",
+    EmptyReturnDate: "",
+    U1ID: Uid,
+    U1Date: moment().format("YYYY-MM-DD"),
+    U2ID: Uid,
+    U2Date: moment().format("YYYY-MM-DD"),
   });
   React.useEffect(() => {
-    if (Data == null) {
-      console.log("STATUS DATA NOT EXIST");
-    } else {
-      setSwitchData(Data);
-    }
-    // console.log(Ref);
-    // console.log(Data);
+    statusInfo();
   }, [Ref]);
 
-  const onSaveStatus = async () => {
-    const pre =
-      switchData.F_PreAlertComment != null
-        ? `N'${switchData.F_PreAlertComment.replace(/\'/g, "''")}'`
-        : "NULL";
-    const isf =
-      switchData.F_ISFComment != null
-        ? `N'${switchData.F_ISFComment.replace(/\'/g, "''")}'`
-        : "NULL";
-    const obl =
-      switchData.F_OBLComment != null
-        ? `N'${switchData.F_OBLComment.replace(/\'/g, "''")}'`
-        : "NULL";
-    const of =
-      switchData.F_OceanFreightComment != null
-        ? `N'${switchData.F_OceanFreightComment.replace(/\'/g, "''")}'`
-        : "NULL";
-    const an =
-      switchData.F_ArrivalNoticeComment != null
-        ? `N'${switchData.F_ArrivalNoticeComment.replace(/\'/g, "''")}'`
-        : "NULL";
-    const crdb =
-      switchData.F_ArrivalNoticeComment != null
-        ? `N'${switchData.F_CrDbComment.replace(/\'/g, "''")}'`
-        : "NULL";
-    const arr =
-      switchData.F_ArrivalComment != null
-        ? `N'${switchData.F_ArrivalComment.replace(/\'/g, "''")}'`
-        : "NULL";
-
-    const boolpre =
-      switchData.F_PreAlert === null || switchData.F_PreAlert === "0"
-        ? "0"
-        : "N'1'";
-    const boolisf =
-      switchData.F_ISF === null || switchData.F_ISF === "0" ? "0" : "N'1'";
-    const boolobl =
-      switchData.F_OBL === null || switchData.F_OBL === "0" ? "0" : "N'1'";
-    const boolof =
-      switchData.F_OceanFreight === null || switchData.F_OceanFreight === "0"
-        ? "0"
-        : "N'1'";
-    const boolan =
-      switchData.F_ArrivalNotice === null || switchData.F_ArrivalNotice === "0"
-        ? "0"
-        : "N'1'";
-    const boolcrdb =
-      switchData.F_CrDb === null || switchData.F_CrDb === "0" ? "0" : "N'1'";
-    const boolarr =
-      switchData.F_Arrival === null || switchData.F_Arrival === "0"
-        ? "0"
-        : "N'1'";
-
-    const freeday =
-      switchData.F_LastFreeDate != null
-        ? `'${switchData.F_LastFreeDate}'`
-        : "NULL";
-    const pickup =
-      switchData.F_PickedUpDate != null
-        ? `'${switchData.F_PickedUpDate}'`
-        : "NULL";
-    const empty =
-      switchData.F_EmptyReturnDate != null
-        ? `'${switchData.F_EmptyReturnDate}'`
-        : "NULL";
-
-    const query = `UPDATE T_FREIGHT_EXT SET F_PreAlertComment=${pre}, F_ISFComment=${isf}, F_OBLComment=${obl}, F_OceanFreightComment=${of}, F_ArrivalNoticeComment=${an}, F_CrDbComment=${crdb}, F_ArrivalComment=${arr}, 
-    F_PreAlert=${boolpre}, F_ISF=${boolisf}, F_OBL=${boolobl}, F_OceanFreight=${boolof}, F_ArrivalNotice=${boolan}, F_CrDb=${boolcrdb}, F_Arrival=${boolarr},
-    F_LastFreeDate=${freeday}, F_PickedUpDate=${pickup}, F_EmptyReturnDate=${empty},
-    F_U2ID=${Uid}, F_U2Date=GETDATE() WHERE F_RefNo='${Ref}';
-    IF @@ROWCOUNT=0 INSERT INTO T_FREIGHT_EXT (${[
-      "F_RefNo",
-      "F_PreAlertComment",
-      "F_ISFComment",
-      "F_OBLComment",
-      "F_OceanFreightComment",
-      "F_ArrivalNoticeComment",
-      "F_CrDbComment",
-      "F_ArrivalComment",
-      "F_PreAlert",
-      "F_ISF",
-      "F_OBL",
-      "F_OceanFreight",
-      "F_ArrivalNotice",
-      "F_CrDb",
-      "F_Arrival",
-      "F_LastFreeDate",
-      "F_PickedUpDate",
-      "F_EmptyReturnDate",
-      "F_U1ID",
-      "F_U2ID",
-      "F_U1Date",
-      "F_U2Date",
-    ].toString()}) VALUES ('${Ref}', ${pre}, ${isf}, ${obl}, ${of}, ${an}, ${crdb}, ${arr}, ${boolpre}, ${boolisf}, ${boolobl}, ${boolof}, ${boolan}, ${boolcrdb}, ${boolarr}, ${freeday}, ${pickup}, ${empty}, ${Uid}, ${Uid}, GETDATE(), GETDATE());
-    SELECT * FROM T_FREIGHT_EXT WHERE F_RefNo='${Ref}';
-    `;
-    // console.log(query);
-    const Fetch = await fetch("/api/forwarding/updateExtra", {
-      body: query,
-      method: "POST",
-    });
-    if (Fetch.status === 200) {
-      alert("SAVED SUCCESSFULLY!");
-      const data = await Fetch.json();
-      setSwitchData(data[0]);
+  async function statusInfo() {
+    const fetchData = await fetch(
+      `http://jameswi.com:49996/v1/api/oimmain_ext?RefNo=${Ref}`
+    );
+    if (fetchData.status === 200) {
+      const Info = await fetchData.json();
+      console.log(Info);
+      setSwitchData({
+        ...Info[0],
+        U1ID: Uid,
+        U2ID: Uid,
+      });
     } else {
-      alert("ERROR OCCURED");
+      console.log(fetchData.status);
+    }
+  }
+
+  const onSaveStatus = async () => {
+    const fetchs = await fetch("/api/forwarding/updateFreightExt", {
+      body: JSON.stringify(switchData),
+      headers: { ref: Ref },
+      method: "PUT",
+    });
+    if (fetchs.status === 200) {
+      const save = await fetchs.json();
+      // console.log(save);
+      alert(`${save[0].RefNo} SAVED`);
+    } else {
+      alert(`ERROR ${fetchs.status}`);
     }
   };
 
@@ -179,13 +98,13 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_PreAlert === "1" ? true : false}
-                  // defaultChecked={Data && Data.F_PreAlert === "1"}
+                  checked={switchData.PreAlert === "1" ? true : false}
+                  // defaultChecked={Data && Data.PreAlert === "1"}
                   onChange={(e) => {
-                    var data = e.target.checked ? "1" : null || null;
+                    var data = e.target.checked ? "1" : "0";
                     setSwitchData((prev) => ({
                       ...prev,
-                      F_PreAlert: data,
+                      PreAlert: data,
                     }));
                   }}
                 />
@@ -200,17 +119,13 @@ export const Status = ({ Data, Ref, Uid }) => {
                 bsSize="sm"
                 className="text-xs"
                 onChange={(e) => {
-                  var data = e.target.value || null;
+                  var data = e.target.value || "";
                   setSwitchData((prev) => ({
                     ...prev,
-                    F_PreAlertComment: data,
+                    PreAlertComment: data,
                   }));
                 }}
-                value={
-                  switchData.F_PreAlertComment === null
-                    ? ""
-                    : switchData.F_PreAlertComment
-                }
+                value={switchData.PreAlertComment}
               />
             </Col>
           </Row>
@@ -219,12 +134,12 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_ISF === "1" ? true : false}
+                  checked={switchData.ISF === "1" ? true : false}
                   onChange={(e) => {
-                    var data = e.target.checked ? "1" : null;
+                    var data = e.target.checked ? "1" : "0";
                     setSwitchData((prev) => ({
                       ...prev,
-                      F_ISF: data,
+                      ISF: data,
                     }));
                   }}
                 />
@@ -239,17 +154,13 @@ export const Status = ({ Data, Ref, Uid }) => {
                 bsSize="sm"
                 className="text-xs"
                 onChange={(e) => {
-                  var data = e.target.value || null;
+                  var data = e.target.value || "";
                   setSwitchData((prev) => ({
                     ...prev,
-                    F_ISFComment: data,
+                    ISFComment: data,
                   }));
                 }}
-                value={
-                  switchData.F_ISFComment === null
-                    ? ""
-                    : switchData.F_ISFComment
-                }
+                value={switchData.ISFComment}
               />
             </Col>
           </Row>
@@ -258,12 +169,12 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_OBL === "1" ? true : false}
+                  checked={switchData.OBL === "1" ? true : false}
                   onChange={(e) => {
-                    var data = e.target.checked ? "1" : null;
+                    var data = e.target.checked ? "1" : "0";
                     setSwitchData((prev) => ({
                       ...prev,
-                      F_OBL: data,
+                      OBL: data,
                     }));
                   }}
                 />
@@ -278,17 +189,13 @@ export const Status = ({ Data, Ref, Uid }) => {
                 bsSize="sm"
                 className="text-xs"
                 onChange={(e) => {
-                  var data = e.target.value || null;
+                  var data = e.target.value || "";
                   setSwitchData((prev) => ({
                     ...prev,
-                    F_OBLComment: data,
+                    OBLComment: data,
                   }));
                 }}
-                value={
-                  switchData.F_OBLComment === null
-                    ? ""
-                    : switchData.F_OBLComment
-                }
+                value={switchData.OBLComment}
               />
             </Col>
           </Row>
@@ -297,12 +204,12 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_OceanFreight === "1" ? true : false}
+                  checked={switchData.OceanFreight === "1" ? true : false}
                   onChange={(e) => {
-                    var data = e.target.checked ? "1" : null;
+                    var data = e.target.checked ? "1" : "0";
                     setSwitchData((prev) => ({
                       ...prev,
-                      F_OceanFreight: data,
+                      OceanFreight: data,
                     }));
                   }}
                 />
@@ -317,17 +224,13 @@ export const Status = ({ Data, Ref, Uid }) => {
                 bsSize="sm"
                 className="text-xs"
                 onChange={(e) => {
-                  var data = e.target.value || null;
+                  var data = e.target.value || "";
                   setSwitchData((prev) => ({
                     ...prev,
-                    F_OceanFreightComment: data,
+                    OceanFreightComment: data,
                   }));
                 }}
-                value={
-                  switchData.F_OceanFreightComment === null
-                    ? ""
-                    : switchData.F_OBLComment
-                }
+                value={switchData.OceanFreightComment}
               />
             </Col>
           </Row>
@@ -336,12 +239,12 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_ArrivalNotice === "1" ? true : false}
+                  checked={switchData.ArrivalNotice === "1" ? true : false}
                   onChange={(e) => {
-                    var data = e.target.checked ? "1" : null;
+                    var data = e.target.checked ? "1" : "0";
                     setSwitchData((prev) => ({
                       ...prev,
-                      F_ArrivalNotice: data,
+                      ArrivalNotice: data,
                     }));
                   }}
                 />
@@ -356,17 +259,13 @@ export const Status = ({ Data, Ref, Uid }) => {
                 bsSize="sm"
                 className="text-xs"
                 onChange={(e) => {
-                  var data = e.target.value || null;
+                  var data = e.target.value || "";
                   setSwitchData((prev) => ({
                     ...prev,
-                    F_ArrivalNoticeComment: data,
+                    ArrivalNoticeComment: data,
                   }));
                 }}
-                value={
-                  switchData.F_ArrivalNoticeComment === null
-                    ? ""
-                    : switchData.F_ArrivalNoticeComment
-                }
+                value={switchData.ArrivalNoticeComment}
               />
             </Col>
           </Row>
@@ -375,12 +274,12 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_CrDb === "1" ? true : false}
+                  checked={switchData.CrDb === "1" ? true : false}
                   onChange={(e) => {
-                    var data = e.target.checked ? "1" : null;
+                    var data = e.target.checked ? "1" : "0";
                     setSwitchData((prev) => ({
                       ...prev,
-                      F_CrDb: data,
+                      CrDb: data,
                     }));
                   }}
                 />
@@ -395,17 +294,13 @@ export const Status = ({ Data, Ref, Uid }) => {
                 bsSize="sm"
                 className="text-xs"
                 onChange={(e) => {
-                  var data = e.target.value || null;
+                  var data = e.target.value || "";
                   setSwitchData((prev) => ({
                     ...prev,
-                    F_CrDbComment: data,
+                    CrDbComment: data,
                   }));
                 }}
-                value={
-                  switchData.F_CrDbComment === null
-                    ? ""
-                    : switchData.F_CrDbComment
-                }
+                value={switchData.CrDbComment}
               />
             </Col>
           </Row>
@@ -414,12 +309,12 @@ export const Status = ({ Data, Ref, Uid }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.F_Arrival === "1" ? true : false}
+                  checked={switchData.Arrival === "1" ? true : false}
                   onChange={(e) => {
-                    var data = e.target.checked ? "1" : null;
+                    var data = e.target.checked ? "1" : "0";
                     setSwitchData((prev) => ({
                       ...prev,
-                      F_Arrival: data,
+                      Arrival: data,
                     }));
                   }}
                 />
@@ -434,17 +329,13 @@ export const Status = ({ Data, Ref, Uid }) => {
                 bsSize="sm"
                 className="text-xs"
                 onChange={(e) => {
-                  var data = e.target.value || null;
+                  var data = e.target.value || "";
                   setSwitchData((prev) => ({
                     ...prev,
-                    F_ArrivalComment: data,
+                    ArrivalComment: data,
                   }));
                 }}
-                value={
-                  switchData.F_ArrivalComment === null
-                    ? ""
-                    : switchData.F_ArrivalComment
-                }
+                value={switchData.ArrivalComment}
               />
             </Col>
           </Row>
@@ -460,17 +351,17 @@ export const Status = ({ Data, Ref, Uid }) => {
               name="date"
               id="lastfree"
               onChange={(e) => {
-                var data = e.target.value || null;
-                // console.log(data);
+                var data = e.target.value;
                 setSwitchData((prev) => ({
                   ...prev,
-                  F_LastFreeDate: data,
+                  LastFreeDate:
+                    data === "" ? "" : moment(data).format("YYYY-MM-DD"),
                 }));
               }}
               value={
-                switchData.F_LastFreeDate != null
-                  ? moment(switchData.F_LastFreeDate).utc().format("yyyy-MM-DD")
-                  : ""
+                switchData.LastFreeDate === ""
+                  ? undefined
+                  : moment(switchData.LastFreeDate).format("YYYY-MM-DD")
               }
             />
           </InputGroup>
@@ -488,13 +379,13 @@ export const Status = ({ Data, Ref, Uid }) => {
                 var data = e.target.value || null;
                 setSwitchData((prev) => ({
                   ...prev,
-                  F_PickedUpDate: data,
+                  PickedUpDate: moment(data).format("YYYY-MM-DD"),
                 }));
               }}
               value={
-                switchData.F_PickedUpDate != null
-                  ? moment(switchData.F_PickedUpDate).utc().format("yyyy-MM-DD")
-                  : ""
+                switchData.PickedUpDate === ""
+                  ? undefined
+                  : moment(switchData.PickedUpDate).format("YYYY-MM-DD")
               }
             />
           </InputGroup>
@@ -512,15 +403,13 @@ export const Status = ({ Data, Ref, Uid }) => {
                 var data = e.target.value || null;
                 setSwitchData((prev) => ({
                   ...prev,
-                  F_EmptyReturnDate: data,
+                  EmptyReturnDate: moment(data).format("YYYY-MM-DD"),
                 }));
               }}
               value={
-                switchData.F_EmptyReturnDate != null
-                  ? moment(switchData.F_EmptyReturnDate)
-                      .utc()
-                      .format("yyyy-MM-DD")
-                  : ""
+                switchData.EmptyReturnDate === ""
+                  ? undefined
+                  : moment(switchData.EmptyReturnDate).format("YYYY-MM-DD")
               }
             />
           </InputGroup>
