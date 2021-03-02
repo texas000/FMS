@@ -2,19 +2,19 @@ var request = require("request");
 export default async (req, res) => {
   // Define Request Options, *** USE ENV VALUE FOR BASE URI ***
   var options = {
-    method: "GET",
-    url: `${process.env.FS_BASEPATH}${req.headers.main}_ext?RefNo=${req.headers.ref}`,
+    method: "POST",
+    url: `${process.env.FS_BASEPATH}freight_comment`,
     headers: {
       "cache-control": "no-cache",
       "content-type": "application/json",
     },
+    body: JSON.parse(req.body),
     json: true,
   };
 
   request(options, function (error, response, body) {
     // IF ERROR, THROW ERROR
     if (error) throw new Error(error);
-
     // IF RESPONSE IS 200, SEND THE BODY WITH 200 STATUS CODE
     if (response.statusCode === 200) {
       res.status(200).send(body);

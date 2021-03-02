@@ -10,7 +10,7 @@ import {
 import moment from "moment";
 import fetch from "node-fetch";
 
-export const Status = ({ Data, Ref, Uid }) => {
+export const Status = ({ Data, Ref, Uid, Main }) => {
   const [switchData, setSwitchData] = React.useState({
     RefNo: "",
     PreAlert: "0",
@@ -40,9 +40,10 @@ export const Status = ({ Data, Ref, Uid }) => {
   }, [Ref]);
 
   async function statusInfo() {
+    console.log(Ref);
     const fetchs = await fetch("/api/forwarding/getFreightExt", {
-      headers: { ref: Ref },
-      method: "PUT",
+      headers: { ref: Ref, main: Main },
+      method: "GET",
     });
     if (fetchs.status === 200) {
       const Info = await fetchs.json();
@@ -55,21 +56,6 @@ export const Status = ({ Data, Ref, Uid }) => {
     } else {
       console.log(fetchData.status);
     }
-
-    // const fetchData = await fetch(
-    //   `http://jameswi.com:49996/v1/api/oimmain_ext?RefNo=${Ref}`
-    // );
-    // if (fetchData.status === 200) {
-    //   const Info = await fetchData.json();
-    //   console.log(Info);
-    //   setSwitchData({
-    //     ...Info[0],
-    //     U1ID: Uid,
-    //     U2ID: Uid,
-    //   });
-    // } else {
-    //   console.log(fetchData.status);
-    // }
   }
 
   const onSaveStatus = async () => {
@@ -80,7 +66,6 @@ export const Status = ({ Data, Ref, Uid }) => {
     });
     if (fetchs.status === 200) {
       const save = await fetchs.json();
-      // console.log(save);
       alert(`SUCCESS`);
     } else {
       alert(`ERROR ${fetchs.status}`);

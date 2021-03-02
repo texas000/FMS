@@ -1,5 +1,6 @@
 var request = require("request");
 export default async (req, res) => {
+  // Define Request Options, *** USE ENV VALUE FOR BASE URI ***
   var options = {
     method: "PUT",
     url: `${process.env.FS_BASEPATH}freight_ext?RefNo=${req.headers.ref}`,
@@ -10,16 +11,16 @@ export default async (req, res) => {
     body: JSON.parse(req.body),
     json: true,
   };
-  // ?RefNo=${req.headers.ref}
 
   request(options, function (error, response, body) {
+    // IF ERROR, THROW ERROR
     if (error) throw new Error(error);
-    // console.log(Object.getPrototypeOf(req.body));
-
+    // IF RESPONSE IS 200, SEND THE BODY WITH 200 STATUS CODE
     if (response.statusCode === 200) {
-      res.send(body);
+      res.status(200).send(body);
     } else {
-      res.send(JSON.stringify(response));
+      // Otherwise, send the whole response to see the result from front end
+      res.status(response.statusCode).send(JSON.stringify(response));
     }
   });
 };

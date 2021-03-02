@@ -92,6 +92,7 @@ const Detail = ({ Cookie, OIM, EXTRA }) => {
                       Data={EXTRA.S}
                       Ref={OIM.M.F_RefNo}
                       Uid={TOKEN.uid}
+                      Main="oommain"
                     />
                   </Col>
                 </Row>
