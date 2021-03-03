@@ -357,7 +357,7 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                 var data = e.target.value || null;
                 setSwitchData((prev) => ({
                   ...prev,
-                  PickedUpDate: moment(e.target.value).format("YYYY-MM-DD"),
+                  PickedUpDate: moment(data).format("YYYY-MM-DD"),
                 }));
               }}
               value={
@@ -381,7 +381,7 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                 var data = e.target.value || null;
                 setSwitchData((prev) => ({
                   ...prev,
-                  EmptyReturnDate: moment(e.target.value).format("YYYY-MM-DD"),
+                  EmptyReturnDate: moment(data).format("YYYY-MM-DD"),
                 }));
               }}
               value={
