@@ -14,13 +14,11 @@ const Index = ({ Cookie, Result }) => {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const router = useRouter();
 
+  // User Either have or not have OIM cases, when not have cases, display the indication
   function indication() {
     return (
       <span className="font-weight-bold">
         You do not have Ocean Import at the moment
-        {/* {router.query.search
-          ? `Your search "${router.query.search}" did not match any documents.`
-          : `Please search something`} */}
       </span>
     );
   }
@@ -223,7 +221,6 @@ const Index = ({ Cookie, Result }) => {
     },
     {
       dataField: "oimmain.U2ID",
-      // dataField: "U1ID",
       text: "PIC",
       style: columnStyle,
       classes: "text-uppercase",
@@ -241,6 +238,7 @@ const Index = ({ Cookie, Result }) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
+    // In the dev mode, show result in the console.
     // console.log(Result);
   }, []);
   if (TOKEN && TOKEN.group) {
@@ -308,6 +306,7 @@ export async function getServerSideProps({ req }) {
 
     return { props: { Cookie: cookies, Result: result } };
   } else {
+    return { props: { Cookie: cookies, Result: [] } };
   }
 }
 

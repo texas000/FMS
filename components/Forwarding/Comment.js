@@ -6,10 +6,10 @@ import {
   InputGroupText,
   Col,
   Row,
+  Spinner,
 } from "reactstrap";
 import moment from "moment";
 import fetch from "node-fetch";
-import { useRouter } from "next/router";
 import { useDropzone } from "react-dropzone";
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -18,9 +18,9 @@ import "firebase/firestore";
 import "firebase/storage";
 
 export const Comment = ({ comment, reference, uid }) => {
-  const router = useRouter();
   const [Comment, setComment] = React.useState(false);
   const [UpdatedComment, setUpdatedComment] = React.useState([]);
+  const [Uploading, setUploading] = React.useState(false);
 
   const firebaseConfig = {
     apiKey: "AIzaSyBWvOh5KL16jU-rD2mYt-OY7hIhnCMBZ60",
@@ -50,22 +50,21 @@ export const Comment = ({ comment, reference, uid }) => {
     outline: "none",
     transition: "border .24s ease-in-out",
   };
-
+  // ONLY WORKS WHEN THE FILE IS UPLOADE
   async function postComment(content) {
     const data = {
       RefNo: reference,
       Content: content,
       UID: uid,
-      F_Date: moment().format("l"),
-      F_Show: "1",
     };
-    const Fetch = await fetch("/api/forwarding/postFreightComment", {
+    const fetchPostComment = await fetch("/api/forwarding/postFreightComment", {
       body: JSON.stringify(data),
       method: "POST",
     });
-    if (Fetch.status === 204) {
-      alert("SAVED");
-      router.reload();
+
+    if (fetchPostComment.status === 200) {
+      const newMsg = await fetchPostComment.json();
+      setUpdatedComment((prev) => [...prev, newMsg[0]]);
     } else {
       alert(`Error ${Fetch.status}`);
     }
@@ -73,21 +72,31 @@ export const Comment = ({ comment, reference, uid }) => {
 
   // When the file is dropped at the Dropzone
   const onDrop = React.useCallback(async (acceptedFiles) => {
+    // UPLOADING FILE IS WORKING ONLY IF USER IS LOGGED IN WITH FIREBASE
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
-        //Create
+        // CREATE FIREBASE STORAGE REFERENCE
         const storageRef = firebase.storage().ref();
         if (acceptedFiles.length > 0) {
-          acceptedFiles.map(async (data, index) => {
+          //IF THERE ARE MULTIPLE FILES, ITERATE TO UPLOAD FILES
+          acceptedFiles.map(async (data) => {
+            // GET THE NAME FROM FILE
             const { name, lastModified, size, type } = data;
+
+            // DEFINE THE PATH FORWARDING/REFERENCE/FILE NAME
             var myfiles = storageRef.child(`forwarding/${reference}/${name}`);
+
+            // DEFINE THE UPLOAD TASK WITH CORRECT FILES
             var uploadTask = myfiles.put(data);
+
+            // WHEN THE UPLOADING TASK IS ON
             uploadTask.on(
               "state_changed",
               (snapshot) => {
                 var progress =
                   (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                console.log("Upload is " + progress + "% done");
+                //SET UPLOAD PROGRESS SO TAHT SPINNER CAN BE DISPLAYED
+                setUploading(progress);
               },
               (error) => {
                 console.log(error);
@@ -96,6 +105,8 @@ export const Comment = ({ comment, reference, uid }) => {
                 uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                   // WHEN UPLOAD IS COMPLETED, ADD THE URL TO THE COMMENT DATABASE
                   postComment(downloadURL);
+                  // WHEN UPLOAD IS COMPLETED, SET UPLOADING AS FALSE TO DISABLE SPINNER
+                  setUploading(false);
                 });
               }
             );
@@ -106,12 +117,6 @@ export const Comment = ({ comment, reference, uid }) => {
       }
     });
   });
-  // myfiles.put(data).then((snapshot) => {
-  //   console.log("file uploaded");
-  //   console.log(snapshot);
-  //   console.log(snapshot.getDownloadalb)
-
-  // });
 
   // Define the functions from Dropzone package
   const {
@@ -128,16 +133,6 @@ export const Comment = ({ comment, reference, uid }) => {
     maxSize: 10485760,
     onDrop,
   });
-
-  // Display the files that have been uploaded to the Dropzone
-  // const files = acceptedFiles.map((file) => (
-  //   <a href={URL.createObjectURL(file)} key={file.path} target="__blank">
-  //     <Badge className="mr-2" color="primary">
-  //       <i className="fa fa-file"></i>
-  //       {file.path}
-  //     </Badge>
-  //   </a>
-  // ));
 
   const activeStyle = {
     borderColor: "#2196f3",
@@ -168,35 +163,66 @@ export const Comment = ({ comment, reference, uid }) => {
     [isDragActive, isDragReject, isDragAccept]
   );
 
-  React.useEffect(() => {
-    setUpdatedComment([]);
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        console.log("yes google user");
-      } else {
-        console.log("no google user");
-      }
+  async function getComment() {
+    const fetchGetComment = await fetch("/api/forwarding/getFreightComment", {
+      headers: { ref: reference },
     });
+    if (fetchGetComment.status === 200) {
+      const Comments = await fetchGetComment.json();
+      setUpdatedComment(Comments);
+    } else {
+      console.log(fetchGetComment.status);
+    }
+  }
+
+  async function deleteComment(ID) {
+    const check = confirm("DELETE?");
+    if (check) {
+      const fetchDeleteComment = await fetch(
+        "/api/forwarding/deleteFreightComment",
+        {
+          headers: { ref: ID },
+          method: "PUT",
+          body: JSON.stringify({
+            show: "0",
+          }),
+        }
+      );
+      if (fetchDeleteComment.status === 200) {
+        // GET THE INDEX OF SELECTED ARRAY
+        const index = UpdatedComment.findIndex((element) => element.ID == ID);
+        var items = UpdatedComment;
+        // CHANGE THE VALUE OF SHOW
+        items[index].Show = "0";
+        // SET THE STATE
+        setUpdatedComment(items);
+      } else {
+        console.log(fetchDeleteComment.status);
+      }
+    }
+  }
+
+  React.useEffect(() => {
+    getComment();
   }, [reference]);
 
   const addComment = async () => {
     if (Comment.length < 3 || Comment === false) {
       alert("Comment must be over 3 characters");
     } else {
+      setComment("");
       const data = {
         RefNo: reference,
         Content: Comment,
         UID: uid,
-        F_Date: moment().format("l"),
-        F_Show: "1",
       };
       const Fetch = await fetch("/api/forwarding/postFreightComment", {
         body: JSON.stringify(data),
         method: "POST",
       });
-      if (Fetch.status === 204) {
-        alert("SAVED");
-        router.reload();
+      if (Fetch.status === 200) {
+        const NewComment = await Fetch.json();
+        setUpdatedComment((prev) => [...prev, NewComment[0]]);
       } else {
         alert(`Error ${Fetch.status}`);
       }
@@ -208,7 +234,71 @@ export const Comment = ({ comment, reference, uid }) => {
       <Col className="w-100 mb-4">
         <div {...getRootProps({ style })}>
           <Card body className="shadow">
-            {UpdatedComment.length > 0 ? (
+            {Uploading != false && Uploading > 0 && (
+              <div className="text-center text-primary">
+                <Spinner color="primary" />
+                {`Uploading is in progress... ${Uploading}%`}
+              </div>
+            )}
+            {UpdatedComment.map(
+              (ga) =>
+                ga.Show == "1" && (
+                  <div key={ga.ID} className="media my-1">
+                    <div
+                      className="avatar text-xs mr-3"
+                      style={{
+                        display: "inline-block",
+                        verticalAlign: "middle",
+                        width: "35px",
+                        height: "35px",
+                        position: "relative",
+                        backgroundColor: "rgba(0,0,0,0.3)",
+                        color: "#FFF",
+                        borderRadius: "50%",
+                      }}
+                    >
+                      <span
+                        className="text-center"
+                        style={{
+                          left: "50%",
+                          top: "50%",
+                          position: "absolute",
+                          transform: "translate(-50%, -50%)",
+                        }}
+                      >
+                        {ga.UID_FNAME.charAt(0)}
+                        {ga.UID_LNAME.charAt(0)}
+                      </span>
+                    </div>
+                    <div className="content media-body text-xs">
+                      <div className="metadata">
+                        <span className="text-gray-800">
+                          {ga.UID_FNAME} {ga.UID_LNAME}{" "}
+                        </span>
+                        <span>{moment(ga.Date).format("LLL")}</span>
+                        <span>
+                          {ga.UID === uid && (
+                            <i
+                              className="fa fa-times ml-2 text-danger"
+                              onClick={() => deleteComment(ga.ID)}
+                            ></i>
+                          )}
+                        </span>
+                      </div>
+                      <span className="text-gray-800">
+                        {ga.Content.startsWith("https://") ? (
+                          <a href={ga.Content} target="_blank">
+                            {ga.Content}
+                          </a>
+                        ) : (
+                          ga.Content
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                )
+            )}
+            {/* {UpdatedComment.length > 0 ? (
               UpdatedComment.map((ga) => (
                 <div
                   style={{
@@ -346,7 +436,7 @@ export const Comment = ({ comment, reference, uid }) => {
               <div className="text-center text-xs">
                 <span>NO COMMENT</span>
               </div>
-            )}
+            )} */}
 
             <InputGroup className="pt-4">
               <Input

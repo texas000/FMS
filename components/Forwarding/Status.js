@@ -11,36 +11,13 @@ import moment from "moment";
 import fetch from "node-fetch";
 
 export const Status = ({ Data, Ref, Uid, Main }) => {
-  const [switchData, setSwitchData] = React.useState({
-    RefNo: "",
-    PreAlert: "0",
-    PreAlertComment: "",
-    ISF: "0",
-    ISFComment: "",
-    OBL: "0",
-    OBLComment: "",
-    OceanFreight: "0",
-    OceanFreightComment: "",
-    ArrivalNotice: "0",
-    ArrivalNoticeComment: "",
-    CrDb: "0",
-    CrDbComment: "",
-    Arrival: "0",
-    ArrivalComment: "",
-    LastFreeDate: "",
-    PickedUpDate: "",
-    EmptyReturnDate: "",
-    U1ID: Uid,
-    U1Date: moment().format("YYYY-MM-DD"),
-    U2ID: Uid,
-    U2Date: moment().format("YYYY-MM-DD"),
-  });
+  const [switchData, setSwitchData] = React.useState(false);
   React.useEffect(() => {
     statusInfo();
   }, [Ref]);
 
   async function statusInfo() {
-    console.log(Ref);
+    // console.log(Ref);
     const fetchs = await fetch("/api/forwarding/getFreightExt", {
       headers: { ref: Ref, main: Main },
       method: "GET",
@@ -99,7 +76,7 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
               <label className="switch mt-1">
                 <input
                   type="checkbox"
-                  checked={switchData.PreAlert === "1" ? true : false}
+                  checked={switchData.PreAlert === "1" ? true : false || false}
                   // defaultChecked={Data && Data.PreAlert === "1"}
                   onChange={(e) => {
                     var data = e.target.checked ? "1" : "0";
@@ -126,7 +103,7 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                     PreAlertComment: data,
                   }));
                 }}
-                value={switchData.PreAlertComment}
+                value={switchData.PreAlertComment || ""}
               />
             </Col>
           </Row>
@@ -161,7 +138,7 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                     ISFComment: data,
                   }));
                 }}
-                value={switchData.ISFComment}
+                value={switchData.ISFComment || ""}
               />
             </Col>
           </Row>
@@ -196,7 +173,7 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                     OBLComment: data,
                   }));
                 }}
-                value={switchData.OBLComment}
+                value={switchData.OBLComment || ""}
               />
             </Col>
           </Row>
@@ -231,7 +208,7 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                     OceanFreightComment: data,
                   }));
                 }}
-                value={switchData.OceanFreightComment}
+                value={switchData.OceanFreightComment || ""}
               />
             </Col>
           </Row>
@@ -266,7 +243,7 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                     ArrivalNoticeComment: data,
                   }));
                 }}
-                value={switchData.ArrivalNoticeComment}
+                value={switchData.ArrivalNoticeComment || ""}
               />
             </Col>
           </Row>
@@ -301,7 +278,7 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                     CrDbComment: data,
                   }));
                 }}
-                value={switchData.CrDbComment}
+                value={switchData.CrDbComment || ""}
               />
             </Col>
           </Row>
@@ -336,7 +313,7 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                     ArrivalComment: data,
                   }));
                 }}
-                value={switchData.ArrivalComment}
+                value={switchData.ArrivalComment || ""}
               />
             </Col>
           </Row>
@@ -360,7 +337,7 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                 }));
               }}
               value={
-                switchData.LastFreeDate === ""
+                "1900-01-01" || switchData.LastFreeDate === ""
                   ? undefined
                   : moment(switchData.LastFreeDate).format("YYYY-MM-DD")
               }
@@ -380,11 +357,11 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                 var data = e.target.value || null;
                 setSwitchData((prev) => ({
                   ...prev,
-                  PickedUpDate: moment(data).format("YYYY-MM-DD"),
+                  PickedUpDate: moment(e.target.value).format("YYYY-MM-DD"),
                 }));
               }}
               value={
-                switchData.PickedUpDate === ""
+                "1900-01-01" || switchData.PickedUpDate === ""
                   ? undefined
                   : moment(switchData.PickedUpDate).format("YYYY-MM-DD")
               }
@@ -404,11 +381,11 @@ export const Status = ({ Data, Ref, Uid, Main }) => {
                 var data = e.target.value || null;
                 setSwitchData((prev) => ({
                   ...prev,
-                  EmptyReturnDate: moment(data).format("YYYY-MM-DD"),
+                  EmptyReturnDate: moment(e.target.value).format("YYYY-MM-DD"),
                 }));
               }}
               value={
-                switchData.EmptyReturnDate === ""
+                "1900-01-01" || switchData.EmptyReturnDate === ""
                   ? undefined
                   : moment(switchData.EmptyReturnDate).format("YYYY-MM-DD")
               }

@@ -14,14 +14,35 @@ import Info from "../../../components/Forwarding/AirInfo";
 import Forms from "../../../components/Forwarding/Forms";
 import Status from "../../../components/Forwarding/Status";
 
-const Detail = ({ Cookie, AIM, EXTRA }) => {
+const Detail = ({ Cookie, AIM, AIMMAIN }) => {
   const router = useRouter();
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    // console.log(AIM);
+    console.log(AIMMAIN);
+    if (AIMMAIN) {
+      addLogData(AIMMAIN[0]);
+    }
   });
+
+  async function addLogData(Ref) {
+    const fetchPostLog = await fetch("/api/forwarding/postFreightExtLog", {
+      method: "POST",
+      body: JSON.stringify({
+        RefNo: Ref.RefNo,
+        TBName: Ref.TBName,
+        TBID: Ref.TBID,
+        Title: `${TOKEN.username} ACCESS GRANTED`,
+        Contents: JSON.stringify(TOKEN),
+      }),
+    });
+    if (fetchPostLog.status === 200) {
+      console.log("log uploaded");
+    } else {
+      console.log(fetchPostLog.status);
+    }
+  }
 
   var mailSubject, mailBody, emailHref;
   if (AIM && AIM.M) {
@@ -81,7 +102,6 @@ const Detail = ({ Cookie, AIM, EXTRA }) => {
                       Type="air"
                     />
                     <Status
-                      Data={EXTRA.S}
                       Ref={AIM.M.F_RefNo}
                       Uid={TOKEN.uid}
                       Main="aimmain"
@@ -101,11 +121,7 @@ const Detail = ({ Cookie, AIM, EXTRA }) => {
               </Col>
             </Row>
 
-            <Comment
-              comment={EXTRA.M}
-              reference={AIM.M.F_RefNo}
-              uid={TOKEN.uid}
-            />
+            <Comment reference={AIM.M.F_RefNo} uid={TOKEN.uid} />
           </Layout>
         ) : (
           <Layout TOKEN={TOKEN} TITLE="Not Found">
@@ -133,6 +149,40 @@ export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
+
+  // FETCH OIM EXT (OIMMAIN DATA + STATUS DATA)
+  const fetchAimmainExt = await fetch(
+    `${process.env.FS_BASEPATH}aimmain_ext?RefNo=${query.Detail}`
+  );
+
+  // DEFINE FLASE VARIABLE
+  var MAIN = false;
+
+  if (fetchAimmainExt.status === 200) {
+    MAIN = await fetchAimmainExt.json();
+  }
+
+  // IF DATA IS LOADED, FECTH OIM DETAIL INCLUDING HOUSE, AP, CONTAINER
+  if (MAIN) {
+    // FETCH OIM DATA FROM FREIGHT STREAM
+    const fetchAim = await fetch(
+      `${process.env.BASE_URL}api/forwarding/getAimDetail`,
+      { headers: { reference: query.Detail, key: cookies.jamesworldwidetoken } }
+    );
+
+    if (fetchAim.status === 200) {
+      // WHEN OIM IS EMPTY, THIS WILL RETURN THE NOT FOUND PAGE
+      const Aim = await fetchAim.json();
+      return {
+        props: {
+          Cookie: cookies,
+          AIM: Aim,
+          AIMMAIN: MAIN,
+        },
+      };
+    }
+  }
+  return { props: { Cookie: cookies } };
 
   // FETCH AIM DATA FROM FREIGHT STREAM
   const fetchAim = await fetch(
