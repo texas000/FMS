@@ -36,7 +36,9 @@ const Top = ({ Token, toggle, setToggle, google }) => {
   const collapse = () => setToggle(!toggle);
 
   function logout() {
-    firebase.auth().signOut();
+    if (firebase.apps.length > 0) {
+      firebase.auth().signOut();
+    }
     router.push("/login");
   }
 

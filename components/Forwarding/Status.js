@@ -10,7 +10,7 @@ import {
 import moment from "moment";
 import fetch from "node-fetch";
 
-export const Status = ({ Data, Ref, Uid, Main }) => {
+export const Status = ({ Ref, Uid, Main }) => {
   const [switchData, setSwitchData] = React.useState(false);
   React.useEffect(() => {
     statusInfo();

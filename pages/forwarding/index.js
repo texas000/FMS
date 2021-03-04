@@ -18,7 +18,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
 
   function indication() {
     return (
-      <span>
+      <span className="font-weight-bold">
         {router.query.search
           ? `Your search "${router.query.search}" did not match any documents.`
           : `Please search something`}
@@ -34,24 +34,14 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
   useEffect(() => {
     !TOKEN && router.push("/login");
   }, []);
-  const headerSortingStyle = { backgroundColor: "#c9d5f5" };
 
-  const columnStyle = {
-    fontSize: "0.8em",
-    textAlign: "left",
-    verticalAlign: "middle",
-    wordWrap: "break-word",
-  };
+  const headerSortingStyle = { backgroundColor: "#c9d5f5" };
 
   const column = [
     {
       dataField: "RefNO",
       text: "REF",
-      formatter: (cell) => (
-        <a href="#" style={{ fontSize: "0.9em" }}>
-          {cell}
-        </a>
-      ),
+      formatter: (cell) => <a href="#">{cell}</a>,
       events: {
         onClick: (e, columns, columnIndex, row) => {
           row.MASTER_TABLE == "T_OIMMAIN" &&
@@ -81,24 +71,21 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
             );
         },
       },
-      style: { textAlign: "center", width: "10%" },
-      headerStyle: { fontSize: "0.8rem", width: "10%" },
+      classes:
+        "text-xs text-center text-truncate text-uppercase font-weight-bold",
+      headerClasses: "text-xs text-primary text-center align-middle px-4",
       sort: true,
       filter: textFilter({
-        className: "text-xs d-none d-md-block",
+        className: "text-xs",
       }),
+      headerStyle: { width: "10%" },
       headerSortingStyle,
     },
     {
       dataField: "CUSTOMER",
       text: "CUSTOMER",
-      style: columnStyle,
-      headerStyle: {
-        fontSize: "0.8rem",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-      },
+      classes: "text-xs text-truncate",
+      headerClasses: "text-xs w-25 text-primary text-center align-middle px-4",
       sort: true,
       filter: textFilter({
         className: "text-xs",
@@ -108,24 +95,27 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
     {
       dataField: "MASTER_BLNO",
       text: "MBL",
-      style: columnStyle,
-      headerStyle: { fontSize: "0.8rem" },
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary text-center align-middle",
+      headerStyle: { width: "10%" },
       sort: true,
       headerSortingStyle,
     },
     {
       dataField: "HOUSE_BLNO",
       text: "HBL",
-      style: columnStyle,
-      headerStyle: { fontSize: "0.8rem" },
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary text-center align-middle",
+      headerStyle: { width: "10%" },
       sort: true,
       headerSortingStyle,
     },
     {
       dataField: "SHIPPER",
       text: "SHIPPER",
-      style: columnStyle,
-      headerStyle: { fontSize: "0.8rem" },
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary text-center align-middle",
+      headerStyle: { width: "10%" },
       hidden: true,
       sort: true,
       headerSortingStyle,
@@ -133,9 +123,10 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
     {
       dataField: "ETD",
       text: "ETD",
-      style: columnStyle,
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary text-center align-middle",
+      headerStyle: { width: "10%" },
       sort: true,
-      headerStyle: { fontSize: "0.8em" },
       headerSortingStyle,
       formatter: (cell) => {
         if (cell) {
@@ -154,9 +145,10 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
     {
       dataField: "ETA",
       text: "ETA",
-      style: columnStyle,
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary text-center mx-4 align-middle",
+      headerStyle: { width: "10%" },
       sort: true,
-      headerStyle: { fontSize: "0.8em" },
       headerSortingStyle,
       formatter: (cell) => {
         if (cell) {
@@ -175,9 +167,10 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
     {
       dataField: "POSTDATE",
       text: "POST",
-      style: columnStyle,
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary text-center align-middle",
+      headerStyle: { width: "10%" },
       sort: true,
-      headerStyle: { fontSize: "0.8em" },
       headerSortingStyle,
       formatter: (cell) => {
         if (cell) {
@@ -195,20 +188,20 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
     },
     {
       dataField: "U2ID",
-      // dataField: "U1ID",
       text: "PIC",
-      style: columnStyle,
-      headerStyle: { fontSize: "0.8rem", width: "8%" },
+      classes: "text-xs text-truncate text-uppercase",
+      headerClasses: "text-xs text-primary px-4 align-middle",
+      headerStyle: { width: "10%" },
       sort: true,
       headerSortingStyle,
       filter: textFilter({
-        className: "text-xs d-none d-md-block",
+        className: "text-xs",
       }),
     },
   ];
 
   const customTotal = (from, to, size) => (
-    <span className="react-bootstrap-table-pagination-total ml-2 text-secondary">
+    <span className="react-bootstrap-table-pagination-total ml-2 text-xs text-secondary">
       Showing {from} to {to} of {size} Results
     </span>
   );
@@ -232,11 +225,11 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
         return (
           <Button
             key={option.text}
-            type="button"
             onClick={() => onSizePerPageChange(option.page)}
-            style={{ borderRadius: "0" }}
             size="sm"
-            className={`btn ${isSelect ? "btn-secondary" : "btn-warning"}`}
+            color={isSelect ? "secondary" : "primary"}
+            className="text-xs"
+            outline
           >
             {option.text}
           </Button>
@@ -261,7 +254,9 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
         <a
           href="#"
           onClick={handleClick}
-          className={active ? "btn btn-info" : "btn"}
+          className={
+            active ? "btn btn-sm btn-info text-xs" : "btn btn-sm text-xs"
+          }
         >
           {page}
         </a>
@@ -274,7 +269,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       <Layout TOKEN={TOKEN} TITLE="Forwarding">
         <div className="d-flex flex-sm-row justify-content-between">
           <div className="flex-column">
-            <h3 className="mb-4 forwarding">Forwarding</h3>
+            <h3 className="mb-4 forwarding font-weight-light">Forwarding</h3>
           </div>
           {/* <div className="flex-column">
             <Input
@@ -302,9 +297,69 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
             </Button>
           </div> */}
         </div>
-        {/* SERACH BAR */}
-        {/* SEARCH BAR END */}
-        <Card className="bg-transparent border-0">
+        {/* hide on screens wider than lg */}
+        {/* display only 100 result only for mobile view */}
+        <div className="d-lg-none">
+          <div className="list-group my-2">
+            {Re.length !== 0 ? (
+              Re.map(
+                (ga, i) =>
+                  i < 100 && (
+                    <a
+                      href="#"
+                      key={ga.RowNo}
+                      onClick={() => {
+                        ga.MASTER_TABLE == "T_OIMMAIN" &&
+                          router.push(
+                            `/forwarding/oim/[Detail]`,
+                            `/forwarding/oim/${ga.RefNO}`
+                          );
+                        ga.MASTER_TABLE == "T_OOMMAIN" &&
+                          router.push(
+                            `/forwarding/oex/[Detail]`,
+                            `/forwarding/oex/${ga.RefNO}`
+                          );
+                        ga.MASTER_TABLE == "T_AIMMAIN" &&
+                          router.push(
+                            `/forwarding/aim/[Detail]`,
+                            `/forwarding/aim/${ga.RefNO}`
+                          );
+                        ga.MASTER_TABLE == "T_AOMMAIN" &&
+                          router.push(
+                            `/forwarding/aex/[Detail]`,
+                            `/forwarding/aex/${ga.RefNO}`
+                          );
+                        ga.MASTER_TABLE == "T_GENMAIN" &&
+                          router.push(
+                            `/forwarding/other/[Detail]`,
+                            `/forwarding/other/${ga.RefNO}`
+                          );
+                      }}
+                      className="list-group-item list-group-item-action text-xs text-truncate"
+                    >
+                      <span className="text-primary font-weight-bold">
+                        {ga.RefNO}
+                      </span>
+                      <i className="fa fa-arrow-right text-success mx-2"></i>
+                      <span>{ga.CUSTOMER}</span>
+                      <i className="fa fa-arrow-right text-warning mx-2"></i>
+                      <span>{ga.U2ID}</span>
+                    </a>
+                  )
+              )
+            ) : (
+              <div
+                className="alert alert-secondary text-capitalize"
+                role="alert"
+              >
+                No result
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* display on screens wider than lg */}
+        <Card className="bg-transparent border-0 d-none d-lg-block">
           <Row>
             {/* DISPLAY SEARCH RESULT */}
             <ToolkitProvider
@@ -331,12 +386,6 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
                       paginationTotalRenderer: customTotal,
                       sizePerPageRenderer,
                     })}
-                    // defaultSorted={[
-                    //   {
-                    //     dataField: "RefNo",
-                    //     order: "desc",
-                    //   },
-                    // ]}
                   />
                 </Col>
               )}
@@ -359,8 +408,10 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
               } 
             } */
             }
-            .react-bootstrap-table table {
+             {
+              /* .react-bootstrap-table table {
               table-layout: auto !important;
+            } */
             }
             .react-bootstrap-table-sort-order {
               display: none;
@@ -394,15 +445,16 @@ export async function getServerSideProps({ req, query }) {
     };
   } else {
     var result = [];
-    // console.time("fecth_time");
+    // API VERSION VERSION 3
+    // {
+    //   headers: { "X-API-KEY": process.env.JWT_KEY },
+    // }
     const fetchSearch = await fetch(
       `${process.env.FS_BASEPATH}fmssearch?key=${query.search}&casestatus=&`
     );
     if (fetchSearch.status === 200) {
       result = await fetchSearch.json();
     }
-    // const result = await test.json();
-    // console.timeEnd("fecth_time");
     return {
       props: {
         Cookie: cookies,

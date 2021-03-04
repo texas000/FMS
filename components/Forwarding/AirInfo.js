@@ -68,7 +68,7 @@ export const Info = ({ Master, House, Containers }) => {
       </div>
 
       {/* HOUSE */}
-      <div className="accordion mt-4" id="accordionExample">
+      <div className="accordion my-4" id="accordionExample">
         {House.length != 0 ? (
           House.map((ga, i) => (
             <div className="card border-left-primary shadow" key={ga.F_ID}>

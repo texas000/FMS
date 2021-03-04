@@ -39,7 +39,9 @@ const Index = ({ Cookie, Result }) => {
         <a
           href="#"
           onClick={handleClick}
-          className={active ? "btn btn-info" : "btn"}
+          className={
+            active ? "btn btn-sm btn-info text-xs" : "btn btn-sm text-xs"
+          }
         >
           {page}
         </a>
@@ -48,7 +50,7 @@ const Index = ({ Cookie, Result }) => {
   };
 
   const customTotal = (from, to, size) => (
-    <span className="react-bootstrap-table-pagination-total ml-2 text-secondary">
+    <span className="react-bootstrap-table-pagination-total ml-2 text-xs text-secondary">
       Showing {from} to {to} of {size} Results
     </span>
   );
@@ -72,11 +74,11 @@ const Index = ({ Cookie, Result }) => {
         return (
           <Button
             key={option.text}
-            type="button"
             onClick={() => onSizePerPageChange(option.page)}
-            style={{ borderRadius: "0" }}
             size="sm"
-            className={`btn ${isSelect ? "btn-secondary" : "btn-warning"}`}
+            color={isSelect ? "secondary" : "primary"}
+            className="text-xs"
+            outline
           >
             {option.text}
           </Button>
@@ -86,22 +88,12 @@ const Index = ({ Cookie, Result }) => {
   );
 
   const headerSortingStyle = { backgroundColor: "#c9d5f5" };
-  const columnStyle = {
-    fontSize: "0.8em",
-    textAlign: "left",
-    verticalAlign: "middle",
-    wordWrap: "break-word",
-  };
 
   const column = [
     {
       dataField: "oimmain.RefNo",
       text: "REF",
-      formatter: (cell) => (
-        <a href="#" className="text-uppercase">
-          {cell}
-        </a>
-      ),
+      formatter: (cell) => <a href="#">{cell}</a>,
       events: {
         onClick: (e, columns, columnIndex, row) => {
           router.push(
@@ -110,21 +102,20 @@ const Index = ({ Cookie, Result }) => {
           );
         },
       },
-      style: { textAlign: "center", width: "10%" },
-      headerStyle: { fontSize: "0.8rem", width: "10%" },
+      classes:
+        "text-xs text-center text-truncate text-uppercase font-weight-bold",
+      headerClasses: "text-xs text-primary text-center align-middle px-4",
       sort: true,
       filter: textFilter({
-        className: "text-xs d-none d-md-block",
+        className: "text-xs",
       }),
       headerSortingStyle,
     },
     {
       dataField: "oihmain.Customer_SName",
       text: "CUSTOMER",
-      style: columnStyle,
-      headerStyle: {
-        fontSize: "0.8rem",
-      },
+      classes: "text-xs text-truncate",
+      headerClasses: "text-xs w-25 text-primary text-center align-middle px-4",
       sort: true,
       filter: textFilter({
         className: "text-xs",
@@ -134,24 +125,24 @@ const Index = ({ Cookie, Result }) => {
     {
       dataField: "oimmain.MBLNo",
       text: "MBL",
-      style: columnStyle,
-      headerStyle: { fontSize: "0.8rem" },
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary text-center align-middle",
       sort: true,
       headerSortingStyle,
     },
     {
       dataField: "oihmain.HBLNo",
       text: "HBL",
-      style: columnStyle,
-      headerStyle: { fontSize: "0.8rem" },
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary text-center align-middle",
       sort: true,
       headerSortingStyle,
     },
     {
       dataField: "oihmain.Shipper_SName",
       text: "SHIPPER",
-      style: columnStyle,
-      headerStyle: { fontSize: "0.8rem" },
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary px-4 py-1 text-center",
       hidden: true,
       sort: true,
       headerSortingStyle,
@@ -159,19 +150,19 @@ const Index = ({ Cookie, Result }) => {
     {
       dataField: "oimmain.ETD",
       text: "ETD",
-      style: columnStyle,
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary text-center align-middle",
       sort: true,
-      headerStyle: { fontSize: "0.8em" },
       headerSortingStyle,
       formatter: (cell) => {
         if (cell) {
           if (moment(cell).isSameOrBefore(moment())) {
             return (
-              <div style={{ color: "gray" }}>{moment(cell).format("L")}</div>
+              <div className="text-gray-500">{moment(cell).format("L")}</div>
             );
           } else {
             return (
-              <div style={{ color: "blue" }}>{moment(cell).format("L")}</div>
+              <div className="text-success">{moment(cell).format("L")}</div>
             );
           }
         }
@@ -180,19 +171,19 @@ const Index = ({ Cookie, Result }) => {
     {
       dataField: "oimmain.ETA",
       text: "ETA",
-      style: columnStyle,
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary text-center align-middle",
       sort: true,
-      headerStyle: { fontSize: "0.8em" },
       headerSortingStyle,
       formatter: (cell) => {
         if (cell) {
           if (moment(cell).isSameOrBefore(moment())) {
             return (
-              <div style={{ color: "gray" }}>{moment(cell).format("L")}</div>
+              <div className="text-gray-500">{moment(cell).format("L")}</div>
             );
           } else {
             return (
-              <div style={{ color: "blue" }}>{moment(cell).format("L")}</div>
+              <div className="text-success">{moment(cell).format("L")}</div>
             );
           }
         }
@@ -201,19 +192,19 @@ const Index = ({ Cookie, Result }) => {
     {
       dataField: "oimmain.PostDate",
       text: "POST",
-      style: columnStyle,
+      classes: "text-xs text-truncate font-weight-light",
+      headerClasses: "text-xs text-primary text-center align-middle",
       sort: true,
-      headerStyle: { fontSize: "0.8em" },
       headerSortingStyle,
       formatter: (cell) => {
         if (cell) {
           if (moment(cell).isSameOrBefore(moment())) {
             return (
-              <div style={{ color: "gray" }}>{moment(cell).format("L")}</div>
+              <div className="text-gray-500">{moment(cell).format("L")}</div>
             );
           } else {
             return (
-              <div style={{ color: "blue" }}>{moment(cell).format("L")}</div>
+              <div className="text-success">{moment(cell).format("L")}</div>
             );
           }
         }
@@ -222,16 +213,12 @@ const Index = ({ Cookie, Result }) => {
     {
       dataField: "oimmain.U2ID",
       text: "PIC",
-      style: columnStyle,
-      classes: "text-uppercase",
-      headerStyle: {
-        fontSize: "0.8rem",
-        width: "8%",
-      },
+      classes: "text-xs text-truncate text-uppercase",
+      headerClasses: "text-xs text-primary px-4 align-middle",
       sort: true,
       headerSortingStyle,
       filter: textFilter({
-        className: "text-xs d-none d-md-block",
+        className: "text-xs",
       }),
     },
   ];
@@ -246,10 +233,48 @@ const Index = ({ Cookie, Result }) => {
       <Layout TOKEN={TOKEN}>
         <div className="d-flex flex-sm-row justify-content-between">
           <div className="flex-column">
-            <h3 className="mb-4 forwarding">Ocean Import</h3>
+            <h3 className="mb-4 forwarding font-weight-light">Ocean Import</h3>
           </div>
         </div>
-        <Card className="bg-transparent border-0">
+
+        <div className="d-lg-none">
+          <div className="list-group">
+            {Result.length !== 0 ? (
+              Result.map((ga) => (
+                <a
+                  href="#"
+                  key={ga.oihmain.ID}
+                  onClick={() => {
+                    router.push(
+                      `/forwarding/oim/[Detail]`,
+                      `/forwarding/oim/${ga.oimmain.RefNo}`
+                    );
+                  }}
+                  className="list-group-item list-group-item-action text-xs text-truncate"
+                >
+                  <span className="text-primary font-weight-bold">
+                    {ga.oimmain.RefNo}
+                  </span>
+                  <i className="fa fa-arrow-right text-success mx-2"></i>
+                  <span className="font-weight-light">
+                    {ga.oihmain.Customer_SName}
+                  </span>
+                  <i className="fa fa-arrow-right text-warning mx-2"></i>
+                  <span className="text-uppercase">{ga.oimmain.U2ID}</span>
+                </a>
+              ))
+            ) : (
+              <div
+                className="alert alert-secondary text-capitalize"
+                role="alert"
+              >
+                you do not have ocean import at the moment
+              </div>
+            )}
+          </div>
+        </div>
+
+        <Card className="bg-transparent border-0 d-none d-lg-block">
           <Row>
             {/* DISPLAY SEARCH RESULT */}
             <ToolkitProvider

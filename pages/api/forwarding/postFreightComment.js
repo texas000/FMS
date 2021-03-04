@@ -7,6 +7,7 @@ export default async (req, res) => {
     headers: {
       "cache-control": "no-cache",
       "content-type": "application/json",
+      "X-API-KEY" : process.env.JWT_KEY,
     },
     body: JSON.parse(req.body),
     json: true,
