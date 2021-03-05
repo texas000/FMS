@@ -92,7 +92,7 @@ const Detail = ({ Cookie, AIM, AOMMAIN }) => {
               <Col lg={10}>
                 <Row>
                   <Info Master={AIM.M} House={AIM.H} Containers={AIM.C} />
-                  <Col md="6">
+                  <Col lg="6">
                     <Forms
                       Master={AIM.M}
                       House={AIM.H}

@@ -1,4 +1,4 @@
-import { BlobProvider } from "@react-pdf/renderer";
+import { BlobProvider, PDFDownloadLink } from "@react-pdf/renderer";
 import { Button, ButtonGroup } from "reactstrap";
 import CheckRequestForm from "./CheckRequestForm";
 import MyCover from "./MyCover";
@@ -89,14 +89,35 @@ export const Forms = ({ Master, House, Containers, AP, User, Type }) => {
                     color="info"
                     disabled={!isClient}
                   >
-                    <i className="fa fa-print mr-1"></i>COVER
+                    <i className="fa fa-eye mr-1"></i>VIEW
                   </Button>
                 </a>
               )}
             </BlobProvider>
+            <PDFDownloadLink
+              document={
+                <MyCover
+                  master={Master}
+                  house={House || []}
+                  containers={Containers}
+                  type={Type}
+                />
+              }
+              fileName={Master.F_RefNo}
+            >
+              <Button
+                size="sm"
+                className="text-xs mx-2"
+                outline
+                color="info"
+                disabled={!isClient}
+              >
+                <i className="fa fa-download mr-1"></i>DOWNLOAD
+              </Button>
+            </PDFDownloadLink>
             <Button
               size="sm"
-              className="text-xs ml-2"
+              className="text-xs"
               outline
               color="info"
               onClick={mailThis}

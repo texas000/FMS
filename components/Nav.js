@@ -3,7 +3,8 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import firebase from "firebase/app";
 import "firebase/auth";
-const Top = ({ Token, toggle, setToggle, google }) => {
+// import "firebase/firestore";
+const Top = ({ Token, toggle, setToggle }) => {
   const router = useRouter();
   const [search, setSearch] = React.useState(false);
   const [alertToggle, setalertToggle] = React.useState(false);
@@ -13,6 +14,7 @@ const Top = ({ Token, toggle, setToggle, google }) => {
 
   const [Notifications, setNotifications] = React.useState([]);
   const [Messages, setMessages] = React.useState([]);
+
   React.useEffect(() => {
     //When window type is defined, and local stroage is defined, get notification and board board data from local storage and set to state value, otherwise, set noti and message as empty array
     if (typeof window !== "undefined") {
@@ -27,6 +29,39 @@ const Top = ({ Token, toggle, setToggle, google }) => {
         }
       }
     }
+    // firebase.auth().onAuthStateChanged((user) => {
+    //   if (user) {
+    //     const alertRef = firebase.firestore().collection("alert");
+    //     // GET # TOTAL NUMBER OF ALERT
+    //     alertRef
+    //       .doc("general")
+    //       .get()
+    //       .then(async (ga) => {
+    //         alertRef
+    //           .doc("general")
+    //           .collection("jwiusa")
+    //           .where("pic", "array-contains", user.uid)
+    //           .get()
+    //           .then((querySnapshot) => {
+    //             setNavAlertNum(
+    //               ga.data().totalAlert - querySnapshot.docs.length
+    //             );
+    //           });
+    //       });
+    //     // GET [{}] THE ALERTS
+    //     var alerts = [];
+    //     alertRef
+    //       .doc("general")
+    //       .collection("jwiusa")
+    //       .limit(10)
+    //       .onSnapshot((querySnapshot) => {
+    //         querySnapshot.forEach((doc) => {
+    //           setNavAlert((prev) => [...prev, { ...doc.data(), id: doc.id }]);
+    //         });
+    //         // setNavAlert(alerts);
+    //       });
+    //   }
+    // });
   }, []);
 
   const getResult = async () => {
@@ -250,8 +285,22 @@ const Top = ({ Token, toggle, setToggle, google }) => {
             }`}
             aria-labelledby="alertsDropdown"
           >
-            <h6 className="dropdown-header">OIM Alerts Center</h6>
-
+            <h6 className="dropdown-header">Alerts Center</h6>
+            {/* {navAlert &&
+              navAlert.map((ga, i) => (
+                <a
+                  key={ga.id + i}
+                  className="dropdown-item d-flex align-items-center"
+                  href="#"
+                >
+                  <div>
+                    <span className="font-weight-bold">{ga.title}</span>
+                    <div className="small text-gray-500">
+                      {moment(ga.created.seconds * 1000).fromNow()}
+                    </div>
+                  </div>
+                </a>
+              ))} */}
             {Notifications &&
               Notifications.map((ga) => (
                 <a

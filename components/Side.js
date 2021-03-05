@@ -57,7 +57,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 
       {/* Forwarding */}
 
-      <li
+      {/* <li
         className={`nav-item ${router.pathname == "/forwarding" && "active"}`}
       >
         <a
@@ -68,7 +68,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           <i className="fa fa-ship"></i>
           <span>FS Search</span>
         </a>
-      </li>
+      </li> */}
 
       <li
         className={`nav-item ${

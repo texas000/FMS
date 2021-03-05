@@ -50,6 +50,7 @@ const Detail = ({ Cookie, OTHER, GENMAIN }) => {
               REF={OTHER.M.F_RefNo}
               POST={OTHER.M.F_PostDate}
               PIC={OTHER.M.F_U2ID}
+              CUSTOMER={OTHER.M.CUSTOMER || ""}
             />
             {/* Display only at print screen */}
             <p className="d-none d-print-block">
@@ -59,7 +60,7 @@ const Detail = ({ Cookie, OTHER, GENMAIN }) => {
               <Col lg={10}>
                 <Row>
                   <Info Master={OTHER.M} />
-                  <Col md="6">
+                  <Col lg="6" className="mb-4">
                     <Forms
                       Master={OTHER.M}
                       AP={OTHER.A}

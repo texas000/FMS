@@ -100,7 +100,7 @@ const Detail = ({ Cookie, OIM, OOMMAIN }) => {
                     Containers={OIM.C}
                     Profit={OIM.P}
                   />
-                  <Col md="6">
+                  <Col lg="6">
                     <Forms
                       Master={OIM.M}
                       House={OIM.H}

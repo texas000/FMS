@@ -18,8 +18,8 @@ const Head = ({ REF, POST, PIC, EMAIL, CUSTOMER }) => {
 
   return (
     <>
-      <Row>
-        <Col>
+      <Row className="mb-2">
+        <Col lg={6}>
           <h3 className="text-gray-800 h4 font-weight-bold text-uppercase d-inline">
             {REF}
           </h3>
@@ -27,7 +27,7 @@ const Head = ({ REF, POST, PIC, EMAIL, CUSTOMER }) => {
             {CUSTOMER}
           </h3>
         </Col>
-        <Col className="text-right">
+        <Col className="text-right" lg={6}>
           <Badge
             className="text-xs mx-1 btn btn-link text-primary"
             color="warning"

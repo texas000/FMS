@@ -21,7 +21,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   body: {
-    marginTop: "10px",
+    paddingTop: 10,
+    paddingBottom: 10,
   },
   logo: {
     position: "absolute",
@@ -82,52 +83,72 @@ const styles = StyleSheet.create({
     paddingBottom: "18px",
     paddingRight: "2px",
   },
+  commentBox: {
+    backgroundColor: "silver",
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 20,
+  },
+  commentText: {
+    fontSize: 9,
+    color: "white",
+    padding: 5,
+  },
 });
 
 export const MyCover = ({ master, house, containers, type }) => {
+  // IMPORT - EXPORT
+  // REFERENCE NUMBER - HOUSE(F_CustRefNo) - HOUSE (F_ExPref)
+  // COMMODITY - MASTER (F_mCommodity) - HOUSE (F_Commodity)
+  // PKGS - MASTER (F_PKGS) - MASTER (F_Pkgs)
   var upperTableOcean = [
     {
       row: 2,
       first: "HOUSE#",
-      second: "COMMODITY",
+      second: "CUS REF#",
       data1: house
         .map((ga, i) => `${ga.F_HBLNo} ${i % 2 === 1 ? "\n" : ""}`)
         .join(" "),
-      data2: master.F_mCommodity,
+      data2: house
+        .map((ga) => `${ga.F_CustRefNo || ga.F_ExPref || ""}`)
+        .join(" "),
     },
     {
       row: 3,
       first: "AMS#",
-      second: "PKGS",
-      data1: house.map((ga) => `${ga.F_AMSBLNO} `).join(" "),
-      data2: house.reduce((sum, item) => {
-        return (sum = sum + item.F_PKGS);
-      }, 0),
+      second: "COMMODITY",
+      data1: house.map((ga) => `${ga.F_AMSBLNO || ""}`).join(" "),
+      data2:
+        master.F_mCommodity ||
+        house.map((ga) => `${ga.F_Commodity}`).join(" ") ||
+        "",
     },
     {
       row: 4,
       first: "POL",
-      second: "WEIGHTS",
+      second: "PKGS",
       data1: master.F_LoadingPort,
       data2: house.reduce((sum, item) => {
-        return (sum = sum + item.F_KGS);
+        return (sum = sum + (item.F_PKGS || item.F_Pkgs));
       }, 0),
     },
     {
       row: 5,
       first: "POD",
-      second: "CBM",
+      second: "WEIGHTS",
       data1: master.F_DisCharge,
       data2: house.reduce((sum, item) => {
-        return (sum = sum + item.F_CBM);
+        return (sum = sum + item.F_KGS);
       }, 0),
     },
     {
       row: 6,
       first: "AGENT",
+      second: "CBM",
       data1: master.AGENT,
-      second: "VSL NO",
-      data2: master.F_Vessel,
+      data2: house.reduce((sum, item) => {
+        return (sum = sum + item.F_CBM);
+      }, 0),
     },
     {
       row: 7,
@@ -138,9 +159,9 @@ export const MyCover = ({ master, house, containers, type }) => {
     },
     {
       row: 8,
-      first: "S/L",
+      first: "VSL NO",
       second: "CY LOC.",
-      data1: master.CARRIER,
+      data1: master.F_Vessel,
       data2: master.CYLOC,
     },
   ];
@@ -149,41 +170,43 @@ export const MyCover = ({ master, house, containers, type }) => {
     {
       row: 2,
       first: "HOUSE#",
-      second: "COMMODITY",
+      second: "CUS REF#",
       data1: house
         .map(
-          (ga, i) => `${ga.F_HBLNo || ga.F_HawbNo} ${i % 2 === 1 ? "\n" : ""}`
+          (ga, i) => `${ga.F_HawbNo || ga.F_HAWBNo} ${i % 2 === 1 ? "\n" : ""}`
         )
         .join(" "),
-      data2: house.length && `${house[0].F_Description}(${house.length})`,
+      data2: house
+        .map((ga) => `${ga.F_CustRefNo || ga.F_ExPref || ""}`)
+        .join(" "),
     },
     {
       row: 3,
       first: "AIRPORT",
-      second: "PKGS",
-      data1: `${master.F_LCode} - ${master.F_DCode}`,
-      data2: master.F_Pkgs,
+      second: "COMMODITY",
+      data1: `${master.F_LCode} - ${master.F_DCode || master.F_Dcode}`,
+      data2: house.map((ga) => ga.F_Commodity).join(" "),
     },
     {
       row: 4,
       first: "POL",
-      second: "WEIGHTS",
+      second: "PKGS",
       data1: master.F_LoadingPort,
-      data2: master.F_GrossWeight,
+      data2: master.F_Pkgs,
     },
     {
       row: 5,
       first: "POD",
-      second: "C WEIGHT",
+      second: "WEIGHTS",
       data1: master.F_Discharge,
-      data2: master.F_ChgWeight,
+      data2: master.F_GrossWeight,
     },
     {
       row: 6,
       first: "AGENT",
+      second: "C WEIGHT",
       data1: master.AGENT,
-      second: "FLT NO",
-      data2: master.F_FLTno,
+      data2: master.F_ChgWeight,
     },
     {
       row: 7,
@@ -194,9 +217,9 @@ export const MyCover = ({ master, house, containers, type }) => {
     },
     {
       row: 8,
-      first: "S/L",
+      first: "FLT NO",
       second: "BL VENDOR",
-      data1: master.CARRIER,
+      data1: master.F_FLTno || master.F_FLTNo,
       data2: master.CYLOC,
     },
   ];
@@ -326,8 +349,20 @@ export const MyCover = ({ master, house, containers, type }) => {
   ];
 
   return (
-    <Document>
-      <Page size="LETTER" style={styles.body}>
+    <Document
+      title={master.F_RefNo}
+      author="IT TEAM"
+      subject={`COVER FOR ${master.F_RefNo}`}
+      keywords={master.F_RefNo}
+      producer="JWIUSA.COM"
+      creator="JWIUSA.COM"
+    >
+      <Page
+        size="LETTER"
+        orientation="portrait"
+        style={styles.body}
+        wrap={false}
+      >
         <Image style={styles.logo} src="/image/JLOGO.png" fixed />
         <View style={styles.section}>
           <Table
@@ -385,8 +420,10 @@ export const MyCover = ({ master, house, containers, type }) => {
             </TableBody>
           </Table>
         </View>
+
+        {/* SECTION 1 - TITLE: CUSTOMER - SHIPPER - CONSIGNEE */}
+
         <View style={styles.section1}>
-          {/* <Text style={styles.title}>{master.F_RefNo}</Text> */}
           <Text style={styles.title}>
             {type === "other"
               ? `${master.CUSTOMER} ${master.F_C1 && `- ${master.F_C1}`} ${
@@ -441,6 +478,10 @@ export const MyCover = ({ master, house, containers, type }) => {
               <DataTableCell getContent={(r) => r.data2} />
             </TableBody>
           </Table>
+        </View>
+
+        <View style={styles.commentBox} wrap={false}>
+          <Text style={styles.commentText}> MEMO: </Text>
         </View>
       </Page>
     </Document>
