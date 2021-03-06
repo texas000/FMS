@@ -20,7 +20,7 @@ const Detail = ({ Cookie, OIM, OIMMAIN }) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    console.log(OIMMAIN);
+    // console.log(OIMMAIN);
     if (OIMMAIN) {
       addLogData(OIMMAIN[0]);
     }
@@ -38,7 +38,7 @@ const Detail = ({ Cookie, OIM, OIMMAIN }) => {
       }),
     });
     if (fetchPostLog.status === 200) {
-      console.log("log uploaded");
+      console.log("SUCCESS");
     } else {
       console.log(fetchPostLog.status);
     }
@@ -159,7 +159,10 @@ export async function getServerSideProps({ req, query }) {
   );
   // FETCH OIM EXT (OIMMAIN DATA + STATUS DATA)
   const fetchOimmainExt = await fetch(
-    `${process.env.FS_BASEPATH}oimmain_ext?RefNo=${query.Detail}`
+    `${process.env.FS_BASEPATH}oimmain_ext?RefNo=${query.Detail}`,
+    {
+      headers: { "x-api-key": process.env.JWT_KEY },
+    }
   );
 
   // DEFINE FLASE VARIABLE

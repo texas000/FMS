@@ -38,7 +38,7 @@ const Detail = ({ Cookie, AIM, AIMMAIN }) => {
       }),
     });
     if (fetchPostLog.status === 200) {
-      console.log("log uploaded");
+      console.log("SUCCESS");
     } else {
       console.log(fetchPostLog.status);
     }
@@ -152,7 +152,10 @@ export async function getServerSideProps({ req, query }) {
 
   // FETCH OIM EXT (OIMMAIN DATA + STATUS DATA)
   const fetchAimmainExt = await fetch(
-    `${process.env.FS_BASEPATH}aimmain_ext?RefNo=${query.Detail}`
+    `${process.env.FS_BASEPATH}aimmain_ext?RefNo=${query.Detail}`,
+    {
+      headers: { "x-api-key": process.env.JWT_KEY },
+    }
   );
 
   // DEFINE FLASE VARIABLE

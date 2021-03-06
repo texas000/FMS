@@ -113,7 +113,10 @@ export async function getServerSideProps({ req, query }) {
 
   // FETCH OIM EXT (OIMMAIN DATA + STATUS DATA)
   const fetchGenmainExt = await fetch(
-    `${process.env.FS_BASEPATH}genmain_ext?RefNo=${query.Detail}`
+    `${process.env.FS_BASEPATH}genmain_ext?RefNo=${query.Detail}`,
+    {
+      headers: { "x-api-key": process.env.JWT_KEY },
+    }
   );
 
   // DEFINE FLASE VARIABLE

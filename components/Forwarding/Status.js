@@ -337,9 +337,10 @@ export const Status = ({ Ref, Uid, Main }) => {
                 }));
               }}
               value={
-                "1900-01-01" || switchData.LastFreeDate === ""
-                  ? undefined
-                  : moment(switchData.LastFreeDate).format("YYYY-MM-DD")
+                switchData.LastFreeDate === ""
+                  ? "1900-01-01"
+                  : moment(switchData.LastFreeDate).format("YYYY-MM-DD") ||
+                    "1900-01-01"
               }
             />
           </InputGroup>
@@ -361,9 +362,10 @@ export const Status = ({ Ref, Uid, Main }) => {
                 }));
               }}
               value={
-                "1900-01-01" || switchData.PickedUpDate === ""
-                  ? undefined
-                  : moment(switchData.PickedUpDate).format("YYYY-MM-DD")
+                switchData.PickedUpDate === ""
+                  ? "1900-01-01"
+                  : moment(switchData.PickedUpDate).format("YYYY-MM-DD") ||
+                    "1900-01-01"
               }
             />
           </InputGroup>
@@ -385,9 +387,10 @@ export const Status = ({ Ref, Uid, Main }) => {
                 }));
               }}
               value={
-                "1900-01-01" || switchData.EmptyReturnDate === ""
-                  ? undefined
-                  : moment(switchData.EmptyReturnDate).format("YYYY-MM-DD")
+                switchData.EmptyReturnDate === ""
+                  ? "1900-01-01"
+                  : moment(switchData.EmptyReturnDate).format("YYYY-MM-DD") ||
+                    "1900-01-01"
               }
             />
           </InputGroup>

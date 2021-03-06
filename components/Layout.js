@@ -1,13 +1,13 @@
 import Head from "next/head";
-import Navbar from "./Navbar";
-// import Sidebar from "./Sidebar";
-import Sidebar from "./Side";
-import { Container, Row } from "reactstrap";
+import { Container } from "reactstrap";
 import { useEffect } from "react";
 import Top from "./Nav";
+import Sidebar from "./Side";
 
 const Layout = (props) => {
+  // Toggle sidebar
   const [toggle, setToggle] = React.useState(true);
+  // State that check if the screen is mobile
   const [mobile, setMobile] = React.useState(false);
   useEffect(() => {
     if (window.innerWidth < 600) {
@@ -15,6 +15,9 @@ const Layout = (props) => {
       setToggle(true);
     }
   }, []);
+  // LAYOUT IS EXTREMELY IMPORTANT PAGE SINCE IT MADE UP ALL OF THE PAGES
+  // 1. When there is no title props provided, title will display JW
+  // 2. Link list: google font, awesome font, favicon, meta data for marketing purpose
 
   return (
     <>
@@ -64,7 +67,6 @@ const Layout = (props) => {
           property="og:image"
           content="https://jwiusa.com/image/JLOGO.png"
         ></meta>
-        {/* <link rel="manifest" href="/favicon/site.webmanifest" /> */}
         <link rel="manifest" href="/manifest.json" />
         <link
           rel="mask-icon"
@@ -75,8 +77,6 @@ const Layout = (props) => {
         <meta name="theme-color" content="#ffffff" />
         <link rel="stylesheet" href="/css/quill.snow.css" />
       </Head>
-
-      {/* <Navbar name={props.TOKEN && props.TOKEN.username.toUpperCase()} /> */}
 
       <div id="wrapper">
         <Sidebar

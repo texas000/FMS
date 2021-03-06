@@ -4,8 +4,6 @@ import { useEffect } from "react";
 
 const Sidebar = ({ Token, toggle, setToggle }) => {
   const router = useRouter();
-  // Toggle the side navigation
-  // const [toggle, setToggle] = React.useState(false)
   const [t1, setT1] = React.useState(false);
   const collapse = () => setToggle(!toggle);
   return (

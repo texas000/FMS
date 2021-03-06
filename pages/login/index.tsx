@@ -117,93 +117,98 @@ const Login = () => {
           crossOrigin="anonymous"
         />
       </Head>
-      <div className="login">
+      <div className="login d-flex w-100 h-100 align-items-center">
         <img src="/image/wave.png" className="wave" />
-        <div className="container">
-          <div className="img">
-            <img src="/image/shopping.svg" />
-          </div>
-          <div className="login-content">
-            <form onSubmit={(e) => e.preventDefault()}>
-              <img src="/image/JLOGO.png" className="avatar" />
-              <h2 className="title">James Worldwide</h2>
-              <div
-                className={username ? "input-div one focus" : "input-div one"}
-              >
-                <div className="i">
-                  <i className="fa fa-user"></i>
+        <div className="container d-flex align-items-center justify-content-center">
+          <div className="d-flex flex-row">
+            <div className="img pt-4 mt-4 mr-4">
+              <img src="/image/shopping.svg" className="pt-4 px-4" />
+            </div>
+
+            <div className="login-content">
+              <form onSubmit={(e) => e.preventDefault()}>
+                <img src="/image/JLOGO.png" className="avatar" />
+                <h2 className="title mb-4">James Worldwide</h2>
+                <div
+                  className={username ? "input-div one focus" : "input-div one"}
+                >
+                  <div className="i">
+                    <i className="fa fa-user"></i>
+                  </div>
+                  <div className="div">
+                    <h5>Username</h5>
+                    <input
+                      className="input"
+                      type="text"
+                      name="username"
+                      autoComplete="on"
+                      onChange={(e) => {
+                        e.preventDefault();
+                        setUsername(e.target.value);
+                      }}
+                    />
+                  </div>
                 </div>
-                <div className="div">
-                  <h5>Username</h5>
-                  <input
-                    className="input"
-                    type="text"
-                    name="username"
-                    autoComplete="on"
-                    onChange={(e) => {
-                      e.preventDefault();
-                      setUsername(e.target.value);
+                <div
+                  className={
+                    password ? "input-div pass focus" : "input-div pass"
+                  }
+                >
+                  <div className="i">
+                    <i className="fa fa-lock"></i>
+                  </div>
+                  <div className="div">
+                    <h5>Password</h5>
+                    <input
+                      className="input"
+                      name="password"
+                      type="password"
+                      autoComplete="on"
+                      onChange={(e) => {
+                        e.preventDefault();
+                        setPassword(e.target.value);
+                      }}
+                      onKeyPress={(e) => {
+                        if (e.key == "Enter") {
+                          submitForm();
+                        }
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <a href="#" onClick={signInWithGoogle}>
+                  Forgot Password?
+                </a>
+
+                <div
+                  className="btn-primary btn-google text-center"
+                  onClick={signInWithGoogle}
+                >
+                  SIGN IN WITH {"  "}
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1004px-Google_%22G%22_Logo.svg.png"
+                    className="img-fluid"
+                    style={{
+                      height: "20px",
+                      width: "20px",
+                      marginLeft: "8px",
                     }}
                   />
                 </div>
-              </div>
-              <div
-                className={password ? "input-div pass focus" : "input-div pass"}
-              >
-                <div className="i">
-                  <i className="fa fa-lock"></i>
-                </div>
-                <div className="div">
-                  <h5>Password</h5>
+
+                <div className="center">
                   <input
-                    className="input"
-                    name="password"
-                    type="password"
-                    autoComplete="on"
-                    onChange={(e) => {
-                      e.preventDefault();
-                      setPassword(e.target.value);
-                    }}
-                    onKeyPress={(e) => {
-                      if (e.key == "Enter") {
-                        submitForm();
-                      }
-                    }}
+                    type="submit"
+                    className="btn"
+                    value="Login"
+                    onClick={submitForm}
                   />
+                  {message && <div className="error">{message}</div>}
+                  {success && <div className="success">{success}</div>}
                 </div>
-              </div>
-
-              <a href="#" onClick={signInWithGoogle}>
-                Forgot Password?
-              </a>
-
-              <div
-                className="btn-primary btn-google text-center"
-                onClick={signInWithGoogle}
-              >
-                SIGN IN WITH {"  "}
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1004px-Google_%22G%22_Logo.svg.png"
-                  className="img-fluid"
-                  style={{
-                    height: "20px",
-                    width: "20px",
-                    marginLeft: "8px",
-                  }}
-                />
-              </div>
-
-              <div className="center">
-                <input
-                  type="submit"
-                  className="btn"
-                  value="Login"
-                  onClick={submitForm}
-                />
-                {message && <div className="error">{message}</div>}
-                {success && <div className="success">{success}</div>}
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
         <style jsx>{`
@@ -219,17 +224,21 @@ const Login = () => {
             z-index: -1;
           }
           .container {
-            width: 100vw;
             height: 100vh;
-            display: grid;
+             {
+              /* display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-gap: 7rem;
-            padding: 0 2rem;
+            padding: 0 2rem; */
+            }
           }
-          .img {
+
+           {
+            /* .img {
             display: flex;
             justify-content: flex-end;
             align-items: center;
+          } */
           }
 
           .login-content {

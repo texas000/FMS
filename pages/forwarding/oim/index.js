@@ -323,7 +323,10 @@ export async function getServerSideProps({ req }) {
     const { fsid } = jwt.decode(cookies.jamesworldwidetoken);
     var result = [];
     const fetchSearch = await fetch(
-      `${process.env.FS_BASEPATH}oimmain_leftjoin_oihmain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=&etdTo=&casestatus=`
+      `${process.env.FS_BASEPATH}oimmain_leftjoin_oihmain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=&etdTo=&casestatus=`,
+      {
+        headers: { "x-api-key": process.env.JWT_KEY },
+      }
     );
     if (fetchSearch.status === 200) {
       result = await fetchSearch.json();

@@ -450,7 +450,10 @@ export async function getServerSideProps({ req, query }) {
     //   headers: { "X-API-KEY": process.env.JWT_KEY },
     // }
     const fetchSearch = await fetch(
-      `${process.env.FS_BASEPATH}fmssearch?key=${query.search}&casestatus=&`
+      `${process.env.FS_BASEPATH}fmssearch?key=${query.search}&casestatus=&`,
+      {
+        headers: { "x-api-key": process.env.JWT_KEY },
+      }
     );
     if (fetchSearch.status === 200) {
       result = await fetchSearch.json();

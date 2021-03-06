@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import firebase from "firebase/app";
 import "firebase/auth";
-// import "firebase/firestore";
+
 const Top = ({ Token, toggle, setToggle }) => {
   const router = useRouter();
   const [search, setSearch] = React.useState(false);
@@ -19,61 +19,37 @@ const Top = ({ Token, toggle, setToggle }) => {
     //When window type is defined, and local stroage is defined, get notification and board board data from local storage and set to state value, otherwise, set noti and message as empty array
     if (typeof window !== "undefined") {
       if (localStorage.length) {
+        // get notification from local stroage,
         const noti = localStorage.getItem("notification");
         if (noti != "undefined") {
-          setNotifications(JSON.parse(localStorage.getItem("notification")));
+          //if notification is defined at the local storage, then set the notification to the state
+          setNotifications(JSON.parse(noti));
         }
+        // get board notification from local stroage
         const board = localStorage.getItem("board");
         if (board != "undefined") {
-          setMessages(JSON.parse(localStorage.getItem("board")));
+          // if board notification is defined at the local storage, then set the message to the state
+          setMessages(JSON.parse(board));
         }
       }
     }
-    // firebase.auth().onAuthStateChanged((user) => {
-    //   if (user) {
-    //     const alertRef = firebase.firestore().collection("alert");
-    //     // GET # TOTAL NUMBER OF ALERT
-    //     alertRef
-    //       .doc("general")
-    //       .get()
-    //       .then(async (ga) => {
-    //         alertRef
-    //           .doc("general")
-    //           .collection("jwiusa")
-    //           .where("pic", "array-contains", user.uid)
-    //           .get()
-    //           .then((querySnapshot) => {
-    //             setNavAlertNum(
-    //               ga.data().totalAlert - querySnapshot.docs.length
-    //             );
-    //           });
-    //       });
-    //     // GET [{}] THE ALERTS
-    //     var alerts = [];
-    //     alertRef
-    //       .doc("general")
-    //       .collection("jwiusa")
-    //       .limit(10)
-    //       .onSnapshot((querySnapshot) => {
-    //         querySnapshot.forEach((doc) => {
-    //           setNavAlert((prev) => [...prev, { ...doc.data(), id: doc.id }]);
-    //         });
-    //         // setNavAlert(alerts);
-    //       });
-    //   }
-    // });
   }, []);
 
+  // ROUTE TO THE FORWARDING SEARCH PAGE WHEN USER SUBMIT AT NAV SERCH BAR - /forwarding?query.search  (FORWARDING SEARCH PAGE)
   const getResult = async () => {
-    // SET THE QUERY AT THE PATH - base/forwarding?query.search -> LOAD DATA FROM SERVER SIDE
     router.push({ pathname: `/forwarding`, query: { search } });
   };
+
+  // Small screen only, collapse the sidebar
   const collapse = () => setToggle(!toggle);
 
+  // Logout from the navigation bar
   function logout() {
+    // If user logged in with firebase, then sign out firebase
     if (firebase.apps.length > 0) {
       firebase.auth().signOut();
     }
+    // Push to the login page and the token will be repfreshed
     router.push("/login");
   }
 
@@ -124,7 +100,8 @@ const Top = ({ Token, toggle, setToggle }) => {
             aria-haspopup="true"
             aria-expanded="false"
           >
-            {/* <i className="fas fa-search fa-fw"></i> */}
+            {/* USE THIS FOR SERACH ON XS DEVICES */}
+            {/* <i className="fa fa-search fa-fw"></i> */}
           </a>
           {/* <!-- Dropdown - Messages --> */}
           <div
@@ -387,74 +364,6 @@ const Top = ({ Token, toggle, setToggle }) => {
                   </div>
                 </a>
               ))}
-            {/* <a className="dropdown-item d-flex align-items-center" href="#">
-              <div className="dropdown-list-image mr-3">
-                <img
-                  className="rounded-circle"
-                  src="/image/icons/sarah.svg"
-                  alt=""
-                />
-                <div className="status-indicator bg-success"></div>
-              </div>
-              <div className="font-weight-bold">
-                <div className="text-truncate">
-                  Hi there! I am wondering if you can help me with a problem
-                  I've been having.
-                </div>
-                <div className="small text-gray-500">Emily Fowler · 58m</div>
-              </div>
-            </a>
-            <a className="dropdown-item d-flex align-items-center" href="#">
-              <div className="dropdown-list-image mr-3">
-                <img
-                  className="rounded-circle"
-                  src="/image/icons/sarah.svg"
-                  alt=""
-                />
-                <div className="status-indicator"></div>
-              </div>
-              <div>
-                <div className="text-truncate">
-                  I have the photos that you ordered last month, how would you
-                  like them sent to you?
-                </div>
-                <div className="small text-gray-500">Jae Chun · 1d</div>
-              </div>
-            </a>
-            <a className="dropdown-item d-flex align-items-center" href="#">
-              <div className="dropdown-list-image mr-3">
-                <img
-                  className="rounded-circle"
-                  src="/image/icons/sarah.svg"
-                  alt=""
-                />
-                <div className="status-indicator bg-warning"></div>
-              </div>
-              <div>
-                <div className="text-truncate">
-                  Last month's report looks great, I am very happy with the
-                  progress so far, keep up the good work!
-                </div>
-                <div className="small text-gray-500">Morgan Alvarez · 2d</div>
-              </div>
-            </a>
-            <a className="dropdown-item d-flex align-items-center" href="#">
-              <div className="dropdown-list-image mr-3">
-                <img
-                  className="rounded-circle"
-                  src="/image/icons/sarah.svg"
-                  alt=""
-                />
-                <div className="status-indicator bg-success"></div>
-              </div>
-              <div>
-                <div className="text-truncate">
-                  Am I a good boy? The reason I ask is because someone told me
-                  that people say this to all dogs, even if they aren't good...
-                </div>
-                <div className="small text-gray-500">Chicken the Dog · 2w</div>
-              </div>
-            </a> */}
             <a
               className="dropdown-item text-center small text-gray-500"
               href="#"

@@ -713,14 +713,20 @@ export async function getServerSideProps({ req }) {
     var dataAim = [];
     var dataAom = [];
     const resOim = await fetch(
-      `${process.env.FS_BASEPATH}oimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
+      `${process.env.FS_BASEPATH}oimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`,
+      {
+        headers: { "x-api-key": process.env.JWT_KEY },
+      }
     );
     if (resOim.status == 200) {
       dataOim = await resOim.json();
       if (dataOim.length) {
         dataOim.map(async (ga, i) => {
           const resOih = await fetch(
-            `${process.env.FS_BASEPATH}oihmain?oimblid=${ga.ID}`
+            `${process.env.FS_BASEPATH}oihmain?oimblid=${ga.ID}`,
+            {
+              headers: { "x-api-key": process.env.JWT_KEY },
+            }
           );
           if (resOih.status == 200) {
             var OIH = await resOih.json();
@@ -733,7 +739,10 @@ export async function getServerSideProps({ req }) {
     }
 
     const resOom = await fetch(
-      `${process.env.FS_BASEPATH}oommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
+      `${process.env.FS_BASEPATH}oommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`,
+      {
+        headers: { "x-api-key": process.env.JWT_KEY },
+      }
     );
 
     if (resOom.status == 200) {
@@ -741,7 +750,10 @@ export async function getServerSideProps({ req }) {
       if (dataOom.length) {
         dataOom.map(async (ga, i) => {
           const resOoh = await fetch(
-            `${process.env.FS_BASEPATH}oohmain?oomblid=${ga.ID}`
+            `${process.env.FS_BASEPATH}oohmain?oomblid=${ga.ID}`,
+            {
+              headers: { "x-api-key": process.env.JWT_KEY },
+            }
           );
           if (resOoh.status == 200) {
             var OOH = await resOoh.json();
@@ -754,7 +766,10 @@ export async function getServerSideProps({ req }) {
     }
 
     const resAim = await fetch(
-      `${process.env.FS_BASEPATH}aimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`
+      `${process.env.FS_BASEPATH}aimmain?PIC=${fsid}&etaFrom=${from}&etaTo=&etdFrom=&etdTo=&casestatus=open`,
+      {
+        headers: { "x-api-key": process.env.JWT_KEY },
+      }
     );
 
     if (resAim.status == 200) {
@@ -762,7 +777,10 @@ export async function getServerSideProps({ req }) {
       if (dataAim.length) {
         dataAim.map(async (ga, i) => {
           const resAih = await fetch(
-            `${process.env.FS_BASEPATH}aihmain?aimblid=${ga.ID}`
+            `${process.env.FS_BASEPATH}aihmain?aimblid=${ga.ID}`,
+            {
+              headers: { "x-api-key": process.env.JWT_KEY },
+            }
           );
           if (resAih.status == 200) {
             var AIH = await resAih.json();
@@ -775,7 +793,10 @@ export async function getServerSideProps({ req }) {
     }
 
     const resAom = await fetch(
-      `${process.env.FS_BASEPATH}aommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`
+      `${process.env.FS_BASEPATH}aommain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=${from}&etdTo=&casestatus=open`,
+      {
+        headers: { "x-api-key": process.env.JWT_KEY },
+      }
     );
 
     if (resAom.status == 200) {
@@ -783,7 +804,10 @@ export async function getServerSideProps({ req }) {
       if (dataAom.length) {
         dataAom.map(async (ga, i) => {
           const resAoh = await fetch(
-            `${process.env.FS_BASEPATH}aohmain?aomblid=${ga.ID}`
+            `${process.env.FS_BASEPATH}aohmain?aomblid=${ga.ID}`,
+            {
+              headers: { "x-api-key": process.env.JWT_KEY },
+            }
           );
           if (resAoh.status == 200) {
             var AOH = await resAoh.json();
