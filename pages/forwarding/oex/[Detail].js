@@ -192,7 +192,7 @@ export async function getServerSideProps({ req, query }) {
       for (var i = 0; i < HOUSE.length; i++) {
         var APLIST = false;
         const fetchAP = await fetch(
-          `${process.env.FS_BASEPATH}aphd?table=T_OIHMAIN&tbid=${HOUSE[i].ID}`,
+          `${process.env.FS_BASEPATH}aphd?table=T_OOHMAIN&tbid=${HOUSE[i].ID}`,
           {
             headers: { "x-api-key": process.env.JWT_KEY },
           }
