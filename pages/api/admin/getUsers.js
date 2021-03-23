@@ -1,5 +1,4 @@
 const sql = require("mssql");
-const moment = require("moment");
 
 const SQLconfig = {
   server: process.env.JWDB_SVR,
@@ -23,16 +22,10 @@ export default async (req, res) => {
       });
       try {
         await pool.connect();
-        let result = await pool
-          .request()
-          .query(
-            `SELECT * FROM T_MEMBER;`
-          );
+        let result = await pool.request().query(`SELECT * FROM T_MEMBER;`);
         if (result.rowsAffected[0]) {
           res.statusCode = 200;
-          res.end(
-            JSON.stringify(result.recordsets[0])
-          );
+          res.end(JSON.stringify(result.recordsets[0]));
         } else {
           res.statusCode = 401;
           res.end(JSON.stringify({ status: false }));
@@ -44,7 +37,7 @@ export default async (req, res) => {
         pool.close();
       }
     }
-    NEW()
+    NEW();
   });
 };
 
