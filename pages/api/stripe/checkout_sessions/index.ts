@@ -13,26 +13,28 @@ export default async function handler(
 ) {
   if (req.method === "POST") {
     const amount: number = req.body.amount;
+    const name: string = req.body.name;
+    const id: number = req.body.id;
 
     try {
       // Validate the amount that was passed from the client.
-      if (!(amount >= 10.0 && amount <= 5000.0)) {
+      if (!(amount >= 10.0)) {
         throw new Error("Invalid amount.");
       }
       // Create Checkout Sessions from body params.
       const params: Stripe.Checkout.SessionCreateParams = {
-        submit_type: "donate",
+        submit_type: "pay",
         payment_method_types: ["card"],
         line_items: [
           {
-            name: "Custom amount donation",
+            name: name,
             amount: formatAmountForStripe(amount, "usd"),
             currency: "usd",
             quantity: 1,
           },
         ],
         success_url: `${req.headers.origin}/dev/result?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/dev/payment`,
+        cancel_url: `${req.headers.origin}/customer/${id}`,
       };
       const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(
         params

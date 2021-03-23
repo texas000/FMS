@@ -22,6 +22,7 @@ const Index = ({ Cookie }) => {
     setYear(year[0]);
     setOcean([]);
     const air = await fetch("/api/chart/AIM").then((t) => t.json());
+    console.log(air);
     setAir(air);
   }
   useEffect(() => {

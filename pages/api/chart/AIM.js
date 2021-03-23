@@ -24,7 +24,7 @@ export default (req, res) => {
         FROM
             T_AIMMAIN
         WHERE
-            F_ETA >= '2020-01-01'
+            F_ETA >= '2021-01-01'
         GROUP BY
             DATEPART (week,F_ETA)
         ORDER BY

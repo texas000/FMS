@@ -3,13 +3,16 @@ import Layout from "../../components/Layout";
 import jwt from "jsonwebtoken";
 import fetch from "node-fetch";
 import { useRouter } from "next/router";
+import { formatAmountForDisplay } from "../../components/Utils/stripe-helpers";
+import { fetchPostJSON } from "../../components/Utils/api-helper";
+import getStripe from "../../components/Utils/get-stripejs";
 
 export default function Customer({ Cookie, Company, Id }) {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const [balance, setBalance] = React.useState(false);
   React.useEffect(() => {
     !TOKEN && useRouter().push("/login");
-    console.log(Company);
+    // console.log(Company);
     getBalance();
   }, []);
 
@@ -23,15 +26,29 @@ export default function Customer({ Cookie, Company, Id }) {
     if (balanceRes.status === 200) {
       const balance = await balanceRes.json();
       setBalance(balance[0]);
-      console.log(balance[0]);
+      // console.log(balance[0]);
     } else {
       console.log(balanceRes.status);
     }
   }
-  function numberWithCommas(x) {
-    var num = parseFloat(x).toFixed(2);
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
+  const handleSubmit = async () => {
+    const response = await fetchPostJSON("/api/stripe/checkout_sessions", {
+      amount: Math.round(balance.F_Balance * 1.03),
+      name: Company.company.FName,
+      id: Id,
+    });
+    if (response.statusCode === 500) {
+      console.log("error from customer");
+      console.error(response.message);
+      return;
+    }
+
+    const stripe = await getStripe();
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: response.id,
+    });
+    console.warn(error.message);
+  };
 
   return (
     <Layout TOKEN={jwt.decode(Cookie.jamesworldwidetoken)} TITLE="Customer">
@@ -105,15 +122,30 @@ export default function Customer({ Cookie, Company, Id }) {
                   {balance && (
                     <>
                       <p>
-                        Balance: $
+                        Balance:{" "}
                         {balance.F_Balance !== null &&
-                          numberWithCommas(balance.F_Balance)}
+                          formatAmountForDisplay(balance.F_Balance, "usd")}
                       </p>
                       <p>
-                        CR/DR: $
+                        CR/DR:{" "}
                         {balance.F_CrDr !== null &&
-                          numberWithCommas(balance.F_CrDr)}
+                          formatAmountForDisplay(balance.F_Balance, "usd")}
                       </p>
+                      <button
+                        className="btn btn-outline-primary text-xs"
+                        disabled={balance.F_Balance <= 0}
+                        onClick={handleSubmit}
+                      >
+                        Credit Card Payment{" "}
+                        {formatAmountForDisplay(
+                          Math.round(balance.F_Balance * 1.03),
+                          "usd"
+                        )}
+                      </button>
+                      <br />
+                      <span className="text-secondary">
+                        Each transaction will charge transaction fee of 3%
+                      </span>
                     </>
                   )}
                 </div>
