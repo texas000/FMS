@@ -128,6 +128,21 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
         </a>
       </li>
 
+      <li
+        className={`nav-item ${
+          router.pathname == "/forwarding/other" && "active"
+        }`}
+      >
+        <a
+          className="nav-link"
+          href="#"
+          onClick={() => router.push("/forwarding/other")}
+        >
+          <i className="fa fa-link"></i>
+          <span>Other</span>
+        </a>
+      </li>
+
       {/* Trucking */}
       {Token.group < 223 && (
         <li

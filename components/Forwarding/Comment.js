@@ -16,12 +16,32 @@ import "firebase/auth";
 import "firebase/analytics";
 import "firebase/firestore";
 import "firebase/storage";
+import { Tag, Toast, Toaster } from "@blueprintjs/core";
+import "@blueprintjs/core/lib/css/blueprint.css";
 
-export const Comment = ({ comment, reference, uid }) => {
+export const Comment = ({ reference, uid, main }) => {
   const [Comment, setComment] = React.useState(false);
   const [UpdatedComment, setUpdatedComment] = React.useState([]);
   const [Uploading, setUploading] = React.useState(false);
+  const [show, setShow] = React.useState(false);
+  const [msg, setMsg] = React.useState("");
+  const [msgType, setMsgType] = React.useState("success");
 
+  const FormsToaster = () => {
+    if (show) {
+      return (
+        <Toaster position="top">
+          <Toast
+            message={msg}
+            intent={msgType}
+            onDismiss={() => setShow(false)}
+          ></Toast>
+        </Toaster>
+      );
+    } else {
+      return <React.Fragment></React.Fragment>;
+    }
+  };
   const firebaseConfig = {
     apiKey: "AIzaSyBWvOh5KL16jU-rD2mYt-OY7hIhnCMBZ60",
     authDomain: "jw-web-ffaea.firebaseapp.com",
@@ -51,10 +71,11 @@ export const Comment = ({ comment, reference, uid }) => {
     transition: "border .24s ease-in-out",
   };
   // ONLY WORKS WHEN THE FILE IS UPLOADE
-  async function postComment(content) {
+  async function postComment(content, link) {
     const data = {
       RefNo: reference,
       Content: content,
+      Link: link,
       UID: uid,
     };
     const fetchPostComment = await fetch("/api/forwarding/postFreightComment", {
@@ -104,7 +125,7 @@ export const Comment = ({ comment, reference, uid }) => {
               () => {
                 uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                   // WHEN UPLOAD IS COMPLETED, ADD THE URL TO THE COMMENT DATABASE
-                  postComment(downloadURL);
+                  postComment(name, downloadURL);
                   // WHEN UPLOAD IS COMPLETED, SET UPLOADING AS FALSE TO DISABLE SPINNER
                   setUploading(false);
                 });
@@ -169,13 +190,66 @@ export const Comment = ({ comment, reference, uid }) => {
     });
     if (fetchGetComment.status === 200) {
       const Comments = await fetchGetComment.json();
-      setUpdatedComment(Comments);
+      setUpdatedComment([
+        {
+          ID: "CREATED",
+          UID_FNAME: main.U1ID,
+          UID: 999,
+          Content: `${main.U1ID.toUpperCase()} CREATED ${reference} AT FREIGHT STREAM`,
+          Date: main.U1Date,
+          Show: "1",
+        },
+        {
+          ID: "CHANGED",
+          UID_FNAME: main.U2ID,
+          UID: 999,
+          Content: `${main.U2ID.toUpperCase()} CHANGED ${reference} AT FREIGHT STREAM`,
+          Date: main.U2Date,
+          Show: "1",
+        },
+        {
+          ID: "CLOSED",
+          UID_FNAME: "SYSTEM",
+          UID: 999,
+          Content: `${reference} CASE CLOSED`,
+          Date: main.U2Date,
+          Show: main.FileClosed === "3" && "1",
+        },
+        ...Comments,
+      ]);
+      // setUpdatedComment(Comments);
     } else {
-      console.log(fetchGetComment.status);
+      setUpdatedComment([
+        {
+          ID: "CREATED",
+          UID_FNAME: main.U1ID,
+          UID: 999,
+          Content: `${main.U1ID.toUpperCase()} CREATED ${reference} AT FREIGHT STREAM`,
+          Date: main.U1Date,
+          Show: "1",
+        },
+        {
+          ID: "CHANGED",
+          UID_FNAME: main.U2ID,
+          UID: 999,
+          Content: `${main.U2ID.toUpperCase()} CHANGED ${reference} AT FREIGHT STREAM`,
+          Date: main.U2Date,
+          Show: "1",
+        },
+        {
+          ID: "CLOSED",
+          UID_FNAME: "SYSTEM",
+          UID: 999,
+          Content: `${reference} CASE CLOSED`,
+          Date: main.U2Date,
+          Show: main.FileClosed === "3" && "1",
+        },
+      ]);
     }
   }
 
   async function deleteComment(ID) {
+    deleteComment;
     const check = confirm("DELETE?");
     if (check) {
       const fetchDeleteComment = await fetch(
@@ -215,7 +289,9 @@ export const Comment = ({ comment, reference, uid }) => {
         RefNo: reference,
         Content: Comment,
         UID: uid,
+        Link: null,
       };
+      console.log(data);
       const Fetch = await fetch("/api/forwarding/postFreightComment", {
         body: JSON.stringify(data),
         method: "POST",
@@ -223,6 +299,8 @@ export const Comment = ({ comment, reference, uid }) => {
       if (Fetch.status === 200) {
         const NewComment = await Fetch.json();
         setUpdatedComment((prev) => [...prev, NewComment[0]]);
+        setMsg(`Message Saved: ${NewComment[0].Content}`);
+        setShow(true);
       } else {
         alert(`Error ${Fetch.status}`);
       }
@@ -245,7 +323,7 @@ export const Comment = ({ comment, reference, uid }) => {
                 ga.Show == "1" && (
                   <div key={ga.ID} className="media my-1">
                     <div
-                      className="avatar text-xs mr-3"
+                      className="avatar text-xs mr-3 text-uppercase"
                       style={{
                         display: "inline-block",
                         verticalAlign: "middle",
@@ -267,12 +345,12 @@ export const Comment = ({ comment, reference, uid }) => {
                         }}
                       >
                         {ga.UID_FNAME.charAt(0)}
-                        {ga.UID_LNAME.charAt(0)}
+                        {ga.UID_LNAME && ga.UID_LNAME.charAt(0)}
                       </span>
                     </div>
                     <div className="content media-body text-xs">
                       <div className="metadata">
-                        <span className="text-gray-800">
+                        <span className="text-gray-800 text-uppercase">
                           {ga.UID_FNAME} {ga.UID_LNAME}{" "}
                         </span>
                         <span>{moment(ga.Date).format("LLL")}</span>
@@ -286,176 +364,43 @@ export const Comment = ({ comment, reference, uid }) => {
                         </span>
                       </div>
                       <span className="text-gray-800">
-                        {ga.Content.startsWith("https://") ? (
-                          <a href={ga.Content} target="_blank">
+                        {ga.Link == null || ga.Link == "" ? (
+                          ga.Content
+                        ) : (
+                          <a href={ga.Link} target="_blank">
                             {ga.Content}
                           </a>
-                        ) : (
-                          ga.Content
                         )}
                       </span>
                     </div>
                   </div>
                 )
             )}
-            {/* {UpdatedComment.length > 0 ? (
-              UpdatedComment.map((ga) => (
-                <div
-                  style={{
-                    margin: ".5em 0 0",
-                    border: "none",
-                    lineHeight: "1.2",
-                  }}
-                  key={ga.F_ID}
-                >
-                  <div
-                    className="avatar text-center"
-                    style={{
-                      display: "block",
-                      width: "2.5em",
-                      height: "2.5em",
-                      float: "left",
-                      backgroundColor: "#ccc",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    <span
-                      className="text-center"
-                      style={{
-                        fontSize: "1rem",
-                        lineHeight: "1",
-                        position: "relative",
-                        top: "0.625rem",
-                      }}
-                    >
-                      {ga.F_Name.split(" ")[0].charAt(0)}
-                      {ga.F_Name.split(" ")[1].charAt(0)}
-                    </span>
-                  </div>
-                  <div
-                    className="content"
-                    style={{
-                      marginLeft: "4.2em",
-                      marginTop: "0.2rem",
-                      fontSize: "0.8em",
-                    }}
-                  >
-                    <a
-                      className="author"
-                      style={{ color: "black", textDecoration: "none" }}
-                    >
-                      {ga.F_Name}
-                    </a>
-                    <div
-                      className="metadata"
-                      style={{
-                        display: "inline-block",
-                        marginLeft: "0.5em",
-                        color: "gray",
-                      }}
-                    >
-                      <div>{moment(ga.F_Date).utc().calendar()}</div>
-                    </div>
-                    <div className="text" style={{ marginTop: "0.6em" }}>
-                      {ga.F_Content}
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : comment.length > 0 ? (
-              comment.map((ga) => (
-                <div
-                  style={{
-                    margin: ".5em 0 0",
-                    border: "none",
-                    lineHeight: "1.2",
-                  }}
-                  key={ga.F_ID}
-                >
-                  <div
-                    className="avatar text-center"
-                    style={{
-                      display: "block",
-                      width: "2.5em",
-                      height: "2.5em",
-                      float: "left",
-                      backgroundColor: "#ccc",
-                      borderRadius: "50%",
-                    }}
-                  >
-                    <span
-                      className="text-center"
-                      style={{
-                        fontSize: "1rem",
-                        lineHeight: "1",
-                        position: "relative",
-                        top: "0.625rem",
-                      }}
-                    >
-                      {ga.F_Name.split(" ")[0].charAt(0)}
-                      {ga.F_Name.split(" ")[1].charAt(0)}
-                    </span>
-                  </div>
-                  <div
-                    className="content"
-                    style={{
-                      marginLeft: "4.2em",
-                      marginTop: "0.2rem",
-                      fontSize: "0.8em",
-                    }}
-                  >
-                    <a
-                      className="author"
-                      style={{ color: "black", textDecoration: "none" }}
-                    >
-                      {ga.F_Name}
-                    </a>
-                    <div
-                      className="metadata"
-                      style={{
-                        display: "inline-block",
-                        marginLeft: "0.5em",
-                        color: "gray",
-                      }}
-                    >
-                      <div>{moment(ga.F_Date).utc().calendar()}</div>
-                    </div>
-                    <div className="text" style={{ marginTop: "0.6em" }}>
-                      {ga.F_Content.startsWith("https://") ? (
-                        <a href={ga.F_Content} target="_blank">
-                          {ga.F_Content}
-                        </a>
-                      ) : (
-                        ga.F_Content
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center text-xs">
-                <span>NO COMMENT</span>
-              </div>
-            )} */}
-
-            <InputGroup className="pt-4">
-              <Input
+            <div className="bp3-input-group mt-2">
+              <input
+                type="text"
+                className="bp3-input"
+                placeholder="Type comment here..."
                 value={Comment ? Comment : ""}
-                onChange={(e) => setComment(e.target.value)}
+                onChange={(e) => {
+                  setComment(e.target.value);
+                }}
                 onKeyPress={(e) => {
                   if (e.key == "Enter") addComment();
                 }}
                 autoFocus={false}
               />
-              <InputGroupAddon addonType="append">
-                <InputGroupText className="text-xs">
-                  <i className="fa fa-edit mr-1"></i>
-                  <a onClick={addComment}>Add Comment</a>
-                </InputGroupText>
-              </InputGroupAddon>
-            </InputGroup>
+              <button
+                className="bp3-button bp3-icon-edit"
+                style={{ fontSize: "0.7rem" }}
+                onClick={addComment}
+              >
+                Add Comment
+              </button>
+            </div>
           </Card>
         </div>
+        <FormsToaster />
       </Col>
     </Row>
   );

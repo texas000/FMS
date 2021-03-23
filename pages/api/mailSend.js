@@ -20,10 +20,10 @@ export default async (req, res) => {
   transport.sendMail(mailOptions, function (error, info) {
     if (error) {
       console.log(error);
-      res.send(error);
+      res.status(500).send(error);
     } else {
       console.log("Email Sent: " + info.response);
-      res.send(info.response);
+      res.status(200).send(info.response);
     }
   });
 };

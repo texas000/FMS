@@ -6,7 +6,7 @@ export default async (req, res) => {
     url: `${process.env.FS_BASEPATH}freight_comment`,
     headers: {
       "cache-control": "no-cache",
-      "content-type": "application/json",
+      "content-type": "application/json; charset=utf-8",
       "x-api-key": process.env.JWT_KEY,
     },
     body: JSON.parse(req.body),

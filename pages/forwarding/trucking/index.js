@@ -11,6 +11,9 @@ const Index = ({ Cookie }) => {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   useEffect(() => {
     !TOKEN && router.push("/login");
+    // if (OOMMAIN) {
+    //   addLogData(OOMMAIN[0]);
+    // }
   }, []);
 
   const [Search, setSearch] = useState(false);

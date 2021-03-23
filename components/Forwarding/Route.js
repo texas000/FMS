@@ -28,7 +28,7 @@ const Route = ({ ETD, ETA, FETA, LOADING, DISCHARGE, DEST }) => {
               {/* HOUSE IN CIRCLE */}
               <svg
                 height="4rem"
-                width="2.6rem"
+                width="2.3rem"
                 aria-hidden="true"
                 focusable="false"
                 dataprefix="fas"
@@ -77,7 +77,7 @@ const Route = ({ ETD, ETA, FETA, LOADING, DISCHARGE, DEST }) => {
               {/* HOUSE IN CIRCLE */}
               <svg
                 height="4rem"
-                width="2.6rem"
+                width="2.3rem"
                 aria-hidden="true"
                 focusable="false"
                 dataprefix="fas"

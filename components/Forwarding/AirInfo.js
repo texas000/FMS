@@ -26,11 +26,23 @@ export const Info = ({ Master, House, Containers }) => {
             <tbody>
               <tr>
                 <th className="text-success">MBL</th>
-                <th className="text-secondary">{Master.F_MawbNo}</th>
+                <th className="text-secondary">{Master.MawbNo}</th>
               </tr>
               <tr>
                 <th className="text-success">AGENT</th>
-                <th className="text-secondary">{Master.AGENT}</th>
+                <th className="text-secondary btn-link">
+                  <a href={`/customer/${Master.Agent}`} target="_blank">
+                    {Master.Agent_SName}
+                  </a>
+                </th>
+              </tr>
+              <tr>
+                <th className="text-success">CARRIER</th>
+                <th className="text-secondary btn-link">
+                  <a href={`/customer/${Master.Carrier}`} target="_blank">
+                    {Master.Carrier_SName}
+                  </a>
+                </th>
               </tr>
             </tbody>
           </Table>
@@ -46,20 +58,20 @@ export const Info = ({ Master, House, Containers }) => {
               )}
               <tr>
                 <th className="text-success text-uppercase">flight number</th>
-                <th className="text-secondary">{Master.F_FLTno}</th>
+                <th className="text-secondary">{Master.FLTno}</th>
               </tr>
               <tr>
                 <th className="text-success text-uppercase">LOADING</th>
-                <th className="text-secondary">{Master.F_LoadingPort}</th>
+                <th className="text-secondary">{Master.LoadingPort}</th>
               </tr>
               <tr>
                 <th className="text-success text-uppercase">DISCHARGE</th>
-                <th className="text-secondary">{Master.F_Discharge}</th>
+                <th className="text-secondary">{Master.Discharge}</th>
               </tr>
-              {Master.F_FinalDest && (
+              {Master.FinalDest && (
                 <tr>
                   <th className="text-success text-uppercase">FINAL DEST</th>
-                  <th className="text-secondary">{Master.F_FinalDest}</th>
+                  <th className="text-secondary">{Master.FinalDest}</th>
                 </tr>
               )}
             </tbody>
@@ -71,10 +83,11 @@ export const Info = ({ Master, House, Containers }) => {
       <div className="accordion my-4" id="accordionExample">
         {House.length != 0 ? (
           House.map((ga, i) => (
-            <div className="card border-left-primary shadow" key={ga.F_ID}>
+            <div className="card border-left-primary shadow" key={ga.ID}>
               <div className="card-header py-1 d-flex flex-row align-items-center justify-content-between">
                 <div
-                  className="text-s font-weight-bold text-primary text-uppercase btn btn-links py-1 pl-0"
+                  className="text-s font-weight-bold text-primary text-uppercase btn-links py-1 pl-0"
+                  style={{ cursor: "pointer" }}
                   onClick={() =>
                     selectedHouse === i + 1
                       ? setSelectedHouse(0)
@@ -95,78 +108,67 @@ export const Info = ({ Master, House, Containers }) => {
                       <tr>
                         <th className="text-primary">HBL</th>
                         <th className="text-gray-800">
-                          {ga.F_HawbNo || ga.F_HAWBNo}
+                          {ga.HawbNo || ga.HAWBNo}
                         </th>
                       </tr>
                       <tr>
                         <th className="text-primary">CUSTOMER</th>
-                        <th className="text-gray-800">{ga.CUSTOMER}</th>
+                        <th className="text-gray-800 btn-link">
+                          <a href={`/customer/${ga.Customer}`} target="_blank">
+                            {ga.Customer_SName}
+                          </a>
+                        </th>
                       </tr>
                       <tr>
                         <th className="text-primary">SHIPPER</th>
-                        <th className="text-gray-800">{ga.SHIPPER}</th>
+                        <th className="text-gray-800 btn-link">
+                          <a href={`/customer/${ga.Shipper}`} target="_blank">
+                            {ga.Shipper_SName}
+                          </a>
+                        </th>
                       </tr>
                       <tr>
                         <th className="text-primary">CONSIGNEE</th>
-                        <th className="text-gray-800">{ga.CONSIGNEE}</th>
+                        <th className="text-gray-800 btn-link">
+                          <a href={`/customer/${ga.Consignee}`} target="_blank">
+                            {ga.Consignee_SName}
+                          </a>
+                        </th>
                       </tr>
                       <tr>
                         <th className="text-primary">NOTIFY</th>
-                        <th className="text-gray-800">{ga.NOTIFY}</th>
+                        <th className="text-gray-800 btn-link">
+                          <a href={`/customer/${ga.Notify}`} target="_blank">
+                            {ga.Notify_SName}
+                          </a>
+                        </th>
                       </tr>
                       <tr>
                         <th className="text-primary">COMMODITY</th>
-                        <th className="text-gray-800">{ga.F_Commodity}</th>
+                        <th className="text-gray-800">{ga.Commodity}</th>
                       </tr>
                       <tr>
                         <th className="text-primary">PKG</th>
-                        <th className="text-gray-800">{ga.F_Pkgs}</th>
+                        <th className="text-gray-800">{ga.Pkgs}</th>
                       </tr>
                       <tr>
                         <th className="text-primary">GROSS WEIGHT</th>
                         <th className="text-gray-800">
-                          {numberWithCommas(ga.F_LGrossWeight)}
+                          {numberWithCommas(ga.LGrossWeight)}
                         </th>
                       </tr>
                       <tr>
                         <th className="text-primary">CHARGE WEIGHT</th>
                         <th className="text-gray-800">
-                          {numberWithCommas(ga.F_ChgWeight)}
+                          {numberWithCommas(ga.ChgWeight)}
                         </th>
                       </tr>
                       <tr>
                         <th className="text-primary">REFERENCE</th>
                         <th className="text-gray-800">
-                          {ga.F_CustRefNo || "NO REFERENCE"}
+                          {ga.CustRefNo || "NO REFERENCE"}
                         </th>
                       </tr>
-                      {Containers &&
-                        Containers.map((ele, i) => {
-                          if (ele.F_OIHBLID == ga.F_ID)
-                            return (
-                              <React.Fragment key={i + ele.F_ID}>
-                                <tr>
-                                  <th className="text-primary">CONTAINER</th>
-                                  <th className="text-gray-800">
-                                    {ele.F_ContainerNo} {ele.F_ConType}
-                                  </th>
-                                </tr>
-                                {/* <tr>
-                              <th className="text-primary">KGS</th>
-                              <th className="text-secondary">
-                                {numberWithCommas(ele.F_KGS)}
-                              </th>
-                            </tr>
-                            <tr>
-                              <th className="text-primary">PKG</th>
-                              <th className="text-secondary">
-                                {numberWithCommas(ga.F_PKGS) ||
-                                  numberWithCommas(ga.F_Pkgs)}
-                              </th>
-                            </tr> */}
-                              </React.Fragment>
-                            );
-                        })}
                     </tbody>
                   </Table>
                 </div>

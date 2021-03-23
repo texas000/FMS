@@ -1,26 +1,179 @@
 import { BlobProvider, PDFDownloadLink } from "@react-pdf/renderer";
-import { Button, ButtonGroup } from "reactstrap";
 import CheckRequestForm from "./CheckRequestForm";
 import MyCover from "./MyCover";
 import moment from "moment";
+import {
+  Button,
+  ButtonGroup,
+  Icon,
+  Menu,
+  MenuItem,
+  MenuDivider,
+  useHotkeys,
+  Breadcrumbs,
+  Divider,
+  Position,
+  Toaster,
+  Toast,
+  Tag,
+  Intent,
+} from "@blueprintjs/core";
+import { Popover2 } from "@blueprintjs/popover2";
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 
-export const Forms = ({ Master, House, Containers, AP, User, Type }) => {
+export const Forms = ({ Master, House, Containers, User, Type }) => {
   const [isClient, setIsClient] = React.useState(false);
   const [APType, setAPType] = React.useState("CHECK");
+  const [show, setShow] = React.useState(false);
+  const [msg, setMsg] = React.useState("");
+
   React.useEffect(() => {
     setIsClient(true);
-    console.log(Type);
   }, []);
+
+  const FormsToaster = () => {
+    if (show) {
+      return (
+        <Toaster position="top">
+          <Toast
+            message={msg}
+            intent="primary"
+            onDismiss={() => setShow(false)}
+          ></Toast>
+        </Toaster>
+      );
+    } else {
+      return <React.Fragment></React.Fragment>;
+    }
+  };
+
+  const CoverFormDownload = () => (
+    <PDFDownloadLink
+      document={
+        <MyCover
+          master={Master}
+          house={House || []}
+          containers={Containers}
+          type={Type}
+        />
+      }
+      fileName={Master.RefNo}
+    >
+      {({ blob, url, loading, error }) => (
+        <Button
+          loading={loading}
+          text="DOWNLOAD"
+          icon="download"
+          intent="primary"
+          className="mx-1"
+          style={{ fontSize: "0.7rem" }}
+        ></Button>
+      )}
+    </PDFDownloadLink>
+  );
   function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    var num = parseFloat(x).toFixed(2);
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+  const CoverFormView = () => (
+    <>
+      <BlobProvider
+        document={
+          <MyCover
+            master={Master}
+            house={House || []}
+            containers={Containers}
+            type={Type}
+          />
+        }
+      >
+        {({ blob, url, loading, error }) => (
+          <>
+            <a href={url} target="__blank">
+              <Button
+                loading={loading}
+                text="VIEW"
+                icon="eye-open"
+                intent="primary"
+                className="mx-1"
+                style={{ fontSize: "0.7rem" }}
+              ></Button>
+            </a>
+          </>
+        )}
+      </BlobProvider>
+    </>
+  );
+  const APRequestMenu = () => {
+    if (House.length > 0) {
+      return House.map(
+        (ga, i) =>
+          ga.AP &&
+          ga.AP.map((ap) => (
+            <React.Fragment key={i + ap.ID}>
+              <BlobProvider
+                document={
+                  <CheckRequestForm
+                    type={APType}
+                    vendor={ap.PayTo_SName}
+                    payTo={ap.PayToCustomer}
+                    amt={numberWithCommas(
+                      Number.parseFloat(ap.InvoiceAmt).toFixed(2)
+                    )}
+                    oim={Master.RefNo}
+                    customer={House[i].Customer_SName || ""}
+                    inv={ap.InvoiceNo}
+                    metd={moment(Master.ETD).utc().format("MM/DD/YY")}
+                    meta={moment(Master.ETA).utc().format("MM/DD/YY")}
+                    pic={ap.U1ID || ""}
+                    today={moment().format("l")}
+                    desc={ap.Descript}
+                    shipper={House ? House[0].SHIPPER : ""}
+                    notify={House ? House[0].NOTIFY : ""}
+                    consignee={House ? House[0].CONSIGNEE : ""}
+                    pod={Master.DisCharge || Master.Discharge}
+                    comm={
+                      Master.mCommodity ||
+                      House[0].Commodity ||
+                      Master.Commodity
+                    }
+                  />
+                }
+              >
+                {({ blob, url, loading, error }) => (
+                  <a
+                    href={url}
+                    target="__blank"
+                    style={{ textDecoration: "none" }}
+                  >
+                    <Button
+                      icon="dollar"
+                      intent="success"
+                      className="mx-1 my-1"
+                      small={true}
+                      loading={loading}
+                      style={{ fontSize: "0.7rem" }}
+                      text={ap.PayTo_SName}
+                    ></Button>
+                  </a>
+                )}
+              </BlobProvider>
+            </React.Fragment>
+          ))
+      );
+    } else {
+      return <React.Fragment></React.Fragment>;
+    }
+  };
 
   const mailThis = async () => {
     var filteredHbl = "";
     if (House) {
       var hblArray = House.map(
         (ga, i) =>
-          `<tr><td>HBL #${i + 1}</td><td>${ga.F_HBLNo || ga.F_HawbNo}</td></tr>`
+          `<tr><td>HBL #${i + 1}</td><td>${ga.HBLNo || ga.HawbNo}</td></tr>`
       );
       filteredHbl = hblArray.join("");
     }
@@ -28,35 +181,78 @@ export const Forms = ({ Master, House, Containers, AP, User, Type }) => {
     if (Containers) {
       var containerArray = Containers.map(
         (ga, i) =>
-          `<tr><td>Container #${i + 1}</td><td>${ga.F_ContainerNo}</td></tr>`
+          `<tr><td>Container #${i + 1}</td><td>${ga.ContainerNo}</td></tr>`
       );
       filteredContainers = containerArray.join("");
     }
     var fetchMailer = await fetch("/api/mailSend", {
       headers: {
         email: User.email,
-        subject: Master.F_RefNo,
+        subject: Master.RefNo,
         contents: `<div style="font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";"><div style="display: none;">Automatically Generated from JWIUSA</div><a href="https://jwiusa.com"><img src="https://jamesworldwide.com/wp-content/uploads/2016/03/main-logo.png" width="150" height="30"></a><h2>${
-          House ? House[0].CUSTOMER : "NO CUSTOMER"
+          House ? House[0].Customer_SName : "NO CUSTOMER"
         }</h2><table style="width: 100%;"><tr style="background-color: #dddddd;"><td>REF#</td><td>${
-          Master.F_RefNo
+          Master.RefNo
         }</td></tr><tr><td>MBL</td><td>${
-          Master.F_MBLNo || Master.F_MawbNo
+          Master.MBLNo || Master.MawbNo
         }</td></tr>${filteredHbl}${filteredContainers}<tr><td>ETD</td><td>${moment(
-          Master.F_ETD
+          Master.ETD
         )
           .utc()
-          .format("ll")}</td></tr><tr><td>ETA</td><td>${moment(Master.F_ETA)
+          .format("ll")}</td></tr><tr><td>ETA</td><td>${moment(Master.ETA)
           .utc()
           .format("ll")}</td></tr></table></div>`,
       },
     });
-    if (fetchMailer.status) {
+    if (fetchMailer.status === 200) {
       alert("MAIL SENT TO " + User.email);
     } else {
+      console.error(fetchMailer);
       alert("FAILED");
     }
   };
+
+  const ApMenu = (
+    <Menu>
+      <MenuItem
+        icon="book"
+        text="CHECK"
+        onClick={() => {
+          setAPType("CHECK");
+          setMsg("AP TYPE: CHECK");
+          setShow(true);
+        }}
+      />
+      <MenuItem
+        icon="credit-card"
+        text="CARD"
+        onClick={() => {
+          setAPType("CARD");
+          setMsg("AP TYPE: CARD");
+          setShow(true);
+        }}
+      />
+      <MenuItem
+        icon="send-to"
+        text="ACH"
+        onClick={() => {
+          setAPType("ACH");
+          setMsg("AP TYPE: ACH");
+          setShow(true);
+        }}
+      />
+      <MenuItem
+        icon="bank-account"
+        text="WIRE"
+        onClick={() => {
+          setAPType("WIRE");
+          setMsg("AP TYPE: WIRE");
+          setShow(true);
+        }}
+      />
+    </Menu>
+  );
+
   return (
     <div className="card border-left-info shadow d-print-none">
       <div className="card-header py-2 d-flex flex-row align-items-center justify-content-between">
@@ -68,150 +264,44 @@ export const Forms = ({ Master, House, Containers, AP, User, Type }) => {
           forms
         </div>
         {/* FOLDER TEMPLATE PRINT */}
-        {isClient && (
-          <ButtonGroup>
-            <BlobProvider
-              document={
-                <MyCover
-                  master={Master}
-                  house={House || []}
-                  containers={Containers}
-                  type={Type}
-                />
-              }
-            >
-              {({ url }) => (
-                <a href={url} target="_blank">
-                  <Button
-                    size="sm"
-                    className="text-xs"
-                    outline
-                    color="info"
-                    disabled={!isClient}
-                  >
-                    <i className="fa fa-eye mr-1"></i>VIEW
-                  </Button>
-                </a>
-              )}
-            </BlobProvider>
-            <PDFDownloadLink
-              document={
-                <MyCover
-                  master={Master}
-                  house={House || []}
-                  containers={Containers}
-                  type={Type}
-                />
-              }
-              fileName={Master.F_RefNo}
-            >
-              <Button
-                size="sm"
-                className="text-xs mx-2"
-                outline
-                color="info"
-                disabled={!isClient}
-              >
-                <i className="fa fa-download mr-1"></i>DOWNLOAD
-              </Button>
-            </PDFDownloadLink>
-            <Button
-              size="sm"
-              className="text-xs"
-              outline
-              color="info"
-              onClick={mailThis}
-            >
-              <i className="fa fa-envelope mr-2"></i>MAIL
-            </Button>
-          </ButtonGroup>
-        )}
       </div>
       <div className="card-body py-3">
-        <div className="text-xs text-secondary">Please select AP type</div>
-        <ButtonGroup className="text-xs" aria-label="radio">
-          <Button
-            size="sm"
-            className="text-xs"
-            outline={APType !== "CHECK"}
-            color="info"
-            onClick={() => setAPType("CHECK")}
-          >
-            Check
-          </Button>
-          <Button
-            size="sm"
-            className="text-xs"
-            outline={APType !== "CARD"}
-            color="info"
-            onClick={() => setAPType("CARD")}
-          >
-            Card
-          </Button>
-          <Button
-            size="sm"
-            className="text-xs"
-            outline={APType !== "WIRE"}
-            color="info"
-            onClick={() => setAPType("WIRE")}
-          >
-            Wire
-          </Button>
-          <Button
-            size="sm"
-            className="text-xs"
-            outline={APType !== "ACH"}
-            color="info"
-            onClick={() => setAPType("ACH")}
-          >
-            ACH
-          </Button>
-        </ButtonGroup>
-        <br />
-        {isClient && AP.length ? (
-          AP.map((ga, i) => (
-            <React.Fragment key={i + ga.F_ID}>
-              <BlobProvider
-                document={
-                  <CheckRequestForm
-                    type={APType}
-                    vendor={ga.PAY}
-                    amt={numberWithCommas(
-                      Number.parseFloat(ga.F_InvoiceAmt).toFixed(2)
-                    )}
-                    oim={Master.F_RefNo}
-                    customer={House ? House[0].CUSTOMER : ""}
-                    inv={ga.F_InvoiceNo}
-                    metd={moment(Master.F_ETD).utc().format("MM/DD/YY")}
-                    meta={moment(Master.F_ETA).utc().format("MM/DD/YY")}
-                    pic={ga.F_U1ID}
-                    today={moment().format("l")}
-                    desc={ga.F_Descript}
-                    shipper={House ? House[0].SHIPPER : ""}
-                    notify={House ? House[0].NOTIFY : ""}
-                    consignee={House ? House[0].CONSIGNEE : ""}
-                    pod={Master.F_DisCharge || Master.F_Discharge}
-                    comm={Master.F_mCommodity}
-                    // due={moment(ga.F_DueDate).utc().format("l")}
-                  />
-                }
+        {isClient && (
+          <div className="text-left">
+            <ButtonGroup className="pl-1 mb-2">
+              <Tag
+                intent="none"
+                minimal="true"
+                className="font-weight-bold text-info"
+                style={{ backgroundColor: "white", fontSize: "1rem" }}
               >
-                {({ url }) => (
-                  <a
-                    href={url}
-                    target="_blank"
-                    className="btn btn-info btn-sm text-xs text-wrap my-1"
-                  >
-                    <i className="fa fa-file"></i>
-                    <span className="ml-2">{ga.F_Descript}</span>
-                  </a>
-                )}
-              </BlobProvider>
-              <br />
-            </React.Fragment>
-          ))
-        ) : (
-          <div className="text-info text-xs mt-2">No AP Found</div>
+                COVER
+              </Tag>
+              <Divider />
+              <CoverFormDownload />
+              <CoverFormView />
+            </ButtonGroup>
+            <Button
+              text="MAIL"
+              icon="envelope"
+              intent="primary"
+              className="mx-1 mb-2"
+              onClick={mailThis}
+              style={{ fontSize: "0.7rem", marginTop: "2px" }}
+            ></Button>
+            <br />
+            <Popover2 content={ApMenu} placement="right-end">
+              <Button
+                icon="multi-select"
+                style={{ fontSize: "0.7rem" }}
+                className="ml-1 mr-2"
+                text={`AP TYPE ${APType}`}
+              />
+            </Popover2>
+            <br />
+            <APRequestMenu />
+            <FormsToaster />
+          </div>
         )}
       </div>
     </div>

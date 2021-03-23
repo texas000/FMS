@@ -14,13 +14,14 @@ import Forms from "../../../components/Forwarding/Forms";
 import Status from "../../../components/Forwarding/Status";
 import moment from "moment";
 
-const Detail = ({ Cookie, OTHER, GENMAIN }) => {
+const Detail = ({ Cookie, OTHER, GENMAIN, GENHOUSE }) => {
   const router = useRouter();
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    addLogData(GENMAIN[0]);
+    console.log(GENMAIN);
+    // addLogData(GENMAIN[0]);
   });
 
   async function addLogData(Ref) {
@@ -44,13 +45,12 @@ const Detail = ({ Cookie, OTHER, GENMAIN }) => {
   if (TOKEN && TOKEN.group) {
     return (
       <>
-        {OTHER && OTHER.M ? (
-          <Layout TOKEN={TOKEN} TITLE={OTHER.M.F_RefNo}>
+        {GENMAIN ? (
+          <Layout TOKEN={TOKEN} TITLE={GENMAIN[0].RefNo}>
             <Head
-              REF={OTHER.M.F_RefNo}
-              POST={OTHER.M.F_PostDate}
-              PIC={OTHER.M.F_U2ID}
-              CUSTOMER={OTHER.M.CUSTOMER || ""}
+              REF={GENMAIN[0].RefNo}
+              POST={GENMAIN[0].PostDate}
+              CUSTOMER={GENMAIN[0].Customer_SName}
             />
             {/* Display only at print screen */}
             <p className="d-none d-print-block">
@@ -59,11 +59,11 @@ const Detail = ({ Cookie, OTHER, GENMAIN }) => {
             <Row>
               <Col lg={10}>
                 <Row>
-                  <Info Master={OTHER.M} />
+                  <Info Master={GENMAIN[0]} />
                   <Col lg="6" className="mb-4">
                     <Forms
-                      Master={OTHER.M}
-                      AP={OTHER.A}
+                      Master={GENMAIN[0]}
+                      House={GENHOUSE}
                       User={TOKEN}
                       Type="other"
                     />
@@ -72,17 +72,21 @@ const Detail = ({ Cookie, OTHER, GENMAIN }) => {
               </Col>
               <Col lg={2} className="mb-4">
                 <Route
-                  ETA={OTHER.M.F_ETA}
-                  ETD={OTHER.M.F_ETD}
-                  FETA={OTHER.M.F_FETA}
-                  DISCHARGE={OTHER.M.F_DisCharge}
-                  LOADING={OTHER.M.F_LoadingPort}
-                  DEST={OTHER.M.F_FinalDest}
+                  ETA={GENMAIN[0].ETA}
+                  ETD={GENMAIN[0].ETD}
+                  FETA={GENMAIN[0].FETA}
+                  DISCHARGE={GENMAIN[0].DisCharge}
+                  LOADING={GENMAIN[0].LoadingPort}
+                  DEST={GENMAIN[0].FinalDest}
                 />
               </Col>
             </Row>
 
-            <Comment reference={OTHER.M.F_RefNo} uid={TOKEN.uid} />
+            <Comment
+              reference={GENMAIN[0].RefNo}
+              uid={TOKEN.uid}
+              main={GENMAIN[0]}
+            />
           </Layout>
         ) : (
           <Layout TOKEN={TOKEN} TITLE="Not Found">
@@ -121,6 +125,7 @@ export async function getServerSideProps({ req, query }) {
 
   // DEFINE FLASE VARIABLE
   var MAIN = false;
+  var HOUSE = false;
 
   if (fetchGenmainExt.status === 200) {
     MAIN = await fetchGenmainExt.json();
@@ -128,53 +133,41 @@ export async function getServerSideProps({ req, query }) {
 
   // IF DATA IS LOADED, FECTH OIM DETAIL INCLUDING HOUSE, AP, CONTAINER
   if (MAIN) {
-    // FETCH OIM DATA FROM FREIGHT STREAM
-    const fetchGen = await fetch(
-      `${process.env.BASE_URL}api/forwarding/getOtherDetail`,
-      { headers: { reference: query.Detail, key: cookies.jamesworldwidetoken } }
+    // FETCH OIM DATA FROM FREIGHT STREAM;
+    const fetchAP = await fetch(
+      `${process.env.FS_BASEPATH}aphd?table=T_GENMAIN&tbid=${MAIN[0].ID}`,
+      {
+        headers: { "x-api-key": process.env.JWT_KEY },
+      }
     );
 
-    if (fetchGen.status === 200) {
-      // WHEN OIM IS EMPTY, THIS WILL RETURN THE NOT FOUND PAGE
-      const Gen = await fetchGen.json();
-      return {
-        props: {
-          Cookie: cookies,
-          OTHER: Gen,
-          GENMAIN: MAIN,
-        },
-      };
+    if (fetchAP.status === 200) {
+      const Ap = await fetchAP.json();
+      HOUSE = [{ Customer_SName: MAIN[0].Customer_SName, AP: Ap }];
+      var ApInfo = Ap;
+      for (var j = 0; j < Ap.length; j++) {
+        const CompanyContactFetch = await fetch(
+          `${process.env.FS_BASEPATH}Company_CompanyContact/${Ap[j].PayTo}`,
+          {
+            headers: { "x-api-key": process.env.JWT_KEY },
+          }
+        );
+        if (CompanyContactFetch.status === 200) {
+          const Contact = await CompanyContactFetch.json();
+          ApInfo[j] = { ...Ap[j], PayToCustomer: Contact };
+        }
+      }
+      HOUSE = [{ Customer_SName: MAIN[0].Customer_SName, AP: ApInfo }];
     }
+    return {
+      props: {
+        Cookie: cookies,
+        GENMAIN: MAIN,
+        GENHOUSE: HOUSE,
+      },
+    };
   }
   return { props: { Cookie: cookies } };
-
-  // FETCH OTHER DATA FROM FREIGHT STREAM
-  const fetchOther = await fetch(
-    `${process.env.BASE_URL}api/forwarding/getOtherDetail`,
-    { headers: { reference: query.Detail, key: cookies.jamesworldwidetoken } }
-  );
-  if (fetchOther.status === 200) {
-    const Other = await fetchOther.json();
-    // FETCH EXTRA DATA FROM FMS
-    const fetchExtra = await fetch(
-      `${process.env.BASE_URL}api/forwarding/getExtra`,
-      { headers: { ref: query.Detail } }
-    );
-    var Extra = null;
-    if (fetchExtra.status == 200) {
-      Extra = await fetchExtra.json();
-    } else {
-      Extra = { M: [], S: [] };
-    }
-
-    return {
-      props: { Cookie: cookies, OTHER: Other, EXTRA: Extra },
-    };
-  } else {
-    return {
-      props: { Cookie: cookies },
-    };
-  }
 }
 
 export default Detail;

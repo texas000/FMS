@@ -14,17 +14,16 @@ import Info from "../../../components/Forwarding/AirInfo";
 import Forms from "../../../components/Forwarding/Forms";
 import Status from "../../../components/Forwarding/Status";
 
-const Detail = ({ Cookie, AIM, AIMMAIN }) => {
+const Detail = ({ Cookie, AIMMAIN, AIHMAIN }) => {
   const router = useRouter();
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
-
+  const [AP, setAP] = React.useState([]);
   useEffect(() => {
     !TOKEN && router.push("/login");
-    console.log(AIMMAIN);
     if (AIMMAIN) {
       addLogData(AIMMAIN[0]);
     }
-  });
+  }, []);
 
   async function addLogData(Ref) {
     const fetchPostLog = await fetch("/api/forwarding/postFreightExtLog", {
@@ -45,28 +44,30 @@ const Detail = ({ Cookie, AIM, AIMMAIN }) => {
   }
 
   var mailSubject, mailBody, emailHref;
-  if (AIM && AIM.M) {
+  if (AIMMAIN) {
     mailSubject =
-      AIM.H.length > 0
-        ? `[JW] ${AIM.H[0].CUSTOMER} MAWBNO# ${AIM.M.F_MawbNo} HBL# ${AIM.H.map(
-            (na) => `${na.F_HawbNo}`
-          )} ETD ${moment(AIM.M.F_ETD).utc().format("l")} ETA ${moment(
-            AIM.M.F_ETA
+      AIMMAIN.length > 0
+        ? `[JW] ${AIHMAIN[0].Customer_SName} MAWBNO# ${
+            AIMMAIN[0].MawbNo
+          } HAWBNO# ${AIHMAIN.map((na) => `${na.HawbNo}`)} ETD ${moment(
+            AIMMAIN[0].ETD
           )
             .utc()
-            .format("l")} // ${AIM.M.F_RefNo}`
+            .format("l")} ETA ${moment(AIMMAIN[0].ETA).utc().format("l")} // ${
+            AIMMAIN[0].RefNo
+          }`
         : "";
 
     mailBody =
-      AIM.H.length > 0
-        ? `Dear ${AIM.H[0].CUSTOMER}
+      AIMMAIN.length === 1
+        ? `Dear ${AIHMAIN[0].Customer_SName}
       \nPlease note that there is an AIR IMPORT SHIPMENT for ${
-        AIM.H[0].CUSTOMER
-      } scheduled to depart on ${moment(AIM.M.F_ETA).utc().format("LL")}.`
+        AIHMAIN[0].Customer_SName
+      } scheduled to depart on ${moment(AIMMAIN[0].ETA).utc().format("LL")}.`
         : "";
 
     emailHref =
-      AIM.H.length > 0
+      AIHMAIN.length > 0
         ? `mailto:?cc=${TOKEN && TOKEN.email}&subject=${encodeURIComponent(
             mailSubject
           )}&body=${encodeURIComponent(mailBody)}`
@@ -76,14 +77,13 @@ const Detail = ({ Cookie, AIM, AIMMAIN }) => {
   if (TOKEN && TOKEN.group) {
     return (
       <>
-        {AIM && AIM.M ? (
-          <Layout TOKEN={TOKEN} TITLE={AIM.M.F_RefNo}>
+        {AIMMAIN ? (
+          <Layout TOKEN={TOKEN} TITLE={AIMMAIN[0].RefNo}>
             <Head
-              REF={AIM.M.F_RefNo}
-              POST={AIM.M.F_PostDate}
-              PIC={AIM.M.F_U2ID}
+              REF={AIMMAIN[0].RefNo}
+              POST={AIMMAIN[0].PostDate}
               EMAIL={emailHref}
-              CUSTOMER={AIM.H.length ? AIM.H[0].CUSTOMER : false}
+              CUSTOMER={AIHMAIN && AIHMAIN[0].Customer_SName}
             />
             {/* Display only at print screen */}
             <p className="d-none d-print-block">
@@ -92,17 +92,16 @@ const Detail = ({ Cookie, AIM, AIMMAIN }) => {
             <Row>
               <Col lg={10}>
                 <Row>
-                  <Info Master={AIM.M} House={AIM.H} Containers={AIM.C} />
+                  <Info Master={AIMMAIN[0]} House={AIHMAIN} Containers={[]} />
                   <Col lg="6">
                     <Forms
-                      Master={AIM.M}
-                      House={AIM.H}
-                      AP={AIM.A}
+                      Master={AIMMAIN[0]}
+                      House={AIHMAIN}
                       User={TOKEN}
                       Type="air"
                     />
                     <Status
-                      Ref={AIM.M.F_RefNo}
+                      Ref={AIMMAIN[0].RefNo}
                       Uid={TOKEN.uid}
                       Main="aimmain"
                     />
@@ -111,17 +110,21 @@ const Detail = ({ Cookie, AIM, AIMMAIN }) => {
               </Col>
               <Col lg={2} className="mb-4">
                 <Route
-                  ETA={AIM.M.F_ETA}
-                  ETD={AIM.M.F_ETD}
-                  FETA={AIM.M.F_FETA}
-                  DISCHARGE={AIM.M.F_Discharge}
-                  LOADING={AIM.M.F_LoadingPort}
-                  DEST={AIM.M.F_FinalDest}
+                  ETA={AIMMAIN[0].ETA}
+                  ETD={AIMMAIN[0].ETD}
+                  FETA={AIMMAIN[0].FETA}
+                  DISCHARGE={AIMMAIN[0].DisCharge}
+                  LOADING={AIMMAIN[0].LoadingPort}
+                  DEST={AIMMAIN[0].FinalDest}
                 />
               </Col>
             </Row>
 
-            <Comment reference={AIM.M.F_RefNo} uid={TOKEN.uid} />
+            <Comment
+              reference={AIMMAIN[0].RefNo}
+              uid={TOKEN.uid}
+              main={AIMMAIN[0]}
+            />
           </Layout>
         ) : (
           <Layout TOKEN={TOKEN} TITLE="Not Found">
@@ -149,7 +152,6 @@ export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
-
   // FETCH OIM EXT (OIMMAIN DATA + STATUS DATA)
   const fetchAimmainExt = await fetch(
     `${process.env.FS_BASEPATH}aimmain_ext?RefNo=${query.Detail}`,
@@ -160,6 +162,7 @@ export async function getServerSideProps({ req, query }) {
 
   // DEFINE FLASE VARIABLE
   var MAIN = false;
+  var HOUSE = false;
 
   if (fetchAimmainExt.status === 200) {
     MAIN = await fetchAimmainExt.json();
@@ -167,54 +170,59 @@ export async function getServerSideProps({ req, query }) {
 
   // IF DATA IS LOADED, FECTH OIM DETAIL INCLUDING HOUSE, AP, CONTAINER
   if (MAIN) {
-    // FETCH OIM DATA FROM FREIGHT STREAM
-    const fetchAim = await fetch(
-      `${process.env.BASE_URL}api/forwarding/getAimDetail`,
-      { headers: { reference: query.Detail, key: cookies.jamesworldwidetoken } }
+    // GET OIHMAIN FROM BLID
+    const fecthAihmain = await fetch(
+      `${process.env.FS_BASEPATH}aihmain?aimblid=${MAIN[0].ID}`,
+      {
+        headers: { "x-api-key": process.env.JWT_KEY },
+      }
     );
+    if (fecthAihmain.status === 200) {
+      HOUSE = await fecthAihmain.json();
 
-    if (fetchAim.status === 200) {
-      // WHEN OIM IS EMPTY, THIS WILL RETURN THE NOT FOUND PAGE
-      const Aim = await fetchAim.json();
-      return {
-        props: {
-          Cookie: cookies,
-          AIM: Aim,
-          AIMMAIN: MAIN,
-        },
-      };
+      if (HOUSE.length > 0) {
+        for (var i = 0; i < HOUSE.length; i++) {
+          var APLIST = false;
+          const fetchAP = await fetch(
+            `${process.env.FS_BASEPATH}aphd?table=T_OIHMAIN&tbid=${HOUSE[i].ID}`,
+            {
+              headers: { "x-api-key": process.env.JWT_KEY },
+            }
+          );
+          // IF AP EXISTS
+          if (fetchAP.status === 200) {
+            const Ap = await fetchAP.json();
+            APLIST = Ap;
+            for (var j = 0; j < Ap.length; j++) {
+              const CompanyContactFetch = await fetch(
+                `${process.env.FS_BASEPATH}Company_CompanyContact/${Ap[j].PayTo}`,
+                {
+                  headers: { "x-api-key": process.env.JWT_KEY },
+                }
+              );
+              if (CompanyContactFetch.status === 200) {
+                const Contact = await CompanyContactFetch.json();
+                //EACH HOUSE HAS AP MULTIPLE AP LIST
+                APLIST[j] = { ...APLIST[j], PayToCustomer: Contact };
+              } else {
+                APLIST[j] = { ...APLIST[j] };
+              }
+            }
+          }
+          HOUSE[i] = { ...HOUSE[i], AP: APLIST };
+        }
+      }
     }
+
+    return {
+      props: {
+        Cookie: cookies,
+        AIMMAIN: MAIN,
+        AIHMAIN: HOUSE,
+      },
+    };
   }
   return { props: { Cookie: cookies } };
-
-  // FETCH AIM DATA FROM FREIGHT STREAM
-  const fetchAim = await fetch(
-    `${process.env.BASE_URL}api/forwarding/getAimDetail`,
-    { headers: { reference: query.Detail, key: cookies.jamesworldwidetoken } }
-  );
-  if (fetchAim.status === 200) {
-    const Aim = await fetchAim.json();
-
-    // FETCH EXTRA DATA FROM FMS
-    const fetchExtra = await fetch(
-      `${process.env.BASE_URL}api/forwarding/getExtra`,
-      { headers: { ref: query.Detail } }
-    );
-    var Extra = null;
-    if (fetchExtra.status == 200) {
-      Extra = await fetchExtra.json();
-    } else {
-      Extra = { M: [], S: [] };
-    }
-
-    return {
-      props: { Cookie: cookies, AIM: Aim, EXTRA: Extra },
-    };
-  } else {
-    return {
-      props: { Cookie: cookies },
-    };
-  }
 }
 
 export default Detail;

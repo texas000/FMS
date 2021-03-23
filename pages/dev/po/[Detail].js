@@ -587,10 +587,6 @@ export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
-  // console.time("fecth_time");
-
-  // console.timeEnd("fecth_time");
-
   // Pass data to the page via props
   return { props: { Cookie: cookies, PO: query.Detail } };
 }

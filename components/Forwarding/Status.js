@@ -1,20 +1,38 @@
-import {
-  Button,
-  Row,
-  Col,
-  Input,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-} from "reactstrap";
 import moment from "moment";
 import fetch from "node-fetch";
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+import {
+  Button,
+  Switch,
+  InputGroup,
+  Tag,
+  Toaster,
+  Toast,
+} from "@blueprintjs/core";
 
 export const Status = ({ Ref, Uid, Main }) => {
   const [switchData, setSwitchData] = React.useState(false);
+  const [show, setShow] = React.useState(false);
+  const [msg, setMsg] = React.useState("");
   React.useEffect(() => {
     statusInfo();
   }, [Ref]);
+  const FormsToaster = () => {
+    if (show) {
+      return (
+        <Toaster position="top">
+          <Toast
+            message={msg}
+            intent="success"
+            onDismiss={() => setShow(false)}
+          ></Toast>
+        </Toaster>
+      );
+    } else {
+      return <React.Fragment></React.Fragment>;
+    }
+  };
 
   async function statusInfo() {
     // console.log(Ref);
@@ -24,14 +42,11 @@ export const Status = ({ Ref, Uid, Main }) => {
     });
     if (fetchs.status === 200) {
       const Info = await fetchs.json();
-      // console.log(Info);
       setSwitchData({
         ...Info[0],
         U1ID: Uid,
         U2ID: Uid,
       });
-    } else {
-      console.log(fetchData.status);
     }
   }
 
@@ -43,9 +58,11 @@ export const Status = ({ Ref, Uid, Main }) => {
     });
     if (fetchs.status === 200) {
       const save = await fetchs.json();
-      alert(`SUCCESS`);
+      setMsg("STATUS UPDATED");
+      setShow(true);
     } else {
-      alert(`ERROR ${fetchs.status}`);
+      setMeg(`ERROR ${fetchs.status}`);
+      setShow(true);
     }
   };
 
@@ -60,10 +77,9 @@ export const Status = ({ Ref, Uid, Main }) => {
           STATUS
         </div>
         <Button
-          outline
-          color="primary"
-          size="sm"
-          className="float-right text-xs"
+          icon="floppy-disk"
+          className="float-right"
+          style={{ fontSize: "0.7rem" }}
           onClick={onSaveStatus}
         >
           SAVE
@@ -71,31 +87,24 @@ export const Status = ({ Ref, Uid, Main }) => {
       </div>
       <div className="card-body">
         <div className="text-xs">
-          <Row>
-            <Col sm="4">
-              <label className="switch mt-1">
-                <input
-                  type="checkbox"
-                  checked={switchData.PreAlert === "1" ? true : false || false}
-                  // defaultChecked={Data && Data.PreAlert === "1"}
-                  onChange={(e) => {
-                    var data = e.target.checked ? "1" : "0";
-                    setSwitchData((prev) => ({
-                      ...prev,
-                      PreAlert: data,
-                    }));
-                  }}
-                />
-                <span className="slider round"></span>
-              </label>
-              <label className="pl-2">Pre Alert</label>
-            </Col>
-            <Col sm="8">
-              <Input
-                type="text"
-                placeholder="PRE ALERT"
-                bsSize="sm"
-                className="text-xs"
+          <div className="row">
+            <div className="col-sm-4 mt-1">
+              <Switch
+                label="Pre Alert"
+                checked={switchData.PreAlert === "1" ? true : false || false}
+                onChange={(e) => {
+                  var data = e.target.checked ? "1" : "0";
+                  setSwitchData((prev) => ({
+                    ...prev,
+                    PreAlert: data,
+                  }));
+                }}
+              ></Switch>
+            </div>
+            <div className="col-sm-8">
+              <InputGroup
+                placeholder="Pre Alert Note"
+                small={true}
                 onChange={(e) => {
                   var data = e.target.value || "";
                   setSwitchData((prev) => ({
@@ -105,32 +114,26 @@ export const Status = ({ Ref, Uid, Main }) => {
                 }}
                 value={switchData.PreAlertComment || ""}
               />
-            </Col>
-          </Row>
-          <Row className="mt-0">
-            <Col sm="4">
-              <label className="switch mt-1">
-                <input
-                  type="checkbox"
-                  checked={switchData.ISF === "1" ? true : false}
-                  onChange={(e) => {
-                    var data = e.target.checked ? "1" : "0";
-                    setSwitchData((prev) => ({
-                      ...prev,
-                      ISF: data,
-                    }));
-                  }}
-                />
-                <span className="slider round"></span>
-              </label>
-              <label className="pl-2">ISF</label>
-            </Col>
-            <Col sm="8">
-              <Input
-                type="text"
-                placeholder="ISF"
-                bsSize="sm"
-                className="text-xs"
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-4 mt-1">
+              <Switch
+                label="ISF"
+                checked={switchData.ISF === "1" ? true : false}
+                onChange={(e) => {
+                  var data = e.target.checked ? "1" : "0";
+                  setSwitchData((prev) => ({
+                    ...prev,
+                    ISF: data,
+                  }));
+                }}
+              ></Switch>
+            </div>
+            <div className="col-sm-8">
+              <InputGroup
+                placeholder="ISF Note"
+                small={true}
                 onChange={(e) => {
                   var data = e.target.value || "";
                   setSwitchData((prev) => ({
@@ -140,32 +143,26 @@ export const Status = ({ Ref, Uid, Main }) => {
                 }}
                 value={switchData.ISFComment || ""}
               />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="4">
-              <label className="switch mt-1">
-                <input
-                  type="checkbox"
-                  checked={switchData.OBL === "1" ? true : false}
-                  onChange={(e) => {
-                    var data = e.target.checked ? "1" : "0";
-                    setSwitchData((prev) => ({
-                      ...prev,
-                      OBL: data,
-                    }));
-                  }}
-                />
-                <span className="slider round"></span>
-              </label>
-              <label className="pl-2">OBL</label>
-            </Col>
-            <Col sm="8">
-              <Input
-                type="text"
-                placeholder="OBL"
-                bsSize="sm"
-                className="text-xs"
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-4 mt-1">
+              <Switch
+                label="OBL"
+                checked={switchData.OBL === "1" ? true : false}
+                onChange={(e) => {
+                  var data = e.target.checked ? "1" : "0";
+                  setSwitchData((prev) => ({
+                    ...prev,
+                    OBL: data,
+                  }));
+                }}
+              ></Switch>
+            </div>
+            <div className="col-sm-8">
+              <InputGroup
+                placeholder="OBL Note"
+                small={true}
                 onChange={(e) => {
                   var data = e.target.value || "";
                   setSwitchData((prev) => ({
@@ -175,32 +172,26 @@ export const Status = ({ Ref, Uid, Main }) => {
                 }}
                 value={switchData.OBLComment || ""}
               />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="4">
-              <label className="switch mt-1">
-                <input
-                  type="checkbox"
-                  checked={switchData.OceanFreight === "1" ? true : false}
-                  onChange={(e) => {
-                    var data = e.target.checked ? "1" : "0";
-                    setSwitchData((prev) => ({
-                      ...prev,
-                      OceanFreight: data,
-                    }));
-                  }}
-                />
-                <span className="slider round"></span>
-              </label>
-              <label className="pl-2">O/F</label>
-            </Col>
-            <Col sm="8">
-              <Input
-                type="text"
-                placeholder="O/F"
-                bsSize="sm"
-                className="text-xs"
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-4 mt-1">
+              <Switch
+                label="O/F"
+                checked={switchData.OceanFreight === "1" ? true : false}
+                onChange={(e) => {
+                  var data = e.target.checked ? "1" : "0";
+                  setSwitchData((prev) => ({
+                    ...prev,
+                    OceanFreight: data,
+                  }));
+                }}
+              ></Switch>
+            </div>
+            <div className="col-sm-8">
+              <InputGroup
+                placeholder="O/F Note"
+                small={true}
                 onChange={(e) => {
                   var data = e.target.value || "";
                   setSwitchData((prev) => ({
@@ -210,32 +201,26 @@ export const Status = ({ Ref, Uid, Main }) => {
                 }}
                 value={switchData.OceanFreightComment || ""}
               />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="4">
-              <label className="switch mt-1">
-                <input
-                  type="checkbox"
-                  checked={switchData.ArrivalNotice === "1" ? true : false}
-                  onChange={(e) => {
-                    var data = e.target.checked ? "1" : "0";
-                    setSwitchData((prev) => ({
-                      ...prev,
-                      ArrivalNotice: data,
-                    }));
-                  }}
-                />
-                <span className="slider round"></span>
-              </label>
-              <label className="pl-2">A/N</label>
-            </Col>
-            <Col sm="8">
-              <Input
-                type="text"
-                placeholder="A/N"
-                bsSize="sm"
-                className="text-xs"
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-4 mt-1">
+              <Switch
+                label="A/N"
+                checked={switchData.ArrivalNotice === "1" ? true : false}
+                onChange={(e) => {
+                  var data = e.target.checked ? "1" : "0";
+                  setSwitchData((prev) => ({
+                    ...prev,
+                    ArrivalNotice: data,
+                  }));
+                }}
+              ></Switch>
+            </div>
+            <div className="col-sm-8">
+              <InputGroup
+                placeholder="A/N Note"
+                small={true}
                 onChange={(e) => {
                   var data = e.target.value || "";
                   setSwitchData((prev) => ({
@@ -245,32 +230,26 @@ export const Status = ({ Ref, Uid, Main }) => {
                 }}
                 value={switchData.ArrivalNoticeComment || ""}
               />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="4">
-              <label className="switch mt-1">
-                <input
-                  type="checkbox"
-                  checked={switchData.CrDb === "1" ? true : false}
-                  onChange={(e) => {
-                    var data = e.target.checked ? "1" : "0";
-                    setSwitchData((prev) => ({
-                      ...prev,
-                      CrDb: data,
-                    }));
-                  }}
-                />
-                <span className="slider round"></span>
-              </label>
-              <label className="pl-2">C/B</label>
-            </Col>
-            <Col sm="8">
-              <Input
-                type="text"
-                placeholder="C/B"
-                bsSize="sm"
-                className="text-xs"
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-4 mt-1">
+              <Switch
+                label="C/B"
+                checked={switchData.CrDb === "1" ? true : false}
+                onChange={(e) => {
+                  var data = e.target.checked ? "1" : "0";
+                  setSwitchData((prev) => ({
+                    ...prev,
+                    CrDb: data,
+                  }));
+                }}
+              ></Switch>
+            </div>
+            <div className="col-sm-8">
+              <InputGroup
+                placeholder="C/B Note"
+                small={true}
                 onChange={(e) => {
                   var data = e.target.value || "";
                   setSwitchData((prev) => ({
@@ -280,32 +259,26 @@ export const Status = ({ Ref, Uid, Main }) => {
                 }}
                 value={switchData.CrDbComment || ""}
               />
-            </Col>
-          </Row>
-          <Row>
-            <Col sm="4">
-              <label className="switch mt-1">
-                <input
-                  type="checkbox"
-                  checked={switchData.Arrival === "1" ? true : false}
-                  onChange={(e) => {
-                    var data = e.target.checked ? "1" : "0";
-                    setSwitchData((prev) => ({
-                      ...prev,
-                      Arrival: data,
-                    }));
-                  }}
-                />
-                <span className="slider round"></span>
-              </label>
-              <label className="pl-2">Arrival</label>
-            </Col>
-            <Col sm="8">
-              <Input
-                type="text"
-                placeholder="Arrival"
-                bsSize="sm"
-                className="text-xs"
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-4 mt-1">
+              <Switch
+                label="Arrival"
+                checked={switchData.Arrival === "1" ? true : false}
+                onChange={(e) => {
+                  var data = e.target.checked ? "1" : "0";
+                  setSwitchData((prev) => ({
+                    ...prev,
+                    Arrival: data,
+                  }));
+                }}
+              ></Switch>
+            </div>
+            <div className="col-sm-8">
+              <InputGroup
+                placeholder="Arrival Note"
+                small={true}
                 onChange={(e) => {
                   var data = e.target.value || "";
                   setSwitchData((prev) => ({
@@ -315,86 +288,93 @@ export const Status = ({ Ref, Uid, Main }) => {
                 }}
                 value={switchData.ArrivalComment || ""}
               />
-            </Col>
-          </Row>
+            </div>
+          </div>
           {/* Calendar */}
-          <InputGroup size="sm" className="my-2 text-xs">
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>
-                <span className="text-xs">Last Free Day</span>
-              </InputGroupText>
-            </InputGroupAddon>
-            <Input
-              type="date"
-              name="date"
-              id="lastfree"
-              onChange={(e) => {
-                var data = e.target.value;
-                setSwitchData((prev) => ({
-                  ...prev,
-                  LastFreeDate:
-                    data === "" ? "" : moment(data).format("YYYY-MM-DD"),
-                }));
-              }}
-              value={
-                switchData.LastFreeDate === ""
-                  ? "1900-01-01"
-                  : moment(switchData.LastFreeDate).format("YYYY-MM-DD") ||
-                    "1900-01-01"
-              }
-            />
-          </InputGroup>
-          <InputGroup size="sm" className="my-2">
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>
-                <span className="text-xs">Picked Up Date</span>
-              </InputGroupText>
-            </InputGroupAddon>
-            <Input
-              type="date"
-              name="date"
-              id="picked"
-              onChange={(e) => {
-                var data = e.target.value || null;
-                setSwitchData((prev) => ({
-                  ...prev,
-                  PickedUpDate: moment(data).format("YYYY-MM-DD"),
-                }));
-              }}
-              value={
-                switchData.PickedUpDate === ""
-                  ? "1900-01-01"
-                  : moment(switchData.PickedUpDate).format("YYYY-MM-DD") ||
-                    "1900-01-01"
-              }
-            />
-          </InputGroup>
-          <InputGroup size="sm" className="my-2">
-            <InputGroupAddon addonType="prepend">
-              <InputGroupText>
-                <span className="text-xs">Empty Return Date</span>
-              </InputGroupText>
-            </InputGroupAddon>
-            <Input
-              type="date"
-              name="date"
-              id="empty"
-              onChange={(e) => {
-                var data = e.target.value || null;
-                setSwitchData((prev) => ({
-                  ...prev,
-                  EmptyReturnDate: moment(data).format("YYYY-MM-DD"),
-                }));
-              }}
-              value={
-                switchData.EmptyReturnDate === ""
-                  ? "1900-01-01"
-                  : moment(switchData.EmptyReturnDate).format("YYYY-MM-DD") ||
-                    "1900-01-01"
-              }
-            />
-          </InputGroup>
+          <div className="row mt-1">
+            <div className="col-sm-4">
+              <Tag minimal={true} className="my-1">
+                Last Free Day
+              </Tag>
+            </div>
+            <div className="col-sm-8">
+              <InputGroup
+                type="date"
+                small={true}
+                id="lastfree"
+                onChange={(e) => {
+                  var data = e.target.value;
+                  setSwitchData((prev) => ({
+                    ...prev,
+                    LastFreeDate:
+                      data === "" ? "" : moment(data).format("YYYY-MM-DD"),
+                  }));
+                }}
+                value={
+                  moment(switchData.LastFreeDate).isValid
+                    ? moment(switchData.LastFreeDate).format("YYYY-MM-DD")
+                    : undefined
+                }
+              />
+            </div>
+          </div>
+
+          <div className="row mt-1">
+            <div className="col-sm-4">
+              <Tag minimal={true} className="my-1">
+                Picked Up Date
+              </Tag>
+            </div>
+            <div className="col-sm-8">
+              <InputGroup
+                type="date"
+                small={true}
+                id="picked"
+                onChange={(e) => {
+                  var data = e.target.value || null;
+                  setSwitchData((prev) => ({
+                    ...prev,
+                    PickedUpDate: moment(data).format("YYYY-MM-DD"),
+                  }));
+                }}
+                value={
+                  moment(switchData.PickedUpDate).isValid
+                    ? moment(switchData.PickedUpDate).format("YYYY-MM-DD")
+                    : undefined
+                }
+              />
+            </div>
+          </div>
+
+          <div className="row mt-1">
+            <div className="col-sm-4">
+              <Tag minimal={true} className="my-1">
+                Empty Return Date
+              </Tag>
+            </div>
+            <div className="col-sm-8">
+              <InputGroup
+                type="date"
+                id="empty"
+                onChange={(e) => {
+                  var data = e.target.value || null;
+                  setSwitchData((prev) => ({
+                    ...prev,
+                    EmptyReturnDate: moment(data).format("YYYY-MM-DD"),
+                  }));
+                }}
+                small={true}
+                value={
+                  moment(switchData.EmptyReturnDate).isValid
+                    ? moment(switchData.EmptyReturnDate).format("YYYY-MM-DD")
+                    : undefined
+                }
+              />
+            </div>
+          </div>
+          {/* <InputGroup type="date" value={undefined} /> */}
         </div>
+        <FormsToaster />
       </div>
       <style jsx>
         {`

@@ -214,7 +214,7 @@ const Index = ({ Cookie, Result }) => {
       dataField: "oimmain.U2ID",
       text: "PIC",
       classes: "text-xs text-truncate text-uppercase",
-      headerClasses: "text-xs text-primary px-4 align-middle",
+      headerClasses: "text-xs text-center text-primary px-4 align-middle",
       sort: true,
       headerSortingStyle,
       filter: textFilter({
@@ -230,7 +230,7 @@ const Index = ({ Cookie, Result }) => {
   }, []);
   if (TOKEN && TOKEN.group) {
     return (
-      <Layout TOKEN={TOKEN}>
+      <Layout TOKEN={TOKEN} TITLE="OCEAN IMPORT">
         <div className="d-flex flex-sm-row justify-content-between">
           <div className="flex-column">
             <h3 className="mb-4 forwarding font-weight-light">Ocean Import</h3>

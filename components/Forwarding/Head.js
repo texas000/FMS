@@ -1,9 +1,29 @@
-import { Badge, Button, Col, Row } from "reactstrap";
+import { Col, Row } from "reactstrap";
+import { Tag, Toast, Toaster } from "@blueprintjs/core";
 import { useRouter } from "next/router";
 import moment from "moment";
+import "@blueprintjs/core/lib/css/blueprint.css";
 
-const Head = ({ REF, POST, PIC, EMAIL, CUSTOMER }) => {
+const Head = ({ REF, POST, CREATED, MODIFIED, EMAIL, CUSTOMER }) => {
   const router = useRouter();
+  const [show, setShow] = React.useState(false);
+  const [msg, setMsg] = React.useState("");
+
+  const FormsToaster = () => {
+    if (show) {
+      return (
+        <Toaster position="top">
+          <Toast
+            message={msg}
+            intent="warning"
+            onDismiss={() => setShow(false)}
+          ></Toast>
+        </Toaster>
+      );
+    } else {
+      return <React.Fragment></React.Fragment>;
+    }
+  };
 
   const Clipboard = () => {
     const routes = "jwiusa.com" + router.asPath;
@@ -13,7 +33,8 @@ const Head = ({ REF, POST, PIC, EMAIL, CUSTOMER }) => {
     tempInput.select();
     document.execCommand("copy");
     document.getElementsByTagName("body")[0].removeChild(tempInput);
-    alert("Copied to your Clipboard");
+    setMsg("COPY: " + routes.toUpperCase());
+    setShow(true);
   };
 
   return (
@@ -28,39 +49,50 @@ const Head = ({ REF, POST, PIC, EMAIL, CUSTOMER }) => {
           </h3>
         </Col>
         <Col className="text-right" lg={6}>
-          <Badge
-            className="text-xs mx-1 btn btn-link text-primary"
-            color="warning"
+          <Tag
+            className="btn btn-link text-primary"
+            round={true}
+            minimal={true}
             onClick={Clipboard}
           >
-            <i className="fa fa-upload"></i> SHARE
-          </Badge>
-          <Badge
-            className="text-xs mx-1 btn btn-link text-primary"
-            color="warning"
+            <i className="fa fa-share mr-1"></i>
+            SHARE
+          </Tag>
+          <Tag
+            className="btn btn-link text-primary mx-1"
+            round={true}
+            minimal={true}
             onClick={() => router.back()}
           >
-            <i className="fa fa-reply"></i> BACK
-          </Badge>
-          {/* <Button
-            className="mr-2 py-0"
-            size="sm"
-            color="danger"
-            style={{ borderRadius: 0 }}
-            onClick={() => router.back()}
-            outline
-          >
-            <i className="fa fa-reply"></i> Back
-          </Button> */}
+            <i className="fa fa-undo mr-1"></i>
+            BACK
+          </Tag>
           {EMAIL && (
-            <Badge className="text-xs mx-1" color="warning">
-              <a target="__blank" href={EMAIL}>
-                <i className="fa fa-envelope pr-2"></i>MAIL
+            <Tag
+              className="btn btn-link text-xs text-primary mx-1"
+              round={true}
+              minimal={true}
+            >
+              <i className="fa fa-envelope mr-1"></i>
+              <a
+                target="__blank"
+                href={EMAIL}
+                onClick={() => {
+                  setMsg("CREATING AN EMAIL...");
+                  setShow(true);
+                }}
+              >
+                MAIL
               </a>
-            </Badge>
+            </Tag>
           )}
           {POST && (
-            <Badge className="text-xs mx-1" color="warning">
+            <Tag
+              className="btn btn-link text-xs text-primary mx-1"
+              round={true}
+              minimal={true}
+            >
+              <i className="fa fa-calendar mr-1"></i>
               <a
                 target="__blank"
                 href={`http://www.google.com/calendar/event?action=TEMPLATE&text=${REF}&dates=${moment(
@@ -71,24 +103,19 @@ const Head = ({ REF, POST, PIC, EMAIL, CUSTOMER }) => {
                   .utc()
                   .format(
                     "YYYYMMDD"
-                  )}T090000Z&details=${REF}${PIC}&location=JAMES WORLDWIDE INC.`}
+                  )}T090000Z&details=${REF}&location=JAMES WORLDWIDE INC.`}
+                onClick={() => {
+                  setMsg("CREATING AN CALENDAR...");
+                  setShow(true);
+                }}
               >
-                <i className="fa fa-calendar pr-2"></i>POST DATE:{" "}
-                {moment(POST).utc().format("ll")}
+                POST DATE: {moment(POST).utc().format("ll")}
               </a>
-            </Badge>
+            </Tag>
           )}
-          {PIC && (
-            <Badge className="text-xs text-gray-800" color="warning">
-              PIC: {PIC.toUpperCase()}
-            </Badge>
-          )}
-          {/* <p style={{ fontSize: "0.7em", marginBottom: "0.2rem" }}>
-            MAIL: Send data to (Outlook / Gmail), POST DATE: Set date to Google
-            Calendar
-          </p> */}
         </Col>
       </Row>
+      <FormsToaster />
     </>
   );
 };

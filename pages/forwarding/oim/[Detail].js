@@ -1,30 +1,29 @@
 import cookie from "cookie";
 import Layout from "../../../components/Layout";
-import { Row, Col, Button, Alert } from "reactstrap";
+import { Row, Col, Alert, Button } from "reactstrap";
 import { useRouter } from "next/router";
 import fetch from "node-fetch";
 import { useEffect } from "react";
 import Head from "../../../components/Forwarding/Head";
 import Route from "../../../components/Forwarding/Route";
 import moment from "moment";
+import { Comment } from "../../../components/Forwarding/Comment";
 
 import jwt from "jsonwebtoken";
-import { Comment } from "../../../components/Forwarding/Comment";
 import Info from "../../../components/Forwarding/Info";
 import Forms from "../../../components/Forwarding/Forms";
 import Status from "../../../components/Forwarding/Status";
 
-const Detail = ({ Cookie, OIM, OIMMAIN }) => {
+const Detail = ({ Cookie, OIMMAIN, OIHMAIN, CONTAINER }) => {
   const router = useRouter();
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    // console.log(OIMMAIN);
     if (OIMMAIN) {
       addLogData(OIMMAIN[0]);
     }
-  });
+  }, []);
 
   async function addLogData(Ref) {
     const fetchPostLog = await fetch("/api/forwarding/postFreightExtLog", {
@@ -45,30 +44,30 @@ const Detail = ({ Cookie, OIM, OIMMAIN }) => {
   }
 
   var mailSubject, mailBody, emailHref;
-  if (OIM && OIM.M) {
+  if (OIMMAIN) {
     mailSubject =
-      OIM.H.length > 0
-        ? `[JW] ${OIM.H[0].CUSTOMER} MBL# ${OIM.M.F_MBLNo} HBL# ${OIM.H.map(
-            (na) => `${na.F_HBLNo}`
-          )} CNTR# ${
-            OIM.C && OIM.C.map((ga) => `${ga.F_ContainerNo}`)
-          } ETD ${moment(OIM.M.F_ETD).utc().format("l")} ETA ${moment(
-            OIM.M.F_ETA
+      OIHMAIN.length > 0
+        ? `[JW] ${OIHMAIN[0].Customer_SName} MBL# ${
+            OIMMAIN[0].MBLNo
+          } HBL# ${OIHMAIN.map((na) => `${na.HBLNo}`)} CNTR# ${
+            CONTAINER && CONTAINER.map((ga) => `${ga.oimcontainer.ContainerNo}`)
+          } ETD ${moment(OIMMAIN[0].ETD).utc().format("l")} ETA ${moment(
+            OIMMAIN[0].ETA
           )
             .utc()
-            .format("l")} // ${OIM.M.F_RefNo}`
+            .format("l")} // ${OIMMAIN[0].RefNo}`
         : "";
 
     mailBody =
-      OIM.H.length > 0
-        ? `Dear ${OIM.H[0].CUSTOMER}
+      OIMMAIN.length === 1
+        ? `Dear ${OIHMAIN[0].Customer_SName}
       \nPlease note that there is an OCEAN IMPORT SHIPMENT for ${
-        OIM.H[0].CUSTOMER
-      } scheduled to depart on ${moment(OIM.M.F_ETA).utc().format("LL")}.`
+        OIHMAIN[0].Customer_SName
+      } scheduled to depart on ${moment(OIMMAIN[0].ETA).utc().format("LL")}.`
         : "";
 
     emailHref =
-      OIM.H.length > 0
+      OIHMAIN.length > 0
         ? `mailto:?cc=${TOKEN && TOKEN.email}&subject=${encodeURIComponent(
             mailSubject
           )}&body=${encodeURIComponent(mailBody)}`
@@ -78,14 +77,14 @@ const Detail = ({ Cookie, OIM, OIMMAIN }) => {
   if (TOKEN && TOKEN.group) {
     return (
       <>
-        {OIM && OIM.M ? (
-          <Layout TOKEN={TOKEN} TITLE={OIM.M.F_RefNo}>
+        {OIMMAIN ? (
+          <Layout TOKEN={TOKEN} TITLE={OIMMAIN[0].RefNo}>
+            {/* HEAD - DONE */}
             <Head
-              REF={OIM.M.F_RefNo}
-              POST={OIM.M.F_PostDate}
-              PIC={OIM.M.F_U2ID}
+              REF={OIMMAIN[0].RefNo}
+              POST={OIMMAIN[0].PostDate}
               EMAIL={emailHref}
-              CUSTOMER={OIM.H.length ? OIM.H[0].CUSTOMER : false}
+              CUSTOMER={OIHMAIN && OIHMAIN[0].Customer_SName}
             />
             {/* Display only at print screen */}
             <p className="d-none d-print-block">
@@ -95,22 +94,20 @@ const Detail = ({ Cookie, OIM, OIMMAIN }) => {
               <Col lg={10}>
                 <Row>
                   <Info
-                    Master={OIM.M}
-                    House={OIM.H}
-                    Containers={OIM.C}
-                    Profit={OIM.P}
+                    Master={OIMMAIN[0]}
+                    House={OIHMAIN}
+                    Containers={CONTAINER}
                   />
                   <Col lg="6">
                     <Forms
-                      Master={OIM.M}
-                      House={OIM.H}
-                      Containers={OIM.C}
-                      AP={OIM.A}
+                      Master={OIMMAIN[0]}
+                      House={OIHMAIN}
+                      Containers={CONTAINER}
                       User={TOKEN}
                       Type="ocean"
                     />
                     <Status
-                      Ref={OIM.M.F_RefNo}
+                      Ref={OIMMAIN[0].RefNo}
                       Uid={TOKEN.uid}
                       Main="oimmain"
                     />
@@ -118,18 +115,23 @@ const Detail = ({ Cookie, OIM, OIMMAIN }) => {
                 </Row>
               </Col>
               <Col lg={2} className="mb-4">
+                {/* ROUTE - DONE */}
                 <Route
-                  ETA={OIM.M.F_ETA}
-                  ETD={OIM.M.F_ETD}
-                  FETA={OIM.M.F_FETA}
-                  DISCHARGE={OIM.M.F_DisCharge}
-                  LOADING={OIM.M.F_LoadingPort}
-                  DEST={OIM.M.F_FinalDest}
+                  ETA={OIMMAIN[0].ETA}
+                  ETD={OIMMAIN[0].ETD}
+                  FETA={OIMMAIN[0].FETA}
+                  DISCHARGE={OIMMAIN[0].DisCharge}
+                  LOADING={OIMMAIN[0].LoadingPort}
+                  DEST={OIMMAIN[0].FinalDest}
                 />
               </Col>
             </Row>
 
-            <Comment reference={OIM.M.F_RefNo} uid={TOKEN.uid} />
+            <Comment
+              reference={OIMMAIN[0].RefNo}
+              uid={TOKEN.uid}
+              main={OIMMAIN[0]}
+            />
           </Layout>
         ) : (
           <Layout TOKEN={TOKEN} TITLE="Not Found">
@@ -157,42 +159,151 @@ export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
-  // FETCH OIM EXT (OIMMAIN DATA + STATUS DATA)
+  // DEFINE FLASE VARIABLE, WHEN THE DATA IS NOT FETCHED, RETURN FALSE
+  var MAIN = false;
+  var HOUSE = false;
+  var CONTAINER = false;
+
+  // ----- FETCH OIM EXT (OIMMAIN DATA + STATUS DATA)
   const fetchOimmainExt = await fetch(
     `${process.env.FS_BASEPATH}oimmain_ext?RefNo=${query.Detail}`,
     {
       headers: { "x-api-key": process.env.JWT_KEY },
     }
   );
-
-  // DEFINE FLASE VARIABLE
-  var MAIN = false;
-
+  // ASSIGN MAIN
   if (fetchOimmainExt.status === 200) {
     MAIN = await fetchOimmainExt.json();
-  }
-
-  // IF DATA IS LOADED, FECTH OIM DETAIL INCLUDING HOUSE, AP, CONTAINER
-  if (MAIN) {
-    // FETCH OIM DATA FROM FREIGHT STREAM
-    const fetchOim = await fetch(
-      `${process.env.BASE_URL}api/forwarding/getOimDetail`,
-      { headers: { reference: query.Detail, key: cookies.jamesworldwidetoken } }
+    // ----- GET OIHMAIN FROM BLID
+    const fecthOihmain = await fetch(
+      `${process.env.FS_BASEPATH}oihmain?oimblid=${MAIN[0].ID}`,
+      {
+        headers: { "x-api-key": process.env.JWT_KEY },
+      }
     );
+    HOUSE = await fecthOihmain.json();
 
-    if (fetchOim.status === 200) {
-      // WHEN OIM IS EMPTY, THIS WILL RETURN THE NOT FOUND PAGE
-      const Oim = await fetchOim.json();
+    if (HOUSE.length > 0) {
+      for (var i = 0; i < HOUSE.length; i++) {
+        var APLIST = false;
+        const fetchAP = await fetch(
+          `${process.env.FS_BASEPATH}aphd?table=T_OIHMAIN&tbid=${HOUSE[i].ID}`,
+          {
+            headers: { "x-api-key": process.env.JWT_KEY },
+          }
+        );
+        // IF AP EXISTS
+        if (fetchAP.status === 200) {
+          const Ap = await fetchAP.json();
+          APLIST = Ap;
+          for (var j = 0; j < Ap.length; j++) {
+            const CompanyContactFetch = await fetch(
+              `${process.env.FS_BASEPATH}Company_CompanyContact/${Ap[j].PayTo}`,
+              {
+                headers: { "x-api-key": process.env.JWT_KEY },
+              }
+            );
+            if (CompanyContactFetch.status === 200) {
+              const Contact = await CompanyContactFetch.json();
+              //EACH HOUSE HAS AP MULTIPLE AP LIST
+              APLIST[j] = { ...APLIST[j], PayToCustomer: Contact };
+            } else {
+              APLIST[j] = { ...APLIST[j] };
+            }
+          }
+        }
+        HOUSE[i] = { ...HOUSE[i], AP: APLIST };
+      }
+
+      // ----- FETCH CONTAINER FROM BLID
+      const fecthOimContainer = await fetch(
+        `${process.env.FS_BASEPATH}oimcontainer_leftjoin_oihcontainer?oimblid=${MAIN[0].ID}`,
+        {
+          headers: { "x-api-key": process.env.JWT_KEY },
+        }
+      );
+      // ASSIGN CONTAINER
+      if (fecthOimContainer.status === 200) {
+        CONTAINER = await fecthOimContainer.json();
+      }
+    }
+    const TEST = Promise.all(HOUSE).then((house) => {
       return {
         props: {
           Cookie: cookies,
-          OIM: Oim,
           OIMMAIN: MAIN,
+          OIHMAIN: house,
+          CONTAINER,
         },
       };
-    }
+    });
+    return TEST;
+  } else {
+    return { props: { Cookie: cookies } };
   }
-  return { props: { Cookie: cookies } };
+  // IF DATA IS LOADED, FECTH OIM DETAIL INCLUDING HOUSE, AP, CONTAINER
+  // if (MAIN) {
+
+  //   // IF OIHMAIN EXISTS
+  //   if (HOUSE.length > 0) {
+  //     // FOR EACH OIHMAIN
+  //     const awaitForHouse = new Promise(async (resolve, reject) => {
+  //         HOUSE.map(async (house, i) => {
+  //         // FETCH AP DATA - OIHMAIN
+  //         const fetchHouseAP = await fetch(
+  //           `${process.env.FS_BASEPATH}aphd?table=T_OIHMAIN&tbid=${house.ID}`,
+  //           {
+  //             headers: { "x-api-key": process.env.JWT_KEY },
+  //           }
+  //         );
+  //         if (fetchHouseAP.status === 200) {
+  //           // IF HOUSE AP IS EXSIT, THEN FETCH COMPANY DATA
+  //           var HouseAP = await fetchHouseAP.json();
+  //           HOUSE[i] = { ...house, AP: HouseAP };
+  //           // FOR EACH AP
+  //           // HouseAP.map(async (ap, j) => {
+  //           //   // FETCH COMPANY WITH CONTACT DATA
+  //           //   const companyContactFetch = await fetch(
+  //           //     `${process.env.FS_BASEPATH}Company_CompanyContact/${ap.PayTo}`,
+  //           //     {
+  //           //       headers: { "x-api-key": process.env.JWT_KEY },
+  //           //     }
+  //           //   );
+  //           //   // IF COMPANY DATA EXIST
+  //           //   var company = {};
+  //           //   if (companyContactFetch.status === 200) {
+  //           //     company = await companyContactFetch.json();
+  //           //     // SAVE COMPANY DATA AT CURRENT AP
+  //           //     // HouseAP[j] = { ...ap, PayToCustomer: PayCustomer };
+  //           //   }
+  //           //   HouseAP[j] = { ...ap, PayToCustomer: company };
+  //           // });
+  //           // HOUSE[i] = { ...house, AP: HouseAP };
+  //         }
+  //       });
+  //       resolve(HOUSE);
+  //     });
+  //     awaitForHouse.then((ga) => console.log(ga));
+  //     return {
+  //       props: {
+  //         Cookie: cookies,
+  //         OIMMAIN: MAIN,
+  //         OIHMAIN: HOUSE,
+  //         CONTAINER,
+  //       },
+  //     };
+  //   }
+  //   // WHEN OIM IS EMPTY, THIS WILL RETURN THE NOT FOUND PAGE
+  //   return {
+  //     props: {
+  //       Cookie: cookies,
+  //       OIMMAIN: MAIN,
+  //       OIHMAIN: HOUSE,
+  //       CONTAINER,
+  //     },
+  //   };
+  // }
+  // IF MAIN IS NOT EXIST, THEN RETURN COOKIE ONLY
 }
 
 export default Detail;

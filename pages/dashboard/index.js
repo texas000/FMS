@@ -41,17 +41,9 @@ export default function dashboard({
   const [googleUser, setGoogleUser] = React.useState(false);
   const [value, setValue] = React.useState(false);
   React.useEffect(() => {
-    // console.log(TOKEN);
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         setGoogleUser(firebase.auth().currentUser);
-        // firebase
-        //   .firestore()
-        //   .collection("ppe")
-        //   .doc("JWGSAE_10001")
-        //   .onSnapshot((doc) => {
-        //     setValue(doc.data());
-        //   });
       } else {
         console.log("no google user");
       }
@@ -66,7 +58,7 @@ export default function dashboard({
     return (
       <Layout TOKEN={TOKEN} TITLE="Dashboard">
         <div className="d-sm-flex align-items-center justify-content-between mb-4 w-100">
-          <h1 className="h3 mb-0 text-gray-800">Dashboard</h1>
+          <h3 className="h3 mb-0 font-weight-light">Dashboard</h3>
           {/* <a
             href="#"
             className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"

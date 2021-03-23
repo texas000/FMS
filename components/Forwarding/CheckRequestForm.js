@@ -33,8 +33,16 @@ export const CheckRequestForm = ({
   comm,
   pod,
   due,
+  payTo,
 }) => (
-  <Document>
+  <Document
+    title={`AP FOR ${oim}`}
+    author="IT TEAM"
+    subject={`${oim} - ${inv}`}
+    keywords={`${type}, ${customer}, ${desc}`}
+    producer="JWIUSA.COM"
+    creator="JWIUSA.COM"
+  >
     <Page size="LETTER" style={styles.body}>
       <Text style={styles.title}>{type} REQUEST FORM</Text>
       {/* <Text style={{ fontSize: 10 }}>DATE: {today}</Text> */}
@@ -212,11 +220,29 @@ export const CheckRequestForm = ({
         <Table>
           <TableHeader>
             <TableCell style={styles.extraInfo}>
-              {`SHIPPER: ${shipper ? shipper : "NO SHIPPER"}\n\nCONSIGNEE: ${
-                consignee ? consignee : "NO CONSIGNEE"
-              }\n\nNOTIFY: ${notify ? notify : "NO NOTIFY"}\n\nCOMMODITY: ${
-                comm ? comm : "NO DATA"
-              }\n\nPOD: ${pod ? pod : "NO POD"}`}
+              {`PAYTO: ${
+                payTo &&
+                `${payTo.company.FName} @ ${payTo.company.Addr} ${payTo.company.City} ${payTo.company.ZipCode}`
+              }\n\nCONTACT: ${
+                payTo &&
+                payTo.hasOwnProperty("companycontact") &&
+                payTo.companycontact.length != 0
+                  ? `${
+                      payTo.companycontact[payTo.companycontact.length - 1]
+                        .Contact
+                    } - ${
+                      payTo.companycontact[payTo.companycontact.length - 1]
+                        .Phone
+                    } - ${
+                      payTo.companycontact[payTo.companycontact.length - 1]
+                        .EMail
+                    }`
+                  : "NO CONTACT FOUND"
+              }\n\nCOMMODITY: ${comm ? comm : "NO DATA"}\n\nPOD: ${
+                pod ? pod : "NO POD"
+              }\n\nTAX ID INFO: ${
+                payTo && `${payTo.company.IRSType} ${payTo.company.IRSNo}`
+              }`}
             </TableCell>
           </TableHeader>
         </Table>
@@ -285,7 +311,8 @@ const styles = StyleSheet.create({
     marginLeft: "10px",
     paddingTop: "10px",
     paddingBottom: "10px",
-    fontSize: 10,
+    fontSize: 9,
+    lineHeight: "3em",
     display: "flex",
     justifyContent: "flex-start",
   },

@@ -55,6 +55,11 @@ export default function blank({ Cookie }) {
     {
       dataField: "vendor.id",
       text: "VENDOR",
+      events: {
+        onClick: (e, columns, columnIndex, row) => {
+          router.push(`/dev/po/customer/${row.vendor.id}`);
+        },
+      },
       sort: true,
       headerSortingStyle,
     },
@@ -255,7 +260,7 @@ export default function blank({ Cookie }) {
     <Layout TOKEN={TOKEN} TITLE="Purchase Order Management">
       <div className="d-flex flex-sm-row justify-content-between mb-4">
         <div className="flex-column">
-          <h3>Purchase Order</h3>
+          <h3>Purchase Order Summary</h3>
         </div>
         <div className="flex-column">
           <button

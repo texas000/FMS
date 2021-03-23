@@ -1,8 +1,6 @@
 import { Col, Table } from "reactstrap";
 
-export const Info = ({ Master, House, Containers }) => {
-  const [selectedHouse, setSelectedHouse] = React.useState(0);
-
+export const Info = ({ Master }) => {
   function numberWithCommas(x) {
     var num = parseInt(x);
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -26,11 +24,15 @@ export const Info = ({ Master, House, Containers }) => {
             <tbody>
               <tr>
                 <th className="text-success">MBL</th>
-                <th className="text-secondary">{Master.F_Mblno}</th>
+                <th className="text-secondary">{Master.Mblno}</th>
               </tr>
               <tr>
                 <th className="text-success">CUSTOMER</th>
-                <th className="text-secondary">{Master.CUSTOMER}</th>
+                <th className="text-gray-800 btn-link">
+                  <a href={`/customer/${Master.Customer}`} target="_blank">
+                    {Master.Customer_SName}
+                  </a>
+                </th>
               </tr>
             </tbody>
           </Table>
@@ -40,34 +42,28 @@ export const Info = ({ Master, House, Containers }) => {
             <tbody>
               <tr>
                 <th className="text-success text-uppercase">commodity</th>
-                <th className="text-secondary">{Master.F_Commodity}</th>
+                <th className="text-secondary">{Master.Commodity}</th>
               </tr>
               <tr>
                 <th className="text-success text-uppercase">Package</th>
-                <th className="text-secondary">{Master.F_Pkgs}</th>
+                <th className="text-secondary">{Master.Pkgs}</th>
               </tr>
               <tr>
                 <th className="text-success text-uppercase">Unit</th>
-                <th className="text-secondary">{Master.F_Punit}</th>
+                <th className="text-secondary">{Master.Punit}</th>
               </tr>
               <tr>
                 <th className="text-success text-uppercase">i memo</th>
-                <th className="text-secondary">{Master.F_IMemo}</th>
+                <th className="text-secondary">{Master.IMemo}</th>
               </tr>
               <tr>
                 <th className="text-success text-uppercase">p memo</th>
-                <th className="text-secondary">{Master.F_PMemo}</th>
+                <th className="text-secondary">{Master.PMemo}</th>
               </tr>
               <tr>
                 <th className="text-success text-uppercase">type</th>
-                <th className="text-secondary">{Master.F_Type}</th>
+                <th className="text-secondary">{Master.Type}</th>
               </tr>
-              {Master.F_RefNo && (
-                <tr>
-                  <th className="text-success text-uppercase">Ref</th>
-                  <th className="text-secondary">{Master.F_RefNo}</th>
-                </tr>
-              )}
             </tbody>
           </Table>
         </div>

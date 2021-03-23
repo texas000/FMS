@@ -19,6 +19,7 @@ import {
   ModalFooter,
 } from "reactstrap";
 import BootstrapTable from "react-bootstrap-table-next";
+import "quill/dist/quill.snow.css";
 import moment from "moment";
 
 const Index = ({ Cookie, Board }) => {
@@ -86,21 +87,38 @@ const Index = ({ Cookie, Board }) => {
     },
   };
   const addNew = async () => {
-    const value = `N'${decodeURIComponent(
-      title.replace("'", "")
-    )}', N'${Text.replace(/\'/g, "''")}', GETDATE(), 1, 0, ${TOKEN.uid}`;
-    console.log(value);
-    const Fetch = await fetch("/api/board/addPost", {
-      body: value,
+    const Write = {
+      Title: title,
+      body: encodeURIComponent(Text),
+      UserID: TOKEN.uid,
+    };
+    const fetchs = await fetch("/api/board/postBoard", {
       method: "POST",
+      body: JSON.stringify(Write),
     });
-    if (Fetch.status === 200) {
-      alert("Upload success");
+    if (fetchs.status === 200) {
+      const Info = await fetchs.json();
+      console.log(Info);
     } else {
-      alert("Upload fail");
+      console.log(fetchs);
     }
-    toggle();
-    router.reload();
+
+    // const value = `N'${decodeURIComponent(
+    //   title.replace("'", "")
+    // )}', N'${Text.replace(/\'/g, "''")}', GETDATE(), 1, 0, ${TOKEN.uid}`;
+    // console.log(value);
+    // const Fetch = await fetch("/api/board/addPost", {
+    //   body: value,
+    //   method: "POST",
+    // });
+    // if (Fetch.status === 200) {
+    //   alert("Upload success");
+    // } else {
+    //   alert("Upload fail");
+    // }
+
+    // toggle();
+    // router.reload();
   };
 
   useEffect(() => {
@@ -138,9 +156,7 @@ const Index = ({ Cookie, Board }) => {
                 <InputGroup className="mb-2">
                   <Input
                     placeholder="TITLE"
-                    onChange={(e) =>
-                      setTitle(encodeURIComponent(e.target.value))
-                    }
+                    onChange={(e) => setTitle(e.target.value)}
                   />
                 </InputGroup>
               </ModalBody>

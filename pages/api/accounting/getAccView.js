@@ -15,11 +15,6 @@ const sqlConfig = {
 };
 
 export default async (req, res) => {
-  const token = jwt.decode(req.headers.key);
-  if (!token) {
-    res.status(401).send("Unauthorized");
-    return;
-  }
   if (req.headers.company == "undefined") {
     res.status(201).send([]);
     return;
