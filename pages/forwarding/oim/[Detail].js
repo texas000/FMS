@@ -47,9 +47,9 @@ const Detail = ({ Cookie, OIMMAIN, OIHMAIN, CONTAINER }) => {
   if (OIMMAIN) {
     mailSubject =
       OIHMAIN.length > 0
-        ? `[JW] ${OIHMAIN[0].Customer_SName} MBL# ${
+        ? `[JW] ${OIHMAIN && OIHMAIN[0].Customer_SName} MBL# ${
             OIMMAIN[0].MBLNo
-          } HBL# ${OIHMAIN.map((na) => `${na.HBLNo}`)} CNTR# ${
+          } HBL# ${OIHMAIN && OIHMAIN.map((na) => `${na.HBLNo}`)} CNTR# ${
             CONTAINER && CONTAINER.map((ga) => `${ga.oimcontainer.ContainerNo}`)
           } ETD ${moment(OIMMAIN[0].ETD).utc().format("l")} ETA ${moment(
             OIMMAIN[0].ETA
@@ -60,9 +60,9 @@ const Detail = ({ Cookie, OIMMAIN, OIHMAIN, CONTAINER }) => {
 
     mailBody =
       OIMMAIN.length === 1
-        ? `Dear ${OIHMAIN[0].Customer_SName}
+        ? `Dear ${OIHMAIN && OIHMAIN[0].Customer_SName}
       \nPlease note that there is an OCEAN IMPORT SHIPMENT for ${
-        OIHMAIN[0].Customer_SName
+        OIHMAIN && OIHMAIN[0].Customer_SName
       } scheduled to depart on ${moment(OIMMAIN[0].ETA).utc().format("LL")}.`
         : "";
 
@@ -181,129 +181,64 @@ export async function getServerSideProps({ req, query }) {
         headers: { "x-api-key": process.env.JWT_KEY },
       }
     );
-    HOUSE = await fecthOihmain.json();
+    if (fecthOihmain.status === 200) {
+      HOUSE = await fecthOihmain.json();
 
-    if (HOUSE.length > 0) {
-      for (var i = 0; i < HOUSE.length; i++) {
-        var APLIST = false;
-        const fetchAP = await fetch(
-          `${process.env.FS_BASEPATH}aphd?table=T_OIHMAIN&tbid=${HOUSE[i].ID}`,
-          {
-            headers: { "x-api-key": process.env.JWT_KEY },
-          }
-        );
-        // IF AP EXISTS
-        if (fetchAP.status === 200) {
-          const Ap = await fetchAP.json();
-          APLIST = Ap;
-          for (var j = 0; j < Ap.length; j++) {
-            const CompanyContactFetch = await fetch(
-              `${process.env.FS_BASEPATH}Company_CompanyContact/${Ap[j].PayTo}`,
-              {
-                headers: { "x-api-key": process.env.JWT_KEY },
+      if (HOUSE.length > 0) {
+        for (var i = 0; i < HOUSE.length; i++) {
+          var APLIST = false;
+          const fetchAP = await fetch(
+            `${process.env.FS_BASEPATH}aphd?table=T_OIHMAIN&tbid=${HOUSE[i].ID}`,
+            {
+              headers: { "x-api-key": process.env.JWT_KEY },
+            }
+          );
+          // IF AP EXISTS
+          if (fetchAP.status === 200) {
+            const Ap = await fetchAP.json();
+            APLIST = Ap;
+            for (var j = 0; j < Ap.length; j++) {
+              const CompanyContactFetch = await fetch(
+                `${process.env.FS_BASEPATH}Company_CompanyContact/${Ap[j].PayTo}`,
+                {
+                  headers: { "x-api-key": process.env.JWT_KEY },
+                }
+              );
+              if (CompanyContactFetch.status === 200) {
+                const Contact = await CompanyContactFetch.json();
+                //EACH HOUSE HAS AP MULTIPLE AP LIST
+                APLIST[j] = { ...APLIST[j], PayToCustomer: Contact };
+              } else {
+                APLIST[j] = { ...APLIST[j] };
               }
-            );
-            if (CompanyContactFetch.status === 200) {
-              const Contact = await CompanyContactFetch.json();
-              //EACH HOUSE HAS AP MULTIPLE AP LIST
-              APLIST[j] = { ...APLIST[j], PayToCustomer: Contact };
-            } else {
-              APLIST[j] = { ...APLIST[j] };
             }
           }
+          HOUSE[i] = { ...HOUSE[i], AP: APLIST };
         }
-        HOUSE[i] = { ...HOUSE[i], AP: APLIST };
-      }
-
-      // ----- FETCH CONTAINER FROM BLID
-      const fecthOimContainer = await fetch(
-        `${process.env.FS_BASEPATH}oimcontainer_leftjoin_oihcontainer?oimblid=${MAIN[0].ID}`,
-        {
-          headers: { "x-api-key": process.env.JWT_KEY },
-        }
-      );
-      // ASSIGN CONTAINER
-      if (fecthOimContainer.status === 200) {
-        CONTAINER = await fecthOimContainer.json();
       }
     }
-    const TEST = Promise.all(HOUSE).then((house) => {
-      return {
-        props: {
-          Cookie: cookies,
-          OIMMAIN: MAIN,
-          OIHMAIN: house,
-          CONTAINER,
-        },
-      };
-    });
-    return TEST;
+    // ----- FETCH CONTAINER FROM BLID
+    const fecthOimContainer = await fetch(
+      `${process.env.FS_BASEPATH}oimcontainer_leftjoin_oihcontainer?oimblid=${MAIN[0].ID}`,
+      {
+        headers: { "x-api-key": process.env.JWT_KEY },
+      }
+    );
+    // ASSIGN CONTAINER
+    if (fecthOimContainer.status === 200) {
+      CONTAINER = await fecthOimContainer.json();
+    }
+    return {
+      props: {
+        Cookie: cookies,
+        OIMMAIN: MAIN,
+        OIHMAIN: HOUSE,
+        CONTAINER,
+      },
+    };
   } else {
     return { props: { Cookie: cookies } };
   }
-  // IF DATA IS LOADED, FECTH OIM DETAIL INCLUDING HOUSE, AP, CONTAINER
-  // if (MAIN) {
-
-  //   // IF OIHMAIN EXISTS
-  //   if (HOUSE.length > 0) {
-  //     // FOR EACH OIHMAIN
-  //     const awaitForHouse = new Promise(async (resolve, reject) => {
-  //         HOUSE.map(async (house, i) => {
-  //         // FETCH AP DATA - OIHMAIN
-  //         const fetchHouseAP = await fetch(
-  //           `${process.env.FS_BASEPATH}aphd?table=T_OIHMAIN&tbid=${house.ID}`,
-  //           {
-  //             headers: { "x-api-key": process.env.JWT_KEY },
-  //           }
-  //         );
-  //         if (fetchHouseAP.status === 200) {
-  //           // IF HOUSE AP IS EXSIT, THEN FETCH COMPANY DATA
-  //           var HouseAP = await fetchHouseAP.json();
-  //           HOUSE[i] = { ...house, AP: HouseAP };
-  //           // FOR EACH AP
-  //           // HouseAP.map(async (ap, j) => {
-  //           //   // FETCH COMPANY WITH CONTACT DATA
-  //           //   const companyContactFetch = await fetch(
-  //           //     `${process.env.FS_BASEPATH}Company_CompanyContact/${ap.PayTo}`,
-  //           //     {
-  //           //       headers: { "x-api-key": process.env.JWT_KEY },
-  //           //     }
-  //           //   );
-  //           //   // IF COMPANY DATA EXIST
-  //           //   var company = {};
-  //           //   if (companyContactFetch.status === 200) {
-  //           //     company = await companyContactFetch.json();
-  //           //     // SAVE COMPANY DATA AT CURRENT AP
-  //           //     // HouseAP[j] = { ...ap, PayToCustomer: PayCustomer };
-  //           //   }
-  //           //   HouseAP[j] = { ...ap, PayToCustomer: company };
-  //           // });
-  //           // HOUSE[i] = { ...house, AP: HouseAP };
-  //         }
-  //       });
-  //       resolve(HOUSE);
-  //     });
-  //     awaitForHouse.then((ga) => console.log(ga));
-  //     return {
-  //       props: {
-  //         Cookie: cookies,
-  //         OIMMAIN: MAIN,
-  //         OIHMAIN: HOUSE,
-  //         CONTAINER,
-  //       },
-  //     };
-  //   }
-  //   // WHEN OIM IS EMPTY, THIS WILL RETURN THE NOT FOUND PAGE
-  //   return {
-  //     props: {
-  //       Cookie: cookies,
-  //       OIMMAIN: MAIN,
-  //       OIHMAIN: HOUSE,
-  //       CONTAINER,
-  //     },
-  //   };
-  // }
-  // IF MAIN IS NOT EXIST, THEN RETURN COOKIE ONLY
 }
 
 export default Detail;

@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import "@blueprintjs/core/lib/css/blueprint.css";
 
-const Head = ({ REF, POST, CREATED, MODIFIED, EMAIL, CUSTOMER }) => {
+const Head = ({ REF, POST, EMAIL, CUSTOMER }) => {
   const router = useRouter();
   const [show, setShow] = React.useState(false);
   const [msg, setMsg] = React.useState("");
@@ -41,10 +41,8 @@ const Head = ({ REF, POST, CREATED, MODIFIED, EMAIL, CUSTOMER }) => {
     <>
       <Row className="mb-2">
         <Col lg={6}>
-          <h3 className="text-gray-800 h4 font-weight-bold text-uppercase d-inline">
-            {REF}
-          </h3>
-          <h3 className="pl-2 text-primary h5 font-weight-bold text-uppercase d-inline">
+          <h3 className="text-gray-800 h3 text-uppercase d-inline">{REF}</h3>
+          <h3 className="pl-2 text-primary h5 text-uppercase d-inline">
             {CUSTOMER}
           </h3>
         </Col>

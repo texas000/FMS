@@ -184,40 +184,42 @@ export async function getServerSideProps({ req, query }) {
         headers: { "x-api-key": process.env.JWT_KEY },
       }
     );
-    HOUSE = await fecthOihmain.json();
+    if (fecthOihmain.status === 200) {
+      HOUSE = await fecthOihmain.json();
 
-    // IF OIHMAIN EXISTS
-    if (HOUSE.length > 0) {
-      // FOR EACH OIHMAIN
-      for (var i = 0; i < HOUSE.length; i++) {
-        var APLIST = false;
-        const fetchAP = await fetch(
-          `${process.env.FS_BASEPATH}aphd?table=T_OOHMAIN&tbid=${HOUSE[i].ID}`,
-          {
-            headers: { "x-api-key": process.env.JWT_KEY },
-          }
-        );
-        // IF AP EXISTS
-        if (fetchAP.status === 200) {
-          const Ap = await fetchAP.json();
-          APLIST = Ap;
-          for (var j = 0; j < Ap.length; j++) {
-            const CompanyContactFetch = await fetch(
-              `${process.env.FS_BASEPATH}Company_CompanyContact/${Ap[j].PayTo}`,
-              {
-                headers: { "x-api-key": process.env.JWT_KEY },
+      // IF OIHMAIN EXISTS
+      if (HOUSE.length > 0) {
+        // FOR EACH OIHMAIN
+        for (var i = 0; i < HOUSE.length; i++) {
+          var APLIST = false;
+          const fetchAP = await fetch(
+            `${process.env.FS_BASEPATH}aphd?table=T_OOHMAIN&tbid=${HOUSE[i].ID}`,
+            {
+              headers: { "x-api-key": process.env.JWT_KEY },
+            }
+          );
+          // IF AP EXISTS
+          if (fetchAP.status === 200) {
+            const Ap = await fetchAP.json();
+            APLIST = Ap;
+            for (var j = 0; j < Ap.length; j++) {
+              const CompanyContactFetch = await fetch(
+                `${process.env.FS_BASEPATH}Company_CompanyContact/${Ap[j].PayTo}`,
+                {
+                  headers: { "x-api-key": process.env.JWT_KEY },
+                }
+              );
+              if (CompanyContactFetch.status === 200) {
+                const Contact = await CompanyContactFetch.json();
+                //EACH HOUSE HAS AP MULTIPLE AP LIST
+                APLIST[j] = { ...APLIST[j], PayToCustomer: Contact };
+              } else {
+                APLIST[j] = { ...APLIST[j] };
               }
-            );
-            if (CompanyContactFetch.status === 200) {
-              const Contact = await CompanyContactFetch.json();
-              //EACH HOUSE HAS AP MULTIPLE AP LIST
-              APLIST[j] = { ...APLIST[j], PayToCustomer: Contact };
-            } else {
-              APLIST[j] = { ...APLIST[j] };
             }
           }
+          HOUSE[i] = { ...HOUSE[i], AP: APLIST };
         }
-        HOUSE[i] = { ...HOUSE[i], AP: APLIST };
       }
     }
 

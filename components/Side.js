@@ -1,10 +1,9 @@
-import { Collapse } from "reactstrap";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 
 const Sidebar = ({ Token, toggle, setToggle }) => {
   const router = useRouter();
   const [t1, setT1] = React.useState(false);
+  const [t2, setT2] = React.useState(false);
   const collapse = () => setToggle(!toggle);
   return (
     <ul
@@ -25,7 +24,6 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
             className="avatar"
             style={{ borderRadius: "50%", width: "35px", height: "35px" }}
           />
-          {/* <i className="fa fa-user"></i> */}
         </div>
         <div className="sidebar-brand-text mx-3">
           JWI FMS <sup>1.0.1</sup>
@@ -51,7 +49,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
       <hr className="sidebar-divider" />
 
       {/* <!-- Heading --> */}
-      <div className="sidebar-heading">Interface</div>
+      <div className="sidebar-heading">JW MENU</div>
 
       {/* Forwarding */}
 
@@ -203,7 +201,41 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           <span>PO</span>
         </a>
       </li>
-
+      <li className={`nav-item`}>
+        <a
+          className={`nav-link ${!t2 && "collapsed"}`}
+          href="#"
+          onClick={() => setT2(!t2)}
+          data-toggle="collapse"
+          data-target="#collapsePages"
+          aria-expanded={`${t2 ? "true" : "false"}`}
+          aria-controls="collapsePages"
+        >
+          <i className="fa fa-bar-chart"></i>
+          <span>Statistic</span>
+        </a>
+        {/* <Collapse isOpen={t2}> */}
+        <div className={`collapse ${t2 && "show"}`}>
+          <div className="bg-white py-2 collapse-inner rounded">
+            <h6 className="collapse-header">Company</h6>
+            <a
+              className="collapse-item"
+              href="#"
+              onClick={() => router.push("/statistic/month")}
+            >
+              Monthly
+            </a>
+            <a
+              className="collapse-item"
+              href="#"
+              onClick={() => router.push("/dev/payment")}
+            >
+              Payment
+            </a>           
+          </div>
+        </div>
+        {/* </Collapse> */}
+      </li>
       {/* <!-- Divider --> */}
       <hr className="sidebar-divider" />
 
@@ -214,18 +246,18 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           <div className="sidebar-heading">Addons</div>
           <li className={`nav-item`}>
             <a
-              className="nav-link collapsed"
+              className={`nav-link ${!t1 && "collapsed"}`}
               href="#"
               onClick={() => setT1(!t1)}
               data-toggle="collapse"
               data-target="#collapsePages"
-              aria-expanded="true"
+              aria-expanded={`${t1 ? "true" : "false"}`}
               aria-controls="collapsePages"
             >
               <i className="fa fa-folder"></i>
               <span>Pages</span>
             </a>
-            <Collapse isOpen={t1}>
+            <div className={`collapse ${t1 && "show"}`}>
               <div className="bg-white py-2 collapse-inner rounded">
                 <h6 className="collapse-header">Developing Pages</h6>
                 <a
@@ -259,7 +291,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
                   Blank Page
                 </a>
               </div>
-            </Collapse>
+            </div>
           </li>
           {/* <!-- Nav Item - Charts --> */}
           <li className="nav-item">

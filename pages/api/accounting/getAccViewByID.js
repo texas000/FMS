@@ -19,7 +19,7 @@ export default async (req, res) => {
     res.status(201).send([]);
     return;
   } else {
-    var Squery = `select * from V_JWI_ACCT where F_ID = '${req.headers.company}' AND F_InvoiceAmt!=F_PaidAmt order by F_DueDate desc;`;
+    var Squery = `select * from V_JWI_ACCT where F_BillTo = '${req.headers.company}' AND F_InvoiceAmt!=F_PaidAmt order by F_DueDate desc;`;
     const searchResult = await sql
       .connect(sqlConfig)
       .then((pool) => {
@@ -28,14 +28,14 @@ export default async (req, res) => {
       .then((result) => {
         sql.close();
         if (result.rowsAffected[0]) {
-          return result.recordsets[0];
+          return result.recordset;
         } else {
           return [];
         }
       })
       .catch((err) => {
         sql.close();
-        console.log("ERROR FROM getOimmain");
+        console.log("ERROR FROM getAccViewByID");
         console.log(err);
         res.status(400).send(err);
       });

@@ -12,7 +12,8 @@ import { formatAmountForDisplay } from "../../components/Utils/stripe-helpers";
 const Payment = ({ Cookie }) => {
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState({
-    customDonation: Math.round(5000 / 5),
+    customDonation: 100,
+    text: "",
   });
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -28,6 +29,7 @@ const Payment = ({ Cookie }) => {
     //Create a Cehckout Sesssion
     const response = await fetchPostJSON("/api/stripe/checkout_sessions", {
       amount: input.customDonation,
+      name: input.text,
     });
     if (response.statusCode === 500) {
       console.error(response.message);
@@ -46,35 +48,33 @@ const Payment = ({ Cookie }) => {
     <Layout TOKEN={jwt.decode(Cookie.jamesworldwidetoken)} TITLE="Payment">
       <Cart>
         <form onSubmit={handleSubmit}>
-          <label>
-            Custom Donation Amount{" "}
-            {`(${formatAmountForDisplay(10.0, "usd")}-${formatAmountForDisplay(
-              5000.0,
-              "usd"
-            )}):`}
-          </label>
+          <label>AMOUNT: </label>
           <input
-            className="checkout-style"
+            className="checkout-style mb-4"
             type="number"
             name="customDonation"
             value={input.customDonation}
-            min={10.0}
-            max={5000.0}
-            step={5.0}
+            min={1.0}
+            max={10000.0}
+            step={1.0}
             onChange={handleInputChange}
           ></input>
+          <br />
+          <label>CUSTOMER: </label>
           <input
-            className="checkout-style"
-            type="range"
-            name="customDonation"
-            value={input.customDonation}
-            min={10.0}
-            max={5000.0}
-            step={5.0}
-            onChange={handleInputChange}
-          ></input>
-          <button className="btn btn-primary" type="submit" disabled={loading}>
-            Donate {formatAmountForDisplay(input.customDonation, "usd")}
+            className="mb-4"
+            type="text"
+            name="customer"
+            value={input.text}
+            onChange={(e) => setInput({ ...input, text: e.target.value })}
+          />
+          <br />
+          <button
+            className="btn btn-outline-primary btn-sm"
+            type="submit"
+            disabled={loading}
+          >
+            Checkout {formatAmountForDisplay(input.customDonation, "usd")}
           </button>
         </form>
       </Cart>

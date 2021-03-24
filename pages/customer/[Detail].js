@@ -6,13 +6,14 @@ import { useRouter } from "next/router";
 import { formatAmountForDisplay } from "../../components/Utils/stripe-helpers";
 import { fetchPostJSON } from "../../components/Utils/api-helper";
 import getStripe from "../../components/Utils/get-stripejs";
+import { Comment } from "../../components/Forwarding/Comment";
 
 export default function Customer({ Cookie, Company, Id }) {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const [balance, setBalance] = React.useState(false);
+  const [invoice, setInvoice] = React.useState(false);
   React.useEffect(() => {
     !TOKEN && useRouter().push("/login");
-    // console.log(Company);
     getBalance();
   }, []);
 
@@ -30,6 +31,13 @@ export default function Customer({ Cookie, Company, Id }) {
     } else {
       console.log(balanceRes.status);
     }
+    const accRes = await fetch(`/api/accounting/getAccViewByID`, {
+      headers: {
+        company: Id,
+      },
+    });
+    const acc = await accRes.json();
+    setInvoice(acc);
   }
   const handleSubmit = async () => {
     const response = await fetchPostJSON("/api/stripe/checkout_sessions", {
@@ -68,7 +76,7 @@ export default function Customer({ Cookie, Company, Id }) {
                 </div>
               </div>
               <div className="card my-2">
-                <div className="card-header">Contract</div>
+                <div className="card-header">Contact</div>
                 <div className="card-body">
                   {Company.companycontact.length > 0 ? (
                     Company.companycontact.map((ga, i) => (
@@ -131,6 +139,37 @@ export default function Customer({ Cookie, Company, Id }) {
                         {balance.F_CrDr !== null &&
                           formatAmountForDisplay(balance.F_Balance, "usd")}
                       </p>
+                      <p>
+                        AR:{" "}
+                        {balance.F_AR != null &&
+                          formatAmountForDisplay(balance.F_AR, "usd")}
+                      </p>
+                      <p>
+                        AP:{" "}
+                        {balance.F_AP != null &&
+                          formatAmountForDisplay(balance.F_AP, "usd")}
+                      </p>
+                      <hr />
+                      <p>
+                        Last Pay Amount:{" "}
+                        {balance.F_LastPayAmount != null &&
+                          formatAmountForDisplay(
+                            balance.F_LastPayAmount,
+                            "usd"
+                          )}
+                      </p>
+                      <p>Last Pay: {balance.F_LastPayDate}</p>
+                      <hr />
+                      <p>
+                        Last Deposit Amount:{" "}
+                        {balance.F_LastDepositAmount != null &&
+                          formatAmountForDisplay(
+                            balance.F_LastDepositAmount,
+                            "usd"
+                          )}
+                      </p>
+                      <p>Last Deposit Date: {balance.F_LastDepositDate}</p>
+                      <hr />
                       <button
                         className="btn btn-outline-primary text-xs"
                         disabled={balance.F_Balance <= 0}
@@ -150,12 +189,34 @@ export default function Customer({ Cookie, Company, Id }) {
                   )}
                 </div>
               </div>
+              <div className="card">
+                <div className="card-header">Invoice</div>
+                <div className="card-body">
+                  {invoice &&
+                    invoice.map((ga) => (
+                      <div key={ga.F_ID + ga.F_TBName}>
+                        <p>Invoice: {ga.F_InvoiceNo} </p>
+                        <p>
+                          Amount:{" "}
+                          {formatAmountForDisplay(ga.F_InvoiceAmt, "usd")}
+                        </p>
+                        <p>
+                          Paid: {formatAmountForDisplay(ga.F_PaidAmt, "usd")}
+                        </p>
+                        <p>Due: {ga.F_DueDate}</p>
+                        <p>PIC: {ga.PIC}</p>
+                        <hr />
+                      </div>
+                    ))}
+                </div>
+              </div>
             </div>
           </div>
         </>
       ) : (
         <h3>{Id} NOT FOUND</h3>
       )}
+      <Comment reference={Id} uid={TOKEN.uid} main={Company.company} />
     </Layout>
   );
 }

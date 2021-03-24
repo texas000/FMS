@@ -60,14 +60,15 @@ export const Forms = ({ Master, House, Containers, User, Type }) => {
         />
       }
       fileName={Master.RefNo}
+      className="py-0 my-0"
     >
       {({ blob, url, loading, error }) => (
         <Button
           loading={loading}
-          text="DOWNLOAD"
+          text="COVER DOWNLOAD"
           icon="download"
           intent="primary"
-          className="mx-1"
+          className="mr-1"
           style={{ fontSize: "0.7rem" }}
         ></Button>
       )}
@@ -269,7 +270,7 @@ export const Forms = ({ Master, House, Containers, User, Type }) => {
         {isClient && (
           <div className="text-left">
             <ButtonGroup className="pl-1 mb-2">
-              <Tag
+              {/* <Tag
                 intent="none"
                 minimal="true"
                 className="font-weight-bold text-info"
@@ -277,25 +278,25 @@ export const Forms = ({ Master, House, Containers, User, Type }) => {
               >
                 COVER
               </Tag>
-              <Divider />
+              <Divider /> */}
               <CoverFormDownload />
               <CoverFormView />
             </ButtonGroup>
-            <Button
+            <Divider />
+            {/* <Button
               text="MAIL"
               icon="envelope"
               intent="primary"
-              className="mx-1 mb-2"
+              className="mx-1"
               onClick={mailThis}
               style={{ fontSize: "0.7rem", marginTop: "2px" }}
-            ></Button>
-            <br />
+            ></Button> */}
             <Popover2 content={ApMenu} placement="right-end">
               <Button
                 icon="multi-select"
                 style={{ fontSize: "0.7rem" }}
-                className="ml-1 mr-2"
-                text={`AP TYPE ${APType}`}
+                className="ml-1 mr-2 mt-2"
+                text={`AP TYPE: ${APType}`}
               />
             </Popover2>
             <br />

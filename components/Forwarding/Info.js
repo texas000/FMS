@@ -119,7 +119,7 @@ export const Info = ({ Master, House, Containers, Profit }) => {
 
       {/* HOUSE TABLE */}
       <div className="accordion my-4" id="accordionExample">
-        {House.length != 0 ? (
+        {House ? (
           House.map((ga, i) => (
             <div className="card border-left-primary shadow" key={ga.ID}>
               <div className="card-header py-1 d-flex flex-row align-items-center justify-content-between">
@@ -241,7 +241,11 @@ export const Info = ({ Master, House, Containers, Profit }) => {
         ) : (
           <div className="card border-left-danger shadow">
             <div className="card-header py-1 d-flex flex-row align-items-center justify-content-between">
-              <div className="text-s font-weight-bold text-danger text-uppercase btn btn-links py-1 pl-0">
+              <div className="text-s font-weight-bold text-danger text-uppercase py-1 pl-0">
+                <span className="fa-stack d-print-none">
+                  <i className="fa fa-circle fa-stack-2x text-danger"></i>
+                  <i className="fa fa-times fa-stack-1x fa-inverse"></i>
+                </span>
                 No House
               </div>
             </div>
