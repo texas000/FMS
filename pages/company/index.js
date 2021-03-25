@@ -39,7 +39,7 @@ const Account = ({ Cookie, Result }) => {
       style: { cursor: "pointer" },
       events: {
         onClick: (e, columns, columnIndex, row) => {
-          router.push(`/customer/${row.F_ID}`);
+          router.push(`/company/${row.F_ID}`);
         },
       },
     },
