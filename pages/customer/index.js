@@ -14,32 +14,41 @@ const Account = ({ Cookie, Result }) => {
     if (search.length < 2) {
       alert("SEARCH QUERY MUST BE GRATER THAN 2 WORDS");
     } else {
-      router.push({ pathname: `/account`, query: { search } });
+      router.push({ pathname: `/customer`, query: { search } });
     }
+  }
+  function indication() {
+    return (
+      <span className="font-weight-bold">
+        {router.query.search
+          ? `Your search "${router.query.search}" did not match any documents.`
+          : `Please search something`}
+      </span>
+    );
   }
 
   const column = [
     {
       dataField: "F_SName",
       text: "CUSTOMER",
-      headerClasses: "text-white",
-      classes: "text-white btn-link",
+      headerClasses: "text-gray-800",
+      classes: "text-gray-800 btn-link",
       headerStyle: { width: "50%" },
       events: {
         onClick: (e, columns, columnIndex, row) => {
-          router.push(`/account/company/${row.F_ID}`);
+          router.push(`/customer/${row.F_ID}`);
         },
       },
     },
     {
-      headerClasses: "text-white",
-      classes: "text-white",
+      headerClasses: "text-gray-800",
+      classes: "text-gray-800",
       dataField: "F_City",
       text: "CITY",
     },
     {
-      headerClasses: "text-white",
-      classes: "text-white",
+      headerClasses: "text-gray-800",
+      classes: "text-gray-800",
       dataField: "F_Country",
       text: "COUNTRY",
     },
@@ -51,10 +60,10 @@ const Account = ({ Cookie, Result }) => {
   }, []);
   if (TOKEN && TOKEN.group) {
     return (
-      <Layout TOKEN={TOKEN} TITLE="ACCOUNTING">
+      <Layout TOKEN={TOKEN} TITLE="Customer">
         <div className="d-flex flex-sm-row justify-content-between mb-4">
           <div className="flex-column">
-            <h3>Accounting</h3>
+            <h3 className="mb-4 font-weight-light">Customer</h3>
           </div>
           <div className="flex-column">
             <Input
@@ -76,7 +85,8 @@ const Account = ({ Cookie, Result }) => {
           hover
           striped
           condensed
-          wrapperClasses="table-responsive table-dark text-xs"
+          wrapperClasses="table-responsive text-xs"
+          noDataIndication={indication}
           data={Result}
           columns={column}
         />

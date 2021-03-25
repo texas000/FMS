@@ -73,7 +73,7 @@ export default function blank({ Cookie, Company }) {
                     {Company ? (
                       Company.map((ga, i) => (
                         <ListGroupItem
-                          key={ga.companyID}
+                          key={i}
                           action
                           className="d-flex justify-content-between align-items-center text-xs"
                         >

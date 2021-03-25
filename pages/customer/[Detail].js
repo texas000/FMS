@@ -7,11 +7,15 @@ import { formatAmountForDisplay } from "../../components/Utils/stripe-helpers";
 import { fetchPostJSON } from "../../components/Utils/api-helper";
 import getStripe from "../../components/Utils/get-stripejs";
 import { Comment } from "../../components/Forwarding/Comment";
+import { Dialog, Classes, Button } from "@blueprintjs/core";
+import "@blueprintjs/core/lib/css/blueprint.css";
 
 export default function Customer({ Cookie, Company, Id }) {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const [balance, setBalance] = React.useState(false);
   const [invoice, setInvoice] = React.useState(false);
+  const [open, setOpen] = React.useState(0);
+
   React.useEffect(() => {
     !TOKEN && useRouter().push("/login");
     getBalance();
@@ -58,6 +62,25 @@ export default function Customer({ Cookie, Company, Id }) {
     console.warn(error.message);
   };
 
+  const checkoutInvoice = async (amount, name) => {
+    const response = await fetchPostJSON("/api/stripe/checkout_sessions", {
+      amount,
+      name,
+      id: Id,
+    });
+    if (response.statusCode === 500) {
+      console.log("error from customer");
+      console.error(response.message);
+      return;
+    }
+
+    const stripe = await getStripe();
+    const { error } = await stripe.redirectToCheckout({
+      sessionId: response.id,
+    });
+    console.warn(error.message);
+  };
+
   return (
     <Layout TOKEN={jwt.decode(Cookie.jamesworldwidetoken)} TITLE="Customer">
       {Company ? (
@@ -65,9 +88,11 @@ export default function Customer({ Cookie, Company, Id }) {
           <h3>{Company.company.FName}</h3>
           <div className="row my-4 text-xs">
             <div className="col-md-6">
-              <div className="card">
-                <div className="card-header">Address</div>
+              <div className="card border-left-primary shadow">
                 <div className="card-body">
+                  <div className="text-xs font-weight-bold text-primary text-uppercase mb-3">
+                    Location
+                  </div>
                   <p className="text-xs">ADDRESS: {Company.company.Addr}</p>
                   <p className="text-xs">CITY: {Company.company.City}</p>
                   <p className="text-xs">STATE: {Company.company.State}</p>
@@ -75,9 +100,11 @@ export default function Customer({ Cookie, Company, Id }) {
                   <p className="text-xs">ZIP: {Company.company.ZipCode}</p>
                 </div>
               </div>
-              <div className="card my-2">
-                <div className="card-header">Contact</div>
+              <div className="card border-left-primary shadow my-2">
                 <div className="card-body">
+                  <div className="text-xs font-weight-bold text-primary text-uppercase mb-3">
+                    Contact
+                  </div>
                   {Company.companycontact.length > 0 ? (
                     Company.companycontact.map((ga, i) => (
                       <div key={ga.ID}>
@@ -97,36 +124,29 @@ export default function Customer({ Cookie, Company, Id }) {
                       </div>
                     ))
                   ) : (
-                    <div>NO CONTACT INFORMATION</div>
+                    <div className="alert alert-secondary mb-0">
+                      No Contact Information
+                    </div>
                   )}
+                </div>
+              </div>
+              <div className="card border-left-primary shadow my-2">
+                <div className="card-body">
+                  <div className="text-xs font-weight-bold text-primary text-uppercase mb-3">
+                    Tax Info
+                  </div>
+                  <p>TAX ID Type: {Company.company.IRSType}</p>
+                  <p>TAX ID: {Company.company.IRSNo}</p>
                 </div>
               </div>
             </div>
 
             <div className="col-md-6 text-xs">
-              <div className="card">
-                <div className="card-header">Information</div>
+              <div className="card border-left-success shadow mb-2">
                 <div className="card-body">
-                  <p>CREATED DATE: {Company.company.U1Date}</p>
-                  <p className="text-uppercase">
-                    CREATED BY: {Company.company.U1ID}
-                  </p>
-                  <p>MOST RECENT EDIT: {Company.company.U2Date}</p>
-                  <p className="text-uppercase">
-                    MOST RECENT EDIT BY: {Company.company.U2ID}
-                  </p>
-                </div>
-              </div>
-              <div className="card my-2">
-                <div className="card-header">Tax Info</div>
-                <div className="card-body">
-                  <p>TAX ID TYPE: {Company.company.IRSType}</p>
-                  <p>TAX ID: {Company.company.IRSNo}</p>
-                </div>
-              </div>
-              <div className="card my-2">
-                <div className="card-header">Balance</div>
-                <div className="card-body">
+                  <div className="text-xs font-weight-bold text-success text-uppercase mb-3">
+                    Balance
+                  </div>
                   {balance && (
                     <>
                       <p>
@@ -171,7 +191,7 @@ export default function Customer({ Cookie, Company, Id }) {
                       <p>Last Deposit Date: {balance.F_LastDepositDate}</p>
                       <hr />
                       <button
-                        className="btn btn-outline-primary text-xs"
+                        className="btn btn-outline-success text-xs"
                         disabled={balance.F_Balance <= 0}
                         onClick={handleSubmit}
                       >
@@ -189,25 +209,27 @@ export default function Customer({ Cookie, Company, Id }) {
                   )}
                 </div>
               </div>
-              <div className="card">
-                <div className="card-header">Invoice</div>
+              <div className="card border-left-success shadow">
                 <div className="card-body">
-                  {invoice &&
-                    invoice.map((ga) => (
-                      <div key={ga.F_ID + ga.F_TBName}>
-                        <p>Invoice: {ga.F_InvoiceNo} </p>
-                        <p>
-                          Amount:{" "}
-                          {formatAmountForDisplay(ga.F_InvoiceAmt, "usd")}
-                        </p>
-                        <p>
-                          Paid: {formatAmountForDisplay(ga.F_PaidAmt, "usd")}
-                        </p>
-                        <p>Due: {ga.F_DueDate}</p>
-                        <p>PIC: {ga.PIC}</p>
-                        <hr />
-                      </div>
-                    ))}
+                  <div className="text-xs font-weight-bold text-success text-uppercase mb-3">
+                    Pending Invoice
+                  </div>
+                  <ul className="list-group list-group-flush"></ul>
+                  {invoice && invoice.length > 0 ? (
+                    invoice.map((ga, i) => (
+                      <li
+                        className="list-group-item btn btn-link text-danger py-1 text-xs"
+                        key={ga.F_ID + ga.F_TBName}
+                        onClick={() => setOpen(i + 1)}
+                      >
+                        {ga.F_InvoiceNo}
+                      </li>
+                    ))
+                  ) : (
+                    <div className="alert alert-secondary mb-0">
+                      No Pending Invoice
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -217,6 +239,63 @@ export default function Customer({ Cookie, Company, Id }) {
         <h3>{Id} NOT FOUND</h3>
       )}
       <Comment reference={Id} uid={TOKEN.uid} main={Company.company} />
+      <Dialog
+        isOpen={open}
+        title="Invoice Detail"
+        icon="dollar"
+        onClose={() => setOpen(0)}
+      >
+        <div className={Classes.DIALOG_BODY}>
+          <div>
+            {open && (
+              <div>
+                <h4>{invoice[open - 1].F_InvoiceNo}</h4>
+                <p>
+                  INVOICE AMOUNT:{" "}
+                  {formatAmountForDisplay(
+                    invoice[open - 1].F_InvoiceAmt,
+                    "usd"
+                  )}
+                </p>
+                <p>
+                  TOTAL PAID:{" "}
+                  {formatAmountForDisplay(invoice[open - 1].F_PaidAmt, "usd")}
+                </p>
+                <p>DUE DATE: {invoice[open - 1].F_DueDate}</p>
+                <p>PERSON IN CHARGE: {invoice[open - 1].PIC}</p>
+                <p className="text-warning">
+                  Each transaction will charge transaction fee of 3%
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className={Classes.DIALOG_FOOTER}>
+          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+            <Button onClick={() => setOpen(0)}>Close</Button>
+            <Button
+              intent="primary"
+              onClick={() => {
+                if (open) {
+                  checkoutInvoice(
+                    invoice[open - 1].F_InvoiceAmt * 1.03,
+                    `${invoice[open - 1].CompanyName}(${
+                      invoice[open - 1].F_InvoiceNo
+                    })`
+                  );
+                }
+              }}
+            >
+              Checkout{" "}
+              {open &&
+                formatAmountForDisplay(
+                  invoice[open - 1].F_InvoiceAmt * 1.03,
+                  "usd"
+                )}
+            </Button>
+          </div>
+        </div>
+      </Dialog>
     </Layout>
   );
 }

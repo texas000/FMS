@@ -44,6 +44,7 @@ export default function blank({ Cookie }) {
     {
       dataField: "id",
       text: "PO",
+      classes: "btn-link text-success",
       events: {
         onClick: (e, columns, columnIndex, row) => {
           router.push(`/dev/po/${row.id}`);
@@ -55,6 +56,7 @@ export default function blank({ Cookie }) {
     {
       dataField: "vendor.id",
       text: "VENDOR",
+      classes: "btn-link text-primary",
       events: {
         onClick: (e, columns, columnIndex, row) => {
           router.push(`/dev/po/customer/${row.vendor.id}`);

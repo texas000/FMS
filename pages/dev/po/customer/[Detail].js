@@ -185,6 +185,19 @@ export default function blank({ Cookie, CUSTOMER }) {
       sort: true,
       headerSortingStyle,
     },
+    {
+      dataField: "final",
+      text: "FINAL",
+      formatter: (cell) => {
+        if (cell) {
+          return <i className="fa fa-times text-danger"></i>;
+        } else {
+          return <i className="fa fa-check text-success"></i>;
+        }
+      },
+      sort: true,
+      headerSortingStyle,
+    },
   ];
 
   const expandRow = {
@@ -283,19 +296,27 @@ export default function blank({ Cookie, CUSTOMER }) {
           <BootstrapTable
             keyField="id"
             condensed
-            wrapperClasses="table-responsive text-xs table-striped table-hover"
+            wrapperClasses="table-responsive text-xs"
             data={poData}
             columns={column}
             expandRow={expandRow}
           />
           <div className="col">
-            TOTAL AMOUNT:{" "}
-            {dollarFormat(poData.reduce((sum, { total }) => sum + total, 0))}
+            <div className="progress">
+              <div className="progress-bar bg-success w-100" role="progressbar">
+                {dollarFormat(
+                  poData.reduce((sum, { total }) => sum + total, 0)
+                )}
+              </div>
+            </div>
             <br />
-            TOTAL QTY:
-            {numberFormat(
-              poData.reduce((sum, { totalqty }) => sum + totalqty, 0)
-            )}
+            <div className="progress">
+              <div className="progress-bar bg-info w-100" role="progressbar">
+                {numberFormat(
+                  poData.reduce((sum, { totalqty }) => sum + totalqty, 0)
+                )}
+              </div>
+            </div>
           </div>
         </>
       )}
