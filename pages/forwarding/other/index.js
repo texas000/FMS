@@ -104,10 +104,11 @@ const Index = ({ Cookie, Result }) => {
       },
       classes:
         "text-xs text-center text-truncate text-uppercase font-weight-bold",
-      headerClasses: "text-xs text-primary text-center align-middle px-4",
+      headerClasses:
+        "text-x text-white text-center align-middle px-4 bg-primary pb-0 font-weight-light",
       sort: true,
       filter: textFilter({
-        className: "text-xs",
+        className: "text-xs bg-primary text-white border-0",
       }),
       headerSortingStyle,
     },
@@ -115,45 +116,56 @@ const Index = ({ Cookie, Result }) => {
       dataField: "Customer_SName",
       text: "CUSTOMER",
       classes: "text-xs text-truncate",
-      headerClasses: "text-xs w-25 text-primary text-center align-middle px-4",
+      headerClasses:
+        "text-x w-25 text-white bg-primary text-center align-middle pb-0 font-weight-light",
       sort: true,
       filter: textFilter({
-        className: "text-xs",
+        className: "text-xs w-100 bg-primary text-white border-0",
       }),
       headerSortingStyle,
     },
     {
-      dataField: "Mblno",
+      dataField: "MBLNo",
       text: "MBL",
-      classes: "text-xs text-truncate font-weight-light",
-      headerClasses: "text-xs text-primary text-center align-middle",
+      classes: "text-xs text-truncate",
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
       sort: true,
+      filter: textFilter({
+        className: "text-xs bg-primary text-white border-0",
+      }),
       headerSortingStyle,
     },
     {
-      dataField: "Hblno",
+      dataField: "HBLNo",
       text: "HBL",
-      classes: "text-xs text-truncate font-weight-light",
-      headerClasses: "text-xs text-primary text-center align-middle",
+      classes: "text-xs text-truncate",
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
       sort: true,
+      filter: textFilter({
+        className: "text-xs bg-primary text-white border-0",
+      }),
       headerSortingStyle,
     },
     {
       dataField: "ETD",
       text: "ETD",
-      classes: "text-xs text-truncate font-weight-light",
-      headerClasses: "text-xs text-primary text-center align-middle",
+      classes: "text-xs text-truncate",
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
       sort: true,
       headerSortingStyle,
+      filter: textFilter({
+        className: "text-xs bg-primary text-white border-0",
+      }),
       formatter: (cell) => {
         if (cell) {
           if (moment(cell).isSameOrBefore(moment())) {
-            return (
-              <div className="text-gray-500">{moment(cell).format("L")}</div>
-            );
+            return moment(cell).format("L");
           } else {
             return (
-              <div className="text-success">{moment(cell).format("L")}</div>
+              <div className="text-primary">{moment(cell).format("L")}</div>
             );
           }
         }
@@ -162,19 +174,21 @@ const Index = ({ Cookie, Result }) => {
     {
       dataField: "ETA",
       text: "ETA",
-      classes: "text-xs text-truncate font-weight-light",
-      headerClasses: "text-xs text-primary text-center align-middle",
+      classes: "text-xs text-truncate",
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
       sort: true,
       headerSortingStyle,
+      filter: textFilter({
+        className: "text-xs bg-primary text-white border-0",
+      }),
       formatter: (cell) => {
         if (cell) {
           if (moment(cell).isSameOrBefore(moment())) {
-            return (
-              <div className="text-gray-500">{moment(cell).format("L")}</div>
-            );
+            return moment(cell).format("L");
           } else {
             return (
-              <div className="text-success">{moment(cell).format("L")}</div>
+              <div className="text-primary">{moment(cell).format("L")}</div>
             );
           }
         }
@@ -183,19 +197,21 @@ const Index = ({ Cookie, Result }) => {
     {
       dataField: "PostDate",
       text: "POST",
-      classes: "text-xs text-truncate font-weight-light",
-      headerClasses: "text-xs text-primary text-center align-middle",
+      classes: "text-xs text-truncate",
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
       sort: true,
       headerSortingStyle,
+      filter: textFilter({
+        className: "text-xs bg-primary text-white border-0",
+      }),
       formatter: (cell) => {
         if (cell) {
           if (moment(cell).isSameOrBefore(moment())) {
-            return (
-              <div className="text-gray-500">{moment(cell).format("L")}</div>
-            );
+            return moment(cell).format("L");
           } else {
             return (
-              <div className="text-success">{moment(cell).format("L")}</div>
+              <div className="text-primary">{moment(cell).format("L")}</div>
             );
           }
         }
@@ -203,13 +219,14 @@ const Index = ({ Cookie, Result }) => {
     },
     {
       dataField: "U2ID",
-      text: "PIC",
+      text: "EDITOR",
       classes: "text-xs text-truncate text-uppercase",
-      headerClasses: "text-xs text-center text-primary px-4 align-middle",
+      headerClasses:
+        "text-x text-center text-white bg-primary px-4 align-middle pb-0 font-weight-light",
       sort: true,
       headerSortingStyle,
       filter: textFilter({
-        className: "text-xs",
+        className: "text-xs bg-primary text-white border-0",
       }),
     },
   ];
@@ -279,7 +296,8 @@ const Index = ({ Cookie, Result }) => {
                     hover
                     striped
                     condensed
-                    wrapperClasses="table-responsive"
+                    wrapperClasses="table-responsive rounded"
+                    bordered={false}
                     filter={filterFactory()}
                     noDataIndication={indication}
                     pagination={paginationFactory({

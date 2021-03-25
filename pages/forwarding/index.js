@@ -11,14 +11,14 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import moment from "moment";
 
-const Index = ({ Cookie, Re, Notifications, Result }) => {
+const Index = ({ Cookie, Re }) => {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const router = useRouter();
   const [search, setSearch] = useState(false);
 
   function indication() {
     return (
-      <span className="font-weight-bold">
+      <span>
         {router.query.search
           ? `Your search "${router.query.search}" did not match any documents.`
           : `Please search something`}
@@ -73,22 +73,23 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       },
       classes:
         "text-xs text-center text-truncate text-uppercase font-weight-bold",
-      headerClasses: "text-xs text-primary text-center align-middle px-4",
+      headerClasses:
+        "text-x text-white text-center align-middle px-4 bg-primary pb-0 font-weight-light",
       sort: true,
       filter: textFilter({
-        className: "text-xs",
+        className: "text-xs bg-primary text-white border-0",
       }),
-      headerStyle: { width: "10%" },
       headerSortingStyle,
     },
     {
       dataField: "CUSTOMER",
       text: "CUSTOMER",
       classes: "text-xs text-truncate",
-      headerClasses: "text-xs w-25 text-primary text-center align-middle px-4",
+      headerClasses:
+        "text-x w-25 text-white bg-primary text-center align-middle pb-0 font-weight-light",
       sort: true,
       filter: textFilter({
-        className: "text-xs",
+        className: "text-xs bg-primary text-white border-0",
       }),
       headerSortingStyle,
     },
@@ -96,8 +97,11 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       dataField: "MASTER_BLNO",
       text: "MBL",
       classes: "text-xs text-truncate font-weight-light",
-      headerClasses: "text-xs text-primary text-center align-middle",
-      headerStyle: { width: "10%" },
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
+      filter: textFilter({
+        className: "text-xs bg-primary text-white border-0",
+      }),
       sort: true,
       headerSortingStyle,
     },
@@ -105,8 +109,11 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       dataField: "HOUSE_BLNO",
       text: "HBL",
       classes: "text-xs text-truncate font-weight-light",
-      headerClasses: "text-xs text-primary text-center align-middle",
-      headerStyle: { width: "10%" },
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
+      filter: textFilter({
+        className: "text-xs bg-primary text-white border-0",
+      }),
       sort: true,
       headerSortingStyle,
     },
@@ -114,8 +121,11 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       dataField: "SHIPPER",
       text: "SHIPPER",
       classes: "text-xs text-truncate font-weight-light",
-      headerClasses: "text-xs text-primary text-center align-middle",
-      headerStyle: { width: "10%" },
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
+      filter: textFilter({
+        className: "text-xs bg-primary text-white border-0",
+      }),
       hidden: true,
       sort: true,
       headerSortingStyle,
@@ -124,8 +134,11 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       dataField: "ETD",
       text: "ETD",
       classes: "text-xs text-truncate font-weight-light",
-      headerClasses: "text-xs text-primary text-center align-middle",
-      headerStyle: { width: "10%" },
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
+      filter: textFilter({
+        className: "text-xs bg-primary text-white border-0",
+      }),
       sort: true,
       headerSortingStyle,
       formatter: (cell) => {
@@ -146,8 +159,11 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       dataField: "ETA",
       text: "ETA",
       classes: "text-xs text-truncate font-weight-light",
-      headerClasses: "text-xs text-primary text-center mx-4 align-middle",
-      headerStyle: { width: "10%" },
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
+      filter: textFilter({
+        className: "text-xs bg-primary text-white border-0",
+      }),
       sort: true,
       headerSortingStyle,
       formatter: (cell) => {
@@ -168,8 +184,11 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       dataField: "POSTDATE",
       text: "POST",
       classes: "text-xs text-truncate font-weight-light",
-      headerClasses: "text-xs text-primary text-center align-middle",
-      headerStyle: { width: "10%" },
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
+      filter: textFilter({
+        className: "text-xs bg-primary text-white border-0",
+      }),
       sort: true,
       headerSortingStyle,
       formatter: (cell) => {
@@ -190,12 +209,12 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
       dataField: "U2ID",
       text: "PIC",
       classes: "text-xs text-truncate text-uppercase",
-      headerClasses: "text-xs text-primary px-4 align-middle",
-      headerStyle: { width: "10%" },
+      headerClasses:
+        "text-x text-white bg-primary text-center align-middle pb-0 font-weight-light",
       sort: true,
       headerSortingStyle,
       filter: textFilter({
-        className: "text-xs",
+        className: "text-xs bg-primary text-white border-0",
       }),
     },
   ];
@@ -271,6 +290,7 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
           <div className="flex-column">
             <h3 className="mb-4 forwarding font-weight-light">Forwarding</h3>
           </div>
+          {/* PLEASE DONT DELETE THIS COMMENT!!!! */}
           {/* <div className="flex-column">
             <Input
               title="searchs"
@@ -377,7 +397,8 @@ const Index = ({ Cookie, Re, Notifications, Result }) => {
                     hover
                     striped
                     condensed
-                    wrapperClasses="table-responsive"
+                    wrapperClasses="table-responsive rounded"
+                    bordered={false}
                     filter={filterFactory()}
                     noDataIndication={indication}
                     pagination={paginationFactory({

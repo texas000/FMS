@@ -47,7 +47,7 @@ export const Info = ({ Master, House, Containers, Profit }) => {
               <tr>
                 <th className="text-success">AGENT</th>
                 <th className="text-secondary btn-link">
-                  <a href={`/customer/${Master.Agent}`} target="_blank">
+                  <a href={`/company/${Master.Agent}`} target="_blank">
                     {Master.Agent_SName}
                   </a>
                 </th>
@@ -55,7 +55,7 @@ export const Info = ({ Master, House, Containers, Profit }) => {
               <tr>
                 <th className="text-success">CARRIER</th>
                 <th className="text-secondary btn-link">
-                  <a href={`/customer/${Master.Carrier}`} target="_blank">
+                  <a href={`/company/${Master.Carrier}`} target="_blank">
                     {Master.Carrier_SName}
                   </a>
                 </th>
@@ -150,7 +150,7 @@ export const Info = ({ Master, House, Containers, Profit }) => {
                       <tr>
                         <th className="text-primary">CUSTOMER</th>
                         <th className="text-gray-800 btn-link">
-                          <a href={`/customer/${ga.Customer}`} target="_blank">
+                          <a href={`/company/${ga.Customer}`} target="_blank">
                             {ga.Customer_SName}
                           </a>
                         </th>
@@ -158,7 +158,7 @@ export const Info = ({ Master, House, Containers, Profit }) => {
                       <tr>
                         <th className="text-primary">SHIPPER</th>
                         <th className="text-gray-800 btn-link">
-                          <a href={`/customer/${ga.Shipper}`} target="_blank">
+                          <a href={`/company/${ga.Shipper}`} target="_blank">
                             {ga.Shipper_SName}
                           </a>
                         </th>
@@ -174,7 +174,7 @@ export const Info = ({ Master, House, Containers, Profit }) => {
                       <tr>
                         <th className="text-primary">NOTIFY</th>
                         <th className="text-gray-800 btn-link">
-                          <a href={`/customer/${ga.Notify}`} target="_blank">
+                          <a href={`/company/${ga.Notify}`} target="_blank">
                             {ga.Notify_SName}
                           </a>
                         </th>

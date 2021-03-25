@@ -26,6 +26,7 @@ const Index = ({ Cookie, Users, Member }) => {
   const toggle = () => setModal(!modal);
   useEffect(() => {
     !TOKEN && router.push("/login");
+    console.log(TOKEN);
   }, []);
 
   const onClickSave = async () => {

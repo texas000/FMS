@@ -29,7 +29,7 @@ export const Info = ({ Master }) => {
               <tr>
                 <th className="text-success">CUSTOMER</th>
                 <th className="text-gray-800 btn-link">
-                  <a href={`/customer/${Master.Customer}`} target="_blank">
+                  <a href={`/company/${Master.Customer}`} target="_blank">
                     {Master.Customer_SName}
                   </a>
                 </th>

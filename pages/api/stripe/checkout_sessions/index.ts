@@ -34,7 +34,7 @@ export default async function handler(
           },
         ],
         success_url: `${req.headers.origin}/dev/result?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${req.headers.origin}/customer/${id}`,
+        cancel_url: `${req.headers.origin}/company/${id}`,
       };
       const checkoutSession: Stripe.Checkout.Session = await stripe.checkout.sessions.create(
         params

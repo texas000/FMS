@@ -5,9 +5,7 @@ import React, { useState, useEffect } from "react";
 import fetch from "node-fetch";
 import moment from "moment";
 import { ListGroup, ListGroupItem } from "reactstrap";
-import { DateRangeInput } from "@blueprintjs/datetime";
 import { Toast, Toaster } from "@blueprintjs/core";
-import { Bar } from "react-chartjs-2";
 import "@blueprintjs/datetime/lib/css/blueprint-datetime.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 
@@ -126,10 +124,7 @@ export default function blank({ Cookie, Company }) {
                     {totalMonth.map((ga) => (
                       <tr key={ga.companyID}>
                         <th scope="row">
-                          <a
-                            href={`/customer/${ga.companyID}`}
-                            target="__blank"
-                          >
+                          <a href={`/company/${ga.companyID}`} target="__blank">
                             {ga.companySName}
                           </a>
                         </th>

@@ -82,7 +82,7 @@ export default function Customer({ Cookie, Company, Id }) {
   };
 
   return (
-    <Layout TOKEN={jwt.decode(Cookie.jamesworldwidetoken)} TITLE="Customer">
+    <Layout TOKEN={jwt.decode(Cookie.jamesworldwidetoken)} TITLE={Id}>
       {Company ? (
         <>
           <h3>{Company.company.FName}</h3>
@@ -275,6 +275,7 @@ export default function Customer({ Cookie, Company, Id }) {
             <Button onClick={() => setOpen(0)}>Close</Button>
             <Button
               intent="primary"
+              disabled={open && invoice[open - 1].F_InvoiceAmt <= 0}
               onClick={() => {
                 if (open) {
                   checkoutInvoice(

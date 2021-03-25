@@ -159,21 +159,16 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
         </li>
       )}
 
-      {Token.group === 501 ||
-        (Token.group === 221 && (
-          <li
-            className={`nav-item ${router.pathname == "/account" && "active"}`}
-          >
-            <a
-              className="nav-link"
-              href="#"
-              onClick={() => router.push("/account")}
-            >
-              <i className="fa fa-dollar"></i>
-              <span>Account</span>
-            </a>
-          </li>
-        ))}
+      <li className={`nav-item ${router.pathname == "/company" && "active"}`}>
+        <a
+          className="nav-link"
+          href="#"
+          onClick={() => router.push("/company")}
+        >
+          <i className="fa fa-address-card"></i>
+          <span>Company</span>
+        </a>
+      </li>
 
       {/* Board */}
 
@@ -201,41 +196,41 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           <span>PO</span>
         </a>
       </li>
-      <li className={`nav-item`}>
-        <a
-          className={`nav-link ${!t2 && "collapsed"}`}
-          href="#"
-          onClick={() => setT2(!t2)}
-          data-toggle="collapse"
-          data-target="#collapsePages"
-          aria-expanded={`${t2 ? "true" : "false"}`}
-          aria-controls="collapsePages"
-        >
-          <i className="fa fa-bar-chart"></i>
-          <span>Statistic</span>
-        </a>
-        {/* <Collapse isOpen={t2}> */}
-        <div className={`collapse ${t2 && "show"}`}>
-          <div className="bg-white py-2 collapse-inner rounded">
-            <h6 className="collapse-header">Company</h6>
-            <a
-              className="collapse-item"
-              href="#"
-              onClick={() => router.push("/statistic/month")}
-            >
-              Monthly
-            </a>
-            <a
-              className="collapse-item"
-              href="#"
-              onClick={() => router.push("/dev/payment")}
-            >
-              Payment
-            </a>           
+      {Token.admin > 3 && (
+        <li className={`nav-item`}>
+          <a
+            className={`nav-link ${!t2 && "collapsed"}`}
+            href="#"
+            onClick={() => setT2(!t2)}
+            data-toggle="collapse"
+            data-target="#collapsePages"
+            aria-expanded={`${t2 ? "true" : "false"}`}
+            aria-controls="collapsePages"
+          >
+            <i className="fa fa-bar-chart"></i>
+            <span>Statistic</span>
+          </a>
+          <div className={`collapse ${t2 && "show"}`}>
+            <div className="bg-white py-2 collapse-inner rounded">
+              <h6 className="collapse-header">Company</h6>
+              <a
+                className="collapse-item"
+                href="#"
+                onClick={() => router.push("/statistic/month")}
+              >
+                Monthly
+              </a>
+              <a
+                className="collapse-item"
+                href="#"
+                onClick={() => router.push("/dev/payment")}
+              >
+                Payment
+              </a>
+            </div>
           </div>
-        </div>
-        {/* </Collapse> */}
-      </li>
+        </li>
+      )}
       {/* <!-- Divider --> */}
       <hr className="sidebar-divider" />
 
