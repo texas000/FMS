@@ -45,7 +45,7 @@ export default function (req: NextApiRequest, res: NextApiResponse) {
             {
               username: result.recordset[0].F_ACCOUNT,
               uid: result.recordset[0].F_ID,
-              admin: result.recordset[0].F_GROUP == "1",
+              admin: parseInt(result.recordset[0].F_STATUS),
               group: parseInt(result.recordset[0].F_GROUP),
               email: result.recordset[0].F_EMAIL || false,
               first: result.recordset[0].F_FNAME,
