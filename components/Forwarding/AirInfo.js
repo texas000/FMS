@@ -84,21 +84,28 @@ export const Info = ({ Master, House, Containers }) => {
         {House.length != 0 ? (
           House.map((ga, i) => (
             <div className="card border-left-primary shadow" key={ga.ID}>
-              <div className="card-header py-1 d-flex flex-row align-items-center justify-content-between">
-                <div
-                  className="text-s font-weight-bold text-primary text-uppercase btn-links py-1 pl-0"
-                  style={{ cursor: "pointer" }}
-                  onClick={() =>
-                    selectedHouse === i + 1
-                      ? setSelectedHouse(0)
-                      : setSelectedHouse(i + 1)
-                  }
-                >
+              <div
+                className="card-header py-1 d-flex flex-row align-items-center justify-content-between"
+                style={{ cursor: "pointer" }}
+                onClick={() =>
+                  selectedHouse === i + 1
+                    ? setSelectedHouse(0)
+                    : setSelectedHouse(i + 1)
+                }
+              >
+                <div className="text-s font-weight-bold text-primary text-uppercase btn-links py-1 pl-0">
                   <span className="fa-stack d-print-none">
                     <i className="fa fa-circle fa-stack-2x text-primary"></i>
                     <i className="fa fa-home fa-stack-1x fa-inverse"></i>
                   </span>
                   House {i + 1}
+                </div>
+                <div className="dropdown">
+                  {selectedHouse === i + 1 ? (
+                    <i className="fa fa-chevron-down text-primary" />
+                  ) : (
+                    <i className="fa fa-chevron-left text-secondary" />
+                  )}
                 </div>
               </div>
               <div className={`collapse ${selectedHouse === i + 1 && "show"}`}>

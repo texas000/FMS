@@ -3,12 +3,12 @@ import React, { useEffect } from "react";
 import jwt from "jsonwebtoken";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
-import { Input } from "reactstrap";
 import { InputGroup, Menu, MenuItem, Button } from "@blueprintjs/core";
 import BootstrapTable from "react-bootstrap-table-next";
 import { Popover2 } from "@blueprintjs/popover2";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
+
 const Account = ({ Cookie, Result }) => {
   const router = useRouter();
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);

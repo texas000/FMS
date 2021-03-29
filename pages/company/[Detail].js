@@ -30,8 +30,8 @@ export default function Customer({ Cookie, Company, Id }) {
     });
     if (balanceRes.status === 200) {
       const balance = await balanceRes.json();
+      // console.log(balance);
       setBalance(balance[0]);
-      // console.log(balance[0]);
     } else {
       console.log(balanceRes.status);
     }
@@ -83,6 +83,12 @@ export default function Customer({ Cookie, Company, Id }) {
 
   return (
     <Layout TOKEN={jwt.decode(Cookie.jamesworldwidetoken)} TITLE={Id}>
+      {/* <Head>
+        <script
+          async
+          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDti1yLvLp4RYMBR2hHBDk7jltZU44xJqc"
+        ></script>
+      </Head> */}
       {Company ? (
         <>
           <h3>{Company.company.FName}</h3>
@@ -93,11 +99,28 @@ export default function Customer({ Cookie, Company, Id }) {
                   <div className="text-xs font-weight-bold text-primary text-uppercase mb-3">
                     Location
                   </div>
-                  <p className="text-xs">ADDRESS: {Company.company.Addr}</p>
-                  <p className="text-xs">CITY: {Company.company.City}</p>
-                  <p className="text-xs">STATE: {Company.company.State}</p>
-                  <p className="text-xs">COUNTRY: {Company.company.Country}</p>
-                  <p className="text-xs">ZIP: {Company.company.ZipCode}</p>
+                  <div className="row">
+                    <div className="col">
+                      <p className="text-xs">ADDRESS: {Company.company.Addr}</p>
+                      <p className="text-xs">CITY: {Company.company.City}</p>
+                      <p className="text-xs">STATE: {Company.company.State}</p>
+                      <p className="text-xs">
+                        COUNTRY: {Company.company.Country}
+                      </p>
+                      <p className="text-xs">ZIP: {Company.company.ZipCode}</p>
+                    </div>
+                    <div className="col">
+                      <a
+                        target="_blank"
+                        href={`https://www.google.com/maps/search/?api=1&query=${Company.company.Addr}+${Company.company.City}+${Company.company.State}+${Company.company.Country}`}
+                        style={{ textDecoration: "none" }}
+                      >
+                        <button className="btn btn-outline-primary btn-sm text-xs">
+                          <i className="fa fa-map"></i> Open with Google Maps
+                        </button>
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="card border-left-primary shadow my-2">
@@ -105,29 +128,45 @@ export default function Customer({ Cookie, Company, Id }) {
                   <div className="text-xs font-weight-bold text-primary text-uppercase mb-3">
                     Contact
                   </div>
-                  {Company.companycontact.length > 0 ? (
-                    Company.companycontact.map((ga, i) => (
-                      <div key={ga.ID}>
-                        {ga.Contact && (
-                          <p className="text-xs">CONTACT: {ga.Contact}</p>
-                        )}
-                        {ga.EMail && (
-                          <a target="__blank" href={`mailto:${ga.EMail}`}>
-                            <p className="text-xs">EMAIL: {ga.EMail}</p>
-                          </a>
-                        )}
-                        {ga.Phone && (
-                          <p className="text-xs">PHONE: {ga.Phone}</p>
-                        )}
-                        {ga.Fax && <p className="text-xs">FAX: {ga.Fax}</p>}
-                        {i !== Company.companycontact.length - 1 && <hr />}
+                  <div className="row">
+                    {Company.companycontact.length > 0 ? (
+                      Company.companycontact.map((ga, i) => (
+                        <div key={ga.ID} className="col-6">
+                          <div
+                            className="card mb-3"
+                            style={{ border: "1px solid #D3D3D3" }}
+                          >
+                            <div className="card-body pb-1 pt-3">
+                              <div className="row align-items-center">
+                                <div className="col-auto">
+                                  <i className="fa fa-address-card fa-2x text-gray-300 mb-2"></i>
+                                </div>
+                                <div className="col ml-2">
+                                  <p className="text-xs">NAME: {ga.Contact}</p>
+
+                                  <p className="text-xs">
+                                    EMAIL:{" "}
+                                    <a
+                                      target="__blank"
+                                      href={`mailto:${ga.Email}`}
+                                    >
+                                      {ga.EMail}
+                                    </a>
+                                  </p>
+                                  <p className="text-xs">PHONE: {ga.Phone}</p>
+                                  <p className="text-xs">FAX: {ga.Fax}</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="alert alert-secondary mb-0 col mx-2">
+                        No Contact Information
                       </div>
-                    ))
-                  ) : (
-                    <div className="alert alert-secondary mb-0">
-                      No Contact Information
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="card border-left-primary shadow my-2">
@@ -149,44 +188,76 @@ export default function Customer({ Cookie, Company, Id }) {
                   </div>
                   {balance && (
                     <>
-                      <p>
-                        Balance:{" "}
-                        {balance.F_Balance !== null &&
-                          formatAmountForDisplay(balance.F_Balance, "usd")}
-                      </p>
-                      <p>
-                        CR/DR:{" "}
-                        {balance.F_CrDr !== null &&
-                          formatAmountForDisplay(balance.F_Balance, "usd")}
-                      </p>
-                      <p>
-                        AR:{" "}
-                        {balance.F_AR != null &&
-                          formatAmountForDisplay(balance.F_AR, "usd")}
-                      </p>
-                      <p>
-                        AP:{" "}
-                        {balance.F_AP != null &&
-                          formatAmountForDisplay(balance.F_AP, "usd")}
-                      </p>
+                      <div className="row">
+                        <div className="col">
+                          <p>
+                            Balance:{" "}
+                            {formatAmountForDisplay(
+                              balance.F_Balance || 0,
+                              "usd"
+                            )}
+                          </p>
+                          <p>
+                            CR/DR:{" "}
+                            {formatAmountForDisplay(balance.F_CrDr || 0, "usd")}
+                          </p>
+                          <p>
+                            AR:{" "}
+                            {formatAmountForDisplay(balance.F_AR || 0, "usd")}
+                          </p>
+                          <p>
+                            AP:{" "}
+                            {formatAmountForDisplay(balance.F_AP || 0, "usd")}
+                          </p>
+                        </div>
+                        {/* <div className="col">
+                          <Doughnut
+                            data={{
+                              labels: ["Balance", "CRDR", "AR", "AP"],
+                              datasets: [
+                                {
+                                  data: [
+                                    parseFloat(balance.F_Balance || 0).toFixed(
+                                      2
+                                    ),
+                                    parseFloat(balance.F_CrDr || 0).toFixed(2),
+                                    parseFloat(balance.F_AR || 0).toFixed(2),
+                                    parseFloat(balance.F_AP || 0).toFixed(2),
+                                  ],
+                                  backgroundColor: [
+                                    "#4e73df",
+                                    "#858796",
+                                    "#4e73df",
+                                    "#858796",
+                                  ],
+                                  hoverBackgroundColor: [
+                                    "#4e73df",
+                                    "#858796",
+                                    "#4e73df",
+                                    "#858796",
+                                  ],
+                                },
+                              ],
+                            }}
+                          />
+                        </div> */}
+                      </div>
                       <hr />
                       <p>
                         Last Pay Amount:{" "}
-                        {balance.F_LastPayAmount != null &&
-                          formatAmountForDisplay(
-                            balance.F_LastPayAmount,
-                            "usd"
-                          )}
+                        {formatAmountForDisplay(
+                          balance.F_LastPayAmount || 0,
+                          "usd"
+                        )}
                       </p>
-                      <p>Last Pay: {balance.F_LastPayDate}</p>
+                      <p>Last Pay Date: {balance.F_LastPayDate}</p>
                       <hr />
                       <p>
                         Last Deposit Amount:{" "}
-                        {balance.F_LastDepositAmount != null &&
-                          formatAmountForDisplay(
-                            balance.F_LastDepositAmount,
-                            "usd"
-                          )}
+                        {formatAmountForDisplay(
+                          balance.F_LastDepositAmount || 0,
+                          "usd"
+                        )}
                       </p>
                       <p>Last Deposit Date: {balance.F_LastDepositDate}</p>
                       <hr />
@@ -290,7 +361,8 @@ export default function Customer({ Cookie, Company, Id }) {
               Checkout{" "}
               {open &&
                 formatAmountForDisplay(
-                  invoice[open - 1].F_InvoiceAmt * 1.03,
+                  (invoice[open - 1].F_InvoiceAmt -
+                    invoice[open - 1].F_PaidAmt || 0) * 1.03,
                   "usd"
                 )}
             </Button>

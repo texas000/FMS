@@ -19,7 +19,7 @@ export default async (req, res) => {
     res.status(201).send([]);
     return;
   } else {
-    var Squery = `select * from V_JWI_ACCT where F_BillTo = '${req.headers.company}' AND F_InvoiceAmt!=F_PaidAmt order by F_DueDate desc;`;
+    var Squery = `select * from V_JWI_ACCT where F_BillTo = '${req.headers.company}' AND F_InvoiceAmt!=F_PaidAmt AND F_InvoiceAmt>0 order by F_DueDate desc;`;
     const searchResult = await sql
       .connect(sqlConfig)
       .then((pool) => {

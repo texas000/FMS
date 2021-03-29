@@ -3,7 +3,7 @@ const moment = require("moment");
 
 const SQLconfig = {
   server: process.env.JWDB_SVR,
-  database: 'JWI_FMS',
+  database: "JWI_FMS",
   user: process.env.JWDB_USER,
   password: process.env.JWDB_PASS,
   options: {
@@ -22,13 +22,11 @@ export default async (req, res) => {
         console.log("sql error", err);
       });
       try {
-        console.log(`UPDATE T_TRUCK_COMPANY SET ${req.body}`)
+        // console.log(`UPDATE T_TRUCK_COMPANY SET ${req.body}`)
         await pool.connect();
         let result = await pool
           .request()
-          .query(
-            `UPDATE T_TRUCK_COMPANY SET ${req.body};`
-          );
+          .query(`UPDATE T_TRUCK_COMPANY SET ${req.body};`);
         if (result.rowsAffected[0]) {
           // IF THERE IS DATA RETURN RESULT
           res.status(200).end(JSON.stringify(result.recordsets[0]));
@@ -40,11 +38,11 @@ export default async (req, res) => {
         return { err: err };
       } finally {
         pool.close();
-        resolve()
+        resolve();
       }
     }
-    NEW()
-    resolve()
+    NEW();
+    resolve();
   });
 };
 
