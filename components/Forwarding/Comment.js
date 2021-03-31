@@ -19,7 +19,7 @@ import "firebase/storage";
 import { Tag, Toast, Toaster } from "@blueprintjs/core";
 import "@blueprintjs/core/lib/css/blueprint.css";
 
-export const Comment = ({ reference, uid, main }) => {
+export const Comment = ({ reference, uid, main, Firebase }) => {
   const [Comment, setComment] = React.useState(false);
   const [UpdatedComment, setUpdatedComment] = React.useState([]);
   const [Uploading, setUploading] = React.useState(false);
@@ -43,7 +43,7 @@ export const Comment = ({ reference, uid, main }) => {
     }
   };
   const firebaseConfig = {
-    apiKey: "AIzaSyBWvOh5KL16jU-rD2mYt-OY7hIhnCMBZ60",
+    apiKey: Firebase,
     authDomain: "jw-web-ffaea.firebaseapp.com",
     databaseURL: "https://jw-web-ffaea.firebaseio.com",
     projectId: "jw-web-ffaea",

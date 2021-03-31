@@ -36,22 +36,17 @@ const Index = ({ Cookie, Board }) => {
 
   const columns = [
     {
-      dataField: "ID",
-      text: "ID",
-      align: "center",
-      headerAlign: "center",
-      hidden: true,
-      sort: true,
-    },
-    {
       dataField: "TITLE",
       text: "TITLE",
       align: "center",
+      headerClasses: "text-white bg-primary font-weight-light",
+      classes: "btn-link",
       headerAlign: "center",
     },
     {
       dataField: "WRITER",
       text: "WRITER",
+      headerClasses: "text-white bg-primary font-weight-light",
       headerStyle: { width: "10%" },
       align: "center",
       headerAlign: "center",
@@ -59,6 +54,7 @@ const Index = ({ Cookie, Board }) => {
     {
       dataField: "VIEWS",
       text: "VIEWS",
+      headerClasses: "text-white bg-primary font-weight-light",
       headerStyle: { width: "10%" },
       align: "center",
       headerAlign: "center",
@@ -67,6 +63,7 @@ const Index = ({ Cookie, Board }) => {
     {
       dataField: "TIME",
       text: "TIME",
+      headerClasses: "text-white bg-primary font-weight-light",
       headerStyle: { width: "30%" },
       align: "center",
       headerAlign: "center",
@@ -102,23 +99,6 @@ const Index = ({ Cookie, Board }) => {
     } else {
       console.log(fetchs);
     }
-
-    // const value = `N'${decodeURIComponent(
-    //   title.replace("'", "")
-    // )}', N'${Text.replace(/\'/g, "''")}', GETDATE(), 1, 0, ${TOKEN.uid}`;
-    // console.log(value);
-    // const Fetch = await fetch("/api/board/addPost", {
-    //   body: value,
-    //   method: "POST",
-    // });
-    // if (Fetch.status === 200) {
-    //   alert("Upload success");
-    // } else {
-    //   alert("Upload fail");
-    // }
-
-    // toggle();
-    // router.reload();
   };
 
   useEffect(() => {
@@ -131,45 +111,44 @@ const Index = ({ Cookie, Board }) => {
           <meta charSet="utf-8" />
         </Head>
         <Layout TOKEN={TOKEN} TITLE="Board">
-          <Row>
-            <Col>
-              <div className="d-flex flex-sm-row justify-content-between">
-                <h3>Board</h3>
+          <div className="d-flex flex-sm-row justify-content-between">
+            <div className="flex-column">
+              <h3 className="mb-4 font-weight-light">Board</h3>
+            </div>
+            <div className="flex-column">
+              <Button
+                onClick={() => setModal(true)}
+                size="sm"
+                color="primary"
+                outline
+              >
+                Write <i className="fa fa-edit fa-lg ml-2"></i>
+              </Button>
+            </div>
+          </div>
 
-                <Button
-                  onClick={() => setModal(true)}
-                  size="sm"
-                  color="primary"
-                  outline
-                >
-                  Write <i className="fa fa-edit fa-lg ml-2"></i>
-                </Button>
-              </div>
-              {/* <p className="text-center text-primary">익명 사내 게시판은 직원 간의 정보 공유 / 기업문화 개선 제안 / 고민 상담 목적으로 만들어졌습니다</p> */}
-              {/* <p className="text-center">게시판 주의사항: 칭찬 환영, 삭제 및 수정 불가</p> */}
-            </Col>
-            <Modal isOpen={modal} toggle={toggle} size="lg">
-              <ModalHeader toggle={toggle} className="pl-4">
-                Share your idea..
-              </ModalHeader>
-              <ModalBody className="pt-4 px-4">
-                <InputGroup className="mb-2">
-                  <Input
-                    placeholder="TITLE"
-                    onChange={(e) => setTitle(e.target.value)}
+          <Modal isOpen={modal} toggle={toggle} size="lg">
+            <ModalHeader toggle={toggle} className="pl-4">
+              Share your idea..
+            </ModalHeader>
+            <ModalBody className="pt-4 px-4">
+              <InputGroup className="mb-2">
+                <Input
+                  placeholder="TITLE"
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </InputGroup>
+            </ModalBody>
+            <ModalBody className="px-4">
+              <InputGroup className="mb-4">
+                {ReactQuill && (
+                  <ReactQuill
+                    value={Text}
+                    onChange={setText}
+                    style={{ width: "100%" }}
                   />
-                </InputGroup>
-              </ModalBody>
-              <ModalBody className="px-4">
-                <InputGroup className="mb-4">
-                  {ReactQuill && (
-                    <ReactQuill
-                      value={Text}
-                      onChange={setText}
-                      style={{ width: "100%" }}
-                    />
-                  )}
-                  {/* <Input
+                )}
+                {/* <Input
                     type="textarea"
                     placeholder="TYPE HERE"
                     style={{ height: "20rem" }}
@@ -177,13 +156,13 @@ const Index = ({ Cookie, Board }) => {
                       setBody(encodeURIComponent(e.target.value))
                     }
                   /> */}
-                </InputGroup>
-              </ModalBody>
-              <Button className="mx-4 my-4" color="success" onClick={addNew}>
-                SUBMIT
-              </Button>
-            </Modal>
-          </Row>
+              </InputGroup>
+            </ModalBody>
+            <Button className="mx-4 my-4" color="success" onClick={addNew}>
+              SUBMIT
+            </Button>
+          </Modal>
+
           <Card className="bg-transparent border-0">
             <Row className="my-4">
               <Col>
@@ -191,7 +170,7 @@ const Index = ({ Cookie, Board }) => {
                   data={Board}
                   columns={columns}
                   rowEvents={rowEvents}
-                  wrapperClasses="table-responsive"
+                  wrapperClasses="table-responsive text-xs rounded"
                   keyField="ID"
                   striped
                   hover

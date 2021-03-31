@@ -20,10 +20,10 @@ import {
   Card,
 } from "reactstrap";
 
-export default function blank({ Cookie, PO }) {
+export default function blank({ Cookie, PO, Firebase }) {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const firebaseConfig = {
-    apiKey: "AIzaSyBWvOh5KL16jU-rD2mYt-OY7hIhnCMBZ60",
+    apiKey: Firebase,
     authDomain: "jw-web-ffaea.firebaseapp.com",
     databaseURL: "https://jw-web-ffaea.firebaseio.com",
     projectId: "jw-web-ffaea",
@@ -588,5 +588,11 @@ export async function getServerSideProps({ req, query }) {
     req ? req.headers.cookie || "" : window.document.cookie
   );
   // Pass data to the page via props
-  return { props: { Cookie: cookies, PO: query.Detail } };
+  return {
+    props: {
+      Cookie: cookies,
+      PO: query.Detail,
+      Firebase: process.env.FIREBASE_API_KEY,
+    },
+  };
 }

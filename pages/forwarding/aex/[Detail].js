@@ -14,7 +14,7 @@ import Info from "../../../components/Forwarding/AirInfo";
 import Forms from "../../../components/Forwarding/Forms";
 import Status from "../../../components/Forwarding/Status";
 
-const Detail = ({ Cookie, AOMMAIN, AOHMAIN }) => {
+const Detail = ({ Cookie, AOMMAIN, AOHMAIN, Firebase }) => {
   const router = useRouter();
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
 
@@ -124,6 +124,7 @@ const Detail = ({ Cookie, AOMMAIN, AOHMAIN }) => {
               reference={AOMMAIN[0].RefNo}
               uid={TOKEN.uid}
               main={AOMMAIN[0]}
+              Firebase={Firebase}
             />
           </Layout>
         ) : (
@@ -219,6 +220,7 @@ export async function getServerSideProps({ req, query }) {
         Cookie: cookies,
         AOMMAIN: MAIN,
         AOHMAIN: HOUSE,
+        Firebase: process.env.FIREBASE_API_KEY,
       },
     };
   }

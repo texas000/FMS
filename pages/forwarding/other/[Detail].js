@@ -14,7 +14,7 @@ import Forms from "../../../components/Forwarding/Forms";
 import Status from "../../../components/Forwarding/Status";
 import moment from "moment";
 
-const Detail = ({ Cookie, OTHER, GENMAIN, GENHOUSE }) => {
+const Detail = ({ Cookie, OTHER, GENMAIN, GENHOUSE, Firebase }) => {
   const router = useRouter();
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
 
@@ -86,6 +86,7 @@ const Detail = ({ Cookie, OTHER, GENMAIN, GENHOUSE }) => {
               reference={GENMAIN[0].RefNo}
               uid={TOKEN.uid}
               main={GENMAIN[0]}
+              Firebase={Firebase}
             />
           </Layout>
         ) : (
@@ -164,6 +165,7 @@ export async function getServerSideProps({ req, query }) {
         Cookie: cookies,
         GENMAIN: MAIN,
         GENHOUSE: HOUSE,
+        Firebase: process.env.FIREBASE_API_KEY,
       },
     };
   }

@@ -8,10 +8,10 @@ import "firebase/firestore";
 import moment from "moment";
 import { Input } from "reactstrap";
 
-export default function blank({ Cookie }) {
+export default function blank({ Cookie, Firebase }) {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const firebaseConfig = {
-    apiKey: "AIzaSyBWvOh5KL16jU-rD2mYt-OY7hIhnCMBZ60",
+    apiKey: Firebase,
     authDomain: "jw-web-ffaea.firebaseapp.com",
     databaseURL: "https://jw-web-ffaea.firebaseio.com",
     projectId: "jw-web-ffaea",
@@ -532,5 +532,5 @@ export async function getServerSideProps({ req }) {
   // console.timeEnd("fecth_time");
 
   // Pass data to the page via props
-  return { props: { Cookie: cookies } };
+  return { props: { Cookie: cookies, Firebase: process.env.FIREBASE_API_KEY } };
 }

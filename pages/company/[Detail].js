@@ -7,19 +7,29 @@ import { formatAmountForDisplay } from "../../components/Utils/stripe-helpers";
 import { fetchPostJSON } from "../../components/Utils/api-helper";
 import getStripe from "../../components/Utils/get-stripejs";
 import { Comment } from "../../components/Forwarding/Comment";
-import { Dialog, Classes, Button } from "@blueprintjs/core";
+import { Dialog, Classes, Button, InputGroup } from "@blueprintjs/core";
 import "@blueprintjs/core/lib/css/blueprint.css";
 
-export default function Customer({ Cookie, Company, Id }) {
+export default function Customer({ Cookie, Company, Id, Firebase }) {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
+  const router = useRouter();
   const [balance, setBalance] = React.useState(false);
   const [invoice, setInvoice] = React.useState(false);
   const [open, setOpen] = React.useState(0);
+  const [search, setSearch] = React.useState(false);
 
   React.useEffect(() => {
-    !TOKEN && useRouter().push("/login");
+    !TOKEN && router.push("/login");
     getBalance();
   }, []);
+
+  function getResult() {
+    if (search.length < 2) {
+      alert("SEARCH QUERY MUST BE GRATER THAN 2 WORDS");
+    } else {
+      router.push({ pathname: `/company`, query: { search } });
+    }
+  }
 
   async function getBalance() {
     const balanceRes = await fetch(`/api/accounting/getBalance`, {
@@ -91,7 +101,25 @@ export default function Customer({ Cookie, Company, Id }) {
       </Head> */}
       {Company ? (
         <>
-          <h3>{Company.company.FName}</h3>
+          <div className="d-flex flex-sm-row justify-content-between mb-0">
+            <div className="flex-column">
+              <h3 className="mb-4 font-weight-light">
+                {Company.company.FName}
+              </h3>
+            </div>
+            <div className="flex-column">
+              <InputGroup
+                large={true}
+                leftIcon="search"
+                placeholder="Search company..."
+                type="text"
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key == "Enter") getResult();
+                }}
+              ></InputGroup>
+            </div>
+          </div>
           <div className="row my-4 text-xs">
             <div className="col-md-6">
               <div className="card border-left-primary shadow">
@@ -112,7 +140,15 @@ export default function Customer({ Cookie, Company, Id }) {
                     <div className="col">
                       <a
                         target="_blank"
-                        href={`https://www.google.com/maps/search/?api=1&query=${Company.company.Addr}+${Company.company.City}+${Company.company.State}+${Company.company.Country}`}
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                          Company.company.Addr +
+                            "+" +
+                            Company.company.City +
+                            "+" +
+                            Company.company.State +
+                            "+" +
+                            Company.company.ZipCode
+                        )}`}
                         style={{ textDecoration: "none" }}
                       >
                         <button className="btn btn-outline-primary btn-sm text-xs">
@@ -309,7 +345,12 @@ export default function Customer({ Cookie, Company, Id }) {
       ) : (
         <h3>{Id} NOT FOUND</h3>
       )}
-      <Comment reference={Id} uid={TOKEN.uid} main={Company.company} />
+      <Comment
+        reference={Id}
+        uid={TOKEN.uid}
+        main={Company.company}
+        Firebase={Firebase}
+      />
       <Dialog
         isOpen={open}
         title="Invoice Detail"
@@ -397,6 +438,7 @@ export async function getServerSideProps({ req, query }) {
       Cookie: cookies,
       Company: company,
       Id: query.Detail,
+      Firebase: process.env.FIREBASE_API_KEY,
     },
   };
 }
