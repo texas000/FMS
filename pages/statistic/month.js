@@ -60,7 +60,9 @@ export default function blank({ Cookie, Company }) {
   return (
     <Layout TOKEN={TOKEN} TITLE="Top Of Month">
       <div className="d-sm-flex align-items-center justify-content-between mb-4 w-100">
-        <h3 className="h3 mb-0 font-weight-light">Top Of Month</h3>
+        <h3 className="h3 mb-0 font-weight-light">
+          Top Of Month ~ {moment().week()}
+        </h3>
       </div>
       <div className="row">
         <div className="col-xl-3 col-md-3 mb-4">
