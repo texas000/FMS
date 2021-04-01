@@ -17,6 +17,7 @@ export default function blank({ Cookie, Company }) {
   useEffect(() => {
     getWeeklyData();
   }, []);
+
   async function getWeeklyData() {
     for (var i = 0; i < 20; i++) {
       const fetchHouseCountWeekly = await fetch(
@@ -24,8 +25,11 @@ export default function blank({ Cookie, Company }) {
         {
           headers: {
             id: Company[i].companyID,
-            from: moment().subtract(21, "days").format("MM-DD-YYYY"),
-            to: moment().format("MM-DD-YYYY"),
+            from: moment()
+              .subtract(21, "days")
+              .day("Sunday")
+              .format("MM-DD-YYYY"),
+            to: moment().day("Saterday").format("MM-DD-YYYY"),
           },
         }
       );
@@ -151,8 +155,11 @@ export async function getServerSideProps({ req }) {
     req ? req.headers.cookie || "" : window.document.cookie
   );
   var company = false;
-  const fromDefault = moment().subtract(21, "days").format("MM-DD-YYYY");
-  const today = moment().format("MM-DD-YYYY");
+  const fromDefault = moment()
+    .subtract(21, "days")
+    .day("Sunday")
+    .format("MM-DD-YYYY");
+  const today = moment().day("Saterday").format("MM-DD-YYYY");
   const fecthCompany = await fetch(
     `${process.env.FS_BASEPATH}housecount_Companylist?etdFrom=${fromDefault}&etdTo=${today}`,
     {
@@ -162,6 +169,7 @@ export async function getServerSideProps({ req }) {
   if (fecthCompany.status === 200) {
     const com = await fecthCompany.json();
     company = [];
+    // console.log(com);
     for (var i = 0; i < 20; i++) {
       company.push(com[i]);
     }
