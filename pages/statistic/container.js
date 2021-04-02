@@ -25,10 +25,11 @@ export default function blank({ Cookie, Company }) {
     !TOKEN && router.push("/login");
     if (TOKEN.admin === 9 || TOKEN.admin === 5) {
       getWeeklyData();
-      Company.map((ga) => {
-        setCompanyname((prev) => [...prev, ga.companySName]);
-        setCompanycount((prev) => [...prev, ga.Count]);
-      });
+      Company &&
+        Company.map((ga) => {
+          setCompanyname((prev) => [...prev, ga.companySName]);
+          setCompanycount((prev) => [...prev, ga.Count]);
+        });
       return () => {
         setTotalMonth([]);
       };
@@ -195,22 +196,23 @@ export default function blank({ Cookie, Company }) {
                         </tr>
                       </thead>
                       <tbody>
-                        {totalMonth.map((ga) => (
-                          <tr key={ga.companyID}>
-                            <th scope="row">
-                              <a
-                                href={`/company/${ga.companyID}`}
-                                target="__blank"
-                              >
-                                {ga.companySName}
-                              </a>
-                            </th>
-                            <th>{ga.week[0].Count}</th>
-                            <th>{ga.week[1].Count}</th>
-                            <th>{ga.week[2].Count}</th>
-                            <th>{ga.week[3].Count}</th>
-                          </tr>
-                        ))}
+                        {totalMonth &&
+                          totalMonth.map((ga) => (
+                            <tr key={ga.companyID}>
+                              <th scope="row">
+                                <a
+                                  href={`/company/${ga.companyID}`}
+                                  target="__blank"
+                                >
+                                  {ga.companySName}
+                                </a>
+                              </th>
+                              <th>{ga.week[0].Count}</th>
+                              <th>{ga.week[1].Count}</th>
+                              <th>{ga.week[2].Count}</th>
+                              <th>{ga.week[3].Count}</th>
+                            </tr>
+                          ))}
                       </tbody>
                     </table>
                   </div>
