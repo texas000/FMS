@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import fetch from "node-fetch";
 import moment from "moment";
 import { ListGroup, ListGroupItem } from "reactstrap";
-import { DateRangeInput } from "@blueprintjs/datetime";
+import { DateRangeInput, IDateFormatProps } from "@blueprintjs/datetime";
 import { Toast, Toaster } from "@blueprintjs/core";
 import { Bar } from "react-chartjs-2";
 import "@blueprintjs/datetime/lib/css/blueprint-datetime.css";
@@ -97,17 +97,18 @@ export default function blank({ Cookie, Company }) {
   return (
     <Layout TOKEN={TOKEN} TITLE="Analysis">
       <div className="d-sm-flex align-items-center justify-content-between mb-4 w-100">
-        <h3 className="h3 mb-0 font-weight-light">Analysis</h3>
+        <h3 className="h3 mb-0 font-weight-light">Custom </h3>
         {/* formatDate={(date) => date.toLocaleString()}
         parseDate={(str) => new Date(str)} */}
         <DateRangeInput
-          formatDate={(date) => moment(date).format("MM/DD/YYYY")}
-          parseDate={(str) => moment(str, "MM/DD/YYYY")}
+          formatDate={(date) => (date == null ? "" : date.toLocaleDateString())}
+          parseDate={(str) => new Date(Date.parse(str))}
           onChange={(e) => handleChange(e)}
           value={range}
         />
       </div>
       <div className="row">
+        {JSON.stringify(range)}
         <div className="col-xl-3 col-md-3 mb-4">
           <div className="card border-left-primary shadow h-100 py-2">
             <div className="card-body">

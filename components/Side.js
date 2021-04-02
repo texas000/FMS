@@ -216,16 +216,23 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
               <a
                 className="collapse-item"
                 href="#"
-                onClick={() => router.push("/statistic/month")}
+                onClick={() => router.push("/statistic/custom")}
               >
-                Monthly
+                Custom
               </a>
               <a
                 className="collapse-item"
                 href="#"
-                onClick={() => router.push("/dev/payment")}
+                onClick={() => router.push("/statistic/house")}
               >
-                Payment
+                House
+              </a>
+              <a
+                className="collapse-item"
+                href="#"
+                onClick={() => router.push("/statistic/container")}
+              >
+                Container
               </a>
             </div>
           </div>
