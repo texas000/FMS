@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import moment from "moment";
 import sql from "mssql";
 import jwt from "jsonwebtoken";
 
@@ -24,19 +23,25 @@ export default function (req: NextApiRequest, res: NextApiResponse) {
 
     const { username, password } = req.body;
 
+    const safeUsername = username.replace(/[^0-9A-Za-z@-_]/g, "");
+    const safePassword = password.replace(
+      /[^0-9A-Za-z!@#$%&*()_\-+={[}\]|\:;"<,>.?\/\\~^`]/g,
+      ""
+    );
+
     const pool = new sql.ConnectionPool(SQLconfig);
     pool.on("error", (err) => {
       console.log("sql error", err);
     });
     await pool.connect();
 
-    const USER = `SELECT * from T_MEMBER WHERE F_ACCOUNT='${username}' AND F_PASSWORD='${password}';`;
+    const USER = `SELECT * from T_MEMBER WHERE F_ACCOUNT='${safeUsername}' AND F_PASSWORD='${safePassword}';`;
     const UPDATEQRY = `UPDATE T_MEMBER SET F_ISLOGIN='TRUE', F_BROWSER='${
       req.headers["user-agent"]
     }', F_LASTACCESSDATE=GETDATE(), F_IP='${req.connection.remoteAddress.replace(
       "::ffff:",
       ""
-    )}' WHERE F_ACCOUNT='${username}' AND F_PASSWORD='${password}';`;
+    )}' WHERE F_ACCOUNT='${safeUsername}' AND F_PASSWORD='${safePassword}';`;
 
     try {
       let result = await pool.request().query(USER + UPDATEQRY);
@@ -44,7 +49,7 @@ export default function (req: NextApiRequest, res: NextApiResponse) {
         res.json({
           token: jwt.sign(
             {
-              username,
+              username: safeUsername,
               uid: result.recordset[0].F_ID,
               admin: parseInt(result.recordset[0].F_STATUS),
               group: parseInt(result.recordset[0].F_GROUP),

@@ -159,7 +159,7 @@ export default function Customer({ Cookie, Company, Id, Firebase }) {
                   </div>
                 </div>
               </div>
-              <div className="card border-left-primary shadow my-2">
+              <div className="card border-left-primary shadow my-4">
                 <div className="card-body">
                   <div className="text-xs font-weight-bold text-primary text-uppercase mb-3">
                     Contact
@@ -169,8 +169,8 @@ export default function Customer({ Cookie, Company, Id, Firebase }) {
                       Company.companycontact.map((ga, i) => (
                         <div key={ga.ID} className="col-6">
                           <div
-                            className="card mb-3"
-                            style={{ border: "1px solid #D3D3D3" }}
+                            className="card shadow-sm mb-3"
+                            // style={{ border: "1px solid #D3D3D3" }}
                           >
                             <div className="card-body pb-1 pt-3">
                               <div className="row align-items-center">
@@ -184,7 +184,7 @@ export default function Customer({ Cookie, Company, Id, Firebase }) {
                                     EMAIL:{" "}
                                     <a
                                       target="__blank"
-                                      href={`mailto:${ga.Email}`}
+                                      href={`mailto:${ga.EMail}`}
                                     >
                                       {ga.EMail}
                                     </a>
@@ -217,7 +217,7 @@ export default function Customer({ Cookie, Company, Id, Firebase }) {
             </div>
 
             <div className="col-md-6 text-xs">
-              <div className="card border-left-success shadow mb-2">
+              <div className="card border-left-success shadow mb-4">
                 <div className="card-body">
                   <div className="text-xs font-weight-bold text-success text-uppercase mb-3">
                     Balance
@@ -297,17 +297,17 @@ export default function Customer({ Cookie, Company, Id, Firebase }) {
                       </p>
                       <p>Last Deposit Date: {balance.F_LastDepositDate}</p>
                       <hr />
-                      <button
-                        className="btn btn-outline-success text-xs"
+                      <Button
                         disabled={balance.F_Balance <= 0}
+                        intent="success"
                         onClick={handleSubmit}
                       >
-                        Credit Card Payment{" "}
+                        Check Out{" "}
                         {formatAmountForDisplay(
                           Math.round(balance.F_Balance * 1.03),
                           "usd"
                         )}
-                      </button>
+                      </Button>
                       <br />
                       <span className="text-secondary">
                         Each transaction will charge transaction fee of 3%
@@ -324,13 +324,29 @@ export default function Customer({ Cookie, Company, Id, Firebase }) {
                   <ul className="list-group list-group-flush"></ul>
                   {invoice && invoice.length > 0 ? (
                     invoice.map((ga, i) => (
-                      <li
-                        className="list-group-item btn btn-link text-danger py-1 text-xs"
+                      <Button
                         key={ga.F_ID + ga.F_TBName}
                         onClick={() => setOpen(i + 1)}
-                      >
-                        {ga.F_InvoiceNo}
-                      </li>
+                        small={true}
+                        intent="success"
+                        rightIcon="applications"
+                        outlined={true}
+                        className="mx-2 my-2"
+                        text={`${ga.F_InvoiceNo} | ${formatAmountForDisplay(
+                          ga.F_InvoiceAmt,
+                          "usd"
+                        )}`}
+                      ></Button>
+                      // <li
+                      //   className="list-group-item btn btn-link text-danger py-1 text-xs"
+                      //   key={ga.F_ID + ga.F_TBName}
+                      //   onClick={() => setOpen(i + 1)}
+                      // >
+                      //   {`${ga.F_InvoiceNo} - ${formatAmountForDisplay(
+                      //     ga.F_InvoiceAmt,
+                      //     "usd"
+                      //   )}`}
+                      // </li>
                     ))
                   ) : (
                     <div className="alert alert-secondary mb-0">
