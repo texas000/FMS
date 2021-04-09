@@ -55,6 +55,7 @@ export default function blank({ Cookie, Company }) {
       );
       if (fetchHouseCountWeekly.status === 200) {
         const HouseCountWeekly = await fetchHouseCountWeekly.json();
+        // console.log(HouseCountWeekly);
         setTotalMonth((prev) => [
           ...prev,
           { ...Company[i], week: HouseCountWeekly },
@@ -90,9 +91,9 @@ export default function blank({ Cookie, Company }) {
           <div className="row">
             <div className="col-12">
               <div className="card shadow mb-4">
-                <div className="card-body px-4 my-4">
+                <div className="card-body my-4">
                   <Line
-                    height={40}
+                    height={30}
                     options={{
                       legend: {
                         display: false,
@@ -119,7 +120,7 @@ export default function blank({ Cookie, Company }) {
                       labels: companyname,
                       datasets: [
                         {
-                          label: "Number of Containers at this month",
+                          label: "Number of House",
                           data: companycount,
                           fill: false,
                           borderColor: "#4e73df",
@@ -131,26 +132,43 @@ export default function blank({ Cookie, Company }) {
                 </div>
               </div>
             </div>
-            <div className="col-xl-3 col-md-3 mb-4">
-              <div className="card border-left-primary shadow h-100 py-2">
-                <div className="card-body">
+            <div className="col-xl-12 col-md-12 mb-4">
+              <div className="card border-left-primary shadow h-100 pt-2 pr-2">
+                <div
+                  className="card-body"
+                  style={{ overflow: "auto", whiteSpace: "nowrap" }}
+                >
                   <div className="row no-gutters align-items-center">
                     <div className="col mr-2">
                       <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
                         Company List
                       </div>
-                      <ListGroup className="mt-2">
+                      <ListGroup className="mt-2 list-group-horizontal">
                         {Company ? (
                           Company.map((ga, i) => (
                             <ListGroupItem
                               key={i}
                               action
-                              className="d-flex justify-content-between align-items-center text-xs"
+                              className="d-flex justify-content-between align-items-center text-xs btn"
+                              onClick={() => {
+                                setCompanyname([]);
+                                setCompanycount([]);
+                                totalMonth[i].week.map((ga) => {
+                                  setCompanyname((prev) => [
+                                    ...prev,
+                                    `WK ${ga.Week}`,
+                                  ]);
+                                  setCompanycount((prev) => [
+                                    ...prev,
+                                    ga.Count,
+                                  ]);
+                                });
+                              }}
                             >
-                              <span className="font-weight-bold">
+                              <span className="font-weight-bold mr-2">
                                 {ga.companySName}
                               </span>
-                              <span className="text-gray-800">{ga.Count}</span>
+                              <span className="text-primary">{ga.Count}</span>
                             </ListGroupItem>
                           ))
                         ) : (
@@ -164,8 +182,8 @@ export default function blank({ Cookie, Company }) {
                 </div>
               </div>
             </div>
-            <div className="col-xl-9 col-md-9 mb-4">
-              <div className="card shadow h-100 py-2">
+            <div className="col-xl-12 col-md-12 mb-4">
+              <div className="card border-left-primary shadow h-100 py-2">
                 <div className="card-body">
                   <div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
                     <table className="table table-striped">
