@@ -251,9 +251,15 @@ const Top = ({ Token, toggle, setToggle }) => {
           >
             <i className="fa fa-bell fa-fw"></i>
             {/* <!-- Counter - Alerts --> */}
-            <span className="badge badge-danger badge-counter">
-              {Notifications && Notifications.length}
-            </span>
+            {Notifications && (
+              <span
+                className={`badge ${
+                  Notifications.length ? "badge-danger" : "badge-secondary"
+                } badge-counter`}
+              >
+                {Notifications.length}
+              </span>
+            )}
           </a>
           {/* <!-- Dropdown - Alerts --> */}
           <div
@@ -410,7 +416,12 @@ const Top = ({ Token, toggle, setToggle }) => {
             <a
               className="dropdown-item"
               href="#"
-              onClick={() => router.push("/user/setting")}
+              onClick={() =>
+                router.push({
+                  pathname: "/user/setting",
+                  query: { page: 1 },
+                })
+              }
             >
               <i className="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
               Profile
@@ -418,7 +429,12 @@ const Top = ({ Token, toggle, setToggle }) => {
             <a
               className="dropdown-item"
               href="#"
-              onClick={() => router.push("/user/setting")}
+              onClick={() =>
+                router.push({
+                  pathname: "/user/setting",
+                  query: { page: 2 },
+                })
+              }
             >
               <i className="fa fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
               Settings
@@ -426,7 +442,12 @@ const Top = ({ Token, toggle, setToggle }) => {
             <a
               className="dropdown-item"
               href="#"
-              onClick={() => router.push("/user/setting")}
+              onClick={() =>
+                router.push({
+                  pathname: "/user/setting",
+                  query: { page: 3 },
+                })
+              }
             >
               <i className="fa fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
               Company Contacts

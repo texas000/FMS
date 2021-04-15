@@ -1,16 +1,14 @@
 var request = require("request");
 export default async (req, res) => {
   // Define Request Options, *** USE ENV VALUE FOR BASE URI ***
-  var body = JSON.parse(req.body);
   var options = {
-    method: "POST",
-    url: `${process.env.FS_BASEPATH}member`,
+    method: "GET",
+    url: `${process.env.FS_BASEPATH}containercount_Companylist?etdFrom=${req.headers.from}&etdTo=${req.headers.to}`,
     headers: {
       "cache-control": "no-cache",
       "content-type": "application/json",
       "x-api-key": process.env.JWT_KEY,
     },
-    body: body,
     json: true,
   };
 

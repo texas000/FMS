@@ -12,6 +12,7 @@ module.exports = withCSS({
     });
     return config;
   },
+  transpileModules: ["lodash-es"],
   async redirects() {
     //Temporary Redirect Index page to dashboard
     return [

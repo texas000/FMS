@@ -1,10 +1,10 @@
 var request = require("request");
 export default async (req, res) => {
   // Define Request Options, *** USE ENV VALUE FOR BASE URI ***
-  var body = JSON.parse(req.body);
+  const body = JSON.parse(req.body);
   var options = {
-    method: "POST",
-    url: `${process.env.FS_BASEPATH}member`,
+    method: "PUT",
+    url: `${process.env.FS_BASEPATH}member/${req.headers.id}`,
     headers: {
       "cache-control": "no-cache",
       "content-type": "application/json",

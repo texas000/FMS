@@ -6,7 +6,7 @@ import fetch from "node-fetch";
 import moment from "moment";
 import { ListGroup, ListGroupItem, Spinner } from "reactstrap";
 import { DateRangeInput } from "@blueprintjs/datetime";
-import { Button, Toast, Toaster } from "@blueprintjs/core";
+import { Button, Toast, Toaster, RadioGroup, Radio } from "@blueprintjs/core";
 import { Bar } from "react-chartjs-2";
 import "@blueprintjs/datetime/lib/css/blueprint-datetime.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
@@ -22,6 +22,7 @@ export default function blank({ Cookie }) {
   const [list, setList] = useState([]);
   const [show, setShow] = useState(false);
   const [msg, setMsg] = useState("");
+  const [type, setType] = useState("house");
   const [label, setLabel] = useState([]);
   const [cdata, setCdata] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -31,9 +32,11 @@ export default function blank({ Cookie }) {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
+    //If user is authorized to view this page
     if (TOKEN.admin === 9 || TOKEN.admin === 5) {
       console.log("ACCESS GRANTED");
     } else {
+      //If user is not authorized, then redirect to dashboard page
       alert("YOU ARE NOT AUTORIZED TO ACCESS");
       router.push("/dashboard");
     }
@@ -44,22 +47,43 @@ export default function blank({ Cookie }) {
   };
 
   const handleButtonClick = async () => {
+    // When search button clicked, reset company list and chart data
     setSelectedCompany([]);
     setCdata([]);
     setLabel([]);
     setHouseTotal(0);
+
+    // If one of the range is not selected, show the error message
     if (range[0] === null || range[1] === null) {
       alert("PLEASE SELECT FROM AND TO DATE");
     } else {
-      const fetchHouseCount = await fetch(`/api/admin/getHouseCount`, {
-        headers: {
-          from: moment(range[0]).format("L"),
-          to: moment(range[1]).format("L"),
-        },
-      });
-      if (fetchHouseCount.status === 200) {
-        const HouseCount = await fetchHouseCount.json();
-        setList(HouseCount);
+      // if the ranges are selected, fecth data based on type
+      if (type === "house") {
+        const fetchHouseCount = await fetch(`/api/admin/getHouseCount`, {
+          headers: {
+            from: moment(range[0]).format("L"),
+            to: moment(range[1]).format("L"),
+          },
+        });
+        if (fetchHouseCount.status === 200) {
+          const HouseCount = await fetchHouseCount.json();
+          setList(HouseCount);
+        }
+      }
+      if (type === "container") {
+        const fetchContainerCount = await fetch(
+          `/api/admin/getContainerCount`,
+          {
+            headers: {
+              from: moment(range[0]).format("L"),
+              to: moment(range[1]).format("L"),
+            },
+          }
+        );
+        if (fetchContainerCount.status === 200) {
+          const ContainerCount = await fetchContainerCount.json();
+          setList(ContainerCount);
+        }
       }
     }
   };
@@ -109,40 +133,83 @@ export default function blank({ Cookie }) {
     } else {
       // If new company is clicked, add the company to array
       setMsg(`Loading ${company.companySName}...`);
+
       setHouseTotal((prev) => prev + company.Count);
-      // Fetch data when the new company is clicked
-      const fetchHouseCount = await fetch(`/api/admin/getHouseCountWeekly`, {
-        headers: {
-          id: company.companyID,
-          from: moment(range[0]).format("L"),
-          to: moment(range[1]).format("L"),
-        },
-      });
-      if (fetchHouseCount.status === 200) {
-        const weekly = await fetchHouseCount.json();
-        // Append selectedCompany
-        setSelectedCompany((prev) => [...prev, { ...company, data: weekly }]);
 
-        // extract count integer value
-        var count = weekly.map((ga) => {
-          return ga.Count;
+      if (type === "house") {
+        // Fetch data when the new company is clicked
+        const fetchHouseCount = await fetch(`/api/admin/getHouseCountWeekly`, {
+          headers: {
+            id: company.companyID,
+            from: moment(range[0]).format("L"),
+            to: moment(range[1]).format("L"),
+          },
         });
+        if (fetchHouseCount.status === 200) {
+          const weekly = await fetchHouseCount.json();
+          // Append selectedCompany
+          setSelectedCompany((prev) => [...prev, { ...company, data: weekly }]);
 
-        var labels = weekly.map((ga) => {
-          return `${ga.Year} W${ga.Week}`;
-        });
-        setLabel(labels);
-        // sum up the value with previous
-        if (cdata.length > 0) {
-          var sum = cdata.map((num, i) => {
-            return num + count[i];
+          // extract count integer value
+          var count = weekly.map((ga) => {
+            return ga.Count;
           });
-          setCdata(sum);
-        } else {
-          setCdata(count);
+
+          var labels = weekly.map((ga) => {
+            return `${ga.Year} W${ga.Week}`;
+          });
+          setLabel(labels);
+          // sum up the value with previous
+          if (cdata.length > 0) {
+            var sum = cdata.map((num, i) => {
+              return num + count[i];
+            });
+            setCdata(sum);
+          } else {
+            setCdata(count);
+          }
+          setShow(true);
+          setLoading(false);
         }
-        setShow(true);
-        setLoading(false);
+      }
+      if (type === "container") {
+        // Fetch data when the new company is clicked
+        const fetchContainerCount = await fetch(
+          `/api/admin/getContainerWeekly`,
+          {
+            headers: {
+              id: company.companyID,
+              from: moment(range[0]).format("L"),
+              to: moment(range[1]).format("L"),
+            },
+          }
+        );
+        if (fetchContainerCount.status === 200) {
+          const weekly = await fetchContainerCount.json();
+          // Append selectedCompany
+          setSelectedCompany((prev) => [...prev, { ...company, data: weekly }]);
+
+          // extract count integer value
+          var count = weekly.map((ga) => {
+            return ga.Count;
+          });
+
+          var labels = weekly.map((ga) => {
+            return `${ga.Year} W${ga.Week}`;
+          });
+          setLabel(labels);
+          // sum up the value with previous
+          if (cdata.length > 0) {
+            var sum = cdata.map((num, i) => {
+              return num + count[i];
+            });
+            setCdata(sum);
+          } else {
+            setCdata(count);
+          }
+          setShow(true);
+          setLoading(false);
+        }
       }
     }
   };
@@ -150,9 +217,9 @@ export default function blank({ Cookie }) {
     if (TOKEN.admin === 9 || TOKEN.admin === 5) {
       return (
         <Layout TOKEN={TOKEN} TITLE="Custom Statistic">
-          <div className="d-sm-flex align-items-center justify-content-between mb-4 w-100">
+          <div className="d-sm-flex justify-content-between mb-4 w-100">
             <h3 className="h3 mb-0 font-weight-light">Custom Statistic</h3>
-            <div className="text-center">
+            <div className="text-center mt-4">
               <DateRangeInput
                 formatDate={(date) =>
                   date == null ? "" : date.toLocaleDateString()
@@ -168,9 +235,22 @@ export default function blank({ Cookie }) {
                 icon="search"
               />
             </div>
-            <h5 className="h5 mb-0 font-weight-light">{`${moment(
+
+            <RadioGroup
+              className="py-0"
+              label="Select Type"
+              selectedValue={type}
+              onChange={(e) => {
+                setType(e.target.value);
+              }}
+              name="type_selector"
+            >
+              <Radio label="House" value="house" />
+              <Radio label="Container" value="container" />
+            </RadioGroup>
+            {/* <h5 className="h5 mb-0 font-weight-light">{`${moment(
               range[0]
-            ).format("L")} - ${moment(range[1]).format("L")}`}</h5>
+            ).format("L")} - ${moment(range[1]).format("L")}`}</h5> */}
           </div>
           <div className="row">
             <div className="col-xl-3 col-md-3 mb-4">
@@ -179,7 +259,7 @@ export default function blank({ Cookie }) {
                   <div className="row no-gutters align-items-center">
                     <div className="col mr-2">
                       <div className="text-xs font-weight-bold text-primary text-uppercase mb-3">
-                        Company List with House Count
+                        {type} Count List
                       </div>
                       <ListGroup>
                         {list ? (
@@ -232,7 +312,8 @@ export default function blank({ Cookie }) {
                           })}
                       </div>
                       <div className="text-xs font-weight-bold mb-4">
-                        {houseTotal != 0 && `Total House Count: ${houseTotal}`}
+                        {houseTotal != 0 &&
+                          `Total ${type} count: ${houseTotal}`}
                       </div>
                       {list.length > 0 &&
                         selectedCompany &&

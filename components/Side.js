@@ -197,46 +197,60 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
         </a>
       </li>
       {Token.admin > 3 && (
-        <li className={`nav-item`}>
-          <a
-            className={`nav-link ${!t2 && "collapsed"}`}
-            href="#"
-            onClick={() => setT2(!t2)}
-            data-toggle="collapse"
-            data-target="#collapsePages"
-            aria-expanded={`${t2 ? "true" : "false"}`}
-            aria-controls="collapsePages"
-          >
-            <i className="fa fa-bar-chart"></i>
-            <span>Statistic</span>
-          </a>
-          <div className={`collapse ${t2 && "show"}`}>
-            <div className="bg-white py-2 collapse-inner rounded">
-              <h6 className="collapse-header">Company</h6>
-              <a
-                className="collapse-item"
-                href="#"
-                onClick={() => router.push("/statistic/custom")}
-              >
-                Custom
-              </a>
-              <a
-                className="collapse-item"
-                href="#"
-                onClick={() => router.push("/statistic/house")}
-              >
-                House
-              </a>
-              <a
-                className="collapse-item"
-                href="#"
-                onClick={() => router.push("/statistic/container")}
-              >
-                Container
-              </a>
+        <>
+          <li className="nav-item">
+            <a
+              className={`nav-link ${!t2 && "collapsed"}`}
+              href="#"
+              onClick={() => setT2(!t2)}
+              data-toggle="collapse"
+              data-target="#collapsePages"
+              aria-expanded={`${t2 ? "true" : "false"}`}
+              aria-controls="collapsePages"
+            >
+              <i className="fa fa-bar-chart"></i>
+              <span>Statistic</span>
+            </a>
+            <div className={`collapse ${t2 && "show"}`}>
+              <div className="bg-white py-2 collapse-inner rounded">
+                <h6 className="collapse-header">Company</h6>
+                <a
+                  className="collapse-item"
+                  href="#"
+                  onClick={() => router.push("/statistic/custom")}
+                >
+                  Custom
+                </a>
+                <a
+                  className="collapse-item"
+                  href="#"
+                  onClick={() => router.push("/statistic/house")}
+                >
+                  House
+                </a>
+                <a
+                  className="collapse-item"
+                  href="#"
+                  onClick={() => router.push("/statistic/container")}
+                >
+                  Container
+                </a>
+              </div>
             </div>
-          </div>
-        </li>
+          </li>
+          {Token.admin === 9 && (
+            <li className="nav-item">
+              <a
+                className="nav-link"
+                href="#"
+                onClick={() => router.push("/hr")}
+              >
+                <i className="fa fa-user"></i>
+                <span>Human Resource</span>
+              </a>
+            </li>
+          )}
+        </>
       )}
       {/* <!-- Divider --> */}
       <hr className="sidebar-divider" />

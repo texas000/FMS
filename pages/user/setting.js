@@ -11,10 +11,10 @@ import Label from "reactstrap/lib/Label";
 import FormGroup from "reactstrap/lib/FormGroup";
 import Button from "reactstrap/lib/Button";
 
-const Index = ({ Cookie, Users, Member }) => {
+const Index = ({ Cookie, Users, Member, Page }) => {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(Page);
   const [modal, setModal] = useState(false);
   const [ChangeUser, setChangeUser] = useState(false);
 
@@ -23,47 +23,91 @@ const Index = ({ Cookie, Users, Member }) => {
 
   // const MemberIndex = Member.findIndex((x) => x.ID === TOKEN.uid);
 
-  const toggle = () => setModal(!modal);
+  // const toggle = () => setModal(!modal);
   useEffect(() => {
     !TOKEN && router.push("/login");
-    console.log(TOKEN);
-  }, []);
+    setActiveTab(Page);
+  }, [Page]);
 
-  const onClickSave = async () => {
-    setType("Edit");
-    const Query = `F_FSID='${ChangeUser.F_FSID}', F_FNAME='${ChangeUser.F_FNAME}', F_LNAME='${ChangeUser.F_LNAME}', F_ACCOUNT='${ChangeUser.F_ACCOUNT}', F_GROUP=${ChangeUser.F_GROUP}, F_EMAIL='${ChangeUser.F_EMAIL}', F_UPDATEDATE=GETDATE() WHERE F_ID='${ChangeUser.F_ID}'`;
-    const fetchs = await fetch("/api/admin/editUsers", {
-      method: "POST",
-      body: Query,
-    });
-    if (fetchs.status === 200) {
-      alert("Saved Successfully");
-      toggle();
-    } else {
-      alert("Please try again");
-      console.log(fetchs);
-    }
-  };
+  const MemberList = () => (
+    <table className="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Extension</th>
+          <th>Number</th>
+          <th>Email</th>
+        </tr>
+      </thead>
+      <tbody style={{ fontSize: "0.8rem" }}>
+        {Member &&
+          Member.sort((a, b) => (a.GROUP > b.GROUP ? 1 : -1)).map(
+            (ga) =>
+              ga.STATUS !== "0" && (
+                <tr key={ga.ID}>
+                  <td>{ga.FNAME + " " + ga.LNAME}</td>
+                  <td className="font-weight-bold">{ga.GROUP}</td>
+                  <td>
+                    {ga.GROUP > 1 && ga.GROUP < 200
+                      ? "562-393-8800"
+                      : ga.GROUP >= 200 && ga.GROUP < 300
+                      ? "562-393-8900"
+                      : ga.GROUP >= 300 && ga.GROUP < 400
+                      ? "562-393-8877"
+                      : ga.GROUP >= 400 && ga.GROUP < 500
+                      ? "562-393-8899"
+                      : ga.GROUP >= 500 && ga.GROUP < 600
+                      ? "562-304-9988"
+                      : ga.GROUP >= 600 && ga.GROUP < 700
+                      ? "562-321-5400"
+                      : ""}
+                  </td>
+                  <td>
+                    <a href={`mailto:${ga.EMAIL}`} target="_blank">
+                      {ga.EMAIL}
+                    </a>
+                  </td>
+                </tr>
+              )
+          )}
+      </tbody>
+    </table>
+  );
+  // const onClickSave = async () => {
+  //   setType("Edit");
+  //   const Query = `F_FSID='${ChangeUser.F_FSID}', F_FNAME='${ChangeUser.F_FNAME}', F_LNAME='${ChangeUser.F_LNAME}', F_ACCOUNT='${ChangeUser.F_ACCOUNT}', F_GROUP=${ChangeUser.F_GROUP}, F_EMAIL='${ChangeUser.F_EMAIL}', F_UPDATEDATE=GETDATE() WHERE F_ID='${ChangeUser.F_ID}'`;
+  //   const fetchs = await fetch("/api/admin/editUsers", {
+  //     method: "POST",
+  //     body: Query,
+  //   });
+  //   if (fetchs.status === 200) {
+  //     alert("Saved Successfully");
+  //     toggle();
+  //   } else {
+  //     alert("Please try again");
+  //     console.log(fetchs);
+  //   }
+  // };
 
-  function handleAddUser() {
-    setType("Add");
-    setChangeUser(false);
-    setModal(true);
-  }
+  // function handleAddUser() {
+  //   setType("Add");
+  //   setChangeUser(false);
+  //   setModal(true);
+  // }
 
-  async function onAddUser() {
-    console.log(ChangeUser);
-    const fetchs = await fetch("/api/admin/postMember", {
-      method: "POST",
-      body: JSON.stringify({ ...ChangeUser, ISLOGIN: 0, STATUS: 1 }),
-    });
-    if (fetchs.status === 200) {
-      const Info = await fetchs.json();
-      console.log(Info);
-    } else {
-      console.log(fetchs);
-    }
-  }
+  // async function onAddUser() {
+  //   console.log(ChangeUser);
+  //   const fetchs = await fetch("/api/admin/postMember", {
+  //     method: "POST",
+  //     body: JSON.stringify({ ...ChangeUser, ISLOGIN: 0, STATUS: 1 }),
+  //   });
+  //   if (fetchs.status === 200) {
+  //     const Info = await fetchs.json();
+  //     console.log(Info);
+  //   } else {
+  //     console.log(fetchs);
+  //   }
+  // }
 
   if (TOKEN && TOKEN.group) {
     return (
@@ -85,11 +129,10 @@ const Index = ({ Cookie, Users, Member }) => {
               >
                 <a
                   className={`list-group-item list-group-item-action ${
-                    !activeTab && "active"
+                    activeTab == 1 && "active"
                   }`}
                   data-toggle="list"
-                  href="#account"
-                  onClick={() => setActiveTab(0)}
+                  onClick={() => setActiveTab(1)}
                   role="tab"
                   aria-selected="false"
                 >
@@ -97,11 +140,10 @@ const Index = ({ Cookie, Users, Member }) => {
                 </a>
                 <a
                   className={`list-group-item list-group-item-action ${
-                    activeTab == 1 && "active"
+                    activeTab == 2 && "active"
                   }`}
                   data-toggle="list"
-                  href="#password"
-                  onClick={() => setActiveTab(1)}
+                  onClick={() => setActiveTab(2)}
                   role="tab"
                   aria-selected="false"
                 >
@@ -109,11 +151,10 @@ const Index = ({ Cookie, Users, Member }) => {
                 </a>
                 <a
                   className={`list-group-item list-group-item-action ${
-                    activeTab == 2 && "active"
+                    activeTab == 3 && "active"
                   }`}
                   data-toggle="list"
-                  href="#contact"
-                  onClick={() => setActiveTab(2)}
+                  onClick={() => setActiveTab(3)}
                   role="tab"
                   aria-selected="false"
                 >
@@ -125,7 +166,7 @@ const Index = ({ Cookie, Users, Member }) => {
           <div className="col-md-9 col-xl-10 my-3">
             <div className="tab-content">
               <div
-                className={`tab-pane fade ${!activeTab && "show active"}`}
+                className={`tab-pane fade ${activeTab == 1 && "show active"}`}
                 id="account"
                 role="tabpanel"
               >
@@ -279,7 +320,7 @@ const Index = ({ Cookie, Users, Member }) => {
             </div>
             <div className="tab-content">
               <div
-                className={`tab-pane fade ${activeTab == 1 && "show active"}`}
+                className={`tab-pane fade ${activeTab == 2 && "show active"}`}
                 id="password"
                 role="tabpanel"
               >
@@ -348,7 +389,7 @@ const Index = ({ Cookie, Users, Member }) => {
             </div>
             <div className="tab-content">
               <div
-                className={`tab-pane fade ${activeTab == 2 && "show active"}`}
+                className={`tab-pane fade ${activeTab == 3 && "show active"}`}
                 id="contacts"
                 role="tabpanel"
               >
@@ -359,94 +400,8 @@ const Index = ({ Cookie, Users, Member }) => {
                     </div>
                   </div>
                   <div className="card-body">
-                    {TOKEN.admin && (
-                      <div className="text-right">
-                        <Button
-                          size="sm"
-                          color="primary"
-                          outline
-                          className="my-2"
-                          onClick={handleAddUser}
-                        >
-                          Add New <i className="fa fa-edit fa-lg ml-2"></i>
-                        </Button>
-                      </div>
-                    )}
                     <div className="table-responsive">
-                      <table className="table table-striped">
-                        <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Extension</th>
-                            <th>Number</th>
-                            <th>Email</th>
-                            {TOKEN.admin && <th>Action</th>}
-                          </tr>
-                        </thead>
-                        <tbody style={{ fontSize: "0.8rem" }}>
-                          {Member &&
-                            Member.sort((a, b) =>
-                              a.GROUP > b.GROUP ? 1 : -1
-                            ).map(
-                              (ga) =>
-                                ga.STATUS !== "0" && (
-                                  <tr key={ga.ID}>
-                                    <td>{ga.FNAME + " " + ga.LNAME}</td>
-                                    <td className="font-weight-bold">
-                                      {ga.GROUP}
-                                    </td>
-                                    <td>
-                                      {ga.GROUP > 1 && ga.GROUP < 200
-                                        ? "562-393-8800"
-                                        : ga.GROUP >= 200 && ga.GROUP < 300
-                                        ? "562-393-8900"
-                                        : ga.GROUP >= 300 && ga.GROUP < 400
-                                        ? "562-393-8877"
-                                        : ga.GROUP >= 400 && ga.GROUP < 500
-                                        ? "562-393-8899"
-                                        : ga.GROUP >= 500 && ga.GROUP < 600
-                                        ? "562-304-9988"
-                                        : ga.GROUP >= 600 && ga.GROUP < 700
-                                        ? "562-321-5400"
-                                        : ""}
-                                    </td>
-                                    <td>
-                                      <a
-                                        href={`mailto:${ga.EMAIL}`}
-                                        target="_blank"
-                                      >
-                                        {ga.EMAIL}
-                                      </a>
-                                    </td>
-                                    {TOKEN.admin && (
-                                      <td>
-                                        <i
-                                          className="fa fa-pencil pr-2 text-primary"
-                                          type="button"
-                                          onClick={() => {
-                                            setType("Edit");
-                                            setModal(true);
-                                            setChangeUser(ga);
-                                          }}
-                                        />
-                                        <i
-                                          className="fa fa-minus-circle text-danger"
-                                          type="button"
-                                          onClick={() => {
-                                            if (confirm("Are you sure?")) {
-                                              alert(
-                                                "Please contact admin team"
-                                              );
-                                            }
-                                          }}
-                                        />
-                                      </td>
-                                    )}
-                                  </tr>
-                                )
-                            )}
-                        </tbody>
-                      </table>
+                      <MemberList />
                     </div>
                   </div>
                 </div>
@@ -454,7 +409,7 @@ const Index = ({ Cookie, Users, Member }) => {
             </div>
           </div>
         </div>
-        <Modal isOpen={modal} toggle={toggle}>
+        {/* <Modal isOpen={modal} toggle={toggle}>
           <ModalHeader toggle={toggle} className="px-4">
             {types} User
           </ModalHeader>
@@ -578,7 +533,7 @@ const Index = ({ Cookie, Users, Member }) => {
               ADD USER
             </Button>
           )}
-        </Modal>
+        </Modal> */}
       </Layout>
     );
   } else {
@@ -586,7 +541,7 @@ const Index = ({ Cookie, Users, Member }) => {
   }
 };
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
@@ -599,8 +554,11 @@ export async function getServerSideProps({ req }) {
     headers: { "x-api-key": process.env.JWT_KEY },
   }).then((t) => t.json());
 
+  var page = query.page || 1;
   // Pass data to the page via props
-  return { props: { Cookie: cookies, Users: users, Member: member } };
+  return {
+    props: { Cookie: cookies, Users: users, Member: member, Page: page },
+  };
 }
 
 export default Index;
