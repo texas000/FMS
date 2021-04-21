@@ -8,8 +8,10 @@ export default function (req: NextApiRequest, res: NextApiResponse) {
   };
 
   if (admin) {
-    res.json({ secretAdminCode: 12345 });
+    //Status is field with a number
+    res.json({ secretAdminCode: process.env.JWT_KEY });
   } else {
-    res.json({ admin: false });
+    //Status is 0 (the account is suspended)
+    res.json({ secretAdminCode: false });
   }
 }

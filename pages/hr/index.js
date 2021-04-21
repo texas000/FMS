@@ -27,6 +27,8 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import BootstrapTable from "react-bootstrap-table-next";
 import moment from "moment";
 import SiteMap from "../../components/Hr/SiteMap";
+import AutomateNoti from "../../components/Hr/AutomateNoti";
+import fetch from "node-fetch";
 
 export default function humanResource({ Cookie, Member }) {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
@@ -71,7 +73,7 @@ export default function humanResource({ Cookie, Member }) {
         <Toaster position="top">
           <Toast
             message={msg}
-            intent="danger"
+            intent="success"
             onDismiss={() => setShow(false)}
           ></Toast>
         </Toaster>
@@ -165,9 +167,17 @@ export default function humanResource({ Cookie, Member }) {
           return (
             <Popover2
               content={ActionMenu}
-              onOpening={() =>
-                Member.find((ele) => ele.ID == cell && setSelectedUser(ele))
-              }
+              onOpening={() => {
+                Member.find((ele) => {
+                  if (ele.ID == cell) {
+                    // IF THE PASSWORD IS EMPTY, PASSWORD WILL NOT BE UPDATED
+                    delete ele.PASSWORD;
+
+                    // SET SELECTED USER SO THAT IT CAN BE CHANGED
+                    setSelectedUser(ele);
+                  }
+                });
+              }}
             >
               <Button
                 icon="edit"
@@ -183,6 +193,107 @@ export default function humanResource({ Cookie, Member }) {
       },
     },
   ];
+
+  // FETCH - ADD EMAIL NOTIFICATION (SERVER WILL AUTOMTICALLY SEND EMAIL AT SEPCIFIC TIME)
+  async function uploadEmailNoti(time, name, anni) {
+    //F_MAILTO, F_SUBJECT, F_CONTENT, F_TARGET, F_RECURR, F_SENT, F_PERIOD_INT, F_PERIOD_STR, F_CATEGORY
+    var mailto = "KEVIN@JAMESWORLDWIDE.COM";
+    var subject = `${name} ANNIVERSARY NOTIFICATION`;
+    var content = `<h1>${name} Anniversary(Work Start) Date is ${moment(
+      time
+    ).format(
+      "L"
+    )}</h1><p>This is automated email message. Please do not reply</p>`;
+    var anniverary = `${moment(anni).format("L")}`;
+    var recurring = 1;
+    var sent = 0;
+    var period_int = 1;
+    var period_string = "year";
+    var catagory = "HR";
+    const summary = `'${mailto}', '${subject}', '${content}', '${anniverary}', ${recurring}, ${sent}, ${period_int}, '${period_string}', '${catagory}'`;
+
+    const fetchNoti = await fetch(`/api/admin/postAutomateNoti`, {
+      method: "POST",
+      body: summary,
+    });
+    if (fetchNoti.status === 200) {
+      // UPDATED
+      setMsg("UPDATE SUCCESSFUL");
+      setShow(true);
+      if (moment(time).isAfter(moment().subtract(3, "months"))) {
+        console.log("set 90days passed notification");
+        subject = `${name} 3 MONTH PASSED NOTIFICATION`;
+        content = `<h1>${name} Has been working from ${moment(time).format(
+          "L"
+        )}</h1>`;
+        anniverary = moment(time).add(3, "months").format("L");
+        recurring = 0;
+        sent = 0;
+        const threeMonth = `'${mailto}', '${subject}', '${content}', '${anniverary}', ${recurring}, ${sent}, NULL, NULL, '${catagory}'`;
+        const fetchThreeMonth = await fetch(`/api/admin/postAutomateNoti`, {
+          method: "POST",
+          body: threeMonth,
+        });
+        if (fetchThreeMonth.status === 200) {
+          console.log("3 MONTH FECTHCED");
+        } else {
+          console.log(await fetchThreeMonth.json());
+        }
+      }
+    } else {
+      // FAILED
+      const resultNoti = await fetchNoti.json();
+      setMsg(JSON.stringify(resultNoti));
+      setShow(true);
+    }
+  }
+
+  // CALCULATE NEXT NOTIFICATION DATE AND DISPLAY NOTIFICATION SET BUTTON TO CALL uploadEmailNoti FUNCTION
+  const CalculateNextNoti = ({ Time, Name }) => {
+    if (Time && moment(Time).month() != "NaN" && moment(Time).date() != "NaN") {
+      // IF TIME IS ENTERED, MONTH, DATE IS EXIST
+
+      // MM/DD/YYYY
+      var tempDate = `${moment(Time).month() + 1}/${moment(
+        Time
+      ).date()}/${moment().year()}`;
+      // IF THE MONTH AND DATE IS BEFORE TODAY
+      if (moment(tempDate).subtract(3, "months").isBefore(moment())) {
+        // MM/DD/YYYY
+        tempDate = `${moment(Time).month() + 1}/${moment(Time).date()}/${
+          moment().year() + 1
+        }`;
+        var nextYear = moment(tempDate).subtract(3, "months").format("L");
+        // IF THE TARGET DATE IS LESS THAN 90 DAYS FROM TODAY, THEN SET THE DATE AS THIS YEAR
+        return (
+          <div className="d-flex flex-column">
+            <span className="text-primary">TARGET: {nextYear}</span>
+            <Button
+              text="Set Notification"
+              icon="notifications-snooze"
+              className="my-2"
+              onClick={() => uploadEmailNoti(Time, Name, nextYear)}
+            />
+          </div>
+        );
+      } else {
+        var thisYear = moment(tempDate).subtract(3, "months").format("L");
+        return (
+          <div className="d-flex flex-column">
+            <span className="text-primary">TARGET: {thisYear}</span>
+            <Button
+              text="Set Notification"
+              icon="notifications-snooze"
+              className="my-2"
+              onClick={() => uploadEmailNoti(Time, Name, thisYear)}
+            />
+          </div>
+        );
+      }
+    } else {
+      return <span className="text-danger">WORK START TIME IS NOT VALID</span>;
+    }
+  };
 
   const defaultSorted = [
     {
@@ -238,7 +349,7 @@ export default function humanResource({ Cookie, Member }) {
       newUser.FNAME === undefined ||
       newUser.LNAME === undefined ||
       newUser.GROUP === undefined ||
-      newUser.EMAIL === undefined
+      newUser.STATUS === undefined
     ) {
       setMsg(`ERROR: PLEAE TYPE REQUIRED FILED`);
       setShow(true);
@@ -290,6 +401,12 @@ export default function humanResource({ Cookie, Member }) {
               />
               <Button
                 className={Classes.MINIMAL}
+                icon="envelope"
+                text="Automate Notification"
+                onClick={() => setSelected(4)}
+              />
+              <Button
+                className={Classes.MINIMAL}
                 icon="plus"
                 text="Add User"
                 onClick={() => setSelectedMenu(4)}
@@ -318,6 +435,11 @@ export default function humanResource({ Cookie, Member }) {
           {Selected === 3 && (
             <div className="container-fluid">
               <SiteMap />
+            </div>
+          )}
+          {Selected === 4 && (
+            <div className="container-fluid">
+              <AutomateNoti />
             </div>
           )}
 
@@ -610,6 +732,13 @@ export default function humanResource({ Cookie, Member }) {
                     <Radio label="Self" value="1" />
                     <Radio label="Family" value="2" />
                   </RadioGroup>
+                  <Text className="font-weight-bold">
+                    * Anniversary Notification{" "}
+                    <CalculateNextNoti
+                      Time={SelectedUser.WorkBegin}
+                      Name={SelectedUser.FNAME + " " + SelectedUser.LNAME}
+                    />
+                  </Text>
                 </>
               )}
               {/* Email */}
@@ -621,7 +750,9 @@ export default function humanResource({ Cookie, Member }) {
               {/* Adding New User */}
               {SelectedMenu === 4 && (
                 <>
-                  <Text>Account</Text>
+                  <Text>
+                    Account <span className="text-danger">*</span>
+                  </Text>
                   <InputGroup
                     className="mb-2"
                     leftIcon="person"
@@ -634,7 +765,9 @@ export default function humanResource({ Cookie, Member }) {
                       })
                     }
                   />
-                  <Text>Password</Text>
+                  <Text>
+                    Password <span className="text-danger">*</span>
+                  </Text>
                   <InputGroup
                     type="password"
                     className="mb-2"
@@ -648,7 +781,9 @@ export default function humanResource({ Cookie, Member }) {
                       })
                     }
                   />
-                  <Text>Email</Text>
+                  <Text>
+                    Email <span className="text-danger">*</span>
+                  </Text>
                   <InputGroup
                     className="mb-2"
                     leftIcon="envelope"
@@ -660,7 +795,9 @@ export default function humanResource({ Cookie, Member }) {
                       })
                     }
                   />
-                  <Text>First Name</Text>
+                  <Text>
+                    First Name <span className="text-danger">*</span>
+                  </Text>
                   <InputGroup
                     className="mb-2"
                     leftIcon="person"
@@ -672,7 +809,9 @@ export default function humanResource({ Cookie, Member }) {
                       })
                     }
                   />
-                  <Text>Last Name</Text>
+                  <Text>
+                    Last Name <span className="text-danger">*</span>
+                  </Text>
                   <InputGroup
                     className="mb-2"
                     leftIcon="person"
@@ -684,7 +823,9 @@ export default function humanResource({ Cookie, Member }) {
                       })
                     }
                   />
-                  <Text>Extension Number</Text>
+                  <Text>
+                    Extension Number <span className="text-danger">*</span>
+                  </Text>
                   <InputGroup
                     className="mb-2"
                     leftIcon="phone"
@@ -744,7 +885,9 @@ export default function humanResource({ Cookie, Member }) {
                       })
                     }
                   />
-                  <Text>Status</Text>
+                  <Text>
+                    Status <span className="text-danger">*</span>
+                  </Text>
                   <InputGroup
                     type="number"
                     className="mb-2"

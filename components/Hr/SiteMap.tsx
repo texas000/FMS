@@ -3,19 +3,19 @@ import { ContextMenu2, Tooltip2 } from "@blueprintjs/popover2";
 import React from "react";
 
 const Level1 = () => (
-  <Tooltip2 content="STATUS LEVEL 1">
+  <Tooltip2 content="Operator Level">
     <Icon icon="blocked-person" intent="primary" />
   </Tooltip2>
 );
 
 const Level5 = () => (
-  <Tooltip2 content="STATUS LEVEL 5">
+  <Tooltip2 content="Manager Level">
     <Icon icon="blocked-person" intent="success" />
   </Tooltip2>
 );
 
 const Level9 = () => (
-  <Tooltip2 content="STATUS LEVEL 9">
+  <Tooltip2 content="Admin Level">
     <Icon icon="blocked-person" intent="danger" />
   </Tooltip2>
 );
@@ -178,12 +178,20 @@ export const SiteMap = () => {
   return (
     <div className="row my-3">
       <div className="col-md-6">
-        <h2>User Level</h2>
-        <Tree contents={nodes}></Tree>
+        <div className="card shadow">
+          <div className="card-header font-weight-bold">User Level</div>
+          <div className="card-body">
+            <Tree contents={nodes}></Tree>
+          </div>
+        </div>
       </div>
       <div className="col-md-6">
-        <h2>Admin Level</h2>
-        <Tree contents={admin}></Tree>
+        <div className="card shadow">
+          <div className="card-header font-weight-bold">Manager Level</div>
+          <div className="card-body">
+            <Tree contents={admin}></Tree>
+          </div>
+        </div>
       </div>
     </div>
   );

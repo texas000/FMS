@@ -3,31 +3,17 @@ import React, { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
-import Modal from "reactstrap/lib/Modal";
-import ModalHeader from "reactstrap/lib/ModalHeader";
-import ModalBody from "reactstrap/lib/ModalBody";
-import Input from "reactstrap/lib/Input";
-import Label from "reactstrap/lib/Label";
-import FormGroup from "reactstrap/lib/FormGroup";
-import Button from "reactstrap/lib/Button";
 
 const Index = ({ Cookie, Users, Member, Page }) => {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(Page);
-  const [modal, setModal] = useState(false);
-  const [ChangeUser, setChangeUser] = useState(false);
-
-  const [types, setType] = useState("");
-  const UsersIndex = Users.findIndex((x) => x.F_ID === TOKEN.uid);
-
-  // const MemberIndex = Member.findIndex((x) => x.ID === TOKEN.uid);
 
   // const toggle = () => setModal(!modal);
   useEffect(() => {
     !TOKEN && router.push("/login");
     setActiveTab(Page);
-  }, [Page]);
+  }, []);
 
   const MemberList = () => (
     <table className="table table-striped">
@@ -185,11 +171,7 @@ const Index = ({ Cookie, Users, Member, Page }) => {
                               className="form-control"
                               id="username"
                               placeholder="username"
-                              defaultValue={
-                                UsersIndex === -1
-                                  ? ""
-                                  : Users[UsersIndex].F_ACCOUNT
-                              }
+                              defaultValue={TOKEN.username}
                             />
                           </div>
                           <div className="form-group">
@@ -199,11 +181,7 @@ const Index = ({ Cookie, Users, Member, Page }) => {
                               className="form-control"
                               id="group"
                               placeholder="group"
-                              defaultValue={
-                                UsersIndex === -1
-                                  ? ""
-                                  : Users[UsersIndex].F_GROUP
-                              }
+                              defaultValue={TOKEN.group}
                             />
                           </div>
                         </div>
@@ -245,11 +223,7 @@ const Index = ({ Cookie, Users, Member, Page }) => {
                               className="form-control"
                               id="fname"
                               placeholder="First Name"
-                              defaultValue={
-                                UsersIndex === -1
-                                  ? ""
-                                  : Users[UsersIndex].F_FNAME
-                              }
+                              defaultValue={TOKEN.first}
                             />
                           </div>
                         </div>
@@ -261,11 +235,7 @@ const Index = ({ Cookie, Users, Member, Page }) => {
                               className="form-control"
                               id="lname"
                               placeholder="Last Name"
-                              defaultValue={
-                                UsersIndex === -1
-                                  ? ""
-                                  : Users[UsersIndex].F_LNAME
-                              }
+                              defaultValue={TOKEN.last}
                             />
                           </div>
                         </div>
@@ -279,11 +249,7 @@ const Index = ({ Cookie, Users, Member, Page }) => {
                               className="form-control"
                               id="email"
                               placeholder="E-mail"
-                              defaultValue={
-                                UsersIndex === -1
-                                  ? ""
-                                  : Users[UsersIndex].F_EMAIL
-                              }
+                              defaultValue={TOKEN.email}
                             />
                           </div>
                         </div>
@@ -297,11 +263,7 @@ const Index = ({ Cookie, Users, Member, Page }) => {
                               className="form-control"
                               id="fsid"
                               placeholder="Freight Stream"
-                              defaultValue={
-                                UsersIndex === -1
-                                  ? ""
-                                  : Users[UsersIndex].F_FSID
-                              }
+                              defaultValue={TOKEN.fsid}
                             />
                           </div>
                         </div>
@@ -545,14 +507,25 @@ export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
+  var users = [];
+  var member = [];
+  const fetchUsers = await fetch(
+    `${process.env.BASE_URL}api/admin/getFmsUsers`,
+    {
+      headers: { key: cookies.jamesworldwidetoken },
+    }
+  );
+  if (fetchUsers.status === 200) {
+    users = await fetchUsers.json();
+  }
 
-  const users = await fetch(`${process.env.BASE_URL}api/admin/getFmsUsers`, {
-    headers: { key: cookies.jamesworldwidetoken },
-  }).then((t) => t.json());
-
-  const member = await fetch(`${process.env.FS_BASEPATH}member`, {
+  const fetchMember = await fetch(`${process.env.FS_BASEPATH}member`, {
     headers: { "x-api-key": process.env.JWT_KEY },
-  }).then((t) => t.json());
+  });
+
+  if (fetchMember.status === 200) {
+    member = await fetchMember.json();
+  }
 
   var page = query.page || 1;
   // Pass data to the page via props

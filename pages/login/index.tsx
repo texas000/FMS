@@ -7,15 +7,18 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/analytics";
 
-const Login = ({ Firebase }) => {
+const Login = ({ Firebase, AccessKey }) => {
   const router = useRouter();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // Message and success that will display the error message
   const [message, setMessage] = useState("");
+  // Message and success that will display the success message
   const [success, setSuccess] = useState("");
-  const [secret, setSecret] = useState("");
+
+  // Define Firebase for google login feature
   const firebaseConfig = {
     apiKey: Firebase,
     authDomain: "jw-web-ffaea.firebaseapp.com",
@@ -27,18 +30,24 @@ const Login = ({ Firebase }) => {
     measurementId: "G-GPMS588XP2",
   };
 
+  // Initialize the firebase app
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
   } else {
     firebase.app();
   }
+
+  // Authorization define
   const auth = firebase.auth();
+
+  // When the sign with google button is clicked, run signInWithPopup
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     auth
       .signInWithPopup(provider)
       .then(async (result) => {
         if (result.user) {
+          // After Google Login, fetch api to verify if the account is on the server
           const res = await fetch("api/login/withGoogle", {
             method: "POST",
             headers: {
@@ -54,14 +63,50 @@ const Login = ({ Firebase }) => {
             .catch((err) => console.log(err));
 
           const token = res.token;
+          // If there is token from feching, then store token to cookie and push to dashboard
           if (token) {
-            setMessage("");
-            const json = jwt.decode(token) as { [key: string]: string };
-            Cookie.set("jamesworldwidetoken", token);
-            setSuccess(`${json.username.toUpperCase()}, PLEASE WAIT...`);
-            router.push({ pathname: "/dashboard" });
+            // Login Success
+            const fetchToSlack = await fetch("/api/slack/sendMessage", {
+              method: "POST",
+              headers: {
+                "Content-type": "application/json",
+              },
+              body: JSON.stringify({
+                text: `${result.user.displayName} - Access Granted with Google Login to JWIUSA.COM <@URXAD41A7>`,
+              }),
+            });
+            // After fetch to slack, redirect to dashboard
+            if (fetchToSlack.status === 200) {
+              setMessage("");
+              const json = jwt.decode(token) as { [key: string]: string };
+              Cookie.set("jamesworldwidetoken", token);
+              setSuccess(`${json.username.toUpperCase()}, PLEASE WAIT...`);
+              router.push({ pathname: "/dashboard" });
+            }
           } else {
-            alert("PLEASE CONTACT ADMIN TO LOGIN - IT@JAMESWORLDWIDE.COM");
+            // Login Fail
+
+            // fetch to slack
+            const fetchToSlack = await fetch("/api/slack/sendMessage", {
+              method: "POST",
+              headers: {
+                "Content-type": "application/json",
+              },
+              body: JSON.stringify({
+                type: "error",
+                text: `${result.user.displayName} - Access Denied with Google Login to JWIUSA.COM <@URXAD41A7>`,
+              }),
+            });
+            if (fetchToSlack.status === 200) {
+              //Show the error message
+              setSuccess("");
+              setMessage(
+                "PLEASE CONTACT ADMIN TO LOGIN - IT@JAMESWORLDWIDE.COM"
+              );
+            } else {
+              setSuccess("");
+              setMessage("UNKNOWN ERROR! PLEASE REPORT");
+            }
           }
         }
       })
@@ -72,7 +117,10 @@ const Login = ({ Firebase }) => {
     // console.log(auth.currentUser);
     Cookie.set("jamesworldwidetoken", "");
   }, []);
+
+  // Login with Account Id and Password
   async function submitForm() {
+    // Note that some characters are restricted for username, password.
     const res = await fetch("api/login/user", {
       method: "POST",
       headers: {
@@ -82,13 +130,20 @@ const Login = ({ Firebase }) => {
     })
       .then((t) => t.json())
       .catch((err) => console.log(err));
+
     const token = res.token;
+    // Login Success
     if (token) {
       setMessage("");
-      const json = jwt.decode(token) as { [key: string]: string };
+      // Set Cookie with encoded token
       Cookie.set("jamesworldwidetoken", token);
-      setSuccess(`${json.username.toUpperCase()}, PLEASE WAIT...`);
+      // Display success message before redirect to dashboard
+      setSuccess(`PLEASE WAIT...`);
 
+      // Get first name from token
+      const { first } = jwt.decode(token) as { [key: string]: string };
+
+      // Get secret code for extra security
       const res = await fetch("api/login/secret", {
         method: "POST",
         headers: {
@@ -96,15 +151,43 @@ const Login = ({ Firebase }) => {
         },
         body: JSON.stringify({ token }),
       }).then((t) => t.json());
-      if (res.secretAdminCode) {
-        setSecret(res.secretAdminCode);
-        router.push({ pathname: "/dashboard" });
+
+      // If the secret code is matched with access key, then grant access
+      if (res.secretAdminCode === AccessKey) {
+        const fetchToSlack = await fetch("/api/slack/sendMessage", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            text: `${first.toUpperCase()} - Access Granted to JWIUSA.COM <@URXAD41A7>`,
+          }),
+        });
+        if (fetchToSlack.status === 200) {
+          router.push({ pathname: "/dashboard" });
+        } else {
+          console.log("feching to slack message is failed");
+          router.push({ pathname: "/dashboard" });
+        }
       } else {
-        setSecret("Nothing");
-        router.push({ pathname: "/dashboard" });
+        alert("Account is suspended");
       }
     } else {
-      setMessage("Invalid Username or Password!");
+      // Login Failed
+      const fetchToSlack = await fetch("/api/slack/sendMessage", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          text: `${username.toUpperCase()} - Access Denied to JWIUSA.COM <@URXAD41A7>`,
+        }),
+      });
+      if (fetchToSlack.status === 200) {
+        setMessage("Invalid Username or Password!");
+      } else {
+        setMessage("Invalid Username or Password!" + fetchToSlack.status);
+      }
     }
   }
   return (
@@ -232,15 +315,6 @@ const Login = ({ Firebase }) => {
             padding: 0 2rem; */
             }
           }
-
-           {
-            /* .img {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-          } */
-          }
-
           .login-content {
             display: flex;
             justify-content: flex-start;
@@ -509,6 +583,7 @@ export async function getServerSideProps() {
   return {
     props: {
       Firebase: process.env.FIREBASE_API_KEY,
+      AccessKey: process.env.JWT_KEY,
     },
   };
 }

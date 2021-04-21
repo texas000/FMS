@@ -28,6 +28,7 @@ export default async (req, res) => {
           );
       })
       .then((result) => {
+        sql.close();
         if (result.rowsAffected[0]) {
           return result.recordsets[0];
         } else {
@@ -35,12 +36,12 @@ export default async (req, res) => {
         }
       })
       .catch((err) => {
+        sql.close();
         console.log(err);
         return [];
       });
     res.status(200).send(master);
   }
-  return sql.close();
 };
 
 export const config = {

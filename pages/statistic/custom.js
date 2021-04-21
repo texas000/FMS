@@ -235,19 +235,33 @@ export default function blank({ Cookie }) {
                 icon="search"
               />
             </div>
-
-            <RadioGroup
-              className="py-0"
-              label="Select Type"
-              selectedValue={type}
-              onChange={(e) => {
-                setType(e.target.value);
-              }}
-              name="type_selector"
-            >
-              <Radio label="House" value="house" />
-              <Radio label="Container" value="container" />
-            </RadioGroup>
+            <div className="d-flex flex-column">
+              <RadioGroup
+                className="py-0"
+                label="Select Type"
+                selectedValue={type}
+                onChange={(e) => {
+                  setType(e.target.value);
+                }}
+                name="type_selector"
+              >
+                <Radio label="House" value="house" />
+                <Radio label="Container" value="container" />
+              </RadioGroup>
+              <Button
+                text="Reset"
+                intent="primary"
+                onClick={() => {
+                  setMsg("RESET");
+                  setShow(true);
+                  // setList([]);
+                  setSelectedCompany([]);
+                  setCdata([]);
+                  setLabel([]);
+                  setHouseTotal(0);
+                }}
+              ></Button>
+            </div>
             {/* <h5 className="h5 mb-0 font-weight-light">{`${moment(
               range[0]
             ).format("L")} - ${moment(range[1]).format("L")}`}</h5> */}

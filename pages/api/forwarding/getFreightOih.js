@@ -1,24 +1,21 @@
 var request = require("request");
-var os = require("os");
-
 export default async (req, res) => {
-  var texts = {
-    text: `${req.body.text} Platform: ${os.platform()}, Arch: ${os.arch()}`,
-  };
   // Define Request Options, *** USE ENV VALUE FOR BASE URI ***
   var options = {
-    method: "POST",
-    url: process.env.SLACK_IT,
+    method: "GET",
+    url: `${process.env.FS_BASEPATH}oihmain?oimblid=${req.headers.id}`,
     headers: {
+      "cache-control": "no-cache",
       "content-type": "application/json",
+      "x-api-key": process.env.JWT_KEY,
     },
-    body: texts,
     json: true,
   };
 
   request(options, function (error, response, body) {
     // IF ERROR, THROW ERROR
     if (error) throw new Error(error);
+
     // IF RESPONSE IS 200, SEND THE BODY WITH 200 STATUS CODE
     if (response.statusCode === 200) {
       res.status(200).send(body);
