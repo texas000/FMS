@@ -8,7 +8,7 @@ export default async (req, res) => {
   // Define Request Options, *** USE ENV VALUE FOR BASE URI ***
   var options = {
     method: "POST",
-    url: process.env.SLACK_IT,
+    uri: process.env.SLACK_IT,
     headers: {
       "content-type": "application/json",
     },
