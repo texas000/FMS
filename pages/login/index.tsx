@@ -67,16 +67,21 @@ const Login = ({ Firebase, AccessKey }) => {
           // If there is token from feching, then store token to cookie and push to dashboard
           if (token) {
             // Login Success
-            // const fetchToSlack = await fetch("/api/slack/sendMessage", {
-            //   method: "POST",
-            //   headers: {
-            //     "Content-type": "application/json",
-            //   },
-            //   body: JSON.stringify({
-            //     text: `${result.user.displayName} - Access Granted with Google Login to JWIUSA.COM <@URXAD41A7>`,
-            //   }),
-            // });
+            const fetchToSlack = await fetch("/api/slack/sendMessage", {
+              method: "POST",
+              headers: {
+                "Content-type": "application/json",
+              },
+              body: JSON.stringify({
+                text: `${result.user.displayName} - Access Granted with Google Login to JWIUSA.COM`,
+              }),
+            });
             setMessage("");
+            if (fetchToSlack.status === 200) {
+              console.log("login updated");
+            } else {
+              console.log(fetchToSlack.status);
+            }
             const json = jwt.decode(token) as { [key: string]: string };
             Cookie.set("jamesworldwidetoken", token);
             setSuccess(`${json.username.toUpperCase()}, PLEASE WAIT...`);
@@ -162,21 +167,21 @@ const Login = ({ Firebase, AccessKey }) => {
       // If the secret code is matched with access key, then grant access
       if (res.secretAdminCode === AccessKey) {
         router.push({ pathname: "/dashboard" });
-        // const fetchToSlack = await fetch("/api/slack/sendMessage", {
-        //   method: "POST",
-        //   headers: {
-        //     "Content-type": "application/json",
-        //   },
-        //   body: JSON.stringify({
-        //     text: `${first.toUpperCase()} - Access Granted to JWIUSA.COM <@URXAD41A7>`,
-        //   }),
-        // });
-        // if (fetchToSlack.status === 200) {
-        //   router.push({ pathname: "/dashboard" });
-        // } else {
-        //   console.log("feching to slack message is failed");
-        //   router.push({ pathname: "/dashboard" });
-        // }
+        const fetchToSlack = await fetch("/api/slack/sendMessage", {
+          method: "POST",
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            text: `${first.toUpperCase()} - Access Granted with Credential to JWIUSA.COM`,
+          }),
+        });
+        if (fetchToSlack.status === 200) {
+          router.push({ pathname: "/dashboard" });
+        } else {
+          console.log("feching to slack message is failed");
+          router.push({ pathname: "/dashboard" });
+        }
       } else {
         alert("Account is suspended");
       }

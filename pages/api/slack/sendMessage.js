@@ -3,7 +3,7 @@ var os = require("os");
 
 export default async (req, res) => {
   var texts = {
-    text: `${req.body.text} Platform: ${os.platform()}, Arch: ${os.arch()}`,
+    text: `${req.body.text}`,
   };
   // Define Request Options, *** USE ENV VALUE FOR BASE URI ***
   var options = {
