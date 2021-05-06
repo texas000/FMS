@@ -12,8 +12,9 @@ const Index = ({ Cookie, Users, Member, Page }) => {
   // const toggle = () => setModal(!modal);
   useEffect(() => {
     !TOKEN && router.push("/login");
+    // console.log(Page);
     setActiveTab(Page);
-  }, []);
+  }, [Page]);
 
   const MemberList = () => (
     <table className="table table-striped">
@@ -525,6 +526,8 @@ export async function getServerSideProps({ req, query }) {
 
   if (fetchMember.status === 200) {
     member = await fetchMember.json();
+    // Removing admin user at the list
+    member.pop();
   }
 
   var page = query.page || 1;

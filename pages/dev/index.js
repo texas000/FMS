@@ -6,16 +6,20 @@ import {
   Breadcrumbs,
   InputGroup,
   Callout,
-  TagInput,
+  FileInput,
 } from "@blueprintjs/core";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/icons/lib/css/blueprint-icons.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
+import readXlsxFile from "read-excel-file";
+import moment from "moment";
+import fetch from "node-fetch";
 
 export default function blank({ Cookie }) {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const BREADCRUMBS = [{ href: "/dev", icon: "folder-close", text: "Dev" }];
   const [message, setMessage] = React.useState("");
+
   async function hello() {
     const fetchSlack = await fetch(`/api/slack/sendMessage`, {
       method: "POST",
@@ -32,6 +36,34 @@ export default function blank({ Cookie }) {
     } else {
       alert("FAILED");
       console.log(fetchSlack.status);
+    }
+  }
+
+  const [xlsx, setXlsx] = React.useState([]);
+
+  function handleUpload(e) {
+    e.preventDefault();
+    var f = e.target.files[0];
+
+    if (
+      f.type ==
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    ) {
+      readXlsxFile(f).then(async (row, i) => {
+        setXlsx(row);
+        const postExcel = await fetch(`/api/file/amazonExcel`, {
+          method: "POST",
+          body: JSON.stringify(row),
+        });
+        if (postExcel.status === 200) {
+          const result = await postExcel.json();
+          setXlsx(result);
+        } else {
+          alert("UPLOAD FAILED");
+        }
+      });
+    } else {
+      alert(`${f.type} is not supported`);
     }
   }
 
@@ -75,11 +107,6 @@ export default function blank({ Cookie }) {
           <div className="col">
             <div className="card">
               <div className="card-header">SEND MESSAGE TO SLACK</div>
-              {/* <TagInput
-                leftIcon="user"
-                placeholder="Separate values with commas..."
-                values={React.ReactNode[["Casper"]]}
-              /> */}
               <div className="card-body row">
                 <div className="col-md-8">
                   <InputGroup
@@ -95,11 +122,26 @@ export default function blank({ Cookie }) {
                   <Button
                     icon="send-message"
                     intent="success"
-                    text="Reset Message to Slack"
+                    text="Send"
                     onClick={hello}
                     small={true}
                   />
                 </div>
+              </div>
+            </div>
+            <div className="card">
+              <div className="card-header">IMPORT AMAZON FILE</div>
+              <div className="card-body">
+                <FileInput
+                  text="Choose Excel File..."
+                  onInputChange={handleUpload}
+                />
+                {xlsx && xlsx.length > 0 && (
+                  <h2 className="text-success">{xlsx.length} ROWS UPLOADED</h2>
+                )}
+                {xlsx.map((ga, i) => {
+                  return <p key={i}>{`Settlement ID: ${ga.SettlementID}`}</p>;
+                })}
               </div>
             </div>
           </div>

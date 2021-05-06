@@ -1,7 +1,7 @@
 {
   "name": "fms",
-  "version": "1.5.2",
-  "description": "james worldwide forwarding management system",
+  "version": "1.6.1",
+  "description": "jamesworldwide forwarding management system",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
@@ -9,8 +9,10 @@
     "build": "next build",
     "start": "next start -p 80"
   },
-  "keywords": [],
-  "author": "james worldwide it team",
+  "keywords": [
+    "jamesworldwide"
+  ],
+  "author": "jamesworldwide it team",
   "license": "ISC",
   "dependencies": {
     "@blueprintjs/core": "^3.41.0",
@@ -22,6 +24,7 @@
     "@zeit/next-css": "^1.0.1",
     "axios": "^0.21.1",
     "cacheable-response": "^2.1.8",
+    "caniuse-lite": "^1.0.30001214",
     "chart.js": "^2.9.3",
     "cookie": "^0.4.1",
     "express": "^4.17.1",

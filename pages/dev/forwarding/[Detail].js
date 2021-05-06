@@ -76,20 +76,7 @@ const Detail = ({ Cookie, Query, Main }) => {
           case "T_GENMAIN":
             useEffect(() => {
               console.log(Main);
-              getAccountPayable();
             }, []);
-            async function getAccountPayable() {
-              const fetchAP = await fetch(
-                `${process.env.FS_BASEPATH}aphd?table=T_GENMAIN&tbid=${Main[0].ID}`,
-                {
-                  headers: { "x-api-key": process.env.JWT_KEY },
-                }
-              );
-              if (fetchAP.status === 200) {
-                const accountPayable = await fetchAP.json();
-                console.log(JSON.stringify(accountPayable));
-              }
-            }
             return (
               <Layout TOKEN={TOKEN} TITLE={Query}>
                 <Head

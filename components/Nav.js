@@ -437,7 +437,7 @@ const Top = ({ Token, toggle, setToggle }) => {
               }
             >
               <i className="fa fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-              Settings
+              Change Password
             </a>
             <a
               className="dropdown-item"
