@@ -42,24 +42,23 @@ export const MasterDialog = ({
       const config = {
         headers: {
           "content-type": "multipart/form-data",
+          reference: refs.F_RefNo,
         },
       };
       try {
         const upload = new Promise((res, rej) => {
           try {
-            res(
-              post(
-                `http://jameswgroup.com:49991/api/upload/${refs.F_RefNo}`,
-                formData,
-                config
-              )
-            );
+            res(post(`/api/dashboard/uploadFile`, formData, config));
           } catch (err) {
             console.log(err);
             res("uploaded");
           }
         });
-        upload.then((ga) => console.log(ga));
+        upload.then((ga) => {
+          if (ga.status === 200) {
+            alert("UPLOAD SUCCESS");
+          }
+        });
       } catch (err) {
         if (err.response) {
           console.log(err.response);
@@ -110,6 +109,17 @@ export const MasterDialog = ({
 
             {/* {JSON.stringify(token)} */}
           </p>
+
+          {/* <form
+            action="/api/dashboard/uploadFile"
+            encType="multipart/form-data"
+            method="post"
+            name={refs.F_RefNo}
+          >
+            <input type="file" name="upload" />
+            <input type="submit" value="Upload" />
+          </form> */}
+
           <h4>{refs.Customer}</h4>
           <div className="tag-collection">
             <Tag

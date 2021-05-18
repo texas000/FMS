@@ -6,16 +6,7 @@ import ListGroup from "reactstrap/lib/ListGroup";
 import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import fetch from "node-fetch";
 import moment from "moment";
-import {
-  Button,
-  ButtonGroup,
-  Menu,
-  MenuItem,
-  MenuDivider,
-  Dialog,
-  Classes,
-  Tag,
-} from "@blueprintjs/core";
+import { Button, ButtonGroup, Dialog } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
@@ -328,8 +319,10 @@ export default function dashboard({ Cookie, Board }) {
                                         getAp(ga.F_ID[1], "T_OOHMAIN");
                                       })
                                       .then(() => {
-                                        // GET INVOICE FOR FIRST HOUSE
                                         getInvoice(ga.F_ID[1], "T_OOHMAIN");
+                                      })
+                                      .then(() => {
+                                        getFiles(ga.F_RefNo);
                                       });
                                   }}
                                 >
@@ -419,9 +412,13 @@ export default function dashboard({ Cookie, Board }) {
                                     setSelected(ga);
                                     setIsOpen(1);
                                     setContainers([]);
-                                    getAp(ga.F_ID[1], "T_AIHMAIN").then(() => {
-                                      getInvoice(ga.F_ID[1], "T_AIHMAIN");
-                                    });
+                                    getAp(ga.F_ID[1], "T_AIHMAIN")
+                                      .then(() => {
+                                        getInvoice(ga.F_ID[1], "T_AIHMAIN");
+                                      })
+                                      .then(() => {
+                                        getFiles(ga.F_RefNo);
+                                      });
                                   }}
                                 >
                                   {ga.F_RefNo}
@@ -510,9 +507,13 @@ export default function dashboard({ Cookie, Board }) {
                                     setSelected(ga);
                                     setIsOpen(1);
                                     setContainers([]);
-                                    getAp(ga.F_ID[1], "T_AOHMAIN").then(() => {
-                                      getInvoice(ga.F_ID[1], "T_AOHMAIN");
-                                    });
+                                    getAp(ga.F_ID[1], "T_AOHMAIN")
+                                      .then(() => {
+                                        getInvoice(ga.F_ID[1], "T_AOHMAIN");
+                                      })
+                                      .then(() => {
+                                        getFiles(ga.F_RefNo);
+                                      });
                                   }}
                                 >
                                   {ga.F_RefNo}
