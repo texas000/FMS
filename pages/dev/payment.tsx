@@ -8,14 +8,16 @@ import { fetchPostJSON } from "../../components/Utils/api-helper";
 import Cart from "../../components/Cart/index";
 import getStripe from "../../components/Utils/get-stripejs";
 import { formatAmountForDisplay } from "../../components/Utils/stripe-helpers";
+import { InputGroup, NumericInput, Button } from "@blueprintjs/core";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+import "@blueprintjs/core/lib/css/blueprint.css";
 
 const Payment = ({ Cookie }) => {
   const [loading, setLoading] = useState(false);
   const [input, setInput] = useState({
-    customDonation: 100,
+    customDonation: undefined,
     text: "",
   });
-
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setInput({
       ...input,
@@ -46,36 +48,47 @@ const Payment = ({ Cookie }) => {
 
   return (
     <Layout TOKEN={jwt.decode(Cookie.jamesworldwidetoken)} TITLE="Payment">
+      <h2>Payment</h2>
+      <h5 className="text-secondary">James Worldwide Use Only</h5>
       <Cart>
         <form onSubmit={handleSubmit}>
-          <label>AMOUNT: </label>
-          <input
-            className="checkout-style mb-4"
-            type="number"
-            name="customDonation"
-            value={input.customDonation}
-            min={1.0}
-            max={10000.0}
-            step={1.0}
-            onChange={handleInputChange}
-          ></input>
-          <br />
-          <label>CUSTOMER: </label>
-          <input
-            className="mb-4"
-            type="text"
-            name="customer"
-            value={input.text}
-            onChange={(e) => setInput({ ...input, text: e.target.value })}
-          />
-          <br />
-          <button
-            className="btn btn-outline-primary btn-sm"
-            type="submit"
-            disabled={loading}
-          >
-            Checkout {formatAmountForDisplay(input.customDonation, "usd")}
-          </button>
+          <div className="row mt-4">
+            <div className="col bp3-input-group bp3-large">
+              <input
+                type="number"
+                className="bp3-input"
+                pattern="[0-9]{0,5}"
+                placeholder="Enter the amount"
+                onChange={handleInputChange}
+                name="customDonation"
+                min={1.0}
+                max={10000.0}
+                step={1.0}
+                value={input.customDonation || ""}
+              ></input>
+            </div>
+            <div className="col">
+              <InputGroup
+                placeholder="Description"
+                leftIcon="selection"
+                large={true}
+                value={input.text}
+                onChange={(e) => setInput({ ...input, text: e.target.value })}
+              ></InputGroup>
+            </div>
+            <div className="col">
+              <Button
+                className="btn btn-outline-primary btn-sm"
+                type="submit"
+                disabled={loading || input.customDonation <= 0}
+                large={true}
+              >
+                Checkout{" "}
+                {input.customDonation &&
+                  formatAmountForDisplay(input.customDonation, "usd")}
+              </Button>
+            </div>
+          </div>
         </form>
       </Cart>
     </Layout>

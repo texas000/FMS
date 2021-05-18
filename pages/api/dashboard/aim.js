@@ -1,6 +1,6 @@
 const sql = require("mssql");
 const jwt = require("jsonwebtoken");
-
+const moment = require("moment");
 const sqlConfig = {
   server: process.env.JWDB_SVR,
   database: process.env.JWDB_1,
@@ -21,13 +21,25 @@ export default async (req, res) => {
     return;
   }
 
-  const Query = `select distinct T_AIMMAIN.F_ID as ID, T_AIMMAIN.F_FileClosed as CLOSED, T_AIMMAIN.F_RefNo as REF, T_AIMMAIN.F_ETA as ETA, T_AIMMAIN.F_ETD as ETD, 
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID=T_AIHMAIN.F_Customer) as CUSTOMER from T_AIMMAIN left join T_AIHMAIN on T_AIMMAIN.F_ID=T_AIHMAIN.F_AIMBLID where (T_AIMMAIN.F_U1ID='${
-    token.fsid
-  }' OR T_AIMMAIN.F_U2ID='${token.fsid}') 
-  AND T_AIMMAIN.F_FileClosed=0 AND T_AIMMAIN.F_ETA>'${
-    req.headers.from || "2021-01-01"
-  }' order by T_AIMMAIN.F_ID desc;`;
+  var Query = null;
+  switch (token.admin) {
+    case 9:
+      Query = `
+      select TOP 100 *, (SELECT T_COMPANY.F_SName from T_COMPANY where F_Customer=T_COMPANY.F_ID) AS Customer, ROW_NUMBER() OVER (PARTITION BY T_AIMMAIN.F_RefNo ORDER BY T_AIMMAIN.F_ID) AS HouseCount from T_AIMMAIN LEFT JOIN T_AIHMAIN on (T_AIHMAIN.F_AIMBLID=T_AIMMAIN.F_ID) where F_ETA>'${moment()
+        .subtract(30, "days")
+        .calendar()}' ORDER BY T_AIMMAIN.F_ID DESC;
+      `;
+      break;
+    default:
+      Query = `
+      select TOP 100 *, (SELECT T_COMPANY.F_SName from T_COMPANY where F_Customer=T_COMPANY.F_ID) AS Customer, ROW_NUMBER() OVER (PARTITION BY T_AIMMAIN.F_RefNo ORDER BY T_AIMMAIN.F_ID) AS HouseCount from T_AIMMAIN LEFT JOIN T_AIHMAIN on (T_AIHMAIN.F_AIMBLID=T_AIMMAIN.F_ID) where F_ETA>'${moment()
+        .subtract(30, "days")
+        .calendar()}' AND (T_AIMMAIN.F_U1ID='${
+        token.fsid
+      }' OR T_AIMMAIN.F_U2ID='${token.fsid}') ORDER BY T_AIMMAIN.F_ID DESC;
+      `;
+      break;
+  }
 
   const result = await sql
     .connect(sqlConfig)
@@ -43,7 +55,7 @@ export default async (req, res) => {
       }
     })
     .catch((err) => {
-      console.log("ERROR FROM MASTER");
+      console.log("ERROR FROM AIM");
       console.log(err);
       res.status(400).send(err);
       return sql.close();

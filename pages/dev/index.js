@@ -14,6 +14,7 @@ import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 import readXlsxFile from "read-excel-file";
 import moment from "moment";
 import fetch from "node-fetch";
+import Link from "next/link";
 
 export default function blank({ Cookie }) {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
@@ -89,7 +90,14 @@ export default function blank({ Cookie }) {
                     icon="dollar"
                     intent="success"
                   >
-                    Purchase page is available for tracking purhcase order.
+                    Purchase Order Management page is available for tracking
+                    purhcase order.
+                    <br />
+                    <Link href="/dev/po">
+                      <Button intent="success" icon="document">
+                        Purchase Order
+                      </Button>
+                    </Link>
                   </Callout>
                 </div>
                 <div className="row my-2">
@@ -98,7 +106,15 @@ export default function blank({ Cookie }) {
                     icon="data-lineage"
                     intent="success"
                   >
-                    Payment is integrated with Stripe.
+                    Credit Card payment system has been integrated with the
+                    system. User may pay the pending invoice at the company
+                    page. Payment is integrated with Stripe.
+                    <br />
+                    <Link href="/dev/payment">
+                      <Button intent="success" icon="dollar">
+                        Manual Payment
+                      </Button>
+                    </Link>
                   </Callout>
                 </div>
               </div>
