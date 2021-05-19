@@ -7,7 +7,7 @@ import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import fetch from "node-fetch";
 import moment from "moment";
 import { Button, ButtonGroup, Dialog } from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
+import { Popover2, ContextMenu2 } from "@blueprintjs/popover2";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 import React, { useState, useEffect } from "react";
@@ -131,19 +131,8 @@ export default function dashboard({ Cookie, Board }) {
     });
     if (file.status === 200) {
       const list = await file.json();
+      console.log(list);
       setFiles(list);
-      // list.map(async (ga) => {
-      //   const res = await fetch("/api/dashboard/getFile", {
-      //     method: "GET",
-      //     headers: {
-      //       ref: ref,
-      //       name: ga,
-      //     },
-      //   });
-      //   const buff = await res.blob();
-      //   const blob = new Blob([buff], { type: "mime-type" });
-      //   const url = window.URL.createObjectURL(blob);
-      // });
     }
   }
 
@@ -187,13 +176,14 @@ export default function dashboard({ Cookie, Board }) {
                         OimList.map((ga) => {
                           if (ga.HouseCount == 1) {
                             return (
-                              <ListGroupItem
-                                key={ga.F_ID[0]}
-                                action
-                                className="px-2 ml-1 py-1 d-flex justify-content-between align-items-center text-xs btn btn-link"
+                              <ContextMenu2
+                                content={<MasterMenu data={ga} type="oim" />}
+                                className="px-2 ml-1 py-1 my-0"
                               >
-                                <span
-                                  className="font-weight-bold reference"
+                                <ListGroupItem
+                                  key={ga.F_ID[0]}
+                                  action
+                                  className="d-flex justify-content-between align-items-center text-xs btn btn-link"
                                   onClick={() => {
                                     var AllOim = OimList.filter(
                                       (element) =>
@@ -225,44 +215,47 @@ export default function dashboard({ Cookie, Board }) {
                                       });
                                   }}
                                 >
-                                  {ga.F_RefNo}
-                                </span>
-                                <span
-                                  className="text-gray-800"
-                                  style={{
-                                    maxWidth: "100px",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
-                                  }}
-                                >
-                                  {ga.Customer || "NO CUSTOMER"}
-                                </span>
-                                <span
-                                  className={`font-weight-bold ${
-                                    moment()
+                                  <span className="font-weight-bold reference">
+                                    {ga.F_RefNo}
+                                  </span>
+                                  <span
+                                    className="text-gray-800"
+                                    style={{
+                                      maxWidth: "100px",
+                                      textOverflow: "ellipsis",
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                    }}
+                                  >
+                                    {ga.Customer || "NO CUSTOMER"}
+                                  </span>
+                                  <span
+                                    className={`font-weight-bold ${
+                                      moment()
+                                        .startOf("day")
+                                        .diff(moment(ga.F_ETA).utc(), "days") <
+                                      0
+                                        ? "text-danger"
+                                        : "text-primary"
+                                    }`}
+                                  >
+                                    {moment()
                                       .startOf("day")
-                                      .diff(moment(ga.F_ETA).utc(), "days") < 0
-                                      ? "text-danger"
-                                      : "text-primary"
-                                  }`}
-                                >
-                                  {moment()
-                                    .startOf("day")
-                                    .diff(moment(ga.F_ETA).utc(), "days")}
-                                </span>
-                                <span>
-                                  <ButtonGroup minimal={true}>
-                                    <Popover2
-                                      content={
-                                        <MasterMenu data={ga} type="oim" />
-                                      }
-                                    >
-                                      <Button icon="more"></Button>
-                                    </Popover2>
-                                  </ButtonGroup>
-                                </span>
-                              </ListGroupItem>
+                                      .diff(moment(ga.F_ETA).utc(), "days")}
+                                  </span>
+                                  {/* <span>
+                                    <ButtonGroup minimal={true}>
+                                      <Popover2
+                                        content={
+                                          <MasterMenu data={ga} type="oim" />
+                                        }
+                                      >
+                                        <Button icon="more"></Button>
+                                      </Popover2>
+                                    </ButtonGroup>
+                                  </span> */}
+                                </ListGroupItem>
+                              </ContextMenu2>
                             );
                           }
                         })
@@ -292,14 +285,15 @@ export default function dashboard({ Cookie, Board }) {
                         OomList.map((ga) => {
                           if (ga.HouseCount == 1) {
                             return (
-                              <ListGroupItem
-                                key={ga.F_ID[0]}
-                                href="#"
-                                action
-                                className="px-2 ml-1 py-1 d-flex justify-content-between align-items-center text-xs btn btn-link"
+                              <ContextMenu2
+                                content={<MasterMenu data={ga} type="oex" />}
+                                className="px-2 ml-1 py-1 my-0"
                               >
-                                <span
-                                  className="font-weight-bold reference"
+                                <ListGroupItem
+                                  key={ga.F_ID[0]}
+                                  href="#"
+                                  action
+                                  className="d-flex justify-content-between align-items-center text-xs btn btn-link"
                                   onClick={() => {
                                     var AllOom = OomList.filter(
                                       (element) =>
@@ -326,33 +320,35 @@ export default function dashboard({ Cookie, Board }) {
                                       });
                                   }}
                                 >
-                                  {ga.F_RefNo}
-                                </span>
-                                <span
-                                  className="text-gray-800"
-                                  style={{
-                                    maxWidth: "100px",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
-                                  }}
-                                >
-                                  {ga.Customer || "NO CUSTOMER"}
-                                </span>
-                                <span
-                                  className={`font-weight-bold ${
-                                    moment()
+                                  <span className="font-weight-bold reference">
+                                    {ga.F_RefNo}
+                                  </span>
+                                  <span
+                                    className="text-gray-800"
+                                    style={{
+                                      maxWidth: "100px",
+                                      textOverflow: "ellipsis",
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                    }}
+                                  >
+                                    {ga.Customer || "NO CUSTOMER"}
+                                  </span>
+                                  <span
+                                    className={`font-weight-bold ${
+                                      moment()
+                                        .startOf("day")
+                                        .diff(moment(ga.F_ETA).utc(), "days") <
+                                      0
+                                        ? "text-danger"
+                                        : "text-primary"
+                                    }`}
+                                  >
+                                    {moment()
                                       .startOf("day")
-                                      .diff(moment(ga.F_ETA).utc(), "days") < 0
-                                      ? "text-danger"
-                                      : "text-primary"
-                                  }`}
-                                >
-                                  {moment()
-                                    .startOf("day")
-                                    .diff(moment(ga.F_ETA).utc(), "days")}
-                                </span>
-                                <span>
+                                      .diff(moment(ga.F_ETA).utc(), "days")}
+                                  </span>
+                                  {/* <span>
                                   <ButtonGroup minimal={true}>
                                     <Popover2
                                       content={
@@ -362,8 +358,9 @@ export default function dashboard({ Cookie, Board }) {
                                       <Button icon="more"></Button>
                                     </Popover2>
                                   </ButtonGroup>
-                                </span>
-                              </ListGroupItem>
+                                </span> */}
+                                </ListGroupItem>
+                              </ContextMenu2>
                             );
                           }
                         })
@@ -393,14 +390,15 @@ export default function dashboard({ Cookie, Board }) {
                         AimList.map((ga) => {
                           if (ga.HouseCount == 1) {
                             return (
-                              <ListGroupItem
-                                key={ga.F_ID[0]}
-                                href="#"
-                                action
-                                className="px-2 ml-1 py-1 d-flex justify-content-between align-items-center text-xs btn btn-link"
+                              <ContextMenu2
+                                content={<MasterMenu data={ga} type="aim" />}
+                                className="px-2 ml-1 py-1 my-0"
                               >
-                                <span
-                                  className="font-weight-bold reference"
+                                <ListGroupItem
+                                  key={ga.F_ID[0]}
+                                  href="#"
+                                  action
+                                  className="d-flex justify-content-between align-items-center text-xs btn btn-link"
                                   onClick={() => {
                                     var AllAim = AimList.filter(
                                       (element) =>
@@ -417,37 +415,42 @@ export default function dashboard({ Cookie, Board }) {
                                         getInvoice(ga.F_ID[1], "T_AIHMAIN");
                                       })
                                       .then(() => {
+                                        getComment(ga.F_RefNo);
+                                      })
+                                      .then(() => {
                                         getFiles(ga.F_RefNo);
                                       });
                                   }}
                                 >
-                                  {ga.F_RefNo}
-                                </span>
-                                <span
-                                  className="text-gray-800"
-                                  style={{
-                                    maxWidth: "100px",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
-                                  }}
-                                >
-                                  {ga.Customer || "NO CUSTOMER"}
-                                </span>
-                                <span
-                                  className={`font-weight-bold ${
-                                    moment()
+                                  <span className="font-weight-bold reference">
+                                    {ga.F_RefNo}
+                                  </span>
+                                  <span
+                                    className="text-gray-800"
+                                    style={{
+                                      maxWidth: "100px",
+                                      textOverflow: "ellipsis",
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                    }}
+                                  >
+                                    {ga.Customer || "NO CUSTOMER"}
+                                  </span>
+                                  <span
+                                    className={`font-weight-bold ${
+                                      moment()
+                                        .startOf("day")
+                                        .diff(moment(ga.F_ETA).utc(), "days") <
+                                      0
+                                        ? "text-danger"
+                                        : "text-primary"
+                                    }`}
+                                  >
+                                    {moment()
                                       .startOf("day")
-                                      .diff(moment(ga.F_ETA).utc(), "days") < 0
-                                      ? "text-danger"
-                                      : "text-primary"
-                                  }`}
-                                >
-                                  {moment()
-                                    .startOf("day")
-                                    .diff(moment(ga.F_ETA).utc(), "days")}
-                                </span>
-                                <span>
+                                      .diff(moment(ga.F_ETA).utc(), "days")}
+                                  </span>
+                                  {/* <span>
                                   <ButtonGroup minimal={true}>
                                     <Popover2
                                       content={
@@ -457,8 +460,9 @@ export default function dashboard({ Cookie, Board }) {
                                       <Button icon="more"></Button>
                                     </Popover2>
                                   </ButtonGroup>
-                                </span>
-                              </ListGroupItem>
+                                </span> */}
+                                </ListGroupItem>
+                              </ContextMenu2>
                             );
                           }
                         })
@@ -488,14 +492,15 @@ export default function dashboard({ Cookie, Board }) {
                         AomList.map((ga) => {
                           if (ga.HouseCount == 1) {
                             return (
-                              <ListGroupItem
-                                key={ga.F_ID[0]}
-                                href="#"
-                                action
-                                className="px-2 ml-1 py-1 d-flex justify-content-between align-items-center text-xs btn btn-link"
+                              <ContextMenu2
+                                content={<MasterMenu data={ga} type="aex" />}
+                                className="px-2 ml-1 py-1 my-0"
                               >
-                                <span
-                                  className="font-weight-bold reference"
+                                <ListGroupItem
+                                  key={ga.F_ID[0]}
+                                  href="#"
+                                  action
+                                  className="d-flex justify-content-between align-items-center text-xs btn btn-link"
                                   onClick={() => {
                                     var AllAom = AomList.filter(
                                       (element) =>
@@ -512,37 +517,42 @@ export default function dashboard({ Cookie, Board }) {
                                         getInvoice(ga.F_ID[1], "T_AOHMAIN");
                                       })
                                       .then(() => {
+                                        getComment(ga.F_RefNo);
+                                      })
+                                      .then(() => {
                                         getFiles(ga.F_RefNo);
                                       });
                                   }}
                                 >
-                                  {ga.F_RefNo}
-                                </span>
-                                <span
-                                  className="text-gray-800"
-                                  style={{
-                                    maxWidth: "100px",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
-                                  }}
-                                >
-                                  {ga.Customer || "NO CUSTOMER"}
-                                </span>
-                                <span
-                                  className={`font-weight-bold ${
-                                    moment()
+                                  <span className="font-weight-bold reference">
+                                    {ga.F_RefNo}
+                                  </span>
+                                  <span
+                                    className="text-gray-800"
+                                    style={{
+                                      maxWidth: "100px",
+                                      textOverflow: "ellipsis",
+                                      whiteSpace: "nowrap",
+                                      overflow: "hidden",
+                                    }}
+                                  >
+                                    {ga.Customer || "NO CUSTOMER"}
+                                  </span>
+                                  <span
+                                    className={`font-weight-bold ${
+                                      moment()
+                                        .startOf("day")
+                                        .diff(moment(ga.F_ETA).utc(), "days") <
+                                      0
+                                        ? "text-danger"
+                                        : "text-primary"
+                                    }`}
+                                  >
+                                    {moment()
                                       .startOf("day")
-                                      .diff(moment(ga.F_ETA).utc(), "days") < 0
-                                      ? "text-danger"
-                                      : "text-primary"
-                                  }`}
-                                >
-                                  {moment()
-                                    .startOf("day")
-                                    .diff(moment(ga.F_ETA).utc(), "days")}
-                                </span>
-                                <span>
+                                      .diff(moment(ga.F_ETA).utc(), "days")}
+                                  </span>
+                                  {/* <span>
                                   <ButtonGroup minimal={true}>
                                     <Popover2
                                       content={
@@ -552,8 +562,9 @@ export default function dashboard({ Cookie, Board }) {
                                       <Button icon="more"></Button>
                                     </Popover2>
                                   </ButtonGroup>
-                                </span>
-                              </ListGroupItem>
+                                </span> */}
+                                </ListGroupItem>
+                              </ContextMenu2>
                             );
                           }
                         })
@@ -680,8 +691,9 @@ export default function dashboard({ Cookie, Board }) {
         <p>
           <b>Added Feature</b>
         </p>
-        <p>Access to the Reference Case Detail Page</p>
-        <p>Access to the Customer Detail Page</p>
+        <p>Right Click on the reference to see the menu</p>
+        <p>Click on the reference to see the detail panel</p>
+
         <style jsx>{`
           .reference:hover {
             opacity: 0.5;
@@ -817,17 +829,6 @@ export async function getServerSideProps({ req }) {
     //   `${process.env.BASE_URL}api/board/getPostFive`
     // );
     // const dataBoard = await resBoard.json();
-
-    return {
-      props: {
-        Cookie: cookies,
-        OimList: [],
-        OomList: [],
-        AimList: [],
-        AomList: [],
-        Board: [],
-      },
-    };
   }
   return {
     props: {

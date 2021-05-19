@@ -7,6 +7,8 @@ import {
   Classes,
   Collapse,
   Pre,
+  Card,
+  FileInput,
 } from "@blueprintjs/core";
 import { Popover2 } from "@blueprintjs/popover2";
 import { useRouter } from "next/router";
@@ -33,8 +35,7 @@ export const MasterDialog = ({
   const [comments, setComment] = useState(false);
 
   async function uploadFile(e) {
-    var uploadfile = document.getElementById("gggg").files[0];
-
+    var uploadfile = document.getElementById("upload").files[0];
     // console.log(uploadfile);
     if (uploadfile) {
       const formData = new FormData();
@@ -75,7 +76,7 @@ export const MasterDialog = ({
     const data = {
       RefNo: ref.F_RefNo,
       Content: html,
-      UID: 14,
+      UID: token.uid,
       Link: "",
     };
     // F_RefNo, F_Content, F_UID, F_Date, F_Show, F_Link;
@@ -87,11 +88,12 @@ export const MasterDialog = ({
     if (fetchPostComment.status === 200) {
       const newMsg = await fetchPostComment.json();
       setComment([...comment, newMsg[0]]);
-      // console.log(newMsg);
+      setHtml("");
     } else {
       alert(`Error ${fetchPostComment.status}`);
     }
   }
+
   return (
     <div className={Classes.DIALOG_BODY}>
       <div className="row">
@@ -106,19 +108,8 @@ export const MasterDialog = ({
         >
           <p className="font-weight-bold">
             {refs.F_CustRefNo && `Customer Reference: ${refs.F_CustRefNo}`}
-
             {/* {JSON.stringify(token)} */}
           </p>
-
-          {/* <form
-            action="/api/dashboard/uploadFile"
-            encType="multipart/form-data"
-            method="post"
-            name={refs.F_RefNo}
-          >
-            <input type="file" name="upload" />
-            <input type="submit" value="Upload" />
-          </form> */}
 
           <h4>{refs.Customer}</h4>
           <div className="tag-collection">
@@ -191,9 +182,6 @@ export const MasterDialog = ({
               )}
           </div>
 
-          {/* <p>MBL: {refs.F_MBLNo || refs.F_MawbNo}</p>
-            <p>HBL: {refs.F_HBLNo || refs.F_HAWBNo || refs.F_HawbNo}</p> */}
-
           {/* <div>{refs.F_CName}</div> */}
           <hr className="my-1" />
           <div className="container-list">
@@ -226,6 +214,7 @@ export const MasterDialog = ({
                         }
                       }}
                       small={true}
+                      fill={true}
                     >
                       {i + 1}: {ga.F_HBLNo || ga.F_MawbNo}
                     </Button>
@@ -241,30 +230,27 @@ export const MasterDialog = ({
           {ap &&
             ap.map((ga, i) => {
               return (
-                <div key={i}>
+                <div key={i} className="d-inline mr-2">
                   <Button
                     text={`AP: ${ga.F_Descript}`}
                     small={true}
-                    onClick={() => console.log(ga)}
+                    onClick={() => alert(JSON.stringify(ga))}
                   ></Button>
-                  <hr className="my-1" />
-                  {/* {JSON.stringify(ga)} */}
                 </div>
               );
             })}
-
+          <hr className="my-1" />
           {/* INVOICE REQUEST APPROVAL */}
           {invoice &&
             invoice.map((ga, i) => {
               return (
-                <div key={i}>
+                <div key={i} className="d-inline mr-2">
                   <Button
                     text={`INVOICE: ${ga.F_InvoiceNo}`}
                     disabled={!ga.F_InvoiceAmt}
                     small={true}
-                    onClick={() => console.log(ga)}
+                    onClick={() => alert(JSON.stringify(ga))}
                   ></Button>
-                  <hr className="my-1" />
                   {/* {JSON.stringify(ga)} */}
                 </div>
               );
@@ -281,137 +267,141 @@ export const MasterDialog = ({
                   )
                 }
                 intent="success"
-                icon="document"
+                icon="download"
+                className="mt-1 mr-1"
+                small={true}
               ></Button>
             ))}
-          {/* <p>{JSON.stringify(comment)}</p> */}
-          {comments
-            ? comments.map((ga) => (
-                <CommentList
-                  key={ga.ID}
-                  last={ga.UID_LNAME}
-                  first={ga.UID_FNAME}
-                  content={ga.Content}
-                  date={ga.Date}
-                ></CommentList>
-              ))
-            : comment.map((ga) => (
-                <CommentList
-                  key={ga.ID}
-                  last={ga.UID_LNAME}
-                  first={ga.UID_FNAME}
-                  content={ga.Content}
-                  date={ga.Date}
-                ></CommentList>
-              ))}
-          {ReactQuill && (
-            <ReactQuill
-              className="my-2"
-              value={html}
-              placeholder="Type here..."
-              modules={{
-                toolbar: {
-                  container: [
-                    [{ header: [1, 2, 3, 4, 5, 6, false] }],
-                    // [{ font: [] }],
-                    // [{ align: [] }],
-                    ["bold", "italic", "underline"],
-                    [
-                      { list: "ordered" },
-                      { list: "bullet" },
-                      {
-                        color: [
-                          "#000000",
-                          "#e60000",
-                          "#ff9900",
-                          "#ffff00",
-                          "#008a00",
-                          "#0066cc",
-                          "#9933ff",
-                          "#ffffff",
-                          "#facccc",
-                          "#ffebcc",
-                          "#ffffcc",
-                          "#cce8cc",
-                          "#cce0f5",
-                          "#ebd6ff",
-                          "#bbbbbb",
-                          "#f06666",
-                          "#ffc266",
-                          "#ffff66",
-                          "#66b966",
-                          "#66a3e0",
-                          "#c285ff",
-                          "#888888",
-                          "#a10000",
-                          "#b26b00",
-                          "#b2b200",
-                          "#006100",
-                          "#0047b2",
-                          "#6b24b2",
-                          "#444444",
-                          "#5c0000",
-                          "#663d00",
-                          "#666600",
-                          "#003700",
-                          "#002966",
-                          "#3d1466",
-                          "custom-color",
-                        ],
-                      },
-                      { background: [] },
-                      "link",
-                      // "image",
+          <Card className="mt-2 py-1">
+            <h5 className="pt-2 text-primary">Comments</h5>
+            {comments
+              ? comments.map((ga) => (
+                  <CommentList
+                    key={ga.ID}
+                    last={ga.UID_LNAME}
+                    first={ga.UID_FNAME}
+                    content={ga.Content}
+                    date={ga.Date}
+                  ></CommentList>
+                ))
+              : comment.map((ga) => (
+                  <CommentList
+                    key={ga.ID}
+                    last={ga.UID_LNAME}
+                    first={ga.UID_FNAME}
+                    content={ga.Content}
+                    date={ga.Date}
+                  ></CommentList>
+                ))}
+            {ReactQuill && (
+              <ReactQuill
+                className="my-2"
+                value={html}
+                placeholder="Type here..."
+                modules={{
+                  toolbar: {
+                    container: [
+                      [{ header: [1, 2, 3, 4, 5, 6, false] }],
+                      // [{ font: [] }],
+                      // [{ align: [] }],
+                      ["bold", "italic", "underline"],
+                      [
+                        { list: "ordered" },
+                        { list: "bullet" },
+                        {
+                          color: [
+                            "#000000",
+                            "#e60000",
+                            "#ff9900",
+                            "#ffff00",
+                            "#008a00",
+                            "#0066cc",
+                            "#9933ff",
+                            "#ffffff",
+                            "#facccc",
+                            "#ffebcc",
+                            "#ffffcc",
+                            "#cce8cc",
+                            "#cce0f5",
+                            "#ebd6ff",
+                            "#bbbbbb",
+                            "#f06666",
+                            "#ffc266",
+                            "#ffff66",
+                            "#66b966",
+                            "#66a3e0",
+                            "#c285ff",
+                            "#888888",
+                            "#a10000",
+                            "#b26b00",
+                            "#b2b200",
+                            "#006100",
+                            "#0047b2",
+                            "#6b24b2",
+                            "#444444",
+                            "#5c0000",
+                            "#663d00",
+                            "#666600",
+                            "#003700",
+                            "#002966",
+                            "#3d1466",
+                            "custom-color",
+                          ],
+                        },
+                        { background: [] },
+                        "link",
+                        // "image",
+                      ],
                     ],
-                  ],
-                },
-                keyboard: {
-                  bindings: {
-                    // handleEnter: {
-                    //   key: 13,
-                    //   handler: function (e) {
-                    //     setHtml("");
-                    //   },
-                    // },
                   },
-                },
+                  keyboard: {
+                    bindings: {
+                      // handleEnter: {
+                      //   key: 13,
+                      //   handler: function (e) {
+                      //     setHtml("");
+                      //   },
+                      // },
+                    },
+                  },
+                }}
+                theme="snow"
+                onChange={setHtml}
+                style={{ width: "100%" }}
+              />
+            )}
+            <Button
+              text="Save"
+              onClick={() => {
+                uploadComment(refs);
+                console.log(html);
               }}
-              theme="snow"
-              onChange={setHtml}
-              style={{ width: "100%" }}
-            />
-          )}
-          <Button
-            text="Save"
-            onClick={() => {
-              uploadComment(refs);
-              console.log(html);
-            }}
-            intent="primary"
-            className="mr-2"
-          ></Button>
-          <Button text="Cancel" onClick={() => setHtml("")}></Button>
+              intent="primary"
+              className="mr-2 mb-2"
+            ></Button>
+            <Button
+              text="Cancel"
+              className="mb-2"
+              onClick={() => setHtml("")}
+            ></Button>
+          </Card>
 
           {/* Bill of Lading Body */}
           <div className="card mt-2">
             <div className="card-body">
-              <pre>Description</pre>
+              <pre className="mb-1">MBL</pre>
+              <code>{refs.F_MBLNo || refs.F_MawbNo}</code>
+
+              <pre className="mb-1 mt-1">Description</pre>
               <code>{refs.F_Description}</code>
             </div>
           </div>
 
-          {Object.keys(refs).map((ga) => (
+          {/* {Object.keys(refs).map((ga) => (
             <p className="text-gray-300" key={ga}>
               {ga} : {refs[ga]}
             </p>
-          ))}
-
-          <input
-            type="file"
-            name="userPhoto"
-            onChange={(e) => uploadFile(e)}
-            id="gggg"
-          />
+          ))} */}
 
           {/* {JSON.stringify(refs)} */}
         </div>
@@ -484,12 +474,16 @@ export const MasterDialog = ({
                 moment(refs.F_ETD).utc().format("L")}
             </div>
           </div>
+          <div className="text-right text-gray-500">{refs.F_LoadingPort}</div>
           <div className="d-flex justify-content-between my-1">
             <div className="font-weight-bold">Arrival: </div>
             <div>
               {moment(refs.F_ETA).isValid &&
                 moment(refs.F_ETA).utc().format("L")}
             </div>
+          </div>
+          <div className="text-right text-gray-500">
+            {refs.F_Discharge || refs.F_DisCharge}
           </div>
           <div className="d-flex justify-content-between my-1">
             <div className="font-weight-bold">Delivery: </div>
@@ -503,6 +497,17 @@ export const MasterDialog = ({
                     moment(refs.F_FETA[0]).utc().format("L"))}
             </div>
           </div>
+          <div className="text-right text-gray-500">{refs.F_FinalDest}</div>
+          <hr />
+          <label className="bp3-file-input d-block">
+            <input
+              type="file"
+              name="userPhoto"
+              onChange={(e) => uploadFile(e)}
+              id="upload"
+            />
+            <span className="bp3-file-upload-input">Choose File</span>
+          </label>
         </div>
       </div>
     </div>

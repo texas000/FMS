@@ -33,7 +33,7 @@ export default async (req, res) => {
 
     request(options, function (error, response, body) {
       if (error) throw new Error(error);
-      console.log(response);
+      // console.log(response);
       res.status(200).json(true);
     });
   });

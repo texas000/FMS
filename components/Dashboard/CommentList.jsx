@@ -31,10 +31,10 @@ export const CommentList = ({ first, last, content, uid, date }) => {
       </div>
       <div className="content media-body text-xs">
         <div className="metadata">
-          <span className="text-gray-800 text-uppercase">
+          <span className="text-gray-900 text-uppercase">
             {first} {last}{" "}
           </span>
-          <span>{moment(date).format("LLL")}</span>
+          <span className="ml-2 text-gray-500">{moment(date).fromNow()}</span>
           <span>
             {uid && (
               <i
