@@ -158,7 +158,7 @@ const Top = ({ Token, toggle, setToggle }) => {
             <a
               className="dropdown-item d-flex align-items-center"
               href="#"
-              onClick={() => router.push("/forwarding?search=oim")}
+              onClick={() => router.push("/forwarding/oim")}
             >
               <div className="mr-3">
                 <div className="icon-circle bg-primary">
@@ -173,7 +173,7 @@ const Top = ({ Token, toggle, setToggle }) => {
             <a
               className="dropdown-item d-flex align-items-center"
               href="#"
-              onClick={() => router.push("/forwarding?search=oex")}
+              onClick={() => router.push("/forwarding/oex")}
             >
               <div className="mr-3">
                 <div className="icon-circle bg-primary">
@@ -188,7 +188,7 @@ const Top = ({ Token, toggle, setToggle }) => {
             <a
               className="dropdown-item d-flex align-items-center"
               href="#"
-              onClick={() => router.push("/forwarding?search=aim")}
+              onClick={() => router.push("/forwarding/aim")}
             >
               <div className="mr-3">
                 <div className="icon-circle bg-primary">
@@ -203,7 +203,7 @@ const Top = ({ Token, toggle, setToggle }) => {
             <a
               className="dropdown-item d-flex align-items-center"
               href="#"
-              onClick={() => router.push("/forwarding?search=aex")}
+              onClick={() => router.push("/forwarding/aex")}
             >
               <div className="mr-3">
                 <div className="icon-circle bg-primary">
@@ -333,7 +333,7 @@ const Top = ({ Token, toggle, setToggle }) => {
           >
             <i className="fa fa-envelope fa-fw"></i>
             {/* <!-- Counter - Messages --> */}
-            <span className="badge badge-danger badge-counter">
+            <span className="badge badge-secondary badge-counter">
               {Messages && Messages.length}
             </span>
           </a>
@@ -345,7 +345,7 @@ const Top = ({ Token, toggle, setToggle }) => {
             aria-labelledby="messagesDropdown"
           >
             <h6 className="dropdown-header">Message Center</h6>
-            {Messages &&
+            {/* {Messages &&
               Messages.length &&
               Messages.map((ga) => (
                 <a
@@ -369,7 +369,7 @@ const Top = ({ Token, toggle, setToggle }) => {
                     </div>
                   </div>
                 </a>
-              ))}
+              ))} */}
             <a
               className="dropdown-item text-center small text-gray-500"
               href="#"

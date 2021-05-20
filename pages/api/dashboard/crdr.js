@@ -24,7 +24,7 @@ export default async (req, res) => {
   } else {
     var Query = null;
     if (token) {
-      Query = `select T_APHD.*, T_COMPANY.F_Addr, T_COMPANY.F_City, T_COMPANY.F_State, T_COMPANY.F_ZipCode, T_COMPANY.F_SName, T_COMPANY.F_IRSNo, T_COMPANY.F_IRSType from T_APHD INNER JOIN T_COMPANY ON F_PayTo=T_COMPANY.F_ID where F_TBID='${req.headers.id}' AND F_TBName='${req.headers.table}';`;
+      Query = `select * from T_CRDBHD where F_TBID='${req.headers.id}' AND F_TBName='${req.headers.table}';`;
     }
 
     const result = await sql

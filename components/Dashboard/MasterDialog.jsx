@@ -17,22 +17,106 @@ import { useEffect, useState } from "react";
 import "quill/dist/quill.snow.css";
 import CommentList from "./CommentList";
 import axios, { post } from "axios";
-export const MasterDialog = ({
-  refs,
-  multi,
-  container,
-  ap,
-  invoice,
-  comment,
-  file,
-  token,
-}) => {
+import { BlobProvider } from "@react-pdf/renderer";
+import CheckRequestForm from "./CheckRequestForm";
+export const MasterDialog = ({ refs, multi, container, token }) => {
   const router = useRouter();
   const ReactQuill =
     typeof window === "object" ? require("react-quill") : () => false;
   const [selectedHouse, setSelectedHouse] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState(false);
+  const [selectedAP, setSelectedAP] = useState(false);
+  const [selectedCrdr, setSelectedCrdr] = useState(false);
   const [html, setHtml] = useState("");
-  const [comments, setComment] = useState(false);
+  // const [comments, setComment] = useState(false);
+  const [profit, setProfit] = useState([]);
+  const [ap, setAp] = useState([]);
+  const [invoice, setInvoice] = useState([]);
+  const [crdr, setCrdr] = useState([]);
+  const [file, setFiles] = useState([]);
+  const [comment, setComment] = useState([]);
+
+  useEffect(() => {
+    getProfit().then(() => {
+      getAp().then(() => {
+        getInvoice().then(() => {
+          getCrdr().then(() => {
+            getFiles().then(() => {
+              getComment();
+            });
+          });
+        });
+      });
+    });
+  }, []);
+  async function getProfit() {
+    multi &&
+      multi.map(async (ga) => {
+        const profits = await fetch("/api/dashboard/profit", {
+          headers: {
+            id: ga.F_ID[1],
+            table: refs.House,
+            key: token.admin,
+          },
+        }).then(async (j) => await j.json());
+        setProfit((prev) => [...prev, profits]);
+      });
+  }
+
+  async function getAp() {
+    const aps = await fetch("/api/dashboard/ap", {
+      headers: {
+        key: token.admin,
+        id: refs.F_ID[1],
+        table: refs.House,
+      },
+    }).then(async (j) => await j.json());
+    setAp(aps);
+  }
+
+  async function getInvoice() {
+    const invoices = await fetch("/api/dashboard/invoice", {
+      headers: {
+        key: token.admin,
+        id: refs.F_ID[1],
+        table: refs.House,
+      },
+    }).then(async (j) => await j.json());
+    setInvoice(invoices);
+  }
+
+  async function getCrdr() {
+    const crdrs = await fetch("/api/dashboard/crdr", {
+      headers: {
+        key: token.admin,
+        id: refs.F_ID[1],
+        table: refs.House,
+      },
+    }).then(async (j) => await j.json());
+    setCrdr(crdrs);
+  }
+
+  async function getFiles() {
+    const file = await fetch("/api/dashboard/getFileList", {
+      method: "GET",
+      headers: {
+        ref: refs.F_RefNo,
+      },
+    });
+    if (file.status === 200) {
+      const list = await file.json();
+      setFiles(list);
+    }
+  }
+
+  async function getComment(ref) {
+    const comment = await fetch("/api/dashboard/comment", {
+      headers: {
+        ref: refs.F_RefNo,
+      },
+    }).then(async (j) => await j.json());
+    setComment(comment);
+  }
 
   async function uploadFile(e) {
     var uploadfile = document.getElementById("upload").files[0];
@@ -94,6 +178,42 @@ export const MasterDialog = ({
     }
   }
 
+  const RequestForm = ({ ap, aptype }) => (
+    <BlobProvider
+      document={
+        <CheckRequestForm
+          check={ap.F_CheckNo}
+          type={aptype}
+          payto={ap.F_SName}
+          address={`${ap.F_Addr} ${ap.F_City} ${ap.F_State} ${ap.F_ZipCode}`}
+          irs={`${ap.F_IRSType} ${ap.F_IRSNo}`}
+          amt={Number.parseFloat(ap.F_InvoiceAmt).toFixed(2)}
+          oim={refs.F_RefNo}
+          customer={refs.Customer}
+          inv={ap.F_InvoiceNo}
+          metd={moment(refs.F_ETD).utc().format("MM/DD/YY")}
+          meta={moment(refs.F_ETA).utc().format("MM/DD/YY")}
+          pic={ap.F_U1ID || ""}
+          today={moment().format("l")}
+          desc={ap.F_Descript}
+          pod={refs.F_DisCharge || refs.F_Discharge}
+          comm={refs.F_mCommodity || refs.F_Commodity}
+        />
+      }
+    >
+      {({ blob, url, loading, error }) => (
+        <Button
+          onClick={() => window.open(url)}
+          icon="dollar"
+          intent="success"
+          loading={loading}
+          text={aptype}
+          className="mb-2"
+        ></Button>
+      )}
+    </BlobProvider>
+  );
+
   return (
     <div className={Classes.DIALOG_BODY}>
       <div className="row">
@@ -108,7 +228,6 @@ export const MasterDialog = ({
         >
           <p className="font-weight-bold">
             {refs.F_CustRefNo && `Customer Reference: ${refs.F_CustRefNo}`}
-            {/* {JSON.stringify(token)} */}
           </p>
 
           <h4>{refs.Customer}</h4>
@@ -204,7 +323,7 @@ export const MasterDialog = ({
             {multi &&
               multi.map((ga, i) => {
                 return (
-                  <div key={ga.F_ID[1]} className="col-6">
+                  <div key={ga.F_ID[1]} className="col-12">
                     <Button
                       onClick={() => {
                         if (selectedHouse === i) {
@@ -220,6 +339,36 @@ export const MasterDialog = ({
                     </Button>
                     <Collapse isOpen={selectedHouse === i}>
                       <Pre>{JSON.stringify(ga)}</Pre>
+                      <Pre>
+                        {profit[i] && profit[i][0] && (
+                          <span>
+                            <span>
+                              AR:{" "}
+                              <Tag intent="success">
+                                ${(profit[i][0].F_AR || 0).toFixed(2)}
+                              </Tag>{" "}
+                            </span>
+                            <span>
+                              AP:{" "}
+                              <Tag intent="danger">
+                                ${(profit[i][0].F_AP || 0).toFixed(2)}{" "}
+                              </Tag>{" "}
+                            </span>
+                            <span>
+                              CRDR:{" "}
+                              <Tag intent="success">
+                                ${(profit[i][0].F_CrDr || 0).toFixed(2)}
+                              </Tag>
+                            </span>{" "}
+                            <span>
+                              TOTAL:{" "}
+                              <Tag intent="primary">
+                                ${(profit[i][0].F_HouseTotal || 0).toFixed(2)}
+                              </Tag>
+                            </span>
+                          </span>
+                        )}
+                      </Pre>
                     </Collapse>
                   </div>
                 );
@@ -230,12 +379,43 @@ export const MasterDialog = ({
           {ap &&
             ap.map((ga, i) => {
               return (
-                <div key={i} className="d-inline mr-2">
+                <div key={i} className="mr-2">
                   <Button
                     text={`AP: ${ga.F_Descript}`}
                     small={true}
-                    onClick={() => alert(JSON.stringify(ga))}
+                    onClick={() => {
+                      if (selectedAP === i) {
+                        setSelectedAP(false);
+                      } else {
+                        setSelectedAP(i);
+                      }
+                    }}
                   ></Button>
+                  <Collapse isOpen={selectedAP === i}>
+                    <Pre>
+                      Reference: <Tag>{ga.F_InvoiceNo}</Tag> Amount:{" "}
+                      <Tag>
+                        ${ga.F_InvoiceAmt} {ga.F_Currency}
+                      </Tag>{" "}
+                      Check #: <Tag>{ga.F_CheckNo || "NONE"}</Tag> Created:{" "}
+                      <Tag>
+                        {moment(ga.F_U1Date).utc().format("l")} by {ga.F_U1ID}
+                      </Tag>
+                    </Pre>
+                    <Button
+                      text="REQUEST APPROVAL"
+                      intent="primary"
+                      icon="confirm"
+                      className="mb-2"
+                      onClick={() =>
+                        alert("PLEASE ATTACH AP DOCUMENT BEFORE REQUEST")
+                      }
+                    ></Button>
+                    <RequestForm ap={ga} aptype="CHECK" />
+                    <RequestForm ap={ga} aptype="CARD" />
+                    <RequestForm ap={ga} aptype="WIRE" />
+                    <RequestForm ap={ga} aptype="ACH" />
+                  </Collapse>
                 </div>
               );
             })}
@@ -244,14 +424,86 @@ export const MasterDialog = ({
           {invoice &&
             invoice.map((ga, i) => {
               return (
-                <div key={i} className="d-inline mr-2">
+                <div key={i} className="mr-2">
                   <Button
                     text={`INVOICE: ${ga.F_InvoiceNo}`}
                     disabled={!ga.F_InvoiceAmt}
                     small={true}
-                    onClick={() => alert(JSON.stringify(ga))}
+                    onClick={() => {
+                      if (selectedInvoice === i) {
+                        setSelectedInvoice(false);
+                      } else {
+                        setSelectedInvoice(i);
+                      }
+                    }}
                   ></Button>
-                  {/* {JSON.stringify(ga)} */}
+                  <Collapse isOpen={selectedInvoice === i}>
+                    <Pre>
+                      Amount:{" "}
+                      <Tag>
+                        ${ga.F_InvoiceAmt} {ga.F_Currency}
+                      </Tag>{" "}
+                      Invoice Date:{" "}
+                      <Tag>{moment(ga.F_InvoiceDate).utc().format("l")}</Tag>{" "}
+                      Paid : <Tag>${ga.F_PaidAmt}</Tag> Created{" "}
+                      <Tag>
+                        {moment(ga.F_U1Date).utc().format("l")} by {ga.F_U1ID}
+                      </Tag>
+                    </Pre>
+                    <Button
+                      text="REQUEST APPROVAL"
+                      intent="primary"
+                      icon="confirm"
+                      className="mb-2"
+                      onClick={() =>
+                        alert("PLEASE ATTACH INVOICE DOCUMENT BEFORE REQUEST")
+                      }
+                    ></Button>
+                  </Collapse>
+                </div>
+              );
+            })}
+          <hr className="my-1" />
+          {/* INVOICE REQUEST APPROVAL */}
+          {crdr &&
+            crdr.map((ga, i) => {
+              return (
+                <div key={i} className="mr-2">
+                  <Button
+                    text={`CRDB: ${ga.F_CrDbNo}`}
+                    disabled={!ga.F_Total}
+                    small={true}
+                    onClick={() => {
+                      if (selectedCrdr === i) {
+                        setSelectedCrdr(false);
+                      } else {
+                        setSelectedCrdr(i);
+                      }
+                    }}
+                  ></Button>
+                  <Collapse isOpen={selectedCrdr === i}>
+                    <Pre>
+                      Amount:{" "}
+                      <Tag>
+                        ${ga.F_Total} {ga.F_Currency}
+                      </Tag>{" "}
+                      Invoice Date:{" "}
+                      <Tag>{moment(ga.F_InvoiceDate).utc().format("l")}</Tag>{" "}
+                      Paid : <Tag>${ga.F_PaidAmt}</Tag> Created{" "}
+                      <Tag>
+                        {moment(ga.F_U1Date).utc().format("l")} by {ga.F_U1ID}
+                      </Tag>
+                    </Pre>
+                    <Button
+                      text="REQUEST APPROVAL"
+                      intent="primary"
+                      icon="confirm"
+                      className="mb-2"
+                      onClick={() =>
+                        alert("PLEASE ATTACH CRDB DOCUMENT BEFORE REQUEST")
+                      }
+                    ></Button>
+                  </Collapse>
                 </div>
               );
             })}
@@ -274,25 +526,16 @@ export const MasterDialog = ({
             ))}
           <Card className="mt-2 py-1">
             <h5 className="pt-2 text-primary">Comments</h5>
-            {comments
-              ? comments.map((ga) => (
-                  <CommentList
-                    key={ga.ID}
-                    last={ga.UID_LNAME}
-                    first={ga.UID_FNAME}
-                    content={ga.Content}
-                    date={ga.Date}
-                  ></CommentList>
-                ))
-              : comment.map((ga) => (
-                  <CommentList
-                    key={ga.ID}
-                    last={ga.UID_LNAME}
-                    first={ga.UID_FNAME}
-                    content={ga.Content}
-                    date={ga.Date}
-                  ></CommentList>
-                ))}
+            {comment &&
+              comment.map((ga) => (
+                <CommentList
+                  key={ga.ID}
+                  last={ga.UID_LNAME}
+                  first={ga.UID_FNAME}
+                  content={ga.Content}
+                  date={ga.Date}
+                ></CommentList>
+              ))}
             {ReactQuill && (
               <ReactQuill
                 className="my-2"
@@ -420,15 +663,29 @@ export const MasterDialog = ({
             fill={true}
           >
             {/* STATUS CHANGE -> UPDATE TO SLACK WHAT SECTION IS UPDATED */}
-            <Button text="Open" rightIcon="caret-down" fill={true}></Button>
+            {/* 0-OPEN
+          3-CLOSED
+          5-CLOSED (AFTER 2020-06-01)
+          7-CLOSED (AFTER 2021-01-01) */}
+            {refs.F_FileClosed && (
+              <Button
+                text={refs.F_FileClosed[0] == "0" ? "OPEN" : "CLOSED"}
+                disabled={refs.F_FileClosed[0] != "0"}
+                rightIcon="caret-down"
+                fill={true}
+              ></Button>
+            )}
           </Popover2>
-
+          <a href={`/forwarding/${refs.temp}/${refs.F_RefNo}`}>
+            LINK TO {refs.F_RefNo}
+          </a>
           <p className="mt-2">
             Assignee:{" "}
             <span className="text-uppercase">
               {refs.F_U2ID && refs.F_U2ID[0]}
             </span>
           </p>
+
           {/* <p>House Assignee: {refs.F_Operator && refs.F_Operator}</p> */}
           <p>
             Creator:{" "}
@@ -464,7 +721,6 @@ export const MasterDialog = ({
                 moment(refs.F_PostDate).utc().format("YYYY-MM-DD HH:mm:ss")
               ).fromNow()}
           </p>
-          {/* <p>Closed {refs.F_FileClosed && refs.F_FileClosed}</p> */}
 
           <hr />
           <div className="d-flex justify-content-between">

@@ -7,18 +7,24 @@ import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
-import { Card, Row, Col, Button } from "reactstrap";
+import { Card, Row, Col } from "reactstrap";
 import moment from "moment";
+import { InputGroup, Button, Dialog } from "@blueprintjs/core";
+import MasterDialog from "../../../components/Dashboard/MasterDialog";
 
-const Index = ({ Cookie, Result }) => {
+const Index = ({ Cookie }) => {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
+  const [Result, setResult] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selected, setSelected] = useState(false);
+  const [houses, setHouses] = useState([]);
+
   const router = useRouter();
 
   function indication() {
     return (
       <span>
-        You do not have <span className="text-danger">Ocean Import</span> at the
-        moment
+        <span className="text-danger">No Ocean Import</span> at the moment
       </span>
     );
   }
@@ -75,10 +81,21 @@ const Index = ({ Cookie, Result }) => {
           <Button
             key={option.text}
             onClick={() => onSizePerPageChange(option.page)}
-            size="sm"
-            color={isSelect ? "secondary" : "primary"}
+            small={true}
+            style={
+              isSelect
+                ? {
+                    color: "#fff",
+                    background: "#4e73df",
+                    borderRadius: "0",
+                  }
+                : {
+                    color: "#4e73df",
+                    background: "#fff",
+                    borderRadius: "0",
+                  }
+            }
             className="text-xs"
-            outline
           >
             {option.text}
           </Button>
@@ -86,22 +103,26 @@ const Index = ({ Cookie, Result }) => {
       })}
     </div>
   );
+  const rowEvents = {
+    onClick: (e, row, rowIndex) => {
+      var house = Result.filter((element) => element.F_ID[0] === row.F_ID[0]);
+      setHouses(house);
+      setIsOpen(true);
+      setSelected({
+        ...row,
+        Master: "T_OIMMAIN",
+        House: "T_OIHMAIN",
+        temp: "oim",
+      });
+    },
+  };
 
   const headerSortingStyle = { backgroundColor: "#c9d5f5" };
-
   const column = [
     {
-      dataField: "oimmain.RefNo",
+      dataField: "F_RefNo",
       text: "REF",
       formatter: (cell) => <a href="#">{cell}</a>,
-      events: {
-        onClick: (e, columns, columnIndex, row) => {
-          router.push(
-            `/forwarding/oim/[Detail]`,
-            `/forwarding/oim/${row.oimmain.RefNo}`
-          );
-        },
-      },
       classes:
         "text-xs text-center text-truncate text-uppercase font-weight-bold",
       headerClasses:
@@ -113,7 +134,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "oihmain.Customer_SName",
+      dataField: "Customer",
       text: "CUSTOMER",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -125,7 +146,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "oimmain.MBLNo",
+      dataField: "F_MBLNo",
       text: "MBL",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -137,7 +158,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "oihmain.HBLNo",
+      dataField: "F_HBLNo",
       text: "HBL",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -149,7 +170,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "oimmain.ETD",
+      dataField: "F_ETD",
       text: "ETD",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -172,7 +193,7 @@ const Index = ({ Cookie, Result }) => {
       },
     },
     {
-      dataField: "oimmain.ETA",
+      dataField: "F_ETA",
       text: "ETA",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -195,7 +216,7 @@ const Index = ({ Cookie, Result }) => {
       },
     },
     {
-      dataField: "oimmain.PostDate",
+      dataField: "F_PostDate",
       text: "POST",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -218,7 +239,7 @@ const Index = ({ Cookie, Result }) => {
       },
     },
     {
-      dataField: "oimmain.U2ID",
+      dataField: "F_U2ID[0]",
       text: "EDITOR",
       classes: "text-xs text-truncate text-uppercase",
       headerClasses:
@@ -227,25 +248,76 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
       filter: textFilter({
         className: "text-xs bg-primary text-white border-0",
+        defaultValue: TOKEN.fsid,
       }),
     },
   ];
 
+  async function getOim() {
+    const oims = await fetch("/api/forwarding/oim/getList", {
+      headers: {
+        key: Cookie.jamesworldwidetoken,
+      },
+    }).then(async (j) => await j.json());
+    setResult(oims);
+  }
+
   useEffect(() => {
     !TOKEN && router.push("/login");
+    getOim();
     // In the dev mode, show result in the console.
     // console.log(Result);
   }, []);
+
+  async function getOimSearch(e) {
+    if (e.target.value.length > 2) {
+      const oims = await fetch("/api/forwarding/oim/getList", {
+        headers: {
+          key: Cookie.jamesworldwidetoken,
+          search: e.target.value,
+        },
+      }).then(async (j) => await j.json());
+      setResult(oims);
+    } else {
+      alert("SEARCH VALUE MUST BE OVER 3 CHAR");
+    }
+  }
   if (TOKEN && TOKEN.group) {
     return (
       <Layout TOKEN={TOKEN} TITLE="OCEAN IMPORT">
+        <Dialog
+          isOpen={isOpen}
+          title={selected.F_RefNo}
+          onClose={() => setIsOpen(false)}
+          className="bg-white w-50"
+        >
+          <MasterDialog
+            refs={selected}
+            multi={houses}
+            // container={containers}
+            // comment={comments}
+            // file={files}
+            token={TOKEN}
+          />
+        </Dialog>
         <div className="d-flex flex-sm-row justify-content-between">
           <div className="flex-column">
             <h3 className="mb-4 forwarding font-weight-light">Ocean Import</h3>
           </div>
+          <InputGroup
+            leftIcon="search"
+            type="number"
+            placeholder="Search Number"
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                getOimSearch(e);
+              }
+            }}
+          />
         </div>
 
-        <div className="d-lg-none">
+        {/* <div className="d-lg-none">
           <div className="list-group">
             {Result.length !== 0 ? (
               Result.map((ga) => (
@@ -280,13 +352,13 @@ const Index = ({ Cookie, Result }) => {
               </div>
             )}
           </div>
-        </div>
+        </div> */}
 
         <Card className="bg-transparent border-0 d-none d-lg-block">
           <Row>
             {/* DISPLAY SEARCH RESULT */}
             <ToolkitProvider
-              keyField="oihmain.ID"
+              keyField="F_ID"
               bordered={false}
               columns={column}
               data={Result}
@@ -300,6 +372,7 @@ const Index = ({ Cookie, Result }) => {
                     hover
                     striped
                     condensed
+                    rowEvents={rowEvents}
                     wrapperClasses="table-responsive rounded"
                     bordered={false}
                     filter={filterFactory()}
@@ -327,24 +400,25 @@ export async function getServerSideProps({ req }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
+  return { props: { Cookie: cookies } };
 
-  if (jwt.decode(cookies.jamesworldwidetoken) !== null) {
-    const { fsid } = jwt.decode(cookies.jamesworldwidetoken);
-    var result = [];
-    const fetchSearch = await fetch(
-      `${process.env.FS_BASEPATH}oimmain_leftjoin_oihmain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=&etdTo=&casestatus=`,
-      {
-        headers: { "x-api-key": process.env.JWT_KEY },
-      }
-    );
-    if (fetchSearch.status === 200) {
-      result = await fetchSearch.json();
-    }
+  // if (jwt.decode(cookies.jamesworldwidetoken) !== null) {
+  //   const { fsid } = jwt.decode(cookies.jamesworldwidetoken);
+  //   var result = [];
+  //   const fetchSearch = await fetch(
+  //     `${process.env.FS_BASEPATH}oimmain_leftjoin_oihmain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=&etdTo=&casestatus=`,
+  //     {
+  //       headers: { "x-api-key": process.env.JWT_KEY },
+  //     }
+  //   );
+  //   if (fetchSearch.status === 200) {
+  //     result = await fetchSearch.json();
+  //   }
 
-    return { props: { Cookie: cookies, Result: result } };
-  } else {
-    return { props: { Cookie: cookies, Result: [] } };
-  }
+  //   return { props: { Cookie: cookies, Result: result } };
+  // } else {
+  //   return { props: { Cookie: cookies, Result: [] } };
+  // }
 }
 
 export default Index;

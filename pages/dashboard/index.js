@@ -25,8 +25,6 @@ export default function dashboard({ Cookie, Board }) {
   const [selected, setSelected] = useState(false);
   const [MultiSelected, setMultipleSelected] = useState(false);
   const [containers, setContainers] = useState(false);
-  const [ap, setAp] = useState(false);
-  const [invoice, setInvoice] = useState(false);
   const [comments, setComments] = useState(false);
   const [files, setFiles] = useState(false);
 
@@ -91,51 +89,6 @@ export default function dashboard({ Cookie, Board }) {
     setContainers(container);
   }
 
-  async function getAp(id, tbname) {
-    const aps = await fetch("/api/dashboard/ap", {
-      headers: {
-        key: Cookie.jamesworldwidetoken,
-        id: id,
-        table: tbname,
-      },
-    }).then(async (j) => await j.json());
-    // console.log(aps);
-    setAp(aps);
-  }
-
-  async function getInvoice(id, tbname) {
-    const invoices = await fetch("/api/dashboard/invoice", {
-      headers: {
-        key: Cookie.jamesworldwidetoken,
-        id: id,
-        table: tbname,
-      },
-    }).then(async (j) => await j.json());
-    setInvoice(invoices);
-  }
-
-  async function getComment(ref) {
-    const comment = await fetch("/api/dashboard/comment", {
-      headers: {
-        ref,
-      },
-    }).then(async (j) => await j.json());
-    setComments(comment);
-  }
-  async function getFiles(ref) {
-    const file = await fetch("/api/dashboard/getFileList", {
-      method: "GET",
-      headers: {
-        ref: ref,
-      },
-    });
-    if (file.status === 200) {
-      const list = await file.json();
-      console.log(list);
-      setFiles(list);
-    }
-  }
-
   if (TOKEN != null) {
     return (
       <Layout TOKEN={TOKEN} TITLE="Dashboard">
@@ -153,10 +106,6 @@ export default function dashboard({ Cookie, Board }) {
             refs={selected}
             multi={MultiSelected}
             container={containers}
-            ap={ap}
-            invoice={invoice}
-            comment={comments}
-            file={files}
             token={TOKEN}
           />
         </Dialog>
@@ -179,9 +128,9 @@ export default function dashboard({ Cookie, Board }) {
                               <ContextMenu2
                                 content={<MasterMenu data={ga} type="oim" />}
                                 className="px-2 ml-1 py-1 my-0"
+                                key={ga.F_ID[0]}
                               >
                                 <ListGroupItem
-                                  key={ga.F_ID[0]}
                                   action
                                   className="d-flex justify-content-between align-items-center text-xs btn btn-link"
                                   onClick={() => {
@@ -192,27 +141,18 @@ export default function dashboard({ Cookie, Board }) {
                                     setMultipleSelected(AllOim);
                                     setComments([]);
                                     setFiles([]);
-                                    setSelected(ga);
+                                    setSelected({
+                                      ...ga,
+                                      Master: "T_OIMMAIN",
+                                      House: "T_OIHMAIN",
+                                      temp: "oim",
+                                    });
                                     setIsOpen(1);
                                     getContainer(
                                       ga.F_ID[0],
                                       "T_OIMCONTAINER",
                                       "F_OIMBLID"
-                                    )
-                                      .then(() => {
-                                        // GET AP FOR FIRST HOUSE
-                                        getAp(ga.F_ID[1], "T_OIHMAIN");
-                                      })
-                                      .then(() => {
-                                        // GET INVOICE FOR FIRST HOUSE
-                                        getInvoice(ga.F_ID[1], "T_OIHMAIN");
-                                      })
-                                      .then(() => {
-                                        getComment(ga.F_RefNo);
-                                      })
-                                      .then(() => {
-                                        getFiles(ga.F_RefNo);
-                                      });
+                                    );
                                   }}
                                 >
                                   <span className="font-weight-bold reference">
@@ -288,9 +228,9 @@ export default function dashboard({ Cookie, Board }) {
                               <ContextMenu2
                                 content={<MasterMenu data={ga} type="oex" />}
                                 className="px-2 ml-1 py-1 my-0"
+                                key={"OOM" + ga.F_ID[0]}
                               >
                                 <ListGroupItem
-                                  key={ga.F_ID[0]}
                                   href="#"
                                   action
                                   className="d-flex justify-content-between align-items-center text-xs btn btn-link"
@@ -302,22 +242,18 @@ export default function dashboard({ Cookie, Board }) {
                                     setMultipleSelected(AllOom);
                                     setComments([]);
                                     setFiles([]);
-                                    setSelected(ga);
+                                    setSelected({
+                                      ...ga,
+                                      Master: "T_OOMMAIN",
+                                      House: "T_OOHMAIN",
+                                      temp: "oex",
+                                    });
                                     setIsOpen(1);
                                     getContainer(
                                       ga.F_ID[0],
                                       "T_OOMCONTAINER",
                                       "F_OOMBLID"
-                                    )
-                                      .then(() => {
-                                        getAp(ga.F_ID[1], "T_OOHMAIN");
-                                      })
-                                      .then(() => {
-                                        getInvoice(ga.F_ID[1], "T_OOHMAIN");
-                                      })
-                                      .then(() => {
-                                        getFiles(ga.F_RefNo);
-                                      });
+                                    );
                                   }}
                                 >
                                   <span className="font-weight-bold reference">
@@ -393,9 +329,9 @@ export default function dashboard({ Cookie, Board }) {
                               <ContextMenu2
                                 content={<MasterMenu data={ga} type="aim" />}
                                 className="px-2 ml-1 py-1 my-0"
+                                key={"AIM" + ga.F_ID[0]}
                               >
                                 <ListGroupItem
-                                  key={ga.F_ID[0]}
                                   href="#"
                                   action
                                   className="d-flex justify-content-between align-items-center text-xs btn btn-link"
@@ -407,19 +343,14 @@ export default function dashboard({ Cookie, Board }) {
                                     setMultipleSelected(AllAim);
                                     setComments([]);
                                     setFiles([]);
-                                    setSelected(ga);
+                                    setSelected({
+                                      ...ga,
+                                      Master: "T_AIMMAIN",
+                                      House: "T_AIHMAIN",
+                                      temp: "aim",
+                                    });
                                     setIsOpen(1);
                                     setContainers([]);
-                                    getAp(ga.F_ID[1], "T_AIHMAIN")
-                                      .then(() => {
-                                        getInvoice(ga.F_ID[1], "T_AIHMAIN");
-                                      })
-                                      .then(() => {
-                                        getComment(ga.F_RefNo);
-                                      })
-                                      .then(() => {
-                                        getFiles(ga.F_RefNo);
-                                      });
                                   }}
                                 >
                                   <span className="font-weight-bold reference">
@@ -495,9 +426,9 @@ export default function dashboard({ Cookie, Board }) {
                               <ContextMenu2
                                 content={<MasterMenu data={ga} type="aex" />}
                                 className="px-2 ml-1 py-1 my-0"
+                                key={"AOM" + ga.F_ID[0]}
                               >
                                 <ListGroupItem
-                                  key={ga.F_ID[0]}
                                   href="#"
                                   action
                                   className="d-flex justify-content-between align-items-center text-xs btn btn-link"
@@ -509,19 +440,14 @@ export default function dashboard({ Cookie, Board }) {
                                     setMultipleSelected(AllAom);
                                     setComments([]);
                                     setFiles([]);
-                                    setSelected(ga);
+                                    setSelected({
+                                      ...ga,
+                                      Master: "T_AOMMAIN",
+                                      House: "T_AOHMAIN",
+                                      temp: "aex",
+                                    });
                                     setIsOpen(1);
                                     setContainers([]);
-                                    getAp(ga.F_ID[1], "T_AOHMAIN")
-                                      .then(() => {
-                                        getInvoice(ga.F_ID[1], "T_AOHMAIN");
-                                      })
-                                      .then(() => {
-                                        getComment(ga.F_RefNo);
-                                      })
-                                      .then(() => {
-                                        getFiles(ga.F_RefNo);
-                                      });
                                   }}
                                 >
                                   <span className="font-weight-bold reference">

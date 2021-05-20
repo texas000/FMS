@@ -14,7 +14,7 @@ const sqlConfig = {
 
 export default async (req, res) => {
   //Get Access token from the client side and filter the access
-  const token = jwt.decode(req.headers.key);
+  const token = req.headers.key;
   if (!token) {
     res.status(401).send("Unauthorized");
     return;
@@ -23,7 +23,7 @@ export default async (req, res) => {
     res.status(201).send([]);
   } else {
     var Query = null;
-    if (token.admin) {
+    if (token) {
       Query = `select * from T_INVOHD where F_TBID='${req.headers.id}' and F_TBName='${req.headers.table}';`;
     }
 
