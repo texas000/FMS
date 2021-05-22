@@ -513,11 +513,11 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
               <Button
                 key={"file" + i}
                 text={ga}
-                onClick={() =>
-                  window.open(
+                onClick={async () => {
+                  window.location.assign(
                     `http://jameswgroup.com:49991/api/forwarding/${refs.F_RefNo}/${ga}`
-                  )
-                }
+                  );
+                }}
                 intent="success"
                 icon="download"
                 className="mt-1 mr-1"

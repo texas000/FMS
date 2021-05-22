@@ -99,7 +99,7 @@ export default function dashboard({ Cookie, Board }) {
           isOpen={isOpen}
           title={selected.F_RefNo}
           onClose={() => setIsOpen(false)}
-          className="bg-white w-50"
+          className="bg-white w-75"
           // When user click on the button, width 50 to 100 and height 50 to 100
         >
           <MasterDialog

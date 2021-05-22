@@ -16,10 +16,9 @@ export default async (req, res) => {
   request(options, function (error, response, body) {
     // IF ERROR, THROW ERROR
     if (error) throw new Error(error);
-    // console.log(response);
     // IF RESPONSE IS 200, SEND THE BODY WITH 200 STATUS CODE
     if (response.statusCode === 200) {
-      res.status(200).send(body);
+      res.status(200).send(response);
     } else {
       res.status(201).send(body);
       // Otherwise, send the whole response to see the result from front end

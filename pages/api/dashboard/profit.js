@@ -21,6 +21,9 @@ export default async (req, res) => {
   }
 
   var Query = null;
+  if (req.headers.id == null || req.headers.table == null) {
+    res.status(404).send([]);
+  }
   if (token) {
     Query = `select * from V_PROFIT_H where F_TBID='${
       req.headers.id || ""
