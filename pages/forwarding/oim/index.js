@@ -289,16 +289,9 @@ const Index = ({ Cookie }) => {
           isOpen={isOpen}
           title={selected.F_RefNo}
           onClose={() => setIsOpen(false)}
-          className="bg-white w-50"
+          className="bg-white w-75"
         >
-          <MasterDialog
-            refs={selected}
-            multi={houses}
-            // container={containers}
-            // comment={comments}
-            // file={files}
-            token={TOKEN}
-          />
+          <MasterDialog refs={selected} multi={houses} token={TOKEN} />
         </Dialog>
         <div className="d-flex flex-sm-row justify-content-between">
           <div className="flex-column">

@@ -21,8 +21,10 @@ export default async (req, res) => {
   }
 
   var Query = null;
-  if (req.headers.id == null || req.headers.table == null) {
-    res.status(404).send([]);
+  if (req.headers.id == "null" || req.headers.table == "null") {
+    // 204 IS NO CONTENT
+    res.status(204).send([]);
+    return;
   }
   if (token) {
     Query = `select * from V_PROFIT_H where F_TBID='${
@@ -30,6 +32,7 @@ export default async (req, res) => {
     }' AND F_TBName='${req.headers.table || ""}';`;
   } else {
     res.status(201).send([]);
+    return;
   }
 
   const result = await sql

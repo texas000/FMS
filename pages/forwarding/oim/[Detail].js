@@ -8,7 +8,6 @@ import Head from "../../../components/Forwarding/Head";
 import Route from "../../../components/Forwarding/Route";
 import moment from "moment";
 import { Comment } from "../../../components/Forwarding/Comment";
-
 import jwt from "jsonwebtoken";
 import Info from "../../../components/Forwarding/Info";
 import Forms from "../../../components/Forwarding/Forms";

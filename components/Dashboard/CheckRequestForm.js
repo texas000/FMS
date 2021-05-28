@@ -32,6 +32,8 @@ export const CheckRequestForm = ({
   type,
   comm,
   pod,
+  shipper,
+  consignee,
 }) => (
   <Document
     title={`AP FOR ${oim}`}
@@ -218,7 +220,9 @@ export const CheckRequestForm = ({
         <Table>
           <TableHeader>
             <TableCell style={styles.extraInfo}>
-              {`ADDRESS: ${address ? address : "NO ADDRESS"}\n\nCOMMODITY: ${
+              {`SHIPPER: ${shipper ? shipper : "NO SHIPPER"}\n\nCONSIGNEE: ${
+                consignee ? consignee : "NO CONSIGNEE"
+              }\n\nADDRESS: ${address ? address : "NO ADDRESS"}\n\nCOMMODITY: ${
                 comm ? comm : "NO DATA"
               }\n\nPOD: ${pod ? pod : "NO POD"}\n\nTAX ID INFO: ${
                 (irs && irs) || "NO TAX ID"

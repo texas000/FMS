@@ -25,14 +25,14 @@ export default async (req, res) => {
   switch (token.admin) {
     case 9:
       Query = `
-      SELECT TOP 100 *, (SELECT T_COMPANY.F_SName from T_COMPANY where F_Customer=T_COMPANY.F_ID) AS Customer, ROW_NUMBER() OVER (PARTITION BY T_OOMMAIN.F_RefNo ORDER BY T_OOMMAIN.F_ID) AS HouseCount from T_OOMMAIN LEFT JOIN T_OOHMAIN on (T_OOHMAIN.F_OOMBLID=T_OOMMAIN.F_ID) where F_ETA>'${moment()
+      SELECT TOP 100 *, (SELECT T_COMPANY.F_SName from T_COMPANY where F_Customer=T_COMPANY.F_ID) AS Customer, (SELECT T_COMPANY.F_SName from T_COMPANY where T_OOHMAIN.F_Consignee=T_COMPANY.F_ID) AS Consignee, (SELECT T_COMPANY.F_SName from T_COMPANY where T_OOHMAIN.F_Shipper=T_COMPANY.F_ID) AS Shipper, ROW_NUMBER() OVER (PARTITION BY T_OOMMAIN.F_RefNo ORDER BY T_OOMMAIN.F_ID) AS HouseCount from T_OOMMAIN LEFT JOIN T_OOHMAIN on (T_OOHMAIN.F_OOMBLID=T_OOMMAIN.F_ID) where F_ETA>'${moment()
         .subtract(30, "days")
         .calendar()}' ORDER BY T_OOHMAIN.F_ID DESC;
       `;
       break;
     default:
       Query = `
-      SELECT TOP 100 *, (SELECT T_COMPANY.F_SName from T_COMPANY where F_Customer=T_COMPANY.F_ID) AS Customer, ROW_NUMBER() OVER (PARTITION BY T_OOMMAIN.F_RefNo ORDER BY T_OOMMAIN.F_ID) AS HouseCount from T_OOMMAIN LEFT JOIN T_OOHMAIN on (T_OOHMAIN.F_OOMBLID=T_OOMMAIN.F_ID) where F_ETA>'${moment()
+      SELECT TOP 100 *, (SELECT T_COMPANY.F_SName from T_COMPANY where F_Customer=T_COMPANY.F_ID) AS Customer, (SELECT T_COMPANY.F_SName from T_COMPANY where T_OOHMAIN.F_Consignee=T_COMPANY.F_ID) AS Consignee, (SELECT T_COMPANY.F_SName from T_COMPANY where T_OOHMAIN.F_Shipper=T_COMPANY.F_ID) AS Shipper, ROW_NUMBER() OVER (PARTITION BY T_OOMMAIN.F_RefNo ORDER BY T_OOMMAIN.F_ID) AS HouseCount from T_OOMMAIN LEFT JOIN T_OOHMAIN on (T_OOHMAIN.F_OOMBLID=T_OOMMAIN.F_ID) where F_ETA>'${moment()
         .subtract(30, "days")
         .calendar()}' AND (T_OOMMAIN.F_U1ID='${
         token.fsid

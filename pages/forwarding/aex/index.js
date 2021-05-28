@@ -259,7 +259,7 @@ const Index = ({ Cookie }) => {
         key: Cookie.jamesworldwidetoken,
       },
     }).then(async (j) => await j.json());
-    console.log(oims);
+    // console.log(oims);
     setResult(oims);
   }
 

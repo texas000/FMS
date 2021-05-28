@@ -37,6 +37,7 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
   const [comment, setComment] = useState([]);
 
   useEffect(() => {
+    // console.log(refs);
     getProfit().then(() => {
       getAp().then(() => {
         getInvoice().then(() => {
@@ -58,8 +59,13 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
             table: refs.House,
             key: token.admin,
           },
-        }).then(async (j) => await j.json());
-        setProfit((prev) => [...prev, profits]);
+        });
+        if (profits.status === 200) {
+          var fetchedProfit = await profits.json();
+          setProfit((prev) => [...prev, fetchedProfit]);
+        } else {
+          console.log(`PROFIT - ${profits.status}`);
+        }
       });
   }
 
@@ -71,6 +77,7 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
         table: refs.House,
       },
     }).then(async (j) => await j.json());
+    // console.log(aps);
     setAp(aps);
   }
 
@@ -82,6 +89,7 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
         table: refs.House,
       },
     }).then(async (j) => await j.json());
+    // console.log(invoices);
     setInvoice(invoices);
   }
 
@@ -198,6 +206,8 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
           desc={ap.F_Descript}
           pod={refs.F_DisCharge || refs.F_Discharge}
           comm={refs.F_mCommodity || refs.F_Commodity}
+          shipper={refs.Shipper}
+          consignee={refs.Consignee}
         />
       }
     >
@@ -338,7 +348,7 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
                       {i + 1}: {ga.F_HBLNo || ga.F_MawbNo}
                     </Button>
                     <Collapse isOpen={selectedHouse === i}>
-                      <Pre>{JSON.stringify(ga)}</Pre>
+                      {/* <Pre>{JSON.stringify(ga)}</Pre> */}
                       <Pre>
                         {profit[i] && profit[i][0] && (
                           <span>
@@ -397,7 +407,11 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
                       <Tag>
                         ${ga.F_InvoiceAmt} {ga.F_Currency}
                       </Tag>{" "}
-                      Check #: <Tag>{ga.F_CheckNo || "NONE"}</Tag> Created:{" "}
+                      Check #: <Tag>{ga.F_CheckNo || "NONE"}</Tag> Paid :{" "}
+                      <Tag intent={ga.F_PaidAmt ? "danger" : "secondary"}>
+                        ${ga.F_PaidAmt}
+                      </Tag>{" "}
+                      Created:{" "}
                       <Tag>
                         {moment(ga.F_U1Date).utc().format("l")} by {ga.F_U1ID}
                       </Tag>
@@ -407,14 +421,19 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
                       intent="primary"
                       icon="confirm"
                       className="mb-2"
+                      disabled={ga.F_PaidAmt}
                       onClick={() =>
                         alert("PLEASE ATTACH AP DOCUMENT BEFORE REQUEST")
                       }
                     ></Button>
-                    <RequestForm ap={ga} aptype="CHECK" />
-                    <RequestForm ap={ga} aptype="CARD" />
-                    <RequestForm ap={ga} aptype="WIRE" />
-                    <RequestForm ap={ga} aptype="ACH" />
+                    {!ga.F_PaidAmt && (
+                      <>
+                        <RequestForm ap={ga} aptype="CHECK" />
+                        <RequestForm ap={ga} aptype="CARD" />
+                        <RequestForm ap={ga} aptype="WIRE" />
+                        <RequestForm ap={ga} aptype="ACH" />
+                      </>
+                    )}
                   </Collapse>
                 </div>
               );
@@ -445,7 +464,11 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
                       </Tag>{" "}
                       Invoice Date:{" "}
                       <Tag>{moment(ga.F_InvoiceDate).utc().format("l")}</Tag>{" "}
-                      Paid : <Tag>${ga.F_PaidAmt}</Tag> Created{" "}
+                      Paid :{" "}
+                      <Tag intent={ga.F_PaidAmt ? "success" : "secondary"}>
+                        ${ga.F_PaidAmt}
+                      </Tag>{" "}
+                      Created{" "}
                       <Tag>
                         {moment(ga.F_U1Date).utc().format("l")} by {ga.F_U1ID}
                       </Tag>
@@ -455,6 +478,7 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
                       intent="primary"
                       icon="confirm"
                       className="mb-2"
+                      disabled={ga.F_PaidAmt}
                       onClick={() =>
                         alert("PLEASE ATTACH INVOICE DOCUMENT BEFORE REQUEST")
                       }
@@ -489,7 +513,11 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
                       </Tag>{" "}
                       Invoice Date:{" "}
                       <Tag>{moment(ga.F_InvoiceDate).utc().format("l")}</Tag>{" "}
-                      Paid : <Tag>${ga.F_PaidAmt}</Tag> Created{" "}
+                      Paid :{" "}
+                      <Tag intent={ga.F_PaidAmt ? "success" : "secondary"}>
+                        ${ga.F_PaidAmt}
+                      </Tag>{" "}
+                      Created{" "}
                       <Tag>
                         {moment(ga.F_U1Date).utc().format("l")} by {ga.F_U1ID}
                       </Tag>
@@ -499,6 +527,7 @@ export const MasterDialog = ({ refs, multi, container, token }) => {
                       intent="primary"
                       icon="confirm"
                       className="mb-2"
+                      disabled={ga.F_PaidAmt}
                       onClick={() =>
                         alert("PLEASE ATTACH CRDB DOCUMENT BEFORE REQUEST")
                       }
