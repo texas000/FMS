@@ -15,7 +15,7 @@ const sqlConfig = {
 export default async (req, res) => {
   //Get Access token from the client side and filter the access
   const token = jwt.decode(req.headers.key);
-  if (!token) {
+  if (!token.admin) {
     res.status(401).send("Unauthorized");
     return;
   }
@@ -30,10 +30,8 @@ export default async (req, res) => {
         (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AOHMAIN.F_Notify) as NOTIFY,
         * FROM T_AOHMAIN WHERE F_AOMBLID=`;
 
-  var output = {};
+  var output = { M: [], H: [], C: [], A: [], P: [], I: [], CR: [] };
 
-  // GET MASTER FROM MSSQL - DATA TYPE OBJECT
-  // GET MASTER FROM MSSQL - DATA TYPE OBJECT
   const master = await sql
     .connect(sqlConfig)
     .then((pool) => {
@@ -44,15 +42,12 @@ export default async (req, res) => {
       if (result.rowsAffected[0]) {
         return result.recordsets[0][0];
       } else {
-        res.status(400).send([]);
         return false;
       }
     })
     .catch((err) => {
-      console.log("ERROR FROM MASTER");
-      console.log(err);
-      res.status(400).send(err);
-      return sql.close();
+      console.log(`ERROR FROM MASTER ${err}`);
+      return false;
     });
   // console.log(master);
   output = { ...output, M: master };
@@ -73,33 +68,32 @@ export default async (req, res) => {
         }
       })
       .catch((err) => {
-        console.log("ERROR FROM HOUSE");
-        console.log(err);
-        res.status(400).send(err);
+        console.log(`ERROR FROM HOUSE ${err}`);
+        return [];
       });
 
     output = { ...output, H: house };
 
     if (house.length > 0) {
-      var AP = house.map((ga, i) => {
+      var HouseQuery = house.map((ga, i) => {
         if (i) {
           return ` OR F_TBID='${ga.F_ID}' AND F_TBName='T_AOHMAIN'`;
         } else {
           return `F_TBID='${ga.F_ID}' AND F_TBName='T_AOHMAIN'`;
         }
       });
-      AP = AP.join("");
+      HouseQuery = HouseQuery.join("");
+
       const ap = await sql
         .connect(sqlConfig)
         .then((pool) => {
           return pool
             .request()
             .query(
-              `SELECT (SELECT T_COMPANY.F_SName FROM T_COMPANY WHERE T_COMPANY.F_ID=T_APHD.F_PayTo) AS PAY, * FROM T_APHD WHERE ${AP};`
+              `select T_APHD.*, T_COMPANY.F_Addr, T_COMPANY.F_City, T_COMPANY.F_State, T_COMPANY.F_ZipCode, T_COMPANY.F_SName, T_COMPANY.F_IRSNo, T_COMPANY.F_IRSType from T_APHD INNER JOIN T_COMPANY ON F_PayTo=T_COMPANY.F_ID WHERE ${HouseQuery};`
             );
         })
         .then((result) => {
-          // console.log(result.rowsAffected);
           if (result.rowsAffected[0]) {
             return result.recordsets[0];
           } else {
@@ -107,20 +101,78 @@ export default async (req, res) => {
           }
         })
         .catch((err) => {
-          console.log("ERROR FROM AP");
-          console.log(err);
-          res.status(400).send(err);
+          console.log(`ERROR FROM AP ${err}`);
+          return [];
         });
+
       output = { ...output, A: ap };
-    } else {
-      output = { ...output, A: [] };
+
+      const profit = await sql
+        .connect(sqlConfig)
+        .then((pool) => {
+          return pool
+            .request()
+            .query(`select * from V_PROFIT_H where ${HouseQuery};`);
+        })
+        .then((result) => {
+          if (result.rowsAffected[0]) {
+            return result.recordsets[0];
+          } else {
+            return [];
+          }
+        })
+        .catch((err) => {
+          console.log(`ERROR FROM PROFIT ${err}`);
+          return [];
+        });
+
+      output = { ...output, P: profit };
+
+      const invoice = await sql
+        .connect(sqlConfig)
+        .then((pool) => {
+          return pool
+            .request()
+            .query(`select * from T_INVOHD where ${HouseQuery};`);
+        })
+        .then((result) => {
+          // console.log(result);
+          if (result.rowsAffected[0]) {
+            return result.recordsets[0];
+          } else {
+            return [];
+          }
+        })
+        .catch((err) => {
+          console.log(`ERROR FROM INVOICE ${err}`);
+          return [];
+        });
+
+      output = { ...output, I: invoice };
+
+      const crdr = await sql
+        .connect(sqlConfig)
+        .then((pool) => {
+          return pool
+            .request()
+            .query(`select * from T_CRDBHD where ${HouseQuery};`);
+        })
+        .then((result) => {
+          // console.log(result);
+          if (result.rowsAffected[0]) {
+            return result.recordsets[0];
+          } else {
+            return [];
+          }
+        })
+        .catch((err) => {
+          console.log(`ERROR FROM CRDR ${err}`);
+          return [];
+        });
+      output = { ...output, CR: crdr };
     }
-    // console.log(output);
-    // SUCCESS, SEND THE OUTPUT
-    res.status(200).send(output);
-  } else {
-    res.status(200).send({ ...output, status: false });
   }
+  res.status(200).send(output);
   return sql.close();
 };
 

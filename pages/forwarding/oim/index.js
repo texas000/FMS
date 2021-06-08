@@ -269,12 +269,22 @@ const Index = ({ Cookie }) => {
     // console.log(Result);
   }, []);
 
+  // const loadOptions = (inputValue, callback) => {
+  //   const options = [
+  //     { label: 1, value: "JOHN" },
+  //     { label: 2, value: "DOE" },
+  //   ];
+  //   setTimeout(() => {
+  //     callback(options);
+  //   }, 1000);
+  // };
+
   async function getOimSearch(e) {
-    if (e.target.value.length > 2) {
+    if (e.length > 0) {
       const oims = await fetch("/api/forwarding/oim/getList", {
         headers: {
           key: Cookie.jamesworldwidetoken,
-          search: e.target.value,
+          search: e,
         },
       }).then(async (j) => await j.json());
       setResult(oims);
@@ -304,7 +314,7 @@ const Index = ({ Cookie }) => {
             onKeyPress={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();
-                getOimSearch(e);
+                getOimSearch(e.target.value);
               }
             }}
           />

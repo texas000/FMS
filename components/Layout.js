@@ -3,7 +3,6 @@ import { Container } from "reactstrap";
 import { useEffect } from "react";
 import Top from "./Nav";
 import Sidebar from "./Side";
-import "@blueprintjs/core/lib/css/blueprint.css";
 
 const Layout = (props) => {
   // Toggle sidebar

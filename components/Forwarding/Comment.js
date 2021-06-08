@@ -18,11 +18,12 @@ import "firebase/firestore";
 import "firebase/storage";
 import { Tag, Toast, Toaster } from "@blueprintjs/core";
 import "@blueprintjs/core/lib/css/blueprint.css";
+import axios, { post } from "axios";
 
 export const Comment = ({ reference, uid, main, Firebase }) => {
   const [Comment, setComment] = React.useState(false);
   const [UpdatedComment, setUpdatedComment] = React.useState([]);
-  const [Uploading, setUploading] = React.useState(false);
+  // const [Uploading, setUploading] = React.useState(false);
   const [show, setShow] = React.useState(false);
   const [msg, setMsg] = React.useState("");
   const [msgType, setMsgType] = React.useState("success");
@@ -91,52 +92,124 @@ export const Comment = ({ reference, uid, main, Firebase }) => {
     }
   }
 
+  // async function uploadFile(e) {
+  //   var uploadfile = document.getElementById("upload").files[0];
+  //   // console.log(uploadfile);
+  //   if (uploadfile) {
+  //     const formData = new FormData();
+  //     formData.append("userPhoto", uploadfile);
+  //     const config = {
+  //       headers: {
+  //         "content-type": "multipart/form-data",
+  //         reference: refs.F_RefNo,
+  //       },
+  //     };
+  //     try {
+  //       const upload = new Promise((res, rej) => {
+  //         try {
+  //           res(post(`/api/dashboard/uploadFile`, formData, config));
+  //         } catch (err) {
+  //           console.log(err);
+  //           res("uploaded");
+  //         }
+  //       });
+  //       upload.then((ga) => {
+  //         if (ga.status === 200) {
+  //           alert("UPLOAD SUCCESS");
+  //         }
+  //       });
+  //     } catch (err) {
+  //       if (err.response) {
+  //         console.log(err.response);
+  //       } else if (err.request) {
+  //         console.log(err.request);
+  //       } else {
+  //         console.log(err);
+  //       }
+  //     }
+  //   }
+  // }
+
   // When the file is dropped at the Dropzone
   const onDrop = React.useCallback(async (acceptedFiles) => {
     // UPLOADING FILE IS WORKING ONLY IF USER IS LOGGED IN WITH FIREBASE
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        // CREATE FIREBASE STORAGE REFERENCE
-        const storageRef = firebase.storage().ref();
-        if (acceptedFiles.length > 0) {
-          //IF THERE ARE MULTIPLE FILES, ITERATE TO UPLOAD FILES
-          acceptedFiles.map(async (data) => {
-            // GET THE NAME FROM FILE
-            const { name, lastModified, size, type } = data;
-
-            // DEFINE THE PATH FORWARDING/REFERENCE/FILE NAME
-            var myfiles = storageRef.child(`forwarding/${reference}/${name}`);
-
-            // DEFINE THE UPLOAD TASK WITH CORRECT FILES
-            var uploadTask = myfiles.put(data);
-
-            // WHEN THE UPLOADING TASK IS ON
-            uploadTask.on(
-              "state_changed",
-              (snapshot) => {
-                var progress =
-                  (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                //SET UPLOAD PROGRESS SO TAHT SPINNER CAN BE DISPLAYED
-                setUploading(progress);
-              },
-              (error) => {
-                console.log(error);
-              },
-              () => {
-                uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                  // WHEN UPLOAD IS COMPLETED, ADD THE URL TO THE COMMENT DATABASE
-                  postComment(name, downloadURL);
-                  // WHEN UPLOAD IS COMPLETED, SET UPLOADING AS FALSE TO DISABLE SPINNER
-                  setUploading(false);
-                });
-              }
-            );
-          });
+    acceptedFiles.map(async (data) => {
+      const formData = new FormData();
+      formData.append("userPhoto", data);
+      const config = {
+        headers: {
+          "content-type": "multipart/form-data",
+          reference: reference,
+        },
+      };
+      try {
+        const upload = new Promise((res, rej) => {
+          try {
+            res(post(`/api/dashboard/uploadFile`, formData, config));
+          } catch (err) {
+            console.log(err);
+            res("uploaded");
+          }
+        });
+        upload.then((ga) => {
+          if (ga.status === 200) {
+            setMsg(`File Uploaded: ${data.name}`);
+            setShow(true);
+          }
+        });
+      } catch (err) {
+        if (err.response) {
+          console.log(err.response);
+        } else if (err.request) {
+          console.log(err.request);
+        } else {
+          console.log(err);
         }
-      } else {
-        alert("PLEASE LOGIN WITH GOOGLE ACCOUNT");
       }
     });
+    // firebase.auth().onAuthStateChanged((user) => {
+    //   if (user) {
+    //     // CREATE FIREBASE STORAGE REFERENCE
+    //     const storageRef = firebase.storage().ref();
+    //     if (acceptedFiles.length > 0) {
+    //       //IF THERE ARE MULTIPLE FILES, ITERATE TO UPLOAD FILES
+    //       acceptedFiles.map(async (data) => {
+    //         // GET THE NAME FROM FILE
+    //         const { name, lastModified, size, type } = data;
+
+    //         // DEFINE THE PATH FORWARDING/REFERENCE/FILE NAME
+    //         var myfiles = storageRef.child(`forwarding/${reference}/${name}`);
+
+    //         // DEFINE THE UPLOAD TASK WITH CORRECT FILES
+    //         var uploadTask = myfiles.put(data);
+
+    //         // WHEN THE UPLOADING TASK IS ON
+    //         uploadTask.on(
+    //           "state_changed",
+    //           (snapshot) => {
+    //             var progress =
+    //               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //             //SET UPLOAD PROGRESS SO TAHT SPINNER CAN BE DISPLAYED
+    //             setUploading(progress);
+    //           },
+    //           (error) => {
+    //             console.log(error);
+    //           },
+    //           () => {
+    //             uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+    //               // WHEN UPLOAD IS COMPLETED, ADD THE URL TO THE COMMENT DATABASE
+    //               postComment(name, downloadURL);
+    //               // WHEN UPLOAD IS COMPLETED, SET UPLOADING AS FALSE TO DISABLE SPINNER
+    //               setUploading(false);
+    //             });
+    //           }
+    //         );
+    //       });
+    //     }
+    //   } else {
+    //     alert("PLEASE LOGIN WITH GOOGLE ACCOUNT");
+    //   }
+    // });
   });
 
   // Define the functions from Dropzone package
@@ -312,12 +385,6 @@ export const Comment = ({ reference, uid, main, Firebase }) => {
       <Col className="w-100 mb-4">
         <div {...getRootProps({ style })}>
           <Card body className="shadow">
-            {Uploading != false && Uploading > 0 && (
-              <div className="text-center text-primary">
-                <Spinner color="primary" />
-                {`Uploading is in progress... ${Uploading}%`}
-              </div>
-            )}
             {UpdatedComment.map(
               (ga) =>
                 ga.Show == "1" && (

@@ -1,8 +1,10 @@
-import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
+// import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { useRouter } from "next/router";
 import moment from "moment";
 import firebase from "firebase/app";
 import "firebase/auth";
+import AsyncSelect from "react-select/async";
+import cookie from "cookie";
 
 const Top = ({ Token, toggle, setToggle }) => {
   const router = useRouter();
@@ -10,10 +12,24 @@ const Top = ({ Token, toggle, setToggle }) => {
   const [alertToggle, setalertToggle] = React.useState(false);
   const [messageToggle, setmessageToggle] = React.useState(false);
   const [searchAlertToggle, setSearchAlertToggle] = React.useState(false);
+
   const [userToggle, setuserToggle] = React.useState(false);
+  const [selected, setSelected] = React.useState(null);
+  const [searchType, setSearchType] = React.useState("oim");
 
   const [Notifications, setNotifications] = React.useState([]);
   const [Messages, setMessages] = React.useState([]);
+
+  const loadOptions = async (inputValue, callback) => {
+    if (search.length > 1) {
+      return fetch(`/api/forwarding/${searchType}/getList`, {
+        headers: {
+          key: cookie.parse(window.document.cookie).jamesworldwidetoken,
+          search: search,
+        },
+      }).then((res) => res.json());
+    }
+  };
 
   React.useEffect(() => {
     //When window type is defined, and local stroage is defined, get notification and board board data from local storage and set to state value, otherwise, set noti and message as empty array
@@ -66,8 +82,30 @@ const Top = ({ Token, toggle, setToggle }) => {
 
       {/* <!-- Topbar Search --> */}
       <form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
-        <InputGroup>
-          <Input
+        {/* <InputGroup> */}
+        <AsyncSelect
+          instanceId="search"
+          cacheOptions
+          value={selected}
+          getOptionLabel={(e) => `${e.F_RefNo} - ${e.Customer}`}
+          getOptionValue={(e) => e.F_ID[0]}
+          onInputChange={(e) => setSearch(e)}
+          onChange={(e) => {
+            setSelected(e);
+            console.log(e.key);
+            router.push(`/forwarding/${searchType}/${e.F_RefNo}`);
+          }}
+          placeholder={`Search ${searchType.toUpperCase()}...`}
+          loadOptions={loadOptions}
+          className="w-100"
+          // onKeyDown={(e) => {
+          //   if (e.key == "Enter") {
+          //     e.preventDefault();
+          //     getResult();
+          //   }
+          // }}
+        />
+        {/* <Input
             onKeyPress={(e) => {
               if (e.key == "Enter") {
                 e.preventDefault();
@@ -78,13 +116,13 @@ const Top = ({ Token, toggle, setToggle }) => {
             placeholder="Search for reference..."
             aria-label="Search"
             onChange={(e) => setSearch(e.target.value)}
-          />
-          <InputGroupAddon addonType="append">
+          /> */}
+        {/* <InputGroupAddon addonType="append">
             <Button color="primary" type="button" size="sm" onClick={getResult}>
               <i className="fa fa-search fa-sm py-0"></i>
             </Button>
-          </InputGroupAddon>
-        </InputGroup>
+          </InputGroupAddon> */}
+        {/* </InputGroup> */}
       </form>
 
       {/* <!-- Topbar Navbar --> */}
@@ -133,6 +171,8 @@ const Top = ({ Token, toggle, setToggle }) => {
         </li>
         <li
           className="nav-item dropdown no-arrow mx-1"
+          onMouseEnter={() => setSearchAlertToggle(true)}
+          onMouseLeave={() => setSearchAlertToggle(false)}
           onClick={() => setSearchAlertToggle((prev) => !prev)}
         >
           <a
@@ -146,7 +186,7 @@ const Top = ({ Token, toggle, setToggle }) => {
           >
             <i className="fa fa-search fa-fw"></i>
             {/* <!-- Counter - Alerts --> */}
-            <span className="badge badge-danger badge-counter">5</span>
+            {/* <span className="badge badge-danger badge-counter">5</span> */}
           </a>
           <div
             className={`dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in ${
@@ -154,11 +194,11 @@ const Top = ({ Token, toggle, setToggle }) => {
             }`}
             aria-labelledby="alertsDropdown"
           >
-            <h6 className="dropdown-header">Search Center</h6>
+            <h6 className="dropdown-header">Search Option</h6>
             <a
               className="dropdown-item d-flex align-items-center"
               href="#"
-              onClick={() => router.push("/forwarding/oim")}
+              onClick={() => setSearchType("oim")}
             >
               <div className="mr-3">
                 <div className="icon-circle bg-primary">
@@ -173,7 +213,7 @@ const Top = ({ Token, toggle, setToggle }) => {
             <a
               className="dropdown-item d-flex align-items-center"
               href="#"
-              onClick={() => router.push("/forwarding/oex")}
+              onClick={() => setSearchType("oex")}
             >
               <div className="mr-3">
                 <div className="icon-circle bg-primary">
@@ -188,7 +228,7 @@ const Top = ({ Token, toggle, setToggle }) => {
             <a
               className="dropdown-item d-flex align-items-center"
               href="#"
-              onClick={() => router.push("/forwarding/aim")}
+              onClick={() => setSearchType("aim")}
             >
               <div className="mr-3">
                 <div className="icon-circle bg-primary">
@@ -197,13 +237,13 @@ const Top = ({ Token, toggle, setToggle }) => {
               </div>
               <div>
                 <div className="small text-gray-500">Forwarding AIM search</div>
-                <span className="font-weight-bold text-success">AIM</span>
+                <span className="font-weight-bold text-primary">AIM</span>
               </div>
             </a>
             <a
               className="dropdown-item d-flex align-items-center"
               href="#"
-              onClick={() => router.push("/forwarding/aex")}
+              onClick={() => setSearchType("aex")}
             >
               <div className="mr-3">
                 <div className="icon-circle bg-primary">
@@ -212,13 +252,13 @@ const Top = ({ Token, toggle, setToggle }) => {
               </div>
               <div>
                 <div className="small text-gray-500">Forwarding AEX search</div>
-                <span className="font-weight-bold text-success">AEX</span>
+                <span className="font-weight-bold text-primary">AEX</span>
               </div>
             </a>
             <a
               className="dropdown-item d-flex align-items-center"
               href="#"
-              onClick={() => router.push("/forwarding?search=JWI250")}
+              onClick={() => setSearchType("other")}
             >
               <div className="mr-3">
                 <div className="icon-circle bg-primary">
@@ -229,7 +269,7 @@ const Top = ({ Token, toggle, setToggle }) => {
                 <div className="small text-gray-500">
                   Forwarding OTHER search
                 </div>
-                <span className="font-weight-bold">OTHER</span>
+                <span className="font-weight-bold text-primary">OTHER</span>
               </div>
             </a>
           </div>

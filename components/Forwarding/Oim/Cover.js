@@ -85,12 +85,13 @@ const styles = StyleSheet.create({
   },
   lowerTableText: {
     fontSize: 9,
-    padding: "18 2 18 2",
+    paddingTop: "18px",
+    paddingBottom: "18px",
+    paddingRight: "2px",
   },
   commentBox: {
-    backgroundColor: "silver",
-    marginLeft: 30,
-    marginRight: 30,
+    borderTopColor: "black",
+    borderTopWidth: 1,
     marginTop: 20,
   },
   commentText: {
@@ -107,13 +108,121 @@ const styles = StyleSheet.create({
   },
 });
 
-export const OtherCover = ({ master }) => {
+export const Cover = ({ master, house, containers }) => {
+  // IMPORT - EXPORT
+  // REFERENCE NUMBER - HOUSE(CustRefNo) - HOUSE (ExPref)
+  // COMMODITY - MASTER (mCommodity) - HOUSE (Commodity)
+  // PKGS - MASTER (PKGS) - MASTER (Pkgs)
+  var upperTableOcean = [
+    {
+      row: 2,
+      first: "HOUSE#",
+      second: "CUS REF#",
+      data1: house
+        .map((ga, i) => `${ga.F_HBLNo} ${i % 2 === 1 ? "\n" : ""}`)
+        .join(" "),
+      data2: house
+        .map((ga) => `${ga.F_CustRefNo || ga.F_ExPref || ""}`)
+        .join(" "),
+    },
+    {
+      row: 3,
+      first: "AMS#",
+      second: "COMMODITY",
+      data1: house.map((ga) => `${ga.F_AMSBLNO || ""}`).join(" "),
+      data2:
+        master.mCommodity ||
+        house.map((ga) => `${ga.F_Commodity}`).join(" ") ||
+        "",
+    },
+    {
+      row: 4,
+      first: "POL",
+      second: "PKGS",
+      data1: master.F_LoadingPort,
+      data2: house.reduce((sum, item) => {
+        return (sum = sum + item.F_PKGS);
+      }, 0),
+    },
+    {
+      row: 5,
+      first: "POD",
+      second: "WEIGHTS",
+      data1: master.F_DisCharge,
+      data2: house.reduce((sum, item) => {
+        return (sum = sum + item.F_KGS);
+      }, 0),
+    },
+    {
+      row: 6,
+      first: "AGENT",
+      second: "CBM",
+      data1: master.AGENT,
+      data2: house.reduce((sum, item) => {
+        return (sum = sum + item.F_CBM);
+      }, 0),
+    },
+    {
+      row: 7,
+      first: "CARRIER",
+      second: "O/F",
+      data1: master.CARRIER,
+      data2: " F/S INPUT      PAID",
+    },
+    {
+      row: 8,
+      first: "VSL NO",
+      second: "CY LOC.",
+      data1: master.F_Vessel,
+      data2: master.CYLOC,
+    },
+  ];
+
+  var lowerTableOcean = [
+    {
+      first: "ISF",
+      second: "SURRENDER",
+      data1: "",
+      data2: "",
+    },
+    { first: "DEPARTURE", second: "X-RAY", data1: "", data2: "" },
+    { first: "CUSTOM", second: "CET / MET", data1: "", data2: "" },
+    {
+      first: "ARRIVAL/\nDISCHARGE",
+      second: "DEMURRAGE",
+      data1: "",
+      data2: "",
+    },
+    { first: "RAIL", second: "PER-DIEM", data1: "", data2: "" },
+    { first: "TRUCKING", second: "ADDITIONAL\nCHARGE", data1: "", data2: "" },
+    { first: "INVOICE", second: "CONFIRMED", data1: "", data2: "" },
+  ];
+
+  // Adding Containers to the upper table
+  containers &&
+    upperTableOcean.push({
+      row: 9,
+      first: "CONTAINER",
+      second: "SEAL#",
+      data1: containers
+        .map(
+          (ga, i) =>
+            `${i + 1}: ${ga.F_ContainerNo} ${ga.F_ConType}${
+              i % 2 === 1 ? "\n" : " "
+            }`
+        )
+        .join(" "),
+      data2: containers
+        .map((ga, i) => `${ga.F_SealNo}${i % 2 === 1 ? "\n" : " "}`)
+        .join(" "),
+    });
+
   return (
     <Document
-      title={master.RefNo}
+      title={master.F_RefNo}
       author="IT TEAM"
-      subject={`COVER FOR ${master.RefNo}`}
-      keywords={master.RefNo}
+      subject={`COVER FOR ${master.F_RefNo}`}
+      keywords={master.F_RefNo}
       producer="JWIUSA.COM"
       creator="JWIUSA.COM"
     >
@@ -125,10 +234,10 @@ export const OtherCover = ({ master }) => {
       >
         <Image style={styles.logo} src="/image/JLOGO.png" fixed />
         <Text style={styles.pageDescription} fixed>
-          FORM CO-OTH-1.2
+          FORM 21.2
         </Text>
         <View style={styles.section}>
-          <Table data={upperTableOhter}>
+          <Table data={upperTableOcean}>
             <TableHeader>
               <TableCell style={styles.upperTableCol1} weighting={0.295}>
                 MASTER#
@@ -139,7 +248,7 @@ export const OtherCover = ({ master }) => {
                   padding: "0px 1px 0px 2px",
                 }}
               >
-                {master.Mblno}
+                {master.F_MBLNo}
               </TableCell>
               <TableCell style={styles.upperTableCol1} weighting={0.295}>
                 JWI REF#
@@ -150,7 +259,7 @@ export const OtherCover = ({ master }) => {
                   padding: "0px 1px 0px 2px",
                 }}
               >
-                {master.RefNo}
+                {master.F_RefNo}
               </TableCell>
             </TableHeader>
             <TableBody>
@@ -179,21 +288,26 @@ export const OtherCover = ({ master }) => {
         {/* SECTION 1 - TITLE: CUSTOMER - SHIPPER - CONSIGNEE */}
 
         <View style={styles.section1}>
-          <Text style={styles.title}>{master.Customer_SName}</Text>
+          <Text style={styles.title}>
+            {`${
+              house.length ? house[0].CUSTOMER || "NO CUSTOMER" : "NO HOUSE"
+            } - ${
+              house.length ? house[0].SHIPPER || "NO SHIPPER" : "NO HOUSE"
+            } - ${
+              house.length ? house[0].CONSIGNEE || "NO CONSIGNEE" : "NO HOUSE"
+            }`}
+          </Text>
           <Text style={styles.subhead}>
-            {moment(master.ETD).isValid()
-              ? moment(master.ETD).utc().format("ll") + " ~ "
-              : ""}
-            {moment(master.ETA).isValid()
-              ? moment(master.ETA).utc().format("ll")
-              : ""}
+            {master.F_ETD != null &&
+              `${moment(master.F_ETD).utc().format("ll")} ~ `}
+            {master.F_ETA != null && moment(master.F_ETA).utc().format("ll")}
           </Text>
         </View>
 
         {/* LOWER TABLE START */}
 
         <View style={styles.section1}>
-          <Table data={lowerTableOther}>
+          <Table data={lowerTableOcean}>
             <TableHeader>
               <TableCell style={styles.lowerTableHead}>
                 BASIC PROCESS/COMMENTS
@@ -230,4 +344,4 @@ export const OtherCover = ({ master }) => {
   );
 };
 
-export default OtherCover;
+export default Cover;
