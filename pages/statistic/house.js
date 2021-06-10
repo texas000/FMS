@@ -23,7 +23,7 @@ export default function blank({ Cookie, Company }) {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
-    if (TOKEN.admin === 9 || TOKEN.admin === 5) {
+    if (TOKEN.admin > 4) {
       getWeeklyData();
       Company.map((ga) => {
         setCompanyname((prev) => [...prev, ga.companySName]);
@@ -79,7 +79,7 @@ export default function blank({ Cookie, Company }) {
     }
   };
   if (TOKEN) {
-    if (TOKEN.admin === 9 || TOKEN.admin === 5) {
+    if (TOKEN.admin > 4) {
       return (
         <Layout TOKEN={TOKEN} TITLE="Top Of Month">
           <div className="d-sm-flex align-items-center justify-content-between mb-4 w-100">

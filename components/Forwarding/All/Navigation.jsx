@@ -44,6 +44,14 @@ export const Navigation = ({ menu, setMenu, Reference }) => (
         intent={menu === 4 ? "primary" : "none"}
         onClick={() => setMenu(4)}
       ></Button>
+      <Button
+        icon="confirm"
+        text="Request"
+        small={true}
+        minimal={true}
+        intent={menu === 5 ? "primary" : "none"}
+        onClick={() => setMenu(5)}
+      ></Button>
     </NavbarGroup>
   </Navbar>
 );

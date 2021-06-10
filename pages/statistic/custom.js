@@ -33,7 +33,7 @@ export default function blank({ Cookie }) {
   useEffect(() => {
     !TOKEN && router.push("/login");
     //If user is authorized to view this page
-    if (TOKEN.admin === 9 || TOKEN.admin === 5) {
+    if (TOKEN.admin > 4) {
       console.log("ACCESS GRANTED");
     } else {
       //If user is not authorized, then redirect to dashboard page
@@ -214,7 +214,7 @@ export default function blank({ Cookie }) {
     }
   };
   if (TOKEN) {
-    if (TOKEN.admin === 9 || TOKEN.admin === 5) {
+    if (TOKEN.admin > 4) {
       return (
         <Layout TOKEN={TOKEN} TITLE="Custom Statistic">
           <div className="d-sm-flex justify-content-between mb-4 w-100">

@@ -130,6 +130,12 @@ export default function humanResource({ Cookie, Member }) {
           if (cell == "5") {
             return "Manager";
           }
+          if (cell == "6") {
+            return "Director";
+          }
+          if (cell == "7") {
+            return "Accounting";
+          }
           if (cell == "9") {
             return "Admin";
           }
@@ -903,6 +909,8 @@ export default function humanResource({ Cookie, Member }) {
                   <Text>0: Suspended</Text>
                   <Text>1: Operator</Text>
                   <Text>5: Manager</Text>
+                  <Text>6: Director</Text>
+                  <Text>7: Accounting</Text>
                   <Text className="mb-3">9: Admin</Text>
                 </>
               )}
