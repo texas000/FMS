@@ -154,33 +154,14 @@ export default async (req, res) => {
 </body>
 </html>
       `,
-      attachments: [
-        {
-          filename: body.file,
-          path: `http://jameswgroup.com:49991/api/forwarding/${ref}/${body.file}`,
-        },
-      ],
     };
 
-    // <a href="jwiusa.com/forwarding/oim/${ref}" target="__blank"><h1>${ref}</h1></a>
-    // <div class="card" style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); transition: 0.3s;">
-    //       <div class="card-header" style="padding: 2px 16px;">
-    //         INVOICE ${body.F_InvoiceNo}
-    //       </div>
-    //       <div class="card-body" style="padding: 2px 16px;">
-    //         <p>Description: {selected.F_Descript}</p>
-    //         <p>
-    //           Amount: $${body.F_InvoiceAmt} ${body.F_Currency}
-    //         </p>
-    //         <p>Check Number: ${body.F_CheckNo}</p>
-    //         <p>Payable To: ${body.F_SName}</p>
-    //         <p>
-    //           Address: ${body.F_Addr} ${body.F_City} ${body.F_State}{" "}
-    //           ${body.F_ZipCode}
-    //         </p>
-    //         <p>Due: ${body.F_DueDate}</p>
-    //       </div>
-    // </div>
+    // attachments: [
+    //   {
+    //     filename: body.file,
+    //     path: `http://jameswgroup.com:49991/api/forwarding/${ref}/${body.file}`,
+    //   },
+    // ],
 
     let result = await pool.request().query(QRY);
     // console.log(result);

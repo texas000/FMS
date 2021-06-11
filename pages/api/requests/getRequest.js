@@ -23,12 +23,12 @@ export default async (req, res) => {
     const QRY = `select *, (select F_ACCOUNT from T_MEMBER where F_ID=CreateBy) as Created, (select F_EMAIL from T_MEMBER where F_ID=CreateBy) as Email, (select F_ACCOUNT from T_MEMBER where F_ID=ModifyBy) as Modified from T_REQUEST where RefNo='${req.headers.ref}';`;
     let result = await pool.request().query(QRY);
     if (result.rowsAffected[0]) {
-      res.status(200).end(JSON.stringify(result.recordsets[0]));
+      res.status(200).send(JSON.stringify(result.recordsets[0]));
     } else {
-      res.status(200).end([]);
+      res.status(200).send([]);
     }
   } catch (err) {
-    res.status(204).end([]);
+    res.status(204).send([]);
     return { err: err };
   } finally {
     pool.close();
