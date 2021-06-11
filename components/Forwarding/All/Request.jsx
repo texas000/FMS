@@ -28,7 +28,7 @@ export const Request = ({ Reference, ap, TOKEN }) => {
     // console.log(TOKEN);
   }, [Reference]);
 
-  async function handleApproval(ga) {
+  async function handleApproval() {
     // ADMIN = 6 (IAN) THEN UPDATE STATUS 111
     if (approve) {
       if (TOKEN.admin === 6) {
@@ -38,7 +38,11 @@ export const Request = ({ Reference, ap, TOKEN }) => {
             ref: Reference,
             token: JSON.stringify(TOKEN),
           },
-          body: JSON.stringify({ ...ga, newstatus: 111, message: message }),
+          body: JSON.stringify({
+            ...approve,
+            newstatus: 111,
+            message: message,
+          }),
         });
         if (req.status == 200) {
           setApproval(false);
@@ -53,7 +57,11 @@ export const Request = ({ Reference, ap, TOKEN }) => {
             ref: Reference,
             token: JSON.stringify(TOKEN),
           },
-          body: JSON.stringify({ ...ga, newstatus: 121, message: message }),
+          body: JSON.stringify({
+            ...approve,
+            newstatus: 121,
+            message: message,
+          }),
         });
         if (req.status == 200) {
           setApproval(false);
@@ -70,7 +78,7 @@ export const Request = ({ Reference, ap, TOKEN }) => {
             ref: Reference,
             token: JSON.stringify(TOKEN),
           },
-          body: JSON.stringify({ ...ga, newstatus: 110, message: message }),
+          body: JSON.stringify({ ...reject, newstatus: 110, message: message }),
         });
         if (req.status == 200) {
           setReject(false);
@@ -85,7 +93,7 @@ export const Request = ({ Reference, ap, TOKEN }) => {
             ref: Reference,
             token: JSON.stringify(TOKEN),
           },
-          body: JSON.stringify({ ...ga, newstatus: 120, message: message }),
+          body: JSON.stringify({ ...reject, newstatus: 120, message: message }),
         });
         if (req.status == 200) {
           setApproval(false);
@@ -153,7 +161,7 @@ export const Request = ({ Reference, ap, TOKEN }) => {
                               ? TOKEN.admin != 9
                               : true
                           }
-                          onClick={() => setApproval(true)}
+                          onClick={() => setApproval(ga)}
                           className="ml-4"
                         />
                         <Button
@@ -167,7 +175,7 @@ export const Request = ({ Reference, ap, TOKEN }) => {
                               ? TOKEN.admin != 9
                               : true
                           }
-                          onClick={() => setReject(true)}
+                          onClick={() => setReject(ga)}
                         />
                         {/* Requested by {ga.Created} at{" "}
                         {moment(ga.CreateAt).format("lll")} */}
@@ -232,7 +240,7 @@ export const Request = ({ Reference, ap, TOKEN }) => {
                         <Button
                           text="Confirm"
                           fill={true}
-                          onClick={() => handleApproval(ga)}
+                          onClick={handleApproval}
                         />
                       </div>
                     </Dialog>
@@ -251,7 +259,7 @@ export const Request = ({ Reference, ap, TOKEN }) => {
                         <Button
                           text="Confirm"
                           fill={true}
-                          onClick={() => handleApproval(ga)}
+                          onClick={handleApproval}
                         />
                       </div>
                     </Dialog>
