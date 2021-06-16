@@ -137,11 +137,11 @@ const Detail = ({ Cookie, Reference, master }) => {
             {menu === 3 && (
               <Profit
                 Reference={Reference}
+                TOKEN={TOKEN}
                 invoice={master.I}
                 ap={master.A}
                 crdr={master.CR}
                 profit={master.P}
-                TOKEN={TOKEN}
               />
             )}
             {/* MENU 4 - FILE */}

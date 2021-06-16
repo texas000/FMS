@@ -23,8 +23,10 @@ export default async (req, res) => {
     const body = JSON.parse(req.body);
     const ref = req.headers.ref;
     const token = JSON.parse(req.headers.token);
-    console.log(body.file);
-    console.log(body.type);
+    // console.log(body);
+    // console.log(ref);
+    // console.log(body.file);
+    // console.log(body.type);
     const QRY = `INSERT INTO T_REQUEST (RefNo, Status, Title, Body, CreateAt, ModifyAt, CreateBy, ModifyBy, TBName, TBID, Attachment, ApType) VALUES ('${ref}','101','AP REQUEST FOR ${
       body.F_InvoiceNo
     }','${JSON.stringify(body)}',GETDATE(),GETDATE(),'${token.uid}','${
@@ -42,10 +44,11 @@ export default async (req, res) => {
     });
 
     //Need to enable sending from group permission from gmail
+    // to: "IT TEAM [JW]<it@jamesworldwide.com>",
     const mailOptions = {
       from: "IT TEAM [JW]<it@jamesworldwide.com>",
       to: "IAN PYO [JW]<ian@jamesworldwide.com>",
-      subject: `JWIUSA - ${token.first} Requested AP Approval Invoice: ${body.F_InvoiceNo}`,
+      subject: `JWIUSA - [${token.first}] Requested AP Approval Invoice: ${body.F_InvoiceNo}`,
       html: `
       <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
@@ -114,7 +117,7 @@ export default async (req, res) => {
             </tr>
             <tr>
               <td style="padding:30px;background-color:#ffffff;">
-                <h3 style="margin-top:0;margin-bottom:16px;font-size:26px;line-height:32px;font-weight:bold;letter-spacing:-0.02em;">${token.first} Requested AP Approval Invoice: ${body.F_InvoiceNo}</h3>
+                <h3 style="margin-top:0;margin-bottom:16px;font-size:26px;line-height:32px;font-weight:bold;letter-spacing:-0.02em;">[${token.first}] Requested AP Approval Invoice: ${body.F_InvoiceNo}</h3>
                 <div class="card" style="box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); transition: 0.3s;">
             
             <div class="card-body" style="padding: 2px 16px;">
@@ -133,11 +136,11 @@ export default async (req, res) => {
             </tr>
             <tr>
               <td style="padding:0;font-size:24px;line-height:28px;font-weight:bold;text-align:center;">
-                <p style="margin:10px 0;"><a href="jwiusa.com/forwarding/oim/${ref}" style="background: #4e73df; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;text-underline-color:#ff3884"><!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%;mso-text-raise:20pt">&nbsp;</i><![endif]--><span style="mso-text-raise:10pt;font-weight:bold;">GO TO ${ref}</span><!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%">&nbsp;</i><![endif]--></a></p>
+                <p style="margin:30px 0;"><a href="jwiusa.com${body.path}" style="background: #4e73df; text-decoration: none; padding: 10px 25px; color: #ffffff; border-radius: 4px; display:inline-block; mso-padding-alt:0;text-underline-color:#ff3884"><!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%;mso-text-raise:20pt">&nbsp;</i><![endif]--><span style="mso-text-raise:10pt;font-weight:bold;">GO TO ${ref}</span><!--[if mso]><i style="letter-spacing: 25px;mso-font-width:-100%">&nbsp;</i><![endif]--></a></p>
               </td>
             </tr>
             <tr>
-              <td style="padding:30px;text-align:center;font-size:12px;background-color:#404040;color:#cccccc;">
+              <td style="padding:20px;text-align:center;font-size:12px;background-color:#404040;color:#cccccc;">
                 <p style="margin:0;font-size:14px;line-height:20px;text-decoration: none;">&reg; JWIUSA, James Worldwide Inc, 2021<br></p>
               </td>
             </tr>
@@ -166,18 +169,24 @@ export default async (req, res) => {
     let result = await pool.request().query(QRY);
     // console.log(result);
     if (result.rowsAffected[0]) {
+      // console.log(result);
       res.status(200).end(JSON.stringify(result));
-      transport.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log("Email Sent: " + info.response);
-        }
-      });
+      try {
+        transport.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email Sent: " + info.response);
+          }
+        });
+      } catch (err) {
+        console.log(err);
+      }
     } else {
       res.status(200).end([]);
     }
   } catch (err) {
+    console.log(err);
     res.status(202).end(JSON.stringify(err));
     return { err: err };
   } finally {

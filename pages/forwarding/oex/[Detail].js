@@ -11,6 +11,7 @@ import Navigation from "../../../components/Forwarding/All/Navigation";
 import Master from "../../../components/Forwarding/All/Master";
 import House from "../../../components/Forwarding/All/House";
 import Profit from "../../../components/Forwarding/All/Profit";
+import Request from "../../../components/Forwarding/All/Request";
 import File from "../../../components/Forwarding/Oex/File";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
@@ -133,6 +134,8 @@ const Detail = ({ Cookie, Reference, master }) => {
             {/* MENU 3 - PROFIT */}
             {menu === 3 && (
               <Profit
+                Reference={Reference}
+                TOKEN={TOKEN}
                 invoice={master.I}
                 ap={master.A}
                 crdr={master.CR}
@@ -147,6 +150,16 @@ const Detail = ({ Cookie, Reference, master }) => {
                 House={master.H}
                 Ap={master.A}
                 Container={master.C}
+              />
+            )}
+            {/* MENU 5 - REQUEST */}
+            {menu === 5 && (
+              <Request
+                Reference={Reference}
+                ap={master.A}
+                crdr={master.CR}
+                profit={master.P}
+                TOKEN={TOKEN}
               />
             )}
 

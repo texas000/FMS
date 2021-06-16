@@ -21,11 +21,11 @@ const Top = ({ Token, toggle, setToggle }) => {
   const [Messages, setMessages] = React.useState([]);
 
   const loadOptions = async (inputValue, callback) => {
-    if (search.length > 1) {
+    if (inputValue.length > 1) {
       return fetch(`/api/forwarding/${searchType}/getList`, {
         headers: {
           key: cookie.parse(window.document.cookie).jamesworldwidetoken,
-          search: search,
+          search: inputValue,
         },
       }).then((res) => res.json());
     }

@@ -1,52 +1,80 @@
 import { Tag, Classes, Dialog, Button } from "@blueprintjs/core";
 import moment from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios, { post } from "axios";
+import { useRouter } from "next/router";
 
 export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
   const [selected, setSelected] = useState(false);
   const [file, setFile] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(false);
   const [type, setType] = useState(false);
 
-  async function uploadFile() {
-    var uploadfile = document.getElementById("upload").files[0];
-    if (uploadfile) {
-      const formData = new FormData();
-      formData.append("userPhoto", uploadfile);
-      const config = {
-        headers: {
-          "content-type": "multipart/form-data",
-          reference: Reference,
-        },
-      };
-      try {
-        const upload = new Promise((res, rej) => {
-          try {
-            res(post(`/api/dashboard/uploadFile`, formData, config));
-          } catch (err) {
-            console.log(err);
-            res("uploaded");
-          }
-        });
-        upload.then((ga) => {
-          if (ga.status === 200) {
-            console.log(ga);
-            setFile(uploadfile.name);
-            alert("UPLOAD SUCCESS");
-          }
-        });
-      } catch (err) {
-        if (err.response) {
-          console.log(err.response);
-        } else if (err.request) {
-          console.log(err.request);
-        } else {
-          console.log(err);
-        }
-      }
+  function usdFormat(x) {
+    var num = parseFloat(x).toFixed(2);
+    if (typeof x == "number") {
+      return "$" + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    } else {
+      return "$" + 0;
     }
   }
+  async function getFiles() {
+    const file = await fetch("/api/dashboard/getFileList", {
+      method: "GET",
+      headers: {
+        ref: Reference,
+      },
+    });
+    if (file.status === 200) {
+      const list = await file.json();
+      setFile(list);
+    } else {
+      setFile([]);
+    }
+  }
+  useEffect(() => {
+    getFiles();
+  }, [Reference]);
 
+  // async function uploadFile() {
+  //   var uploadfile = document.getElementById("upload").files[0];
+  //   if (uploadfile) {
+  //     const formData = new FormData();
+  //     formData.append("userPhoto", uploadfile);
+  //     const config = {
+  //       headers: {
+  //         "content-type": "multipart/form-data",
+  //         reference: Reference,
+  //       },
+  //     };
+  //     try {
+  //       const upload = new Promise((res, rej) => {
+  //         try {
+  //           res(post(`/api/dashboard/uploadFile`, formData, config));
+  //         } catch (err) {
+  //           console.log(err);
+  //           res("uploaded");
+  //         }
+  //       });
+  //       upload.then((ga) => {
+  //         if (ga.status === 200) {
+  //           console.log(ga);
+  //           setFile(uploadfile.name);
+  //           alert("UPLOAD SUCCESS");
+  //         }
+  //       });
+  //     } catch (err) {
+  //       if (err.response) {
+  //         console.log(err.response);
+  //       } else if (err.request) {
+  //         console.log(err.request);
+  //       } else {
+  //         console.log(err);
+  //       }
+  //     }
+  //   }
+  // }
+  const router = useRouter();
   async function postReq(body) {
     const req = await fetch("/api/requests/postRequest", {
       method: "POST",
@@ -54,15 +82,32 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
         ref: Reference,
         token: JSON.stringify(TOKEN),
       },
-      body: JSON.stringify({ ...body, file: file, type: type }),
+      body: JSON.stringify({
+        ...body,
+        file: selectedFile,
+        type: type,
+        path: router.asPath,
+      }),
     });
     if (req.status === 200) {
       setSelected(false);
     } else {
       alert(req.status);
     }
-    console.log(await req.json());
   }
+  var arTotal = null;
+  var crdrTotal = null;
+  var apTotal = null;
+  for (var i = 0; i < invoice.length; i++) {
+    arTotal += invoice[i].F_PaidAmt;
+  }
+  for (var i = 0; i < crdr.length; i++) {
+    crdrTotal += crdr[i].F_PaidAmt;
+  }
+  for (var i = 0; i < ap.length; i++) {
+    apTotal += ap[i].F_PaidAmt;
+  }
+
   return (
     <div className="card my-4 py-4 shadow">
       <div className="row px-4 py-2">
@@ -71,30 +116,89 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
           {profit &&
             profit.map((ga, i) => (
               <div key={i}>
-                <Tag>AR: {ga.F_AR}</Tag> <Tag>AP: {ga.F_AP}</Tag>{" "}
-                <Tag>CRDR: {ga.F_CrDr}</Tag> <Tag>TOTAL: {ga.F_HouseTotal}</Tag>
+                <div className="d-flex justify-content-between">
+                  <Tag
+                    className={`${
+                      arTotal != null && arTotal / ga.F_AR == 1
+                        ? "bg-primary"
+                        : "bg-gray-600"
+                    } w-100 text-white mr-4 px-4 py-2`}
+                    round={true}
+                  >
+                    <div className="d-flex justify-content-between font-weight-bold">
+                      <span>AR</span>
+                      <span>{usdFormat(ga.F_AR)}</span>
+                    </div>
+                  </Tag>
+                  <Tag
+                    className={`${
+                      crdrTotal != null && crdrTotal / ga.F_CrDr == 1
+                        ? "bg-primary"
+                        : "bg-gray-600"
+                    } w-100 text-white mr-4 px-4 py-2`}
+                    round={true}
+                  >
+                    <div className="d-flex justify-content-between font-weight-bold">
+                      <span>CRDR</span>
+                      <span>{usdFormat(ga.F_CrDr)}</span>
+                    </div>
+                  </Tag>
+
+                  <Tag
+                    className={`${
+                      apTotal != null && apTotal / ga.F_AP == 1
+                        ? "bg-primary"
+                        : "bg-gray-600"
+                    } w-100 text-white mr-4 px-4 py-2`}
+                    round={true}
+                  >
+                    <div className="d-flex justify-content-between font-weight-bold">
+                      <span>AP</span>
+                      <span>{usdFormat(ga.F_AP)}</span>
+                    </div>
+                  </Tag>
+
+                  <Tag
+                    className={`${
+                      ((arTotal || 0) - (apTotal || 0) + (crdrTotal || 0)) /
+                        (ga.F_HouseTotal || ga.F_MasterTotal) ==
+                      1
+                        ? "bg-primary"
+                        : "bg-gray-600"
+                    } w-100 text-white mr-4 px-4 py-2`}
+                    round={true}
+                  >
+                    <div className="d-flex justify-content-between font-weight-bold">
+                      <span>TOTAL</span>
+                      <span>
+                        {usdFormat(ga.F_HouseTotal || ga.F_MasterTotal)}
+                      </span>
+                    </div>
+                  </Tag>
+                </div>
               </div>
             ))}
           <hr />
-          {/* {master.P && JSON.stringify(profit)} */}
+          {/* {JSON.stringify(profit)} */}
         </div>
 
         <div className="col-12">
           <h4 className="h6">INVOICE</h4>
           {invoice &&
             invoice.map((ga) => (
-              <span key={ga.F_ID}>
-                <Tag
+              <>
+                <Button
+                  key={ga.F_ID}
                   intent={
                     ga.F_InvoiceAmt == ga.F_PaidAmt && ga.F_InvoiceAmt != 0
                       ? "success"
                       : "none"
                   }
                   className="mr-2"
-                >
-                  {ga.F_InvoiceNo}
-                </Tag>
-              </span>
+                  text={`${ga.F_InvoiceNo} (${usdFormat(ga.F_PaidAmt)})`}
+                  onClick={() => alert(JSON.stringify(ga))}
+                />
+              </>
             ))}
           {/* {JSON.stringify(invoice)} */}
           <hr />
@@ -104,18 +208,24 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
           <h4 className="h6">CRDR</h4>
           {crdr &&
             crdr.map((ga) => (
-              <span key={ga.F_ID}>
-                <Tag
+              <>
+                <Button
+                  key={ga.F_ID}
                   intent={
                     ga.F_Total == ga.F_PaidAmt && ga.F_Total != 0
                       ? "success"
                       : "none"
                   }
                   className="mr-2"
-                >
-                  {ga.F_CrDbNo}
-                </Tag>
-              </span>
+                  text={`${ga.F_CrDbNo} (${usdFormat(ga.F_Total)})`}
+                  onClick={() => alert(JSON.stringify(ga))}
+                />
+                {/* <ProgressBar
+                  intent="success"
+                  className="my-2"
+                  value={ga.F_PaidAmt / ga.F_Total}
+                /> */}
+              </>
             ))}
           {/* {JSON.stringify(crdr)} */}
           <hr />
@@ -125,20 +235,24 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
           <h4 className="h6">AP</h4>
           {ap &&
             ap.map((ga) => (
-              <Button
-                key={ga.F_ID}
-                onClick={() => setSelected(ga)}
-                intent={
-                  ga.F_InvoiceAmt == ga.F_PaidAmt && ga.F_InvoiceAmt != 0
-                    ? "success"
-                    : "none"
-                }
-                className="mr-2"
-                text={ga.F_SName}
-              >
-                {/* <Tag */}
-                {/* </Tag> */}
-              </Button>
+              <>
+                <Button
+                  key={ga.F_ID}
+                  onClick={() => setSelected(ga)}
+                  intent={
+                    ga.F_InvoiceAmt == ga.F_PaidAmt && ga.F_InvoiceAmt != 0
+                      ? "success"
+                      : "none"
+                  }
+                  className="mr-2"
+                  text={`${ga.F_SName} (${usdFormat(ga.F_InvoiceAmt)})`}
+                />
+                {/* <ProgressBar
+                  intent="success"
+                  className="my-2"
+                  value={ga.F_PaidAmt / ga.F_InvoiceAmt}
+                /> */}
+              </>
             ))}
         </div>
       </div>
@@ -147,7 +261,8 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
         onClose={() => {
           setSelected(false);
           setType(false);
-          setFile(false);
+          setSelectedFile(false);
+          // setFile(false);
         }}
         title="Request Approval"
       >
@@ -190,7 +305,24 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
                   <option value="wire">Wire</option>
                 </select>
 
-                <label className="bp3-file-input d-block mt-2">
+                <label htmlFor="type" className="mt-2">
+                  File
+                </label>
+                <select
+                  className="form-control"
+                  id="type"
+                  onChange={(e) => setSelectedFile(e.target.value)}
+                >
+                  <option value={false}>Please select file</option>
+                  {file &&
+                    file.map((ga) => (
+                      <option value={ga} key={ga}>
+                        {ga}
+                      </option>
+                    ))}
+                </select>
+
+                {/* <label className="bp3-file-input d-block mt-2">
                   <label htmlFor="upload">FILE</label>
                   <input
                     type="file"
@@ -201,7 +333,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
                   <span className="form-control">
                     {file ? file : "Choose File"}
                   </span>
-                </label>
+                </label> */}
               </div>
             </div>
           </div>
@@ -211,7 +343,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
             text="Confirm"
             fill={true}
             onClick={() => postReq(selected)}
-            disabled={!file || type == "false"}
+            disabled={!selectedFile || type == "false"}
           />
           {/* WHEN REQUEST HAPPEN, UPLOAD TO DATABASE AND SEND THE NOTIFICATION TO IAN */}
         </div>

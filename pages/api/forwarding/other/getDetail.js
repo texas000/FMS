@@ -71,6 +71,27 @@ export default async (req, res) => {
 
     output = { ...output, A: ap };
 
+    const profit = await sql
+      .connect(sqlConfig)
+      .then((pool) => {
+        return pool
+          .request()
+          .query(`select * from V_PROFIT_Master where ${HouseQuery};`);
+      })
+      .then((result) => {
+        if (result.rowsAffected[0]) {
+          return result.recordsets[0];
+        } else {
+          return [];
+        }
+      })
+      .catch((err) => {
+        console.log(`ERROR FROM PROFIT ${err}`);
+        return [];
+      });
+
+    output = { ...output, P: profit };
+
     const invoice = await sql
       .connect(sqlConfig)
       .then((pool) => {
