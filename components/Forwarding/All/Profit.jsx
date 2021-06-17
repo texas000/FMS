@@ -8,6 +8,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
   const [selected, setSelected] = useState(false);
   const [file, setFile] = useState(false);
   const [selectedFile, setSelectedFile] = useState(false);
+  const [selectedFile2, setSelectedFile2] = useState(false);
   const [type, setType] = useState(false);
 
   function usdFormat(x) {
@@ -36,44 +37,45 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
     getFiles();
   }, [Reference]);
 
-  // async function uploadFile() {
-  //   var uploadfile = document.getElementById("upload").files[0];
-  //   if (uploadfile) {
-  //     const formData = new FormData();
-  //     formData.append("userPhoto", uploadfile);
-  //     const config = {
-  //       headers: {
-  //         "content-type": "multipart/form-data",
-  //         reference: Reference,
-  //       },
-  //     };
-  //     try {
-  //       const upload = new Promise((res, rej) => {
-  //         try {
-  //           res(post(`/api/dashboard/uploadFile`, formData, config));
-  //         } catch (err) {
-  //           console.log(err);
-  //           res("uploaded");
-  //         }
-  //       });
-  //       upload.then((ga) => {
-  //         if (ga.status === 200) {
-  //           console.log(ga);
-  //           setFile(uploadfile.name);
-  //           alert("UPLOAD SUCCESS");
-  //         }
-  //       });
-  //     } catch (err) {
-  //       if (err.response) {
-  //         console.log(err.response);
-  //       } else if (err.request) {
-  //         console.log(err.request);
-  //       } else {
-  //         console.log(err);
-  //       }
-  //     }
-  //   }
-  // }
+  async function uploadFile() {
+    var uploadfile = document.getElementById("upload").files[0];
+    if (uploadfile) {
+      const formData = new FormData();
+      formData.append("userPhoto", uploadfile);
+      const config = {
+        headers: {
+          "content-type": "multipart/form-data",
+          reference: Reference,
+        },
+      };
+      try {
+        const upload = new Promise((res, rej) => {
+          try {
+            res(post(`/api/dashboard/uploadFile`, formData, config));
+          } catch (err) {
+            console.log(err);
+            res("uploaded");
+          }
+        });
+        upload.then((ga) => {
+          if (ga.status === 200) {
+            // setFile(uploadfile.name);
+            alert("UPLOAD SUCCESS");
+            getFiles();
+          }
+        });
+      } catch (err) {
+        if (err.response) {
+          console.log(err.response);
+        } else if (err.request) {
+          console.log(err.request);
+        } else {
+          console.log(err);
+        }
+      }
+    }
+  }
+
   const router = useRouter();
   async function postReq(body) {
     const req = await fetch("/api/requests/postRequest", {
@@ -85,6 +87,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
       body: JSON.stringify({
         ...body,
         file: selectedFile,
+        file2: selectedFile2,
         type: type,
         path: router.asPath,
       }),
@@ -262,12 +265,26 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
           setSelected(false);
           setType(false);
           setSelectedFile(false);
+          setSelectedFile2(false);
           // setFile(false);
         }}
         title="Request Approval"
       >
         <div className={Classes.DIALOG_BODY}>
           <h5>Would you like to request approval?</h5>
+
+          <label className="bp3-file-input d-flex flex-row-reverse">
+            <label htmlFor="upload" className="bp3-button">
+              Upload File
+            </label>
+            <input
+              type="file"
+              name="userPhoto"
+              id="upload"
+              onChange={uploadFile}
+            ></input>
+          </label>
+
           <div className="card">
             <div className="card-header font-weight-bold">
               <div className="d-flex justify-content-between">
@@ -322,18 +339,26 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
                     ))}
                 </select>
 
-                {/* <label className="bp3-file-input d-block mt-2">
-                  <label htmlFor="upload">FILE</label>
-                  <input
-                    type="file"
-                    name="userPhoto"
-                    id="upload"
-                    onChange={uploadFile}
-                  />
-                  <span className="form-control">
-                    {file ? file : "Choose File"}
-                  </span>
-                </label> */}
+                <label htmlFor="type" className="mt-2">
+                  Backup Document
+                </label>
+                <select
+                  className="form-control"
+                  id="type"
+                  onChange={(e) => setSelectedFile2(e.target.value)}
+                >
+                  <option value={false}>Please select file</option>
+                  {file &&
+                    file.map((ga) => {
+                      if (ga != selectedFile) {
+                        return (
+                          <option value={ga} key={ga}>
+                            {ga}
+                          </option>
+                        );
+                      }
+                    })}
+                </select>
               </div>
             </div>
           </div>
@@ -343,7 +368,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
             text="Confirm"
             fill={true}
             onClick={() => postReq(selected)}
-            disabled={!selectedFile || type == "false"}
+            disabled={!selectedFile || type == false || type == "false"}
           />
           {/* WHEN REQUEST HAPPEN, UPLOAD TO DATABASE AND SEND THE NOTIFICATION TO IAN */}
         </div>

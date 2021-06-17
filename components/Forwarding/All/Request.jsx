@@ -106,7 +106,7 @@ export const Request = ({ Reference, ap, TOKEN }) => {
 
   const Status = ({ data }) => {
     if (data == 101) {
-      return <Tag intent="primary">Created</Tag>;
+      return <Tag intent="primary">Requested</Tag>;
     }
     if (data == 110) {
       return <Tag intent="danger">Director Rejected</Tag>;
@@ -151,6 +151,18 @@ export const Request = ({ Reference, ap, TOKEN }) => {
                             )
                           }
                         />
+                        {ga.Attachment2 != null && (
+                          <Button
+                            icon="folder-shared-open"
+                            text={ga.Attachment2}
+                            className="ml-2"
+                            onClick={() =>
+                              window.open(
+                                `http://jameswgroup.com:49991/api/forwarding/${Reference}/${ga.Attachment2}`
+                              )
+                            }
+                          />
+                        )}
                         <Button
                           text="Approve"
                           intent="success"

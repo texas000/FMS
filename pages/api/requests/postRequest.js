@@ -27,11 +27,13 @@ export default async (req, res) => {
     // console.log(ref);
     // console.log(body.file);
     // console.log(body.type);
-    const QRY = `INSERT INTO T_REQUEST (RefNo, Status, Title, Body, CreateAt, ModifyAt, CreateBy, ModifyBy, TBName, TBID, Attachment, ApType) VALUES ('${ref}','101','AP REQUEST FOR ${
+    const QRY = `INSERT INTO T_REQUEST (RefNo, Status, Title, Body, CreateAt, ModifyAt, CreateBy, ModifyBy, TBName, TBID, Attachment, ApType, Attachment2) VALUES ('${ref}','101','AP REQUEST FOR ${
       body.F_InvoiceNo
     }','${JSON.stringify(body)}',GETDATE(),GETDATE(),'${token.uid}','${
       token.uid
-    }','T_APHD','${body.F_ID}', '${body.file}', '${body.type}');`;
+    }','T_APHD','${body.F_ID}', '${body.file}', '${body.type}', ${
+      body.file2 == false ? "NULL" : `'${body.file2}'`
+    });`;
     // console.log(QRY);
     // res.status(200).end(JSON.stringify(body));
 
