@@ -1,3 +1,4 @@
+import "@blueprintjs/core/lib/css/blueprint.css";
 import cookie from "cookie";
 import React, { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
@@ -10,15 +11,26 @@ import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import { Card, Row, Col, Button } from "reactstrap";
 import moment from "moment";
 
-const Index = ({ Cookie, Result }) => {
+const Index = ({ Cookie }) => {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
   const router = useRouter();
+
+  const [Result, setResult] = useState([]);
+
+  async function getOther() {
+    const others = await fetch("/api/forwarding/other/getList", {
+      headers: {
+        key: Cookie.jamesworldwidetoken,
+      },
+    }).then(async (j) => await j.json());
+    setResult(others);
+  }
 
   // User Either have or not have OIM cases, when not have cases, display the indication
   function indication() {
     return (
-      <span className="font-weight-bold">
-        You do not have Other at the moment
+      <span>
+        <span className="text-danger">No Other</span> at the moment
       </span>
     );
   }
@@ -91,14 +103,14 @@ const Index = ({ Cookie, Result }) => {
 
   const column = [
     {
-      dataField: "RefNo",
+      dataField: "F_RefNo",
       text: "REF",
       formatter: (cell) => <a href="#">{cell}</a>,
       events: {
         onClick: (e, columns, columnIndex, row) => {
           router.push(
             `/forwarding/other/[Detail]`,
-            `/forwarding/other/${row.RefNo}`
+            `/forwarding/other/${row.F_RefNo}`
           );
         },
       },
@@ -113,7 +125,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "Customer_SName",
+      dataField: "Customer",
       text: "CUSTOMER",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -125,7 +137,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "MBLNo",
+      dataField: "F_Mblno",
       text: "MBL",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -137,7 +149,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "HBLNo",
+      dataField: "F_Hblno",
       text: "HBL",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -149,7 +161,7 @@ const Index = ({ Cookie, Result }) => {
       headerSortingStyle,
     },
     {
-      dataField: "ETD",
+      dataField: "F_ETD",
       text: "ETD",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -172,7 +184,7 @@ const Index = ({ Cookie, Result }) => {
       },
     },
     {
-      dataField: "ETA",
+      dataField: "F_ETA",
       text: "ETA",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -195,7 +207,7 @@ const Index = ({ Cookie, Result }) => {
       },
     },
     {
-      dataField: "PostDate",
+      dataField: "F_PostDate",
       text: "POST",
       classes: "text-xs text-truncate",
       headerClasses:
@@ -218,7 +230,7 @@ const Index = ({ Cookie, Result }) => {
       },
     },
     {
-      dataField: "U2ID",
+      dataField: "F_U2ID",
       text: "EDITOR",
       classes: "text-xs text-truncate text-uppercase",
       headerClasses:
@@ -233,6 +245,7 @@ const Index = ({ Cookie, Result }) => {
 
   useEffect(() => {
     !TOKEN && router.push("/login");
+    getOther();
     // In the dev mode, show result in the console.
     // console.log(Result);
   }, []);
@@ -282,7 +295,7 @@ const Index = ({ Cookie, Result }) => {
         <Card className="bg-transparent border-0 d-none d-lg-block">
           <Row>
             <ToolkitProvider
-              keyField="ID"
+              keyField="F_ID"
               bordered={false}
               columns={column}
               data={Result}
@@ -323,24 +336,24 @@ export async function getServerSideProps({ req }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
+  return { props: { Cookie: cookies } };
+  // if (jwt.decode(cookies.jamesworldwidetoken) !== null) {
+  //   const { fsid } = jwt.decode(cookies.jamesworldwidetoken);
+  //   var result = [];
+  //   const fetchSearch = await fetch(
+  //     `${process.env.FS_BASEPATH}genmain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=&etdTo=&casestatus=`,
+  //     {
+  //       headers: { "x-api-key": process.env.JWT_KEY },
+  //     }
+  //   );
+  //   if (fetchSearch.status === 200) {
+  //     result = await fetchSearch.json();
+  //   }
 
-  if (jwt.decode(cookies.jamesworldwidetoken) !== null) {
-    const { fsid } = jwt.decode(cookies.jamesworldwidetoken);
-    var result = [];
-    const fetchSearch = await fetch(
-      `${process.env.FS_BASEPATH}genmain?PIC=${fsid}&etaFrom=&etaTo=&etdFrom=&etdTo=&casestatus=`,
-      {
-        headers: { "x-api-key": process.env.JWT_KEY },
-      }
-    );
-    if (fetchSearch.status === 200) {
-      result = await fetchSearch.json();
-    }
-
-    return { props: { Cookie: cookies, Result: result } };
-  } else {
-    return { props: { Cookie: cookies, Result: [] } };
-  }
+  //   return { props: { Cookie: cookies, Result: result } };
+  // } else {
+  //   return { props: { Cookie: cookies, Result: [] } };
+  // }
 }
 
 export default Index;

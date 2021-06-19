@@ -7,7 +7,7 @@ import ListGroupItem from "reactstrap/lib/ListGroupItem";
 import fetch from "node-fetch";
 import moment from "moment";
 import { Button, ButtonGroup, Dialog } from "@blueprintjs/core";
-import { Popover2, ContextMenu2 } from "@blueprintjs/popover2";
+import { ContextMenu2 } from "@blueprintjs/popover2";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 import React, { useState, useEffect } from "react";
@@ -132,7 +132,7 @@ export default function dashboard({ Cookie, Board }) {
                               >
                                 <ListGroupItem
                                   action
-                                  className="d-flex justify-content-between align-items-center text-xs btn btn-link"
+                                  className="d-flex justify-content-between align-items-center text-xs btn btn-link reference"
                                   onClick={() => {
                                     var AllOim = OimList.filter(
                                       (element) =>
@@ -155,7 +155,7 @@ export default function dashboard({ Cookie, Board }) {
                                     );
                                   }}
                                 >
-                                  <span className="font-weight-bold reference">
+                                  <span className="font-weight-bold">
                                     {ga.F_RefNo}
                                   </span>
                                   <span
@@ -233,7 +233,7 @@ export default function dashboard({ Cookie, Board }) {
                                 <ListGroupItem
                                   href="#"
                                   action
-                                  className="d-flex justify-content-between align-items-center text-xs btn btn-link"
+                                  className="d-flex justify-content-between align-items-center text-xs btn btn-link reference"
                                   onClick={() => {
                                     var AllOom = OomList.filter(
                                       (element) =>
@@ -256,7 +256,7 @@ export default function dashboard({ Cookie, Board }) {
                                     );
                                   }}
                                 >
-                                  <span className="font-weight-bold reference">
+                                  <span className="font-weight-bold">
                                     {ga.F_RefNo}
                                   </span>
                                   <span
@@ -334,7 +334,7 @@ export default function dashboard({ Cookie, Board }) {
                                 <ListGroupItem
                                   href="#"
                                   action
-                                  className="d-flex justify-content-between align-items-center text-xs btn btn-link"
+                                  className="d-flex justify-content-between align-items-center text-xs btn btn-link reference"
                                   onClick={() => {
                                     var AllAim = AimList.filter(
                                       (element) =>
@@ -353,7 +353,7 @@ export default function dashboard({ Cookie, Board }) {
                                     setContainers([]);
                                   }}
                                 >
-                                  <span className="font-weight-bold reference">
+                                  <span className="font-weight-bold">
                                     {ga.F_RefNo}
                                   </span>
                                   <span
@@ -602,7 +602,7 @@ export default function dashboard({ Cookie, Board }) {
           </div>
         </div>
 
-        <p>
+        {/* <p>
           <b>Authentication</b>
         </p>
         <p>
@@ -618,13 +618,39 @@ export default function dashboard({ Cookie, Board }) {
           <b>Added Feature</b>
         </p>
         <p>Right Click on the reference to see the menu</p>
-        <p>Click on the reference to see the detail panel</p>
+        <p>Click on the reference to see the detail panel</p> */}
+        <style jsx>
+          {`
+            .reference::before {
+              transform: scaleX(0);
+              transform-origin: bottom right;
+            }
 
-        <style jsx>{`
-          .reference:hover {
-            opacity: 0.5;
-          }
-        `}</style>
+            .reference:hover::before {
+              transform: scaleX(1);
+              transform-origin: bottom left;
+            }
+            .reference::before {
+              content: " ";
+              display: block;
+              position: absolute;
+              top: 0;
+              right: 0;
+              bottom: 0;
+              left: 0;
+              inset: 0 0 0 0;
+              background: hsl(200 100% 80%);
+              z-index: -1;
+              transition: transform 0.3s ease;
+            }
+             {
+              /* .reference:hover {
+              opacity: 0.1;
+              background-color: "blue";
+            } */
+            }
+          `}
+        </style>
       </Layout>
     );
   } else {

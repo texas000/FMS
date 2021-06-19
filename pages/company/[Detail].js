@@ -32,6 +32,7 @@ export default function Customer({ Cookie, Company, Id, Firebase }) {
   }
 
   async function getBalance() {
+    //V_CustomerBalance [VIEW]
     const balanceRes = await fetch(`/api/accounting/getBalance`, {
       headers: {
         customer: Id,
@@ -45,6 +46,7 @@ export default function Customer({ Cookie, Company, Id, Firebase }) {
     } else {
       console.log(balanceRes.status);
     }
+    //V_JWI_ACCT [VIEW]
     const accRes = await fetch(`/api/accounting/getAccViewByID`, {
       headers: {
         company: Id,
@@ -92,13 +94,10 @@ export default function Customer({ Cookie, Company, Id, Firebase }) {
   };
 
   return (
-    <Layout TOKEN={jwt.decode(Cookie.jamesworldwidetoken)} TITLE={Id}>
-      {/* <Head>
-        <script
-          async
-          src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDti1yLvLp4RYMBR2hHBDk7jltZU44xJqc"
-        ></script>
-      </Head> */}
+    <Layout
+      TOKEN={jwt.decode(Cookie.jamesworldwidetoken)}
+      TITLE={Company.company.FName || Id}
+    >
       {Company ? (
         <>
           <div className="d-flex flex-sm-row justify-content-between mb-0">
@@ -138,7 +137,22 @@ export default function Customer({ Cookie, Company, Id, Firebase }) {
                       <p className="text-xs">ZIP: {Company.company.ZipCode}</p>
                     </div>
                     <div className="col">
-                      <a
+                      <iframe
+                        width="600"
+                        height="450"
+                        loading="lazy"
+                        allowFullScreen
+                        src={`https://www.google.com/maps/embed/v1/search?q=${encodeURIComponent(
+                          Company.company.Addr +
+                            "+" +
+                            Company.company.City +
+                            "+" +
+                            Company.company.State +
+                            "+" +
+                            Company.company.ZipCode
+                        )}&key=AIzaSyDti1yLvLp4RYMBR2hHBDk7jltZU44xJqc`}
+                      ></iframe>
+                      {/* <a
                         target="_blank"
                         href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
                           Company.company.Addr +
@@ -154,7 +168,7 @@ export default function Customer({ Cookie, Company, Id, Firebase }) {
                         <button className="btn btn-outline-primary btn-sm text-xs">
                           <i className="fa fa-map"></i> Open with Google Maps
                         </button>
-                      </a>
+                      </a> */}
                     </div>
                   </div>
                 </div>

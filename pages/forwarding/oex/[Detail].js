@@ -14,7 +14,6 @@ import Profit from "../../../components/Forwarding/All/Profit";
 import Request from "../../../components/Forwarding/All/Request";
 import File from "../../../components/Forwarding/Oex/File";
 import "@blueprintjs/core/lib/css/blueprint.css";
-import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 
 const Detail = ({ Cookie, Reference, master }) => {
   const router = useRouter();

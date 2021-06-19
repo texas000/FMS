@@ -16,7 +16,10 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
       <a
         className="sidebar-brand d-flex align-items-center justify-content-center"
         href="#"
-        onClick={() => router.push("/dashboard")}
+        onClick={() => {
+          console.log(router.pathname.substring(1, 15));
+          // router.push("/dashboard");
+        }}
       >
         <div className="sidebar-brand-icon">
           <img
@@ -68,7 +71,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 
       <li
         className={`nav-item ${
-          router.pathname == "/forwarding/oim" && "active"
+          router.pathname.substring(1, 15) == "forwarding/oim" && "active"
         }`}
       >
         <a
@@ -83,7 +86,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 
       <li
         className={`nav-item ${
-          router.pathname == "/forwarding/oex" && "active"
+          router.pathname.substring(1, 15) == "forwarding/oex" && "active"
         }`}
       >
         <a
@@ -98,7 +101,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 
       <li
         className={`nav-item ${
-          router.pathname == "/forwarding/aim" && "active"
+          router.pathname.substring(1, 15) == "forwarding/aim" && "active"
         }`}
       >
         <a
@@ -113,7 +116,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 
       <li
         className={`nav-item ${
-          router.pathname == "/forwarding/aex" && "active"
+          router.pathname.substring(1, 15) == "forwarding/aex" && "active"
         }`}
       >
         <a
@@ -128,7 +131,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 
       <li
         className={`nav-item ${
-          router.pathname == "/forwarding/other" && "active"
+          router.pathname.substring(1, 15) == "forwarding/oth" && "active"
         }`}
       >
         <a
@@ -158,8 +161,11 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           </a>
         </li>
       )}
-
-      <li className={`nav-item ${router.pathname == "/company" && "active"}`}>
+      <li
+        className={`nav-item ${
+          router.pathname.substring(1, 8) == "company" && "active"
+        }`}
+      >
         <a
           className="nav-link"
           href="#"
@@ -172,14 +178,18 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 
       {/* Board */}
 
-      <li className={`nav-item ${router.pathname == "/board" && "active"}`}>
+      <li
+        className={`nav-item ${
+          router.pathname.substring(1, 6) == "board" && "active"
+        }`}
+      >
         <a className="nav-link" href="#" onClick={() => router.push("/board")}>
           <i className="fa fa-pencil"></i>
           <span>Board</span>
         </a>
       </li>
 
-      <li className={`nav-item ${router.pathname == "/dev/chat" && "active"}`}>
+      {/* <li className={`nav-item ${router.pathname == "/dev/chat" && "active"}`}>
         <a
           className="nav-link"
           href="#"
@@ -188,17 +198,31 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           <i className="fa fa-comment"></i>
           <span>Chat</span>
         </a>
-      </li>
+      </li> */}
 
-      <li className={`nav-item ${router.pathname == "/dev/po" && "active"}`}>
-        <a className="nav-link" href="#" onClick={() => router.push("/dev/po")}>
-          <i className="fa fa-briefcase"></i>
-          <span>PO</span>
-        </a>
-      </li>
+      {Token.admin > 6 && (
+        <li
+          className={`nav-item ${
+            router.pathname.substring(1, 11) == "accounting" && "active"
+          }`}
+        >
+          <a
+            className="nav-link"
+            href="#"
+            onClick={() => router.push("/accounting")}
+          >
+            <i className="fa fa-dollar"></i>
+            <span>Accounting</span>
+          </a>
+        </li>
+      )}
       {Token.admin > 3 && (
         <>
-          <li className="nav-item">
+          <li
+            className={`nav-item ${
+              router.pathname.substring(1, 10) == "statistic" && "active"
+            }`}
+          >
             <a
               className={`nav-link ${!t2 && "collapsed"}`}
               href="#"
@@ -239,7 +263,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
             </div>
           </li>
           {Token.admin === 9 && (
-            <li className="nav-item">
+            <li className={`nav-item ${router.pathname == "/hr" && "active"}`}>
               <a
                 className="nav-link"
                 href="#"

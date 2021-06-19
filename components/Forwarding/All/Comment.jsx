@@ -1,11 +1,13 @@
 import { Button } from "@blueprintjs/core";
 import moment from "moment";
+import { useEffect } from "react";
 
 export const Comment = ({ Reference, Uid }) => {
   const ReactQuill =
     typeof window === "object" ? require("react-quill") : () => false;
   const [html, setHtml] = React.useState("");
   const [comments, setComment] = React.useState([]);
+  const [isOpen, setOpen] = React.useState(false);
 
   const CommentList = ({ first, last, content, uid, date }) => (
     <div className="media my-1">
@@ -52,6 +54,7 @@ export const Comment = ({ Reference, Uid }) => {
 
   React.useEffect(() => {
     getComment();
+    setOpen(true);
   }, [Reference]);
 
   async function getComment() {
@@ -101,7 +104,7 @@ export const Comment = ({ Reference, Uid }) => {
         />
       ))}
 
-      {ReactQuill && (
+      {isOpen && ReactQuill && (
         <ReactQuill
           className="my-2"
           value={html}

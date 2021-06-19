@@ -92,7 +92,7 @@ const Top = ({ Token, toggle, setToggle }) => {
           onInputChange={(e) => setSearch(e)}
           onChange={(e) => {
             setSelected(e);
-            console.log(e.key);
+            // console.log(e.key);
             router.push(`/forwarding/${searchType}/${e.F_RefNo}`);
           }}
           placeholder={`Search ${searchType.toUpperCase()}...`}

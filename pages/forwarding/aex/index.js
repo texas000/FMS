@@ -11,6 +11,8 @@ import { Card, Row, Col } from "reactstrap";
 import moment from "moment";
 import { InputGroup, Button, Dialog } from "@blueprintjs/core";
 import MasterDialog from "../../../components/Dashboard/MasterDialog";
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "quill/dist/quill.snow.css";
 
 const Index = ({ Cookie }) => {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);

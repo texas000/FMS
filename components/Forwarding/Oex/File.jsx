@@ -61,9 +61,11 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
     }
   }
   useEffect(() => {
-    getFiles().then(() => {
-      setIsClient(true);
-    });
+    getFiles();
+    setIsClient(true);
+    // getFiles().then(() => {
+    //   setIsClient(true);
+    // });
   }, [Reference]);
   const acceptFileType =
     "image/*, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .msg, application/pdf";

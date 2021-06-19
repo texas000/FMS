@@ -1,3 +1,5 @@
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "quill/dist/quill.snow.css";
 import cookie from "cookie";
 import React, { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";

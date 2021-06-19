@@ -189,19 +189,17 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
           <h4 className="h6">INVOICE</h4>
           {invoice &&
             invoice.map((ga) => (
-              <>
-                <Button
-                  key={ga.F_ID}
-                  intent={
-                    ga.F_InvoiceAmt == ga.F_PaidAmt && ga.F_InvoiceAmt != 0
-                      ? "success"
-                      : "none"
-                  }
-                  className="mr-2"
-                  text={`${ga.F_InvoiceNo} (${usdFormat(ga.F_PaidAmt)})`}
-                  onClick={() => alert(JSON.stringify(ga))}
-                />
-              </>
+              <Button
+                key={ga.F_ID}
+                intent={
+                  ga.F_InvoiceAmt == ga.F_PaidAmt && ga.F_InvoiceAmt != 0
+                    ? "success"
+                    : "none"
+                }
+                className="mr-2"
+                text={`${ga.F_InvoiceNo} (${usdFormat(ga.F_PaidAmt)})`}
+                onClick={() => alert(JSON.stringify(ga))}
+              />
             ))}
           {/* {JSON.stringify(invoice)} */}
           <hr />
@@ -211,24 +209,17 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
           <h4 className="h6">CRDR</h4>
           {crdr &&
             crdr.map((ga) => (
-              <>
-                <Button
-                  key={ga.F_ID}
-                  intent={
-                    ga.F_Total == ga.F_PaidAmt && ga.F_Total != 0
-                      ? "success"
-                      : "none"
-                  }
-                  className="mr-2"
-                  text={`${ga.F_CrDbNo} (${usdFormat(ga.F_Total)})`}
-                  onClick={() => alert(JSON.stringify(ga))}
-                />
-                {/* <ProgressBar
-                  intent="success"
-                  className="my-2"
-                  value={ga.F_PaidAmt / ga.F_Total}
-                /> */}
-              </>
+              <Button
+                key={ga.F_ID}
+                intent={
+                  ga.F_Total == ga.F_PaidAmt && ga.F_Total != 0
+                    ? "success"
+                    : "none"
+                }
+                className="mr-2"
+                text={`${ga.F_CrDbNo} (${usdFormat(ga.F_Total)})`}
+                onClick={() => alert(JSON.stringify(ga))}
+              />
             ))}
           {/* {JSON.stringify(crdr)} */}
           <hr />
@@ -238,24 +229,17 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
           <h4 className="h6">AP</h4>
           {ap &&
             ap.map((ga) => (
-              <>
-                <Button
-                  key={ga.F_ID}
-                  onClick={() => setSelected(ga)}
-                  intent={
-                    ga.F_InvoiceAmt == ga.F_PaidAmt && ga.F_InvoiceAmt != 0
-                      ? "success"
-                      : "none"
-                  }
-                  className="mr-2"
-                  text={`${ga.F_SName} (${usdFormat(ga.F_InvoiceAmt)})`}
-                />
-                {/* <ProgressBar
-                  intent="success"
-                  className="my-2"
-                  value={ga.F_PaidAmt / ga.F_InvoiceAmt}
-                /> */}
-              </>
+              <Button
+                key={ga.F_ID}
+                onClick={() => setSelected(ga)}
+                intent={
+                  ga.F_InvoiceAmt == ga.F_PaidAmt && ga.F_InvoiceAmt != 0
+                    ? "success"
+                    : "none"
+                }
+                className="mr-2"
+                text={`${ga.F_SName} (${usdFormat(ga.F_InvoiceAmt)})`}
+              />
             ))}
         </div>
       </div>
@@ -352,7 +336,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
                     file.map((ga) => {
                       if (ga != selectedFile) {
                         return (
-                          <option value={ga} key={ga}>
+                          <option value={ga} key={`backup-${ga}`}>
                             {ga}
                           </option>
                         );

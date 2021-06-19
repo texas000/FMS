@@ -111,18 +111,18 @@ export const Master = ({
               <th className="text-success">VESSEL</th>
               <th className="text-secondary">{Vessel}</th>
             </tr>
-            {CY && (
+            {CY ? (
               <tr>
                 <th className="text-success">CY</th>
                 <th className="text-secondary">{CY}</th>
               </tr>
-            )}
-            {Commodity && (
+            ) : null}
+            {Commodity ? (
               <tr>
                 <th className="text-success">COMMODITY</th>
                 <th className="text-secondary">{Commodity}</th>
               </tr>
-            )}
+            ) : null}
           </tbody>
         </table>
       </div>

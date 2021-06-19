@@ -1,4 +1,5 @@
 import { Tag } from "@blueprintjs/core";
+import React from "react";
 
 export const House = ({ house, container }) => (
   <div className="card my-4 py-4 shadow">
@@ -73,12 +74,12 @@ export const House = ({ house, container }) => (
                     {ga.F_MarkGross || ga.F_GrossWeight}
                   </th>
                 </tr>
-                {ga.F_MarkMeasure && (
+                {ga.F_MarkMeasure ? (
                   <tr>
                     <th className="text-success">VOLUME</th>
                     <th className="text-secondary">{ga.F_MarkMeasure}</th>
                   </tr>
-                )}
+                ) : null}
               </tbody>
             </table>
           </div>
@@ -88,7 +89,10 @@ export const House = ({ house, container }) => (
     <div className="row">
       {container &&
         container.map((ga, i) => (
-          <div className="col-lg-3 col-md-6 px-4 pb-4" key={ga.F_ContainerNo}>
+          <div
+            className="col-lg-3 col-md-6 px-4 pb-4"
+            key={ga.F_ContainerNo + i}
+          >
             <Tag intent="primary" round={true}>
               Container {i + 1}: {ga.F_ContainerNo} {ga.F_ConType}
               <a

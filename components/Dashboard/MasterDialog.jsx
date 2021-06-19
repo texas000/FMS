@@ -14,11 +14,12 @@ import { Popover2 } from "@blueprintjs/popover2";
 import { useRouter } from "next/router";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import "quill/dist/quill.snow.css";
+// import "quill/dist/quill.snow.css";
 import CommentList from "./CommentList";
 import axios, { post } from "axios";
 import { BlobProvider } from "@react-pdf/renderer";
 import CheckRequestForm from "./CheckRequestForm";
+
 export const MasterDialog = ({ refs, multi, container, token }) => {
   const router = useRouter();
   const ReactQuill =
