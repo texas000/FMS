@@ -20,7 +20,7 @@ export default async (req, res) => {
   });
   try {
     await pool.connect();
-    const QRY = `select *, (select F_ACCOUNT from T_MEMBER where F_ID=CreateBy) as Created, (select F_EMAIL from T_MEMBER where F_ID=CreateBy) as Email, (select F_ACCOUNT from T_MEMBER where F_ID=ModifyBy) as Modified from T_REQUEST where RefNo='${req.headers.ref}';`;
+    const QRY = `select *, (select F_ACCOUNT from T_MEMBER where F_ID=CreateBy) as Created, (select F_EMAIL from T_MEMBER where F_ID=CreateBy) as Email, (select F_SlackID from T_MEMBER where F_ID=CreateBy) as SlackId, (select F_ACCOUNT from T_MEMBER where F_ID=ModifyBy) as Modified from T_REQUEST where RefNo='${req.headers.ref}';`;
     let result = await pool.request().query(QRY);
     if (result.rowsAffected[0]) {
       res.status(200).send(JSON.stringify(result.recordsets[0]));

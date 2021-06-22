@@ -88,11 +88,6 @@ export const Navigation = ({ Cookie }) => {
       text: "VENDOR",
       classes,
     },
-    // {
-    //   dataField: "PAY",
-    //   text: "PAY TO",
-    //   classes,
-    // },
     {
       dataField: "BANK",
       text: "BANK",
