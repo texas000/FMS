@@ -41,7 +41,7 @@ export default async (req, res) => {
         return "$" + 0;
       }
     }
-
+    console.log(body);
     var options = {
       method: "POST",
       uri: process.env.SLACK_IAN,
@@ -54,7 +54,7 @@ export default async (req, res) => {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: `*[${token.first}] Requested AP Approval*\n\n<https://jwiusa.com${body.path}|View request> OR MESSAGE TO <@${body.SlackId}>`,
+              text: `*[${token.first}] Requested AP Approval*\n\n<https://jwiusa.com${body.path}|View request>`,
             },
           },
           {

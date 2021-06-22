@@ -198,17 +198,16 @@ export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
   );
-
-  const info = await fetch(
-    `${process.env.BASE_URL}api/forwarding/oex/getDetail`,
-    {
+  var info = false;
+  if (cookies.jamesworldwidetoken) {
+    info = await fetch(`${process.env.BASE_URL}api/forwarding/oex/getDetail`, {
       method: "GET",
       headers: {
         key: cookies.jamesworldwidetoken,
         reference: query.Detail,
       },
-    }
-  ).then((j) => j.json());
+    }).then((j) => j.json());
+  }
 
   return { props: { Cookie: cookies, Reference: query.Detail, master: info } };
 }
