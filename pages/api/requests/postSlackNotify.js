@@ -91,13 +91,11 @@ export default async (req, res) => {
 
   if (body.Status == 101) {
     //IAN
-    options.uri =
-      "https://hooks.slack.com/services/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";
+    options.uri = process.env.SLACK_IAN;
   }
   if (body.Status == 111) {
     //MATTHEW
-    options.uri =
-      "https://hooks.slack.com/services/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";
+    options.uri = process.env.SLACK_MATT;
   }
 
   request(options, function (error, response, body) {

@@ -45,10 +45,8 @@ export default async (req, res) => {
     if (body.newstatus === 111) {
       changedStatus = "Approved";
       // ACCOUNTING - MATTHEW
-      accounting1 =
-        "https://hooks.slack.com/services/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";
-      accounting2 =
-        "https://hooks.slack.com/services/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";
+      accounting1 = process.env.SLACK_MATT;
+      accounting2 = process.env.SLACK_KEV;
     }
     // IF DIRECOTR REJECT CASE, THEN NOTIFY TO THE OPERATOR, ONLY DIR CAN REJECT THE CASE
     if (body.newstatus === 110) {
@@ -61,16 +59,14 @@ export default async (req, res) => {
     // IF DIRECOTR REJECT CASE, THEN NOTIFY TO THE OPERATOR, ONLY DIR CAN REJECT THE CASE
     if (body.newstatus === 121) {
       changedStatus = "Approved";
-      accounting1 =
-        "https://hooks.slack.com/services/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";
-      accounting2 =
-        "https://hooks.slack.com/services/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";
+      accounting1 = process.env.SLACK_MATT;
+      accounting2 = process.env.SLACK_KEV;
     }
 
     var options = {
       method: "POST",
       // TO GENERAL SLACK
-      uri: "https://hooks.slack.com/services/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",
+      uri: process.env.SLACK_GEN,
       headers: {
         "content-type": "application/json",
       },

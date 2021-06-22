@@ -44,9 +44,7 @@ export default async (req, res) => {
 
     var options = {
       method: "POST",
-      uri: "https://hooks.slack.com/services/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",
-      // IAN - https://hooks.slack.com/services/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
-      // uri: process.env.SLACK_IT,
+      uri: process.env.SLACK_IAN,
       headers: {
         "content-type": "application/json",
       },
