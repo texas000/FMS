@@ -86,7 +86,7 @@ export default function blank({ Cookie }) {
 						<div className="card">
 							<div className="card-header">
 								DEV PROJECTS{" "}
-								<a href="http://localhost:3000/api/sample" download>
+								<a href="https://jwiusa.com/api/sample" download>
 									DOWNLOAD
 								</a>
 							</div>
