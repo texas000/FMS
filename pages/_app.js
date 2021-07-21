@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 // import "../public/css/fms.scss";
 import "../components/css/nprogress.css";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import "../components/css/custom.css";
 import "react-calendar/dist/Calendar.css";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import "normalize.css/normalize.css";
 import "../public/css/quill.snow.css";
+import "../components/css/custom.css";
 
 function MyApp({ Component, pageProps }) {
 	const [loading, setLoading] = useState(false);
