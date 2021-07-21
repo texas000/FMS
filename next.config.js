@@ -13,4 +13,13 @@ module.exports = withCSS({
 		return config;
 	},
 	transpileModules: ["lodash-es"],
+	async redirects() {
+		return [
+			{
+				source: "/",
+				destination: "/dashboard",
+				permanent: true,
+			},
+		];
+	},
 });

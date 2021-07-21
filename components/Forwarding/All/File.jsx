@@ -7,6 +7,8 @@ import CheckRequestForm from "../../Dashboard/CheckRequestForm";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Popover2 } from "@blueprintjs/popover2";
+import useSWR from "swr";
+import React from "react";
 
 export const File = ({ Reference, House, Master, Container, Ap }) => {
 	const [isClient, setIsClient] = useState(false);
@@ -46,27 +48,8 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 		</Menu>
 	);
 
-	async function getFiles() {
-		const file = await fetch("/api/dashboard/getFileList", {
-			method: "GET",
-			headers: {
-				ref: Reference,
-			},
-		});
-		if (file.status === 200) {
-			const list = await file.json();
-			setFiles(list);
-		} else {
-			setFiles([]);
-		}
-	}
-
 	useEffect(() => {
-		getFiles();
 		setIsClient(true);
-		// getFiles().then(() => {
-		//   setIsClient(true);
-		// });
 	}, [Reference]);
 
 	const acceptFileType =
@@ -100,7 +83,7 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 				upload.then((ga) => {
 					if (ga.status === 200) {
 						alert(`File Uploaded: ${data.name}`);
-						getFiles();
+						// getFiles();
 						// setShow(true);
 					}
 				});
@@ -244,25 +227,6 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 										</a>
 									)}
 								</BlobProvider>
-							</li>
-						))}
-				</ul>
-				<ul className="list-group list-group-flush col-6">
-					{files &&
-						files.map((ga) => (
-							<li className="list-group-item py-1" key={ga}>
-								<Button
-									className="d-block"
-									small={true}
-									icon="document"
-									onClick={async () => {
-										window.location.assign(
-											`/api/file/get?ref=${Reference}&file=${ga}`
-										);
-									}}
-								>
-									{ga}
-								</Button>
 							</li>
 						))}
 				</ul>

@@ -48,7 +48,7 @@ export const Master = ({
 	return (
 		<div className="card my-4 py-4 shadow">
 			<div className="row">
-				<div className="col-8 px-4 py-4">
+				<div className="col-lg-8 px-4 py-4">
 					<div className="d-flex justify-content-between">
 						<div>
 							{MoveType && (
@@ -93,21 +93,6 @@ export const Master = ({
 								</Tag>
 							)}
 						</div>
-						<div>
-							<Button
-								small={true}
-								icon="envelope"
-								text="SEND MAIL"
-								onClick={() => window.open(Email)}
-							/>
-							<Button
-								small={true}
-								onClick={Clipboard}
-								text="COPY CLIPBOARD"
-								icon="clipboard"
-								className="mx-1"
-							></Button>
-						</div>
 					</div>
 
 					<table className="table-borderless mt-2 table-sm text-xs">
@@ -144,76 +129,107 @@ export const Master = ({
 					</table>
 				</div>
 
-				<div className="col-4 px-4 py-4">
-					<Popover2
-						content={
-							<Menu className="font-weight-bold text-uppercase">
-								<MenuItem
-									text="In Progress"
-									className="text-success"
-									onClick={() => updateStatus("In Progress")}
-								/>
-								<MenuItem
-									text="Booking Confirmed"
-									className="text-primary"
-									onClick={() => updateStatus("Booking Confirmed")}
-								/>
-								<MenuItem
-									text="ISF Field"
-									className="text-primary"
-									onClick={() => updateStatus("ISF Field")}
-								/>
-								<MenuItem
-									text="Customs Cleared"
-									className="text-primary"
-									onClick={() => updateStatus("Customs Cleared")}
-								/>
-								<MenuItem
-									text="Available for Pickup"
-									className="text-primary"
-									onClick={() => updateStatus("Available for Pickup")}
-								/>
-								<MenuItem
-									text="Delivered"
-									className="text-primary"
-									onClick={() => updateStatus("Delivered")}
-								/>
-								<MenuItem
-									text="Empty Return"
-									className="text-primary"
-									onClick={() => updateStatus("Empty Return")}
-								/>
-								<MenuItem text="Done" className="text-danger" />
-								<MenuItem text="Approved" disabled={true} />
-								<MenuItem text="Closed" disabled={true} />
-							</Menu>
-						}
-						fill={true}
-					>
-						{Closed && (
-							<Button
-								text={
-									Closed == "0"
-										? data
-											? data.STATUS || "ADD STATUS"
-											: "OPEN"
-										: "CLOSED"
+				<div className="col-lg-4 px-4 py-4">
+					<div className="row">
+						<div className="col">
+							<Popover2
+								content={
+									<Menu className="font-weight-bold text-uppercase">
+										<MenuItem
+											text="In Progress"
+											className="text-success"
+											onClick={() => updateStatus("In Progress")}
+										/>
+										<MenuItem
+											text="Booking Confirmed"
+											className="text-primary"
+											onClick={() => updateStatus("Booking Confirmed")}
+										/>
+										<MenuItem
+											text="ISF Field"
+											className="text-primary"
+											onClick={() => updateStatus("ISF Field")}
+										/>
+										<MenuItem
+											text="Customs Cleared"
+											className="text-primary"
+											onClick={() => updateStatus("Customs Cleared")}
+										/>
+										<MenuItem
+											text="Available for Pickup"
+											className="text-primary"
+											onClick={() => updateStatus("Available for Pickup")}
+										/>
+										<MenuItem
+											text="Delivered"
+											className="text-primary"
+											onClick={() => updateStatus("Delivered")}
+										/>
+										<MenuItem
+											text="Empty Return"
+											className="text-primary"
+											onClick={() => updateStatus("Empty Return")}
+										/>
+										<MenuItem text="Done" className="text-danger" />
+										<MenuItem text="Approved" disabled={true} />
+										<MenuItem text="Closed" disabled={true} />
+									</Menu>
 								}
-								disabled={Closed != "0"}
-								rightIcon="caret-down"
 								fill={true}
-							></Button>
-						)}
-					</Popover2>
+							>
+								{Closed && (
+									<Button
+										text={
+											Closed == "0"
+												? data
+													? data.STATUS || "ADD STATUS"
+													: "OPEN"
+												: "CLOSED"
+										}
+										disabled={Closed != "0"}
+										className="font-weight-bold"
+										rightIcon="caret-down"
+										fill={true}
+									></Button>
+								)}
+							</Popover2>
+						</div>
+						<div className="col">
+							<Popover2
+								content={
+									<Menu className="text-uppercase">
+										<MenuItem
+											text="COPY LINK"
+											onClick={Clipboard}
+											icon="clipboard"
+										/>
+										<MenuItem
+											text="SEND EMAIL"
+											onClick={() => window.open(Email)}
+											icon="envelope"
+										/>
+									</Menu>
+								}
+								fill={true}
+							>
+								<Button
+									text="ACTION"
+									rightIcon="caret-down"
+									className="font-weight-bold"
+									fill={true}
+								></Button>
+							</Popover2>
+						</div>
+					</div>
 
-					<div className="text-secondary mt-2">
+					<div className="text-dark mt-2">
 						<p>
 							Created{" "}
 							{Created &&
 								moment(
 									moment(Created).utc().format("YYYY-MM-DD HH:mm:ss")
 								).fromNow()}{" "}
-							by {Creator}
+							by <span className="text-uppercase">{Creator}</span>
 						</p>
 						<p>
 							Updated{" "}
@@ -221,7 +237,7 @@ export const Master = ({
 								moment(
 									moment(Updated).utc().format("YYYY-MM-DD HH:mm:ss")
 								).fromNow()}{" "}
-							by {Updator}
+							by <span className="text-uppercase">{Updator}</span>
 						</p>
 						<p>
 							Post{" "}

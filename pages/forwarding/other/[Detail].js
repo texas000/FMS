@@ -12,153 +12,293 @@ import Master from "../../../components/Forwarding/Other/Master";
 import Profit from "../../../components/Forwarding/All/Profit";
 import Request from "../../../components/Forwarding/All/Request";
 import File from "../../../components/Forwarding/Other/File";
-import "@blueprintjs/core/lib/css/blueprint.css";
+import axios, { post } from "axios";
+import useSWR from "swr";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 
 const Detail = ({ Cookie, Reference, master }) => {
-  const router = useRouter();
-  const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
-  const [isReady, setIsReady] = useState(false);
-  const [menu, setMenu] = useState(1);
+	const { data, mutate } = useSWR("/api/file/list?ref=" + Reference);
+	const router = useRouter();
+	const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
+	const [isReady, setIsReady] = useState(false);
+	const [menu, setMenu] = useState(1);
 
-  useEffect(() => {
-    !TOKEN && router.push("/login");
-    setIsReady(true);
-  }, [Reference]);
+	useEffect(() => {
+		!TOKEN && router.push("/login");
+		setIsReady(true);
+	}, [Reference]);
 
-  // ADD LOG DATA WHEN USER ACCESS THE PAGE
-  async function addLogData(Ref) {
-    const fetchPostLog = await fetch("/api/forwarding/postFreightExtLog", {
-      method: "POST",
-      body: JSON.stringify({
-        RefNo: Ref.RefNo,
-        TBName: Ref.TBName,
-        TBID: Ref.TBID,
-        Title: `${TOKEN.username} ACCESS GRANTED`,
-        Contents: JSON.stringify(TOKEN),
-      }),
-    });
-    if (fetchPostLog.status === 200) {
-      console.log("SUCCESS");
-    } else {
-      console.log(fetchPostLog.status);
-    }
-  }
-  const Clipboard = () => {
-    const routes = "jwiusa.com" + router.asPath;
-    var tempInput = document.createElement("INPUT");
-    document.getElementsByTagName("body")[0].appendChild(tempInput);
-    tempInput.setAttribute("value", routes);
-    tempInput.select();
-    document.execCommand("copy");
-    document.getElementsByTagName("body")[0].removeChild(tempInput);
-    alert("COPIED");
-  };
+	function uploadFile(e) {
+		var uploadedFile = e.target.files[0];
+		if (uploadedFile) {
+			const formData = new FormData();
+			formData.append("userPhoto", uploadedFile);
+			const config = {
+				headers: {
+					"content-type": "multipart/form-data",
+					label: e.target.id,
+					level: "99",
+				},
+			};
+			try {
+				const upload = new Promise((res, rej) => {
+					try {
+						res(post(`/api/file/upload?ref=${Reference}`, formData, config));
+					} catch (err) {
+						console.log(err);
+						res("uploaded");
+					}
+				});
+				upload.then((ga) => {
+					if (ga.status === 200) {
+						mutate();
+					}
+				});
+			} catch (err) {
+				if (err.response) {
+					console.log(err.response);
+				} else if (err.request) {
+					console.log(err.request);
+				} else {
+					console.log(err);
+				}
+			}
+		}
+	}
+	// ADD LOG DATA WHEN USER ACCESS THE PAGE
+	async function addLogData(Ref) {
+		const fetchPostLog = await fetch("/api/forwarding/postFreightExtLog", {
+			method: "POST",
+			body: JSON.stringify({
+				RefNo: Ref.RefNo,
+				TBName: Ref.TBName,
+				TBID: Ref.TBID,
+				Title: `${TOKEN.username} ACCESS GRANTED`,
+				Contents: JSON.stringify(TOKEN),
+			}),
+		});
+		if (fetchPostLog.status === 200) {
+			console.log("SUCCESS");
+		} else {
+			console.log(fetchPostLog.status);
+		}
+	}
+	const Clipboard = () => {
+		const routes = "jwiusa.com" + router.asPath;
+		var tempInput = document.createElement("INPUT");
+		document.getElementsByTagName("body")[0].appendChild(tempInput);
+		tempInput.setAttribute("value", routes);
+		tempInput.select();
+		document.execCommand("copy");
+		document.getElementsByTagName("body")[0].removeChild(tempInput);
+		alert("COPIED");
+	};
 
-  if (TOKEN && TOKEN.group) {
-    return (
-      <Layout TOKEN={TOKEN} TITLE={Reference}>
-        {master.M ? (
-          <>
-            {/* NAVIGATION BAR - STATE: MENU, SETMENU, REFERENCE */}
-            <Navigation menu={menu} setMenu={setMenu} Reference={Reference} />
+	if (TOKEN && TOKEN.group) {
+		return (
+			<Layout TOKEN={TOKEN} TITLE={Reference}>
+				{master.M ? (
+					<>
+						{/* NAVIGATION BAR - STATE: MENU, SETMENU, REFERENCE */}
+						<Navigation menu={menu} setMenu={setMenu} Reference={Reference} />
 
-            {/* MENU 1 - MAIN */}
-            {menu === 1 && (
-              <Master
-                Closed={master.M.F_FileClosed}
-                Created={master.M.F_U1Date}
-                Updated={master.M.F_U2Date}
-                Creator={master.M.F_U1ID}
-                Updator={master.M.F_U2ID}
-                Post={master.M.F_PostDate}
-                ETA={master.M.F_ETA}
-                ETD={master.M.F_ETD}
-                Loading={master.M.F_LoadingPort}
-                Discharge={master.M.F_DisCharge}
-                FETA={master.M.F_FETA}
-                Destination={master.M.F_FinalDest}
-                M={master.M}
-              />
-            )}
+						{/* MENU 1 - MAIN */}
+						{menu === 1 && (
+							<Master
+								Closed={master.M.F_FileClosed}
+								Created={master.M.F_U1Date}
+								Updated={master.M.F_U2Date}
+								Creator={master.M.F_U1ID}
+								Updator={master.M.F_U2ID}
+								Post={master.M.F_PostDate}
+								ETA={master.M.F_ETA}
+								ETD={master.M.F_ETD}
+								Loading={master.M.F_LoadingPort}
+								Discharge={master.M.F_DisCharge}
+								FETA={master.M.F_FETA}
+								Destination={master.M.F_FinalDest}
+								M={master.M}
+							/>
+						)}
 
-            {/* MENU 3 - PROFIT */}
-            {menu === 3 && (
-              <Profit
-                Reference={Reference}
-                TOKEN={TOKEN}
-                invoice={master.I}
-                ap={master.A}
-                crdr={master.CR}
-                profit={master.P}
-              />
-            )}
-            {/* MENU 4 - FILE */}
-            {menu === 4 && isReady && (
-              <File Reference={Reference} Master={master.M} Ap={master.A} />
-            )}
+						{/* MENU 3 - PROFIT */}
+						{menu === 3 && (
+							<Profit
+								Reference={Reference}
+								TOKEN={TOKEN}
+								invoice={master.I}
+								ap={master.A}
+								crdr={master.CR}
+								profit={master.P}
+							/>
+						)}
+						{/* MENU 4 - FILE */}
+						{menu === 4 && isReady && (
+							<File Reference={Reference} Master={master.M} Ap={master.A} />
+						)}
 
-            {menu === 5 && (
-              <Request
-                Reference={Reference}
-                ap={master.A}
-                crdr={master.CR}
-                profit={master.P}
-                TOKEN={TOKEN}
-              />
-            )}
+						{menu === 5 && (
+							<Request
+								Reference={Reference}
+								ap={master.A}
+								crdr={master.CR}
+								profit={master.P}
+								TOKEN={TOKEN}
+							/>
+						)}
+						<div className="card shadow">
+							<div className="card-body">
+								<h5 className="h5 text-dark">Files</h5>
 
-            <Comment Reference={Reference} Uid={TOKEN.uid} />
+								<div className="row">
+									<div className="col-lg-4 my-1">
+										<div className="input-group">
+											<div className="input-group-prepend">
+												<span className="input-group-text text-xs">
+													COMM INVOICE
+												</span>
+											</div>
+											<div className="custom-file">
+												<input
+													type="file"
+													id="invoice"
+													className="custom-file-input"
+													onChange={uploadFile}
+												/>
+												<label className="custom-file-label">Choose file</label>
+											</div>
+										</div>
+									</div>
+									<div className="col-lg-4 my-1">
+										<div className="input-group">
+											<div className="input-group-prepend">
+												<span className="input-group-text text-xs">
+													PACKING LIST
+												</span>
+											</div>
+											<div className="custom-file">
+												<input
+													type="file"
+													className="custom-file-input"
+													id="packing"
+													onChange={uploadFile}
+												/>
+												<label className="custom-file-label">Choose file</label>
+											</div>
+										</div>
+									</div>
+									<div className="col-lg-4 my-1">
+										<div className="input-group">
+											<div className="input-group-prepend">
+												<span className="input-group-text text-xs">
+													BOOKING CONFIRM
+												</span>
+											</div>
+											<div className="custom-file">
+												<input
+													type="file"
+													className="custom-file-input"
+													id="booking"
+													onChange={uploadFile}
+												/>
+												<label className="custom-file-label">Choose file</label>
+											</div>
+										</div>
+									</div>
+								</div>
 
-            <p className="d-none d-print-block text-center">
-              Printed at {moment().format("lll")}
-            </p>
-          </>
-        ) : (
-          <div className="jumbotron jumbotron-fluid">
-            <div className="container">
-              <h1 className="display-4">{router.query.Detail} NOT FOUND!</h1>
-              <p className="lead">
-                Please make sure you have correct reference number
-              </p>
-              <div className="d-flex justify-content-center mt-4">
-                <Button
-                  color="secondary"
-                  onClick={() => router.back()}
-                  icon="key-backspace"
-                >
-                  Return To Previous Page
-                </Button>
-              </div>
-            </div>
-          </div>
-        )}
-      </Layout>
-    );
-  } else {
-    return <p>Redirecting...</p>;
-  }
+								{!data || !data.length ? (
+									<React.Fragment />
+								) : (
+									<ul
+										className="list-group list-group-horizontal mt-4"
+										style={{ overflowX: "scroll" }}
+									>
+										{data.map((ga) => (
+											<li className="list-group-item py-1 mb-1" key={ga.file}>
+												<button
+													type="button"
+													className="d-block btn btn-primary btn-sm text-white text-truncate"
+													style={{ maxWidth: "150px" }}
+													onClick={async () => {
+														window.location.assign(
+															`/api/file/get?ref=${Reference}&file=${ga.file}`
+														);
+													}}
+												>
+													<img
+														src={`/image/icons/${
+															ga.ext == ".pdf"
+																? "file-pdf-solid"
+																: ga.ext == ".png" || ga.ext == ".jpg"
+																? "file-image-solid"
+																: "file-solid"
+														}.svg`}
+														style={{
+															filter: "brightness(0) invert(1)",
+														}}
+														width="18"
+														height="18"
+													/>
+													{ga.file}
+												</button>
+											</li>
+										))}
+									</ul>
+								)}
+							</div>
+						</div>
+						<Comment Reference={Reference} Uid={TOKEN.uid} />
+
+						<p className="d-none d-print-block text-center">
+							Printed at {moment().format("lll")}
+						</p>
+					</>
+				) : (
+					<div className="jumbotron jumbotron-fluid">
+						<div className="container">
+							<h1 className="display-4">{router.query.Detail} NOT FOUND!</h1>
+							<p className="lead">
+								Please make sure you have correct reference number
+							</p>
+							<div className="d-flex justify-content-center mt-4">
+								<Button
+									color="secondary"
+									onClick={() => router.back()}
+									icon="key-backspace"
+								>
+									Return To Previous Page
+								</Button>
+							</div>
+						</div>
+					</div>
+				)}
+			</Layout>
+		);
+	} else {
+		return <p>Redirecting...</p>;
+	}
 };
 
 export async function getServerSideProps({ req, query }) {
-  const cookies = cookie.parse(
-    req ? req.headers.cookie || "" : window.document.cookie
-  );
-  var info = false;
-  if (cookies.jamesworldwidetoken) {
-    info = await fetch(
-      `${process.env.BASE_URL}api/forwarding/other/getDetail`,
-      {
-        method: "GET",
-        headers: {
-          key: cookies.jamesworldwidetoken,
-          reference: query.Detail,
-        },
-      }
-    ).then((j) => j.json());
-  }
+	const cookies = cookie.parse(
+		req ? req.headers.cookie || "" : window.document.cookie
+	);
+	var info = false;
+	if (cookies.jamesworldwidetoken) {
+		info = await fetch(
+			`${process.env.BASE_URL}api/forwarding/other/getDetail`,
+			{
+				method: "GET",
+				headers: {
+					key: cookies.jamesworldwidetoken,
+					reference: query.Detail,
+				},
+			}
+		).then((j) => j.json());
+	}
 
-  return { props: { Cookie: cookies, Reference: query.Detail, master: info } };
+	return { props: { Cookie: cookies, Reference: query.Detail, master: info } };
 }
 
 export default Detail;
