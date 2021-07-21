@@ -151,17 +151,15 @@ const Detail = ({ Cookie, Reference, master }) => {
 								<h5 className="h5 text-dark">Files</h5>
 
 								<div className="row">
-									<div className="col-lg-4 my-1">
+									<div className="col-lg-6 my-1">
 										<div className="input-group">
 											<div className="input-group-prepend">
-												<span className="input-group-text text-xs">
-													COMM INVOICE
-												</span>
+												<span className="input-group-text text-xs">DO/POD</span>
 											</div>
 											<div className="custom-file">
 												<input
 													type="file"
-													id="invoice"
+													id="do"
 													className="custom-file-input"
 													onChange={uploadFile}
 												/>
@@ -169,7 +167,7 @@ const Detail = ({ Cookie, Reference, master }) => {
 											</div>
 										</div>
 									</div>
-									<div className="col-lg-4 my-1">
+									<div className="col-lg-6 my-1">
 										<div className="input-group">
 											<div className="input-group-prepend">
 												<span className="input-group-text text-xs">
@@ -187,24 +185,6 @@ const Detail = ({ Cookie, Reference, master }) => {
 											</div>
 										</div>
 									</div>
-									<div className="col-lg-4 my-1">
-										<div className="input-group">
-											<div className="input-group-prepend">
-												<span className="input-group-text text-xs">
-													BOOKING CONFIRM
-												</span>
-											</div>
-											<div className="custom-file">
-												<input
-													type="file"
-													className="custom-file-input"
-													id="booking"
-													onChange={uploadFile}
-												/>
-												<label className="custom-file-label">Choose file</label>
-											</div>
-										</div>
-									</div>
 								</div>
 
 								{!data || !data.length ? (
@@ -215,32 +195,21 @@ const Detail = ({ Cookie, Reference, master }) => {
 										style={{ overflowX: "scroll" }}
 									>
 										{data.map((ga) => (
-											<li className="list-group-item py-1 mb-1" key={ga.file}>
+											<li className="list-group-item py-1 mb-1" key={ga.F_ID}>
 												<button
 													type="button"
-													className="d-block btn btn-primary btn-sm text-white text-truncate"
-													style={{ maxWidth: "150px" }}
+													className="btn btn-primary btn-sm text-white text-truncate"
+													style={{ maxWidth: "180px" }}
 													onClick={async () => {
 														window.location.assign(
-															`/api/file/get?ref=${Reference}&file=${ga.file}`
+															`/api/file/get?ref=${Reference}&file=${ga.F_FILENAME}`
 														);
 													}}
 												>
-													<img
-														src={`/image/icons/${
-															ga.ext == ".pdf"
-																? "file-pdf-solid"
-																: ga.ext == ".png" || ga.ext == ".jpg"
-																? "file-image-solid"
-																: "file-solid"
-														}.svg`}
-														style={{
-															filter: "brightness(0) invert(1)",
-														}}
-														width="18"
-														height="18"
-													/>
-													{ga.file}
+													<span className="text-uppercase mr-1">
+														[{ga.F_LABEL}]
+													</span>
+													{ga.F_FILENAME}
 												</button>
 											</li>
 										))}

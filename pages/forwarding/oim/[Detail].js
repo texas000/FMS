@@ -268,7 +268,7 @@ const Detail = ({ Cookie, Reference, master }) => {
 										<div className="input-group">
 											<div className="input-group-prepend">
 												<span className="input-group-text text-xs">
-													ARRVAL NOTICE
+													ARRIVAL NOTICE
 												</span>
 											</div>
 											<div className="custom-file">
@@ -292,32 +292,21 @@ const Detail = ({ Cookie, Reference, master }) => {
 										style={{ overflowX: "scroll" }}
 									>
 										{data.map((ga) => (
-											<li className="list-group-item py-1 mb-1" key={ga.file}>
+											<li className="list-group-item py-1 mb-1" key={ga.F_ID}>
 												<button
 													type="button"
-													className="d-block btn btn-primary btn-sm text-white text-truncate"
-													style={{ maxWidth: "150px" }}
+													className="btn btn-primary btn-sm text-white text-truncate"
+													style={{ maxWidth: "180px" }}
 													onClick={async () => {
 														window.location.assign(
-															`/api/file/get?ref=${Reference}&file=${ga.file}`
+															`/api/file/get?ref=${Reference}&file=${ga.F_FILENAME}`
 														);
 													}}
 												>
-													<img
-														src={`/image/icons/${
-															ga.ext == ".pdf"
-																? "file-pdf-solid"
-																: ga.ext == ".png" || ga.ext == ".jpg"
-																? "file-image-solid"
-																: "file-solid"
-														}.svg`}
-														style={{
-															filter: "brightness(0) invert(1)",
-														}}
-														width="18"
-														height="18"
-													/>
-													{ga.file}
+													<span className="text-uppercase mr-1">
+														[{ga.F_LABEL}]
+													</span>
+													{ga.F_FILENAME}
 												</button>
 											</li>
 										))}
@@ -325,6 +314,14 @@ const Detail = ({ Cookie, Reference, master }) => {
 								)}
 							</div>
 						</div>
+						{/* <img
+									src={`/image/icons/file-solid.svg`}
+									style={{
+										filter: "brightness(0) invert(1)",
+									}}
+									width="18"
+									height="18"
+								/> */}
 
 						<Comment Reference={Reference} Uid={TOKEN.uid} />
 
@@ -364,13 +361,16 @@ export async function getServerSideProps({ req, query }) {
 	);
 	var info = false;
 	if (cookies.jamesworldwidetoken) {
-		info = await fetch(`${process.env.BASE_URL}api/forwarding/oim/getDetail`, {
-			method: "GET",
-			headers: {
-				key: cookies.jamesworldwidetoken,
-				reference: query.Detail,
-			},
-		}).then((j) => j.json());
+		info = await fetch(
+			`${process.env.BASE_URL}api/forwarding/oim/detail?ref=${query.Detail}`,
+			{
+				method: "GET",
+				headers: {
+					key: cookies.jamesworldwidetoken,
+					reference: query.Detail,
+				},
+			}
+		).then((j) => j.json());
 	}
 
 	return { props: { Cookie: cookies, Reference: query.Detail, master: info } };

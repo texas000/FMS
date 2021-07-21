@@ -271,32 +271,19 @@ const Detail = ({ Cookie, Reference, master }) => {
 										style={{ overflowX: "scroll" }}
 									>
 										{data.map((ga) => (
-											<li className="list-group-item py-1 mb-1" key={ga.file}>
+											<li className="list-group-item py-1 mb-1" key={ga.F_ID}>
 												<button
 													type="button"
-													className="d-block btn btn-primary btn-sm text-white text-truncate"
+													className="btn btn-primary btn-sm text-white text-truncate"
 													style={{ maxWidth: "150px" }}
 													onClick={async () => {
 														window.location.assign(
-															`/api/file/get?ref=${Reference}&file=${ga.file}`
+															`/api/file/get?ref=${Reference}&file=${ga.F_FILENAME}`
 														);
 													}}
 												>
-													<img
-														src={`/image/icons/${
-															ga.ext == ".pdf"
-																? "file-pdf-solid"
-																: ga.ext == ".png" || ga.ext == ".jpg"
-																? "file-image-solid"
-																: "file-solid"
-														}.svg`}
-														style={{
-															filter: "brightness(0) invert(1)",
-														}}
-														width="18"
-														height="18"
-													/>
-													{ga.file}
+													<span className="text-uppercase">[{ga.F_LABEL}]</span>
+													{ga.F_FILENAME}
 												</button>
 											</li>
 										))}
