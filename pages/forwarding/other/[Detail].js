@@ -151,7 +151,7 @@ const Detail = ({ Cookie, Reference, master }) => {
 								<h5 className="h5 text-dark">Files</h5>
 
 								<div className="row">
-									<div className="col-lg-6 my-1">
+									<div className="col-lg-3 my-1">
 										<div className="input-group">
 											<div className="input-group-prepend">
 												<span className="input-group-text text-xs">DO/POD</span>
@@ -167,7 +167,7 @@ const Detail = ({ Cookie, Reference, master }) => {
 											</div>
 										</div>
 									</div>
-									<div className="col-lg-6 my-1">
+									<div className="col-lg-3 my-1">
 										<div className="input-group">
 											<div className="input-group-prepend">
 												<span className="input-group-text text-xs">
@@ -179,6 +179,40 @@ const Detail = ({ Cookie, Reference, master }) => {
 													type="file"
 													className="custom-file-input"
 													id="packing"
+													onChange={uploadFile}
+												/>
+												<label className="custom-file-label">Choose file</label>
+											</div>
+										</div>
+									</div>
+									<div className="col-lg-3 my-1">
+										<div className="input-group">
+											<div className="input-group-prepend">
+												<span className="input-group-text text-xs">OTHER</span>
+											</div>
+											<div className="custom-file">
+												<input
+													type="file"
+													className="custom-file-input"
+													id="other"
+													onChange={uploadFile}
+												/>
+												<label className="custom-file-label">Choose file</label>
+											</div>
+										</div>
+									</div>
+									<div className="col-lg-3 my-1">
+										<div className="input-group">
+											<div className="input-group-prepend">
+												<span className="input-group-text text-xs text-danger">
+													CUSTOMER
+												</span>
+											</div>
+											<div className="custom-file">
+												<input
+													type="file"
+													className="custom-file-input"
+													id="customer"
 													onChange={uploadFile}
 												/>
 												<label className="custom-file-label">Choose file</label>
@@ -202,7 +236,9 @@ const Detail = ({ Cookie, Reference, master }) => {
 													style={{ maxWidth: "180px" }}
 													onClick={async () => {
 														window.location.assign(
-															`/api/file/get?ref=${Reference}&file=${ga.F_FILENAME}`
+															`/api/file/get?ref=${Reference}&file=${encodeURIComponent(
+																ga.F_FILENAME
+															)}`
 														);
 													}}
 												>

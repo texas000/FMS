@@ -287,7 +287,9 @@ const Detail = ({ Cookie, Reference, master }) => {
 													style={{ maxWidth: "180px" }}
 													onClick={async () => {
 														window.location.assign(
-															`/api/file/get?ref=${Reference}&file=${ga.F_FILENAME}`
+															`/api/file/get?ref=${Reference}&file=${encodeURIComponent(
+																ga.F_FILENAME
+															)}`
 														);
 													}}
 												>

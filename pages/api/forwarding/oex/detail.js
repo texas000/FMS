@@ -3,20 +3,18 @@ const sql = require("mssql");
 export default async (req, res) => {
 	const { ref } = req.query;
 
-	const MASTER = `select (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID =T_OIMMAIN.F_Agent) as AGENT,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIMMAIN.F_Carrier) as CARRIER,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIMMAIN.F_CYLocation) as CYLOC,
-  * from T_OIMMAIN WHERE F_RefNo='${ref}';`;
+	const MASTER = `select (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID =T_OOMMAIN.F_Agent) as AGENT,
+  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OOMMAIN.F_Carrier) as CARRIER,
+  * from T_OOMMAIN WHERE F_RefNo='${ref}';`;
 
-	const HOUSE = `SELECT (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIHMAIN.F_Customer) as CUSTOMER,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIHMAIN.F_Consignee) as CONSIGNEE,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIHMAIN.F_Notify) as NOTIFY,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIHMAIN.F_Broker) as BROKER,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OIHMAIN.F_Shipper) as SHIPPER, * FROM 
-  T_OIHMAIN WHERE F_OIMBLID=`;
+	const HOUSE = `SELECT (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OOHMAIN.F_Customer) as CUSTOMER,
+    (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OOHMAIN.F_Consignee) as CONSIGNEE,
+    (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OOHMAIN.F_Notify) as NOTIFY,
+    (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OOHMAIN.F_Shipper) as SHIPPER, * FROM 
+    T_OOHMAIN WHERE F_OOMBLID=`;
 
-	const CONTAINER = `SELECT T_OIMCONTAINER.*, T_OIHCONTAINER.F_OIHBLID as F_OIHBLID from T_OIMCONTAINER
-   LEFT JOIN T_OIHCONTAINER on T_OIMCONTAINER.F_ID = T_OIHCONTAINER.F_OIMCntID where F_OIMBLID=`;
+	const CONTAINER = `SELECT T_OOMCONTAINER.*, T_OOHCONTAINER.F_OOHBLID as F_OOHBLID from T_OOMCONTAINER
+    LEFT JOIN T_OOHCONTAINER on T_OOMCONTAINER.F_ID = T_OOHCONTAINER.F_OOMCNTID where F_OOMBLID=`;
 
 	var output = { M: false, H: [], C: [], A: [], P: [], I: [], CR: [] };
 	let pool = new sql.ConnectionPool(process.env.SERVER2);

@@ -5,8 +5,13 @@ export default async (req, res) => {
 		res.status(400).send("BAD REQUEST");
 		return;
 	}
+	var decoded = decodeURIComponent(file);
 	request
-		.get(`http://jameswgroup.com:49991/api/forwarding/${ref}/${file}`)
+		.get(
+			`http://jameswi.com:49991/api/forwarding/${ref}/${encodeURIComponent(
+				decoded
+			)}`
+		)
 		.on("error", function (err) {
 			console.log(err);
 			res.status(404).send("NOT FOUND");

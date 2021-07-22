@@ -248,13 +248,65 @@ const Detail = ({ Cookie, Reference, master }) => {
 									<div className="col-lg-4 my-1">
 										<div className="input-group">
 											<div className="input-group-prepend">
-												<span className="input-group-text text-xs">DO/POD</span>
+												<span className="input-group-text text-xs">
+													BOOKING
+												</span>
 											</div>
 											<div className="custom-file">
 												<input
 													type="file"
 													className="custom-file-input"
 													id="booking"
+													onChange={uploadFile}
+												/>
+												<label className="custom-file-label">Choose file</label>
+											</div>
+										</div>
+									</div>
+									<div className="col-lg-4 my-1">
+										<div className="input-group">
+											<div className="input-group-prepend">
+												<span className="input-group-text text-xs">OTHER</span>
+											</div>
+											<div className="custom-file">
+												<input
+													type="file"
+													className="custom-file-input"
+													id="other"
+													onChange={uploadFile}
+												/>
+												<label className="custom-file-label">Choose file</label>
+											</div>
+										</div>
+									</div>
+									<div className="col-lg-4 my-1">
+										<div className="input-group">
+											<div className="input-group-prepend">
+												<span className="input-group-text text-xs">MBL</span>
+											</div>
+											<div className="custom-file">
+												<input
+													type="file"
+													className="custom-file-input"
+													id="mbl"
+													onChange={uploadFile}
+												/>
+												<label className="custom-file-label">Choose file</label>
+											</div>
+										</div>
+									</div>
+									<div className="col-lg-4 my-1">
+										<div className="input-group">
+											<div className="input-group-prepend">
+												<span className="input-group-text text-xs text-danger">
+													CUSTOMER
+												</span>
+											</div>
+											<div className="custom-file">
+												<input
+													type="file"
+													className="custom-file-input"
+													id="customer"
 													onChange={uploadFile}
 												/>
 												<label className="custom-file-label">Choose file</label>
@@ -278,7 +330,9 @@ const Detail = ({ Cookie, Reference, master }) => {
 													style={{ maxWidth: "150px" }}
 													onClick={async () => {
 														window.location.assign(
-															`/api/file/get?ref=${Reference}&file=${ga.F_FILENAME}`
+															`/api/file/get?ref=${Reference}&file=${encodeURIComponent(
+																ga.F_FILENAME
+															)}`
 														);
 													}}
 												>
@@ -330,13 +384,16 @@ export async function getServerSideProps({ req, query }) {
 	);
 	var info = false;
 	if (cookies.jamesworldwidetoken) {
-		info = await fetch(`${process.env.BASE_URL}api/forwarding/oex/getDetail`, {
-			method: "GET",
-			headers: {
-				key: cookies.jamesworldwidetoken,
-				reference: query.Detail,
-			},
-		}).then((j) => j.json());
+		info = await fetch(
+			`${process.env.BASE_URL}api/forwarding/oex/detail?ref=${query.Detail}`,
+			{
+				method: "GET",
+				headers: {
+					key: cookies.jamesworldwidetoken,
+					reference: query.Detail,
+				},
+			}
+		).then((j) => j.json());
 	}
 
 	return { props: { Cookie: cookies, Reference: query.Detail, master: info } };
