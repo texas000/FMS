@@ -35,9 +35,9 @@ export default async (req, res) => {
 			if (house.recordset.length) {
 				var houses = house.recordset.map((ga, i) => {
 					if (i) {
-						return ` OR F_TBID='${ga.F_ID}' AND F_TBName='T_OIHMAIN'`;
+						return ` OR F_TBID='${ga.F_ID}' AND F_TBName='T_OOHMAIN'`;
 					} else {
-						return `F_TBID='${ga.F_ID}' AND F_TBName='T_OIHMAIN'`;
+						return `F_TBID='${ga.F_ID}' AND F_TBName='T_OOHMAIN'`;
 					}
 				});
 				houses = houses.join("");
