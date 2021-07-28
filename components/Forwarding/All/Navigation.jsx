@@ -33,8 +33,8 @@ export const Navigation = ({ menu, setMenu, Reference }) => (
 				onClick={() => setMenu(2)}
 			></Button>
 			<Button
-				icon="dollar"
-				text="Profit"
+				icon="dashboard"
+				text="Summary"
 				small={true}
 				minimal={true}
 				intent={menu === 3 ? "primary" : "none"}

@@ -10,7 +10,7 @@ import { Spinner } from "reactstrap";
 export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 	const { data, mutate } = useSWR("/api/file/list?ref=" + Reference);
 	const [selected, setSelected] = useState(false);
-	const [file, setFile] = useState(false);
+	// const [file, setFile] = useState(false);
 	const [selectedFile, setSelectedFile] = useState(false);
 	const [selectedFile2, setSelectedFile2] = useState(false);
 	const [type, setType] = useState(false);
@@ -49,23 +49,23 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 			return "$" + 0;
 		}
 	}
-	async function getFiles() {
-		const file = await fetch("/api/dashboard/getFileList", {
-			method: "GET",
-			headers: {
-				ref: Reference,
-			},
-		});
-		if (file.status === 200) {
-			const list = await file.json();
-			setFile(list);
-		} else {
-			setFile([]);
-		}
-	}
-	useEffect(() => {
-		getFiles();
-	}, [Reference]);
+	// async function getFiles() {
+	// 	const file = await fetch("/api/dashboard/getFileList", {
+	// 		method: "GET",
+	// 		headers: {
+	// 			ref: Reference,
+	// 		},
+	// 	});
+	// 	if (file.status === 200) {
+	// 		const list = await file.json();
+	// 		setFile(list);
+	// 	} else {
+	// 		setFile([]);
+	// 	}
+	// }
+	// useEffect(() => {
+	// 	getFiles();
+	// }, [Reference]);
 
 	const router = useRouter();
 	async function postReq(body) {
@@ -208,7 +208,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 														>
 															<div className="d-flex justify-content-between font-weight-light">
 																<span>{ga.F_InvoiceNo}</span>
-																<span>{usdFormat(ga.F_PaidAmt)}</span>
+																<span>{usdFormat(ga.F_InvoiceAmt)}</span>
 															</div>
 														</Tag>
 													))}
@@ -307,7 +307,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 														>
 															<div className="d-flex justify-content-between font-weight-light">
 																<span>{ga.F_CrDbNo}</span>
-																<span>{usdFormat(ga.F_PaidAmt)}</span>
+																<span>{usdFormat(ga.F_Total)}</span>
 															</div>
 														</Tag>
 													))}
@@ -415,7 +415,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 																>
 																	{ga.F_SName}
 																</span>
-																<span>{usdFormat(ga.F_PaidAmt)}</span>
+																<span>{usdFormat(ga.F_InvoiceAmt)}</span>
 															</div>
 														</Tag>
 													))}

@@ -1,4 +1,4 @@
-import { useDropzone } from "react-dropzone";
+// import { useDropzone } from "react-dropzone";
 import axios, { post } from "axios";
 import { BlobProvider } from "@react-pdf/renderer";
 import Cover from "../Oim/Cover";
@@ -17,83 +17,53 @@ import {
 	Row,
 	ButtonGroup,
 } from "reactstrap";
+import { Tag } from "@blueprintjs/core";
 
 export const File = ({ Reference, House, Master, Container, Ap }) => {
 	const [isClient, setIsClient] = useState(false);
 	const [ApType, setApType] = useState("CHECK");
-	// const ApMenu = (
-	// 	<Menu>
-	// 		<MenuItem
-	// 			icon="book"
-	// 			text="CHECK"
-	// 			onClick={() => {
-	// 				setApType("CHECK");
-	// 			}}
-	// 		/>
-	// 		<MenuItem
-	// 			icon="credit-card"
-	// 			text="CARD"
-	// 			onClick={() => {
-	// 				setApType("CARD");
-	// 			}}
-	// 		/>
-	// 		<MenuItem
-	// 			icon="send-to"
-	// 			text="ACH"
-	// 			onClick={() => {
-	// 				setApType("ACH");
-	// 			}}
-	// 		/>
-	// 		<MenuItem
-	// 			icon="bank-account"
-	// 			text="WIRE"
-	// 			onClick={() => {
-	// 				setApType("WIRE");
-	// 			}}
-	// 		/>
-	// 	</Menu>
-	// );
+	const { data, mutate } = useSWR("/api/file/list?ref=" + Reference);
 
 	useEffect(() => {
 		setIsClient(true);
 	}, [Reference]);
 
-	function uploadFile(e) {
-		var uploadedFile = e.target.files[0];
-		if (uploadedFile) {
-			const formData = new FormData();
-			formData.append("userPhoto", uploadedFile);
-			const config = {
-				headers: {
-					"content-type": "multipart/form-data",
-					label: e.target.id,
-					level: "99",
-				},
-			};
-			try {
-				const upload = new Promise((res, rej) => {
-					try {
-						res(post(`/api/file/upload?ref=${Reference}`, formData, config));
-					} catch (err) {
-						console.log(err);
-						res("uploaded");
-					}
-				});
-				upload.then((ga) => {
-					// if (ga.status === 200) {
-					// }
-				});
-			} catch (err) {
-				if (err.response) {
-					console.log(err.response);
-				} else if (err.request) {
-					console.log(err.request);
-				} else {
-					console.log(err);
-				}
-			}
-		}
-	}
+	// function uploadFile(e) {
+	// 	var uploadedFile = e.target.files[0];
+	// 	if (uploadedFile) {
+	// 		const formData = new FormData();
+	// 		formData.append("userPhoto", uploadedFile);
+	// 		const config = {
+	// 			headers: {
+	// 				"content-type": "multipart/form-data",
+	// 				label: e.target.id,
+	// 				level: "99",
+	// 			},
+	// 		};
+	// 		try {
+	// 			const upload = new Promise((res, rej) => {
+	// 				try {
+	// 					res(post(`/api/file/upload?ref=${Reference}`, formData, config));
+	// 				} catch (err) {
+	// 					console.log(err);
+	// 					res("uploaded");
+	// 				}
+	// 			});
+	// 			upload.then((ga) => {
+	// 				// if (ga.status === 200) {
+	// 				// }
+	// 			});
+	// 		} catch (err) {
+	// 			if (err.response) {
+	// 				console.log(err.response);
+	// 			} else if (err.request) {
+	// 				console.log(err.request);
+	// 			} else {
+	// 				console.log(err);
+	// 			}
+	// 		}
+	// 	}
+	// }
 
 	// const acceptFileType =
 	// 	"image/*, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .msg, application/pdf";
@@ -208,40 +178,43 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 												}
 											>
 												{({ blob, url, loading, error }) => (
-													<a href={url} target="__blank">
-														<Button
-															outline
-															color="primary"
-															disabled={!isClient}
-															size="sm"
-														>
-															<img
-																src="/image/icons/file-pdf-solid.svg"
-																width="15"
-																height="15"
-																style={{
-																	filter:
-																		"brightness(0.5) invert(0.7) sepia(0.9)",
-																	marginBottom: "5px",
-																	marginRight: "3px",
-																}}
-															></img>
-															FOLDER COVER
-														</Button>
+													<a
+														href={isClient ? url : "#"}
+														target="__blank"
+														style={{ textDecoration: "none" }}
+													>
+														<Tag className="bg-primary bg-gray-600 text-white mr-4 px-4 py-2">
+															<div className="d-flex justify-content-between font-weight-bold">
+																<img
+																	src="/image/icons/file-pdf-solid.svg"
+																	width="15"
+																	height="15"
+																	style={{
+																		filter:
+																			"brightness(0.5) invert(0.7) sepia(0.9)",
+																	}}
+																></img>
+																<span className="ml-2">
+																	{loading || error
+																		? "LOADING..."
+																		: "FOLDER COVER"}
+																</span>
+															</div>
+														</Tag>
 													</a>
 												)}
 											</BlobProvider>
 										)}
-
-										<Button
-											color="primary"
-											size="sm"
+									</Col>
+									<Col lg="12" sm="12" className="mb-2">
+										<Tag
+											role="button"
 											id="pop"
-											className="float-right"
+											className="bg-primary bg-gray-500 text-white mr-4 px-4 py-2"
 										>
 											<i className="fa fa-window-restore mr-2"></i>TYPE:{" "}
 											{ApType}
-										</Button>
+										</Tag>
 										<UncontrolledPopover
 											placement="right"
 											trigger="legacy"
@@ -249,30 +222,36 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 										>
 											<PopoverBody>
 												<ButtonGroup>
-													<button
-														className="btn btn-primary"
+													<Tag
+														interactive={true}
+														large={true}
 														onClick={() => setApType("CHECK")}
 													>
 														Check
-													</button>
-													<button
-														className="btn btn-primary"
+													</Tag>
+													<Tag
+														interactive={true}
+														large={true}
+														// className="mx-1"
 														onClick={() => setApType("CARD")}
 													>
 														Card
-													</button>
-													<button
-														className="btn btn-primary"
+													</Tag>
+													<Tag
+														interactive={true}
+														large={true}
 														onClick={() => setApType("ACH")}
 													>
 														ACH
-													</button>
-													<button
-														className="btn btn-primary"
+													</Tag>
+													<Tag
+														interactive={true}
+														large={true}
+														// className="mx-1"
 														onClick={() => setApType("WIRE")}
 													>
 														Wire
-													</button>
+													</Tag>
 												</ButtonGroup>
 											</PopoverBody>
 										</UncontrolledPopover>
@@ -312,29 +291,33 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 													}
 												>
 													{({ blob, url, loading, error }) => (
-														<a href={url} target="__blank">
-															<Button
-																outline
-																color="success"
-																className="text-truncate"
-																size="sm"
-																disable={loading}
+														<a
+															href={url}
+															target="__blank"
+															style={{ textDecoration: "none" }}
+														>
+															<Tag
+																intent="success"
+																className="text-truncate mr-4 px-4 py-2 font-weight-bold"
+																interactive={true}
+																fill={true}
 															>
 																<img
 																	src="/image/icons/file-pdf-solid.svg"
 																	width="15"
 																	height="15"
+																	className="mr-2"
 																	style={{
 																		filter:
 																			"brightness(0.5) invert(0.7) sepia(0.9)",
-																		marginBottom: "5px",
-																		marginRight: "3px",
 																	}}
 																></img>
-																{`${ga.F_SName} - $${Number.parseFloat(
-																	ga.F_InvoiceAmt || 0
-																).toFixed(2)}`}
-															</Button>
+																{loading || error
+																	? "LOADING..."
+																	: `${ga.F_SName} - $${Number.parseFloat(
+																			ga.F_InvoiceAmt || 0
+																	  ).toFixed(2)}`}
+															</Tag>
 														</a>
 													)}
 												</BlobProvider>
@@ -347,65 +330,44 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 					<div className="col-lg-6">
 						<div className="card shadow">
 							<div className="card-body">
-								<h6 className="h6 text-dark">Public</h6>
-								<Row>
-									{[
-										"isf",
-										"invoice",
-										"packing",
-										"hbl",
-										"an",
-										"pod",
-										"7501",
-										"other",
-									].map((ga) => (
-										<Col key={ga} className="my-1" lg="6">
-											<div className="input-group">
-												<div className="input-group-prepend">
-													<span className="input-group-text text-xs text-uppercase">
-														{ga}
-													</span>
-												</div>
-												<div className="custom-file">
-													<input
-														type="file"
-														id={ga}
-														className="custom-file-input"
-														onChange={uploadFile}
-													/>
-													<label className="custom-file-label">
-														Choose file
-													</label>
-												</div>
+								<h6 className="h6 text-dark">Files</h6>
+
+								{data && data.length ? (
+									data.map((ga) => (
+										<Tag
+											role="button"
+											key={ga.F_ID + "FILE"}
+											className="w-100 bg-gray-400 px-2 py-2 my-1"
+											onClick={async () => {
+												window.location.assign(
+													`/api/file/get?ref=${Reference}&file=${encodeURIComponent(
+														ga.F_FILENAME
+													)}`
+												);
+											}}
+											interactive={true}
+										>
+											<div className="d-flex justify-content-between text-dark">
+												<span className="text-uppercase">
+													<i className="fa fa-download mr-1"></i>
+													{ga.F_LABEL}
+												</span>
+												<span
+													className="font-weight-bold text-truncate"
+													style={{
+														maxWidth: "180px",
+													}}
+												>
+													{ga.F_FILENAME}
+												</span>
 											</div>
-										</Col>
-									))}
-								</Row>
-								<h6 className="h6 text-dark mt-3">Internal</h6>
-								<Row>
-									{["mbl", "invo-vendor", "crdr", "do"].map((ga) => (
-										<Col key={ga} className="my-1" lg="6">
-											<div className="input-group">
-												<div className="input-group-prepend">
-													<span className="input-group-text text-xs text-uppercase">
-														{ga}
-													</span>
-												</div>
-												<div className="custom-file">
-													<input
-														type="file"
-														id={ga}
-														className="custom-file-input"
-														onChange={uploadFile}
-													/>
-													<label className="custom-file-label">
-														Choose file
-													</label>
-												</div>
-											</div>
-										</Col>
-									))}
-								</Row>
+										</Tag>
+									))
+								) : (
+									<Tag className="w-100 bg-gray-400 text-dark px-2 py-2 my-1 text-center">
+										NO FILE
+									</Tag>
+								)}
 							</div>
 						</div>
 					</div>
