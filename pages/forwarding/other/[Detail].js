@@ -12,12 +12,11 @@ import Master from "../../../components/Forwarding/Other/Master";
 import Profit from "../../../components/Forwarding/All/Profit";
 import Request from "../../../components/Forwarding/All/Request";
 import File from "../../../components/Forwarding/Other/File";
-import axios, { post } from "axios";
-import useSWR from "swr";
+// import axios, { post } from "axios";
+// import useSWR from "swr";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 
 const Detail = ({ Cookie, Reference, master }) => {
-	const { data, mutate } = useSWR("/api/file/list?ref=" + Reference);
 	const router = useRouter();
 	const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
 	const [isReady, setIsReady] = useState(false);
@@ -28,43 +27,6 @@ const Detail = ({ Cookie, Reference, master }) => {
 		setIsReady(true);
 	}, [Reference]);
 
-	function uploadFile(e) {
-		var uploadedFile = e.target.files[0];
-		if (uploadedFile) {
-			const formData = new FormData();
-			formData.append("userPhoto", uploadedFile);
-			const config = {
-				headers: {
-					"content-type": "multipart/form-data",
-					label: e.target.id,
-					level: "99",
-				},
-			};
-			try {
-				const upload = new Promise((res, rej) => {
-					try {
-						res(post(`/api/file/upload?ref=${Reference}`, formData, config));
-					} catch (err) {
-						console.log(err);
-						res("uploaded");
-					}
-				});
-				upload.then((ga) => {
-					if (ga.status === 200) {
-						mutate();
-					}
-				});
-			} catch (err) {
-				if (err.response) {
-					console.log(err.response);
-				} else if (err.request) {
-					console.log(err.request);
-				} else {
-					console.log(err);
-				}
-			}
-		}
-	}
 	// ADD LOG DATA WHEN USER ACCESS THE PAGE
 	async function addLogData(Ref) {
 		const fetchPostLog = await fetch("/api/forwarding/postFreightExtLog", {
@@ -146,113 +108,7 @@ const Detail = ({ Cookie, Reference, master }) => {
 								TOKEN={TOKEN}
 							/>
 						)}
-						<div className="card shadow">
-							<div className="card-body">
-								<h5 className="h5 text-dark">Files</h5>
 
-								<div className="row">
-									<div className="col-lg-3 my-1">
-										<div className="input-group">
-											<div className="input-group-prepend">
-												<span className="input-group-text text-xs">DO/POD</span>
-											</div>
-											<div className="custom-file">
-												<input
-													type="file"
-													id="do"
-													className="custom-file-input"
-													onChange={uploadFile}
-												/>
-												<label className="custom-file-label">Choose file</label>
-											</div>
-										</div>
-									</div>
-									<div className="col-lg-3 my-1">
-										<div className="input-group">
-											<div className="input-group-prepend">
-												<span className="input-group-text text-xs">
-													PACKING LIST
-												</span>
-											</div>
-											<div className="custom-file">
-												<input
-													type="file"
-													className="custom-file-input"
-													id="packing"
-													onChange={uploadFile}
-												/>
-												<label className="custom-file-label">Choose file</label>
-											</div>
-										</div>
-									</div>
-									<div className="col-lg-3 my-1">
-										<div className="input-group">
-											<div className="input-group-prepend">
-												<span className="input-group-text text-xs">OTHER</span>
-											</div>
-											<div className="custom-file">
-												<input
-													type="file"
-													className="custom-file-input"
-													id="other"
-													onChange={uploadFile}
-												/>
-												<label className="custom-file-label">Choose file</label>
-											</div>
-										</div>
-									</div>
-									<div className="col-lg-3 my-1">
-										<div className="input-group">
-											<div className="input-group-prepend">
-												<span className="input-group-text text-xs text-danger">
-													CUSTOMER
-												</span>
-											</div>
-											<div className="custom-file">
-												<input
-													type="file"
-													className="custom-file-input"
-													id="customer"
-													onChange={uploadFile}
-												/>
-												<label className="custom-file-label">Choose file</label>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								{!data || !data.length ? (
-									<React.Fragment />
-								) : (
-									<ul
-										className="list-group list-group-horizontal mt-4"
-										style={{ overflowX: "scroll" }}
-									>
-										{data.map((ga) => (
-											<li className="list-group-item py-1 mb-1" key={ga.F_ID}>
-												<button
-													type="button"
-													className="btn btn-primary btn-sm text-white text-truncate"
-													style={{ maxWidth: "180px" }}
-													onClick={async () => {
-														window.location.assign(
-															`/api/file/get?ref=${Reference}&file=${encodeURIComponent(
-																ga.F_FILENAME
-															)}`
-														);
-													}}
-												>
-													<span className="text-uppercase mr-1">
-														[{ga.F_LABEL}]
-													</span>
-													{ga.F_FILENAME}
-												</button>
-											</li>
-										))}
-									</ul>
-								)}
-							</div>
-						</div>
 						<Comment Reference={Reference} Uid={TOKEN.uid} />
 
 						<p className="d-none d-print-block text-center">
