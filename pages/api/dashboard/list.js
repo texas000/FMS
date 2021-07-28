@@ -31,21 +31,21 @@ export default async function handler(req, res) {
 
 			var qry;
 			if (token.admin === 9) {
-				qry = `select TOP 20 M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_OIMMAIN M left join T_OIHMAIN H on (M.F_ID=H.F_OIMBLID) where F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;
-					   select TOP 20 M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_OOMMAIN M left join T_OOHMAIN H on (M.F_ID=H.F_OOMBLID) where F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;
-					   select TOP 20 M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_AIMMAIN M left join T_AIHMAIN H on (M.F_ID=H.F_AIMBLID) where F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;
-					   select TOP 20 M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_AOMMAIN M left join T_AOHMAIN H on (M.F_ID=H.F_AOMBLID) where F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;`;
+				qry = `select distinct M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_OIMMAIN M left join T_OIHMAIN H on (M.F_ID=H.F_OIMBLID) where F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;
+				select distinct M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_OOMMAIN M left join T_OOHMAIN H on (M.F_ID=H.F_OOMBLID) where F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;
+				select distinct M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_AIMMAIN M left join T_AIHMAIN H on (M.F_ID=H.F_AIMBLID) where F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;
+				select distinct M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_AOMMAIN M left join T_AOHMAIN H on (M.F_ID=H.F_AOMBLID) where F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;`;
 			} else {
-				qry = `select TOP 20 M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_OIMMAIN M left join T_OIHMAIN H on (M.F_ID=H.F_OIMBLID) where M.F_U2ID='${
+				qry = `select distinct M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_OIMMAIN M left join T_OIHMAIN H on (M.F_ID=H.F_OIMBLID) where M.F_U2ID='${
 					token.fsid
 				}' AND F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;
-select TOP 20 M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_OOMMAIN M left join T_OOHMAIN H on (M.F_ID=H.F_OOMBLID) where M.F_U2ID='${
+				select distinct M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_OOMMAIN M left join T_OOHMAIN H on (M.F_ID=H.F_OOMBLID) where M.F_U2ID='${
 					token.fsid
 				}' AND F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;
-select TOP 20 M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_AIMMAIN M left join T_AIHMAIN H on (M.F_ID=H.F_AIMBLID) where M.F_U2ID='${
+				select distinct M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_AIMMAIN M left join T_AIHMAIN H on (M.F_ID=H.F_AIMBLID) where M.F_U2ID='${
 					token.fsid
 				}' AND F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;
-select TOP 20 M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_AOMMAIN M left join T_AOHMAIN H on (M.F_ID=H.F_AOMBLID) where M.F_U2ID='${
+				select distinct M.F_ID, M.F_RefNo, F_ETA, (select F_SName from T_COMPANY C where C.F_ID=H.F_Customer) as Customer from T_AOMMAIN M left join T_AOHMAIN H on (M.F_ID=H.F_AOMBLID) where M.F_U2ID='${
 					token.fsid
 				}' AND F_ETA BETWEEN GETDATE() AND '${date.toLocaleDateString()}' ORDER BY M.F_ETA ASC;`;
 			}
