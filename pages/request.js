@@ -138,7 +138,7 @@ export default function request(props) {
 			headerFormatter: filterHeader,
 			formatter: (cell) => {
 				if (cell) {
-					return moment(cell).utc().calendar();
+					return moment(cell).utc().add(1, "days").calendar();
 				}
 			},
 		},

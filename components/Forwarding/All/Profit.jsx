@@ -529,8 +529,8 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 							<h4 className="ml-2 h6 col-12">REQUEST</h4>
 							{requested.map((ga) => (
 								<div key={ga.ID} className="col-lg-12">
-									<Tag fill={true}>
-										<div className="d-flex justify-content-between">
+									<Tag fill={true} className="my-1">
+										<div className="d-flex justify-content-between p-1">
 											<span>{ga.Title}</span>
 											<Status data={ga.Status} />
 										</div>
