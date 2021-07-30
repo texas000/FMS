@@ -23,7 +23,7 @@ export default async (req, res) => {
 	var query = `INSERT INTO T_REQUEST 
     (RefNo, Status, Title, Body, CreateAt, ModifyAt, CreateBy, ModifyBy, TBName, TBID, Attachment, ApType, Attachment2) 
     VALUES ('${ref}','101','AP REQUEST FOR ${body.F_InvoiceNo}',
-	'EMPTY',GETDATE(),GETDATE(),'${token.uid}','${token.uid}',
+	'${body.customer}',GETDATE(),GETDATE(),'${token.uid}','${token.uid}',
 	'T_APHD','${body.F_ID}', '${body.file}', '${body.type}', 
 	${body.file2 == false ? "NULL" : `'${body.file2}'`});`;
 
@@ -34,7 +34,8 @@ export default async (req, res) => {
 		res.status(200).send(result.recordset || []);
 		const mailOptions = {
 			from: "JWIUSA <it@jamesworldwide.com>",
-			to: "IAN PYO [JW] <ian@jamesworldwide.com>",
+			to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
+			// to: "IAN PYO [JW] <ian@jamesworldwide.com>",
 			subject: `AP REQUEST FOR ${body.F_InvoiceNo}`,
 			html: `<h2><mark>REQUESTED </mark> BY ${token.first} CASE: <a href="https://jwiusa.com${body.path}">${ref}</a></h2>`,
 			cc: token.email,

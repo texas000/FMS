@@ -92,6 +92,7 @@ const Detail = ({ Cookie, Reference, master }) => {
 								ap={master.A}
 								crdr={master.CR}
 								profit={master.P}
+								customer={master.M.CUSTOMER}
 							/>
 						)}
 						{/* MENU 4 - FILE */}

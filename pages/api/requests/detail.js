@@ -14,7 +14,7 @@ export default async (req, res) => {
 		res.status(400).json([]);
 		return;
 	}
-	var query = `SELECT TOP 1 * FROM ${table} WHERE F_ID='${id}';`;
+	var query = `SELECT TOP 1 *, (SELECT F_SName from T_COMPANY C WHERE C.F_ID=A.F_PayTo) AS Vendor FROM ${table} A WHERE F_ID='${id}';`;
 	let pool = new sql.ConnectionPool(process.env.SERVER2);
 	try {
 		await pool.connect();

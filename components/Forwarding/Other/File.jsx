@@ -126,9 +126,7 @@ export const File = ({ Reference, Master, Ap }) => {
 															payto={ga.F_SName}
 															address={`${ga.F_Addr} ${ga.F_City} ${ga.F_State} ${ga.F_ZipCode}`}
 															irs={`${ga.F_IRSType} ${ga.F_IRSNo}`}
-															amt={Number.parseFloat(
-																ga.F_InvoiceAmt || 0
-															).toFixed(2)}
+															amt={ga.F_InvoiceAmt}
 															oim={Reference}
 															customer={Master.CUSTOMER}
 															inv={ga.F_InvoiceNo}
@@ -169,7 +167,7 @@ export const File = ({ Reference, Master, Ap }) => {
 																	}}
 																></img>
 																{loading || error
-																	? "LOADING..."
+																	? `${loading ? "LOADING..." : ""}`
 																	: `${ga.F_SName} - $${Number.parseFloat(
 																			ga.F_InvoiceAmt || 0
 																	  ).toFixed(2)}`}

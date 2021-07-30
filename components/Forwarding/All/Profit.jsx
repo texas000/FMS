@@ -8,7 +8,15 @@ import Select from "react-select";
 import { Spinner } from "reactstrap";
 import usdFormat from "../../../lib/currencyFormat";
 
-export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
+export const Profit = ({
+	invoice,
+	ap,
+	crdr,
+	profit,
+	TOKEN,
+	Reference,
+	customer,
+}) => {
 	const { data, mutate } = useSWR("/api/file/list?ref=" + Reference);
 	const { data: requested } = useSWR("/api/requests/get?ref=" + Reference);
 	const [selected, setSelected] = useState(false);
@@ -96,6 +104,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 				file: selectedFile,
 				file2: selectedFile2,
 				type: type,
+				customer: customer,
 				path: router.asPath,
 			}),
 		});

@@ -268,9 +268,7 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 															payto={ga.F_SName}
 															address={`${ga.F_Addr} ${ga.F_City} ${ga.F_State} ${ga.F_ZipCode}`}
 															irs={`${ga.F_IRSType} ${ga.F_IRSNo}`}
-															amt={Number.parseFloat(
-																ga.F_InvoiceAmt || 0
-															).toFixed(2)}
+															amt={ga.F_InvoiceAmt}
 															oim={Reference}
 															customer={House[0].CUSTOMER}
 															inv={ga.F_InvoiceNo}

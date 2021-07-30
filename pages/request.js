@@ -11,6 +11,8 @@ import { Dialog, Classes, Tag, Button } from "@blueprintjs/core";
 import { useState } from "react";
 import usdFormat from "../lib/currencyFormat";
 import moment from "moment";
+import { BlobProvider } from "@react-pdf/renderer";
+import CheckRequestForm from "../components/Dashboard/CheckRequestForm";
 
 export async function getServerSideProps({ req }) {
 	const cookies = cookie.parse(
@@ -227,6 +229,7 @@ export default function request(props) {
 								Requested: {moment(selected.CreateAt).utc().format("LLL")} by{" "}
 								{selected.Creator}
 							</p>
+							<p>Customer: {selected.Body}</p>
 							{ap ? (
 								<div>
 									<p>
@@ -235,6 +238,7 @@ export default function request(props) {
 											{usdFormat(ap.F_InvoiceAmt)}
 										</mark>
 									</p>
+									<p>Vendor : {ap.Vendor}</p>
 									<ul className="list-group">
 										{ap.Detail.length &&
 											ap.Detail.map((ga) => (
@@ -283,6 +287,51 @@ export default function request(props) {
 								>
 									{selected.F2}
 								</Tag>
+							)}
+							{ap ? (
+								<BlobProvider
+									document={
+										<CheckRequestForm
+											oim={selected.RefNo}
+											pic={selected.Creator}
+											payto={ap.Vendor}
+											customer={selected.Body}
+											amt={ap.F_InvoiceAmt}
+											type={selected.ApType.toUpperCase()}
+											desc={ap.Detail.map(
+												(ga) => `\t\t${ga.F_Description}\n`
+											).join("")}
+											inv={ap.F_InvoiceNo}
+											due={
+												ap.F_DueDate
+													? moment(ap.F_DueDate).utc().format("L")
+													: ""
+											}
+											approved={
+												selected.Status === 111 || selected.Status === 121
+											}
+										/>
+									}
+								>
+									{({ blob, url, loading, error }) => (
+										<a
+											href={url}
+											target="__blank"
+											style={{ textDecoration: "none" }}
+										>
+											<Tag
+												icon="cloud-download"
+												interactive={true}
+												intent="primary"
+												className="p-2 my-2 ml-2"
+											>
+												Form
+											</Tag>
+										</a>
+									)}
+								</BlobProvider>
+							) : (
+								<></>
 							)}
 						</div>
 					</div>

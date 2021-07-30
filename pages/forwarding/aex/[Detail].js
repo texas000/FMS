@@ -132,6 +132,9 @@ const Detail = ({ Cookie, Reference, master }) => {
 								ap={master.A}
 								crdr={master.CR}
 								profit={master.P}
+								customer={
+									master.H.length ? master.H[0].CUSTOMER : "NO CUSTOMER"
+								}
 							/>
 						)}
 						{/* MENU 4 - FILE */}
