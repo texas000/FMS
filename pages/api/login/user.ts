@@ -23,11 +23,8 @@ export default function (req: NextApiRequest, res: NextApiResponse) {
 
     const { username, password } = req.body;
 
-    const safeUsername = username.replace(/[^0-9A-Za-z@-_]/g, "");
-    const safePassword = password.replace(
-      /[^0-9A-Za-z!@#$%&*()_\-+={[}\]|\:;"<,>.?\/\\~^`]/g,
-      ""
-    );
+    const safeUsername = username.replace("'", "''");
+    const safePassword = password.replace("'", "''");
 
     const pool = new sql.ConnectionPool(SQLconfig);
     pool.on("error", (err) => {

@@ -6,116 +6,117 @@ import { Input } from "reactstrap";
 import ApRequest from "../../Request/ApRequest";
 
 export const Request = ({ Reference, ap, TOKEN }) => {
-  const [request, setRequest] = useState([]);
-  const [approve, setApproval] = useState(false);
-  const [message, setMessage] = useState("");
-  const [reject, setReject] = useState(false);
+	const [request, setRequest] = useState([]);
+	const [approve, setApproval] = useState(false);
+	const [message, setMessage] = useState("");
+	const [reject, setReject] = useState(false);
 
-  async function getRequest() {
-    const req = await fetch("/api/requests/getRequest", {
-      method: "GET",
-      headers: {
-        ref: Reference,
-      },
-    });
-    if (req.status === 200) {
-      const list = await req.json();
-      // console.log(list);
-      setRequest(list);
-    } else {
-      setRequest([]);
-    }
-  }
-  useEffect(() => {
-    getRequest();
-    // console.log(TOKEN);
-  }, [Reference]);
+	async function getRequest() {
+		const req = await fetch("/api/requests/getRequest", {
+			method: "GET",
+			headers: {
+				ref: Reference,
+			},
+		});
+		if (req.status === 200) {
+			const list = await req.json();
+			// console.log(list);
+			setRequest(list);
+		} else {
+			setRequest([]);
+		}
+	}
+	useEffect(() => {
+		getRequest();
+		// console.log(TOKEN);
+	}, [Reference]);
 
-  async function handleApproval() {
-    if (approve) {
-      //DIRECTOR
-      if (TOKEN.admin === 6) {
-        const req = await fetch("/api/requests/updateRequest", {
-          method: "POST",
-          headers: {
-            ref: Reference,
-            token: JSON.stringify(TOKEN),
-          },
-          body: JSON.stringify({
-            ...approve,
-            newstatus: 111,
-            message: message,
-          }),
-        });
-        if (req.status == 200) {
-          setApproval(false);
-          setMessage("");
-          getRequest();
-        }
-      }
-      //ACCOUNTING
-      if (TOKEN.admin > 6) {
-        const req = await fetch("/api/requests/updateRequest", {
-          method: "POST",
-          headers: {
-            ref: Reference,
-            token: JSON.stringify(TOKEN),
-          },
-          body: JSON.stringify({
-            ...approve,
-            newstatus: 121,
-            message: message,
-          }),
-        });
-        if (req.status == 200) {
-          setApproval(false);
-          setMessage("");
-          getRequest();
-        }
-      }
-    }
-    if (reject) {
-      // DIRECTOR
-      if (TOKEN.admin === 6) {
-        const req = await fetch("/api/requests/updateRequest", {
-          method: "POST",
-          headers: {
-            ref: Reference,
-            token: JSON.stringify(TOKEN),
-          },
-          body: JSON.stringify({ ...reject, newstatus: 110, message: message }),
-        });
-        if (req.status == 200) {
-          setReject(false);
-          setMessage("");
-          getRequest();
-        }
-      }
-      // ACCOUNTING
-      if (TOKEN.admin > 6) {
-        const req = await fetch("/api/requests/updateRequest", {
-          method: "POST",
-          headers: {
-            ref: Reference,
-            token: JSON.stringify(TOKEN),
-          },
-          body: JSON.stringify({ ...reject, newstatus: 120, message: message }),
-        });
-        if (req.status == 200) {
-          setApproval(false);
-          setMessage("");
-          getRequest();
-        }
-      }
-    }
-  }
+	async function handleApproval() {
+		if (approve) {
+			//DIRECTOR
+			if (TOKEN.admin === 6) {
+				const req = await fetch("/api/requests/updateRequest", {
+					method: "POST",
+					headers: {
+						ref: Reference,
+						token: JSON.stringify(TOKEN),
+					},
+					body: JSON.stringify({
+						...approve,
+						newstatus: 111,
+						message: message,
+					}),
+				});
+				if (req.status == 200) {
+					setApproval(false);
+					setMessage("");
+					getRequest();
+				}
+			}
+			//ACCOUNTING
+			if (TOKEN.admin > 6) {
+				const req = await fetch("/api/requests/updateRequest", {
+					method: "POST",
+					headers: {
+						ref: Reference,
+						token: JSON.stringify(TOKEN),
+					},
+					body: JSON.stringify({
+						...approve,
+						newstatus: 121,
+						message: message,
+					}),
+				});
+				if (req.status == 200) {
+					setApproval(false);
+					setMessage("");
+					getRequest();
+				}
+			}
+		}
+		if (reject) {
+			// DIRECTOR
+			if (TOKEN.admin === 6) {
+				const req = await fetch("/api/requests/updateRequest", {
+					method: "POST",
+					headers: {
+						ref: Reference,
+						token: JSON.stringify(TOKEN),
+					},
+					body: JSON.stringify({ ...reject, newstatus: 110, message: message }),
+				});
+				if (req.status == 200) {
+					setReject(false);
+					setMessage("");
+					getRequest();
+				}
+			}
+			// ACCOUNTING
+			if (TOKEN.admin > 6) {
+				const req = await fetch("/api/requests/updateRequest", {
+					method: "POST",
+					headers: {
+						ref: Reference,
+						token: JSON.stringify(TOKEN),
+					},
+					body: JSON.stringify({ ...reject, newstatus: 120, message: message }),
+				});
+				if (req.status == 200) {
+					setApproval(false);
+					setMessage("");
+					getRequest();
+				}
+			}
+		}
+	}
 
-  return (
-    <div className="card my-4 py-4 shadow">
-      <div className="row px-4 py-2">
-        <div className="col-12">
-          <h4 className="h6">Request</h4>
-          <table className="table">
+	return (
+		<div className="card my-4 py-4 shadow">
+			<div className="row px-4 py-2">
+				<div className="col-12">
+					<h4 className="h6">Request</h4>
+					{JSON.stringify(request)}
+					{/* <table className="table">
             <thead>
               <tr>
                 <th className="text-center">STATUS</th>
@@ -158,42 +159,42 @@ export const Request = ({ Reference, ap, TOKEN }) => {
                 </React.Fragment>
               ))}
             </tbody>
-          </table>
-          <div>
-            <Dialog
-              isOpen={approve}
-              onClose={() => setApproval(false)}
-              title="Approve"
-            >
-              <div className={Classes.DIALOG_BODY}>
-                <Input
-                  placeholder="Note"
-                  onChange={(e) => setMessage(e.target.value)}
-                />
-              </div>
-              <div className={Classes.DIALOG_FOOTER}>
-                <Button text="Confirm" fill={true} onClick={handleApproval} />
-              </div>
-            </Dialog>
-            <Dialog
-              isOpen={reject}
-              onClose={() => setReject(false)}
-              title="Reject"
-            >
-              <div className={Classes.DIALOG_BODY}>
-                <Input
-                  placeholder="Note"
-                  onChange={(e) => setMessage(e.target.value)}
-                />
-              </div>
-              <div className={Classes.DIALOG_FOOTER}>
-                <Button text="Confirm" fill={true} onClick={handleApproval} />
-              </div>
-            </Dialog>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+          </table> */}
+					<div>
+						<Dialog
+							isOpen={approve}
+							onClose={() => setApproval(false)}
+							title="Approve"
+						>
+							<div className={Classes.DIALOG_BODY}>
+								<Input
+									placeholder="Note"
+									onChange={(e) => setMessage(e.target.value)}
+								/>
+							</div>
+							<div className={Classes.DIALOG_FOOTER}>
+								<Button text="Confirm" fill={true} onClick={handleApproval} />
+							</div>
+						</Dialog>
+						<Dialog
+							isOpen={reject}
+							onClose={() => setReject(false)}
+							title="Reject"
+						>
+							<div className={Classes.DIALOG_BODY}>
+								<Input
+									placeholder="Note"
+									onChange={(e) => setMessage(e.target.value)}
+								/>
+							</div>
+							<div className={Classes.DIALOG_FOOTER}>
+								<Button text="Confirm" fill={true} onClick={handleApproval} />
+							</div>
+						</Dialog>
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 };
 export default Request;

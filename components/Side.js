@@ -51,6 +51,19 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 
 			<li
 				className={`nav-item ${
+					router.pathname.substring(1, 11) == "request" && "active"
+				}`}
+			>
+				<Link href="/request">
+					<a className="nav-link">
+						<i className="fa fa-thumbs-up"></i>
+						<span>Request</span>
+					</a>
+				</Link>
+			</li>
+
+			<li
+				className={`nav-item ${
 					router.pathname.substring(1, 15) == "forwarding/oim" && "active"
 				}`}
 			>

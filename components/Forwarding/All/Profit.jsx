@@ -6,9 +6,11 @@ import { useRouter } from "next/router";
 import useSWR from "swr";
 import Select from "react-select";
 import { Spinner } from "reactstrap";
+import usdFormat from "../../../lib/currencyFormat";
 
 export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 	const { data, mutate } = useSWR("/api/file/list?ref=" + Reference);
+	const { data: requested } = useSWR("/api/requests/get?ref=" + Reference);
 	const [selected, setSelected] = useState(false);
 	// const [file, setFile] = useState(false);
 	const [selectedFile, setSelectedFile] = useState(false);
@@ -41,14 +43,28 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 		{ level: 30, value: "others", label: "Others" },
 	];
 
-	function usdFormat(x) {
-		var num = parseFloat(x).toFixed(2);
-		if (typeof x == "number") {
-			return "$" + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-		} else {
-			return "$" + 0;
+	const Status = ({ data }) => {
+		if (data == 101) {
+			return <span className="text-success font-weight-bold">Requested</span>;
 		}
-	}
+		if (data == 110) {
+			return <span className="text-danger font-weight-bold">Dir Rejected</span>;
+		}
+		if (data == 111) {
+			return (
+				<span className="text-success font-weight-bold">Dir Approved</span>
+			);
+		}
+		if (data == 120) {
+			return <span className="text-danger font-weight-bold">Acc Rejected</span>;
+		}
+		if (data == 121) {
+			return (
+				<span className="text-success font-weight-bold">Acc Approved</span>
+			);
+		}
+	};
+
 	// async function getFiles() {
 	// 	const file = await fetch("/api/dashboard/getFileList", {
 	// 		method: "GET",
@@ -214,9 +230,16 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 													))}
 											</div>
 										</div>
+										<hr />
 										{/* FILE UPLOAD */}
 										<form className="upload">
-											<div className="input-group my-2">
+											<Select
+												options={arfiles}
+												className="py-0"
+												onChange={(e) => setArtype(e)}
+												defaultValue={{ value: 0, label: "SELECT TYPE" }}
+											/>
+											<div className="input-group my-2" style={{ zIndex: "0" }}>
 												<div className="custom-file w-75">
 													<input
 														type="file"
@@ -229,12 +252,6 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 													</label>
 												</div>
 											</div>
-											<Select
-												options={arfiles}
-												className="py-0"
-												onChange={(e) => setArtype(e)}
-												defaultValue={{ value: 0, label: "SELECT TYPE" }}
-											/>
 										</form>
 										{/* DISPLAY FILE */}
 										{!data ? (
@@ -313,9 +330,16 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 													))}
 											</div>
 										</div>
+										<hr />
 										{/* FILE UPLOAD */}
 										<form className="upload">
-											<div className="input-group my-2">
+											<Select
+												options={crdrfiles}
+												className="py-0"
+												onChange={(e) => setCrtype(e)}
+												defaultValue={{ value: 0, label: "SELECT TYPE" }}
+											/>
+											<div className="input-group my-2" style={{ zIndex: "0" }}>
 												<div className="custom-file w-75">
 													<input
 														type="file"
@@ -328,12 +352,6 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 													</label>
 												</div>
 											</div>
-											<Select
-												options={crdrfiles}
-												className="py-0"
-												onChange={(e) => setCrtype(e)}
-												defaultValue={{ value: 0, label: "SELECT TYPE" }}
-											/>
 										</form>
 										{/* DISPLAY FILE */}
 										{!data ? (
@@ -421,9 +439,16 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 													))}
 											</div>
 										</div>
+										<hr />
 										{/* FILE UPLOAD */}
 										<form className="upload">
-											<div className="input-group my-2">
+											<Select
+												options={apfiles}
+												className="py-0"
+												onChange={(e) => setAptype(e)}
+												defaultValue={{ value: 0, label: "SELECT TYPE" }}
+											/>
+											<div className="input-group my-2" style={{ zIndex: "0" }}>
 												<div className="custom-file w-75">
 													<input
 														type="file"
@@ -436,12 +461,6 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 													</label>
 												</div>
 											</div>
-											<Select
-												options={apfiles}
-												className="py-0"
-												onChange={(e) => setAptype(e)}
-												defaultValue={{ value: 0, label: "SELECT TYPE" }}
-											/>
 										</form>
 										{/* DISPLAY FILE */}
 										{!data ? (
@@ -505,63 +524,24 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 								</div>
 							</div>
 						))}
+					{requested && requested.length ? (
+						<div className="row mt-4">
+							<h4 className="ml-2 h6 col-12">REQUEST</h4>
+							{requested.map((ga) => (
+								<div key={ga.ID} className="col-lg-12">
+									<Tag fill={true}>
+										<div className="d-flex justify-content-between">
+											<span>{ga.Title}</span>
+											<Status data={ga.Status} />
+										</div>
+									</Tag>
+								</div>
+							))}
+						</div>
+					) : (
+						<></>
+					)}
 				</div>
-
-				{/* <div className="col-12">
-					<h4 className="h6">INVOICE</h4>
-					{invoice &&
-						invoice.map((ga) => (
-							<Button
-								key={ga.F_ID}
-								intent={
-									ga.F_InvoiceAmt == ga.F_PaidAmt && ga.F_InvoiceAmt != 0
-										? "success"
-										: "none"
-								}
-								className="mr-2"
-								text={`${ga.F_InvoiceNo} (${usdFormat(ga.F_PaidAmt)})`}
-								onClick={() => alert(JSON.stringify(ga))}
-							/>
-						))}
-					<hr />
-				</div>
-
-				<div className="col-12">
-					<h4 className="h6">CRDR</h4>
-					{crdr &&
-						crdr.map((ga) => (
-							<Button
-								key={ga.F_ID}
-								intent={
-									ga.F_Total == ga.F_PaidAmt && ga.F_Total != 0
-										? "success"
-										: "none"
-								}
-								className="mr-2"
-								text={`${ga.F_CrDbNo} (${usdFormat(ga.F_Total)})`}
-								onClick={() => alert(JSON.stringify(ga))}
-							/>
-						))}
-					<hr />
-				</div>
-
-				<div className="col-12">
-					<h4 className="h6">AP</h4>
-					{ap &&
-						ap.map((ga) => (
-							<Button
-								key={ga.F_ID}
-								onClick={() => setSelected(ga)}
-								intent={
-									ga.F_InvoiceAmt == ga.F_PaidAmt && ga.F_InvoiceAmt != 0
-										? "success"
-										: "none"
-								}
-								className="mr-2"
-								text={`${ga.F_SName} (${usdFormat(ga.F_InvoiceAmt)})`}
-							/>
-						))}
-				</div> */}
 			</div>
 			<Dialog
 				isOpen={selected}
@@ -596,7 +576,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 							<p className="font-weight-bold h5">
 								Amount:{" "}
 								<mark>
-									${selected.F_InvoiceAmt} {selected.F_Currency}
+									{usdFormat(selected.F_InvoiceAmt)} {selected.F_Currency}
 								</mark>
 							</p>
 							<hr />
@@ -627,7 +607,7 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 										data.map((ga) => {
 											if (ga.F_SECURITY == "30") {
 												return (
-													<option value={ga.F_FILENAME} key={ga.F_ID + "FIRST"}>
+													<option value={ga.F_ID} key={ga.F_ID + "FIRST"}>
 														[{ga.F_LABEL.toUpperCase()}] {ga.F_FILENAME}
 													</option>
 												);
@@ -646,12 +626,9 @@ export const Profit = ({ invoice, ap, crdr, profit, TOKEN, Reference }) => {
 									<option value={false}>Please select file</option>
 									{data &&
 										data.map((ga) => {
-											if (
-												ga.F_SECURITY == "30" &&
-												ga.F_FILENAME != selectedFile
-											) {
+											if (ga.F_SECURITY == "30" && ga.F_ID != selectedFile) {
 												return (
-													<option value={ga.F_FILENAME} key={ga.F_ID + "FIRST"}>
+													<option value={ga.F_ID} key={ga.F_ID + "FIRST"}>
 														[{ga.F_LABEL.toUpperCase()}] {ga.F_FILENAME}
 													</option>
 												);
