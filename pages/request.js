@@ -175,7 +175,7 @@ export default function request(props) {
 					</h3>
 				</div>
 			</div>
-			<Card className="border-0 shadow mt-3">
+			<Card className="border-0 shadow mt-3 table-responsive-md">
 				<Row>
 					<ToolkitProvider
 						keyField="ID"
@@ -192,7 +192,7 @@ export default function request(props) {
 									hover
 									condensed
 									filter={filterFactory()}
-									wrapperClasses="table-responsive rounded"
+									wrapperClasses="table rounded"
 									bordered={false}
 									rowEvents={rowEvents}
 								/>

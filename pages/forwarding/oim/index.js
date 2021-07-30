@@ -71,7 +71,7 @@ const Index = ({ Cookie }) => {
 						(page === ">>" || page === "<<") && "d-none"
 					}`}
 				>
-					{page}
+					{typeof page === "number" ? page + Page - 1 : page}
 				</a>
 			</li>
 		);
@@ -345,7 +345,7 @@ const Index = ({ Cookie }) => {
           </div>
         </div> */}
 
-				<Card className="border-0 d-none d-lg-block shadow mt-3">
+				<Card className="border-0 shadow mt-3 table-responsive">
 					{!data ? (
 						<div className="text-center">
 							<Spinner color="primary" />
@@ -367,7 +367,7 @@ const Index = ({ Cookie }) => {
 											{...props.baseProps}
 											hover
 											condensed
-											wrapperClasses="table-responsive rounded"
+											wrapperClasses="table rounded"
 											bordered={false}
 											filter={filterFactory()}
 											noDataIndication={indication}
