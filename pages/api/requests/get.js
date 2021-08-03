@@ -17,7 +17,7 @@ export default async (req, res) => {
         (SELECT F_FILENAME FROM T_FILE F WHERE F.F_ID=Attachment2) as F2, 
         (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CreateBy) as Creator,
 		(SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=ModifyBy) as Modifier FROM T_REQUEST 
-        WHERE CreateBy=${token.uid} BY CreateAt DESC`;
+        WHERE CreateBy='${token.uid}' ORDER BY CreateAt DESC`;
 	}
 	// IAN
 	if (token.admin === 6) {
