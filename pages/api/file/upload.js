@@ -29,7 +29,7 @@ export default async (req, res) => {
 		var name = files.userPhoto.name;
 		var options = {
 			method: "POST",
-			url: `http://jameswgroup.com:49991/api/upload/${ref}`,
+			url: `http://jameswi.com:49991/api/upload/${ref}`,
 			headers: {
 				"cache-control": "no-cache",
 				"content-type":
