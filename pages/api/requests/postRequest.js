@@ -40,8 +40,8 @@ export default async (req, res) => {
 		res.status(200).send(result.recordset || []);
 		const mailOptions = {
 			from: "JWIUSA <it@jamesworldwide.com>",
-			to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
-			// to: "IAN PYO [JW] <ian@jamesworldwide.com>",
+			// to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
+			to: "IAN PYO [JW] <ian@jamesworldwide.com>",
 			subject: `AP REQUEST FOR ${body.F_InvoiceNo}`,
 			html: `<h2><mark>REQUESTED </mark> BY ${token.first} CASE: <a href="https://jwiusa.com${body.path}">${ref}</a></h2>`,
 			cc: token.email,
