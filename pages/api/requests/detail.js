@@ -19,16 +19,32 @@ export default async (req, res) => {
 	try {
 		await pool.connect();
 		let result = await pool.request().query(query);
+		var output = { ...result.recordset[0], Detail: [], Files: [] };
 		if (result.recordset.length) {
 			let details = await pool
 				.request()
 				.query(`SELECT * FROM T_APDETAIL WHERE F_APHDID='${id}'`);
-			res
-				.status(200)
-				.send({ ...result.recordset[0], Detail: details.recordset } || []);
-			return;
+			output.Detail = details.recordset;
+			// res
+			// 	.status(200)
+			// 	.send({ ...result.recordset[0], Detail: details.recordset } || []);
+			// return;
 		}
-		res.status(200).send(result.recordset || []);
+		// res.status(200).send(output);
+		let pool2 = new sql.ConnectionPool(process.env.SERVER21);
+		try {
+			await pool2.connect();
+			let result2 = await pool2
+				.request()
+				.query(
+					`SELECT * , (SELECT F_FILENAME FROM T_FILE F WHERE F.F_ID=F_FILE) AS FILENAME FROM T_FILEDETAIL WHERE F_TBName='${table}' AND F_TBID='${id}';`
+				);
+			output.Files = result2.recordset;
+			res.status(200).send(output);
+		} catch (err) {
+			console.log(err);
+		}
+		pool2.close();
 	} catch (err) {
 		console.log(err);
 		res.json([]);

@@ -263,17 +263,15 @@ export const CheckRequestForm = ({
 					</TableHeader>
 				</Table>
 			</View>
-			{address && (
+			{(shipper || consignee) && (
 				<View style={styles.defaultMargin}>
 					<Table>
 						<TableHeader>
 							<TableCell style={styles.extraInfo}>
 								{`${shipper ? `SHIPPER: ${shipper}` : ""}\n
               ${consignee ? `CONSIGNEE: ${consignee}` : ""}\n
-              ${address ? `ADDRESS: ${address}` : ""}\n
               ${comm ? `COMMODITY: ${comm}` : ""}\n
-              ${pod ? `POD: ${pod}` : ""}\n
-              ${irs ? `TAX ID INFO: ${irs}` : ""}`}
+              ${pod ? `POD: ${pod}` : ""}\n`}
 							</TableCell>
 						</TableHeader>
 					</Table>

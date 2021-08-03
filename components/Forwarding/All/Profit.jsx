@@ -1,4 +1,4 @@
-import { Tag, Classes, Dialog, Button } from "@blueprintjs/core";
+import { Tag, Classes, Dialog, Button, Checkbox } from "@blueprintjs/core";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import axios, { post } from "axios";
@@ -21,7 +21,7 @@ export const Profit = ({
 	const { data: requested } = useSWR("/api/requests/get?ref=" + Reference);
 	const [selected, setSelected] = useState(false);
 	// const [file, setFile] = useState(false);
-	const [selectedFile, setSelectedFile] = useState(false);
+	const [selectedFile, setSelectedFile] = useState([]);
 	const [selectedFile2, setSelectedFile2] = useState(false);
 	const [type, setType] = useState(false);
 	const [arType, setArtype] = useState(false);
@@ -109,6 +109,7 @@ export const Profit = ({
 			}),
 		});
 		if (req.status === 200) {
+			alert("Requested, Thank you!");
 			setSelected(false);
 		} else {
 			alert(req.status);
@@ -230,6 +231,7 @@ export const Profit = ({
 																	: "bg-secondary"
 															} btn py-0 text-white btn-block`}
 															key={ga.F_ID + "INVO"}
+															// onClick={() => setSelected(ga)}
 														>
 															<div className="d-flex justify-content-between font-weight-light">
 																<span>{ga.F_InvoiceNo}</span>
@@ -440,7 +442,7 @@ export const Profit = ({
 																		maxWidth: "130px",
 																	}}
 																>
-																	{ga.F_SName}
+																	{ga.VENDOR}
 																</span>
 																<span>{usdFormat(ga.F_InvoiceAmt)}</span>
 															</div>
@@ -557,8 +559,8 @@ export const Profit = ({
 				onClose={() => {
 					setSelected(false);
 					setType(false);
-					setSelectedFile(false);
-					setSelectedFile2(false);
+					setSelectedFile([]);
+					// setSelectedFile2(false);
 					// setFile(false);
 				}}
 				title="Request Approval"
@@ -574,14 +576,18 @@ export const Profit = ({
 							</div>
 						</div>
 						<div className="card-body">
-							<p className="font-weight-bold">
-								Payable To: <mark>{selected.F_SName}</mark>
+							<p className="font-weight-bold text-dark">
+								{selected.VENDOR
+									? `Payable To: ${selected.VENDOR}`
+									: selected.BILLTO
+									? `Invoice To: ${selected.BILLTO}`
+									: ""}
 							</p>
 							<p>
-								Address: {selected.F_Addr} {selected.F_City} {selected.F_State}{" "}
-								{selected.F_ZipCode}
+								{selected.SHIPTO
+									? `Ship Party: ${selected.SHIPTO}`
+									: `Description: ${selected.F_Descript}`}
 							</p>
-							<p>Description: {selected.F_Descript}</p>
 							<p className="font-weight-bold h5">
 								Amount:{" "}
 								<mark>
@@ -606,7 +612,33 @@ export const Profit = ({
 								<label htmlFor="type" className="mt-2">
 									File
 								</label>
-								<select
+
+								{data &&
+									data.map((ga) => {
+										if (ga.F_SECURITY == "30") {
+											return (
+												<Checkbox
+													key={ga.F_ID + "CHECK"}
+													onChange={(e) => {
+														if (e.target.checked) {
+															setSelectedFile((prev) => [...prev, ga.F_ID]);
+														} else {
+															var arr = [...selectedFile];
+															var index = arr.indexOf(ga.F_ID);
+															if (index !== -1) {
+																arr.splice(index, 1);
+																setSelectedFile(arr);
+															}
+														}
+													}}
+													label={`[${ga.F_LABEL.toUpperCase()}] ${
+														ga.F_FILENAME
+													}`}
+												></Checkbox>
+											);
+										}
+									})}
+								{/* <select
 									className="form-control"
 									id="type"
 									onChange={(e) => setSelectedFile(e.target.value)}
@@ -643,7 +675,7 @@ export const Profit = ({
 												);
 											}
 										})}
-								</select>
+								</select> */}
 							</div>
 						</div>
 					</div>
@@ -653,7 +685,7 @@ export const Profit = ({
 						text="Confirm"
 						fill={true}
 						onClick={() => postReq(selected)}
-						disabled={!selectedFile || type == false || type == "false"}
+						disabled={!selectedFile.length || type == false || type == "false"}
 					/>
 					{/* WHEN REQUEST HAPPEN, UPLOAD TO DATABASE AND SEND THE NOTIFICATION TO IAN */}
 				</div>

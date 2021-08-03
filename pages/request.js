@@ -6,7 +6,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
-import { Card, Col, Row } from "reactstrap";
+import { Card, Col, Row, Progress } from "reactstrap";
 import { Dialog, Classes, Tag, Button } from "@blueprintjs/core";
 import { useState } from "react";
 import usdFormat from "../lib/currencyFormat";
@@ -52,22 +52,69 @@ export default function request(props) {
 
 	const Status = ({ data }) => {
 		if (data == 101) {
-			return <span className="text-success font-weight-bold">Requested</span>;
+			return <span className="text-success font-weight-bold">REQUESTED</span>;
 		}
 		if (data == 110) {
-			return <span className="text-danger font-weight-bold">Dir Rejected</span>;
+			return (
+				<span className="text-danger font-weight-bold">DIRECTOR REJECTED</span>
+			);
 		}
 		if (data == 111) {
 			return (
-				<span className="text-success font-weight-bold">Dir Approved</span>
+				<span className="text-success font-weight-bold">DIRECTOR APPROVED</span>
 			);
 		}
 		if (data == 120) {
-			return <span className="text-danger font-weight-bold">Acc Rejected</span>;
+			return (
+				<span className="text-danger font-weight-bold">
+					ACCOUNTING REJECTED
+				</span>
+			);
 		}
 		if (data == 121) {
 			return (
-				<span className="text-success font-weight-bold">Acc Approved</span>
+				<span className="text-success font-weight-bold">
+					ACCOUNTING APPROVED
+				</span>
+			);
+		}
+	};
+
+	const StatusBar = ({ data }) => {
+		if (data == 101) {
+			return (
+				<Progress color="secondary" value="100">
+					REQUESTED
+				</Progress>
+			);
+		}
+		if (data == 110) {
+			return (
+				<Progress color="danger" value="100">
+					DIRECTOR REJECTED
+				</Progress>
+			);
+		}
+		if (data == 111) {
+			return <Progress value="50">DIRECTOR APPROVED</Progress>;
+		}
+		if (data == 120) {
+			return (
+				<Progress color="danger" value="100">
+					ACCOUNTING REJECTED
+				</Progress>
+			);
+		}
+		if (data == 121) {
+			return (
+				<Progress multi>
+					<Progress bar value="50">
+						DIRECTOR APPROVED
+					</Progress>
+					<Progress bar color="success" value="50">
+						ACCOUNTING APPROVED
+					</Progress>
+				</Progress>
 			);
 		}
 	};
@@ -84,8 +131,19 @@ export default function request(props) {
 			headerFormatter: filterHeader,
 		},
 		{
+			dataField: "ApType",
+			text: "TYPE",
+			classes: "text-uppercase cursor-pointer",
+			headerClasses:
+				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+			filter: textFilter({
+				className: "text-xs text-center d-none d-xl-block",
+			}),
+			headerFormatter: filterHeader,
+		},
+		{
 			dataField: "Title",
-			text: "TITLE",
+			text: "INVOICE",
 			headerClasses:
 				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
 			filter: textFilter({
@@ -103,20 +161,9 @@ export default function request(props) {
 			}),
 			formatter: (cell) => {
 				if (cell) {
-					return <Status data={cell} />;
+					return <StatusBar data={cell} />;
 				}
 			},
-			headerFormatter: filterHeader,
-		},
-		{
-			dataField: "ApType",
-			text: "TYPE",
-			classes: "text-uppercase",
-			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
-			filter: textFilter({
-				className: "text-xs text-center d-none d-xl-block",
-			}),
 			headerFormatter: filterHeader,
 		},
 		{
@@ -140,7 +187,7 @@ export default function request(props) {
 			headerFormatter: filterHeader,
 			formatter: (cell) => {
 				if (cell) {
-					return moment(cell).utc().add(1, "days").calendar();
+					return moment(cell).utc().calendar();
 				}
 			},
 		},
@@ -191,6 +238,7 @@ export default function request(props) {
 									{...props.baseProps}
 									hover
 									condensed
+									rowStyle={{ cursor: "pointer" }}
 									filter={filterFactory()}
 									wrapperClasses="table rounded"
 									bordered={false}
@@ -225,20 +273,16 @@ export default function request(props) {
 							<p>
 								Type: <mark className="text-uppercase">{selected.ApType}</mark>
 							</p>
-							<p>
-								Requested: {moment(selected.CreateAt).utc().format("LLL")} by{" "}
-								{selected.Creator}
-							</p>
 							<p>Customer: {selected.Body}</p>
 							{ap ? (
 								<div>
+									<p>Vendor : {ap.Vendor}</p>
 									<p>
 										Request Amount:{" "}
 										<mark className="font-weight-bold">
 											{usdFormat(ap.F_InvoiceAmt)}
 										</mark>
 									</p>
-									<p>Vendor : {ap.Vendor}</p>
 									<ul className="list-group">
 										{ap.Detail.length &&
 											ap.Detail.map((ga) => (
@@ -251,44 +295,80 @@ export default function request(props) {
 												</li>
 											))}
 									</ul>
+									{ap.Files.length &&
+										ap.Files.map((ga) => (
+											<Tag
+												key={`${ga.TBID}FILE`}
+												icon="cloud-download"
+												interactive={true}
+												intent="primary"
+												className="p-2 my-2 mx-1"
+												onClick={() => {
+													window.location.assign(
+														`/api/file/get?ref=${
+															selected.RefNo
+														}&file=${encodeURIComponent(ga.FILENAME)}`
+													);
+												}}
+											>
+												{ga.FILENAME}
+											</Tag>
+										))}
+									<BlobProvider
+										document={
+											<CheckRequestForm
+												oim={selected.RefNo}
+												pic={selected.Creator}
+												payto={ap.Vendor}
+												customer={selected.Body}
+												amt={ap.F_InvoiceAmt}
+												type={selected.ApType.toUpperCase()}
+												desc={ap.Detail.map(
+													(ga) => `\t\t${ga.F_Description}\n`
+												).join("")}
+												inv={ap.F_InvoiceNo}
+												due={
+													ap.F_DueDate
+														? moment(ap.F_DueDate).utc().format("L")
+														: ""
+												}
+												approved={
+													selected.Status === 111 || selected.Status === 121
+												}
+											/>
+										}
+									>
+										{({ blob, url, loading, error }) => (
+											<a
+												href={url}
+												target="__blank"
+												style={{ textDecoration: "none" }}
+											>
+												<Tag
+													icon="cloud-download"
+													interactive={true}
+													intent="primary"
+													className="p-2 my-2 ml-2"
+												>
+													Form
+												</Tag>
+											</a>
+										)}
+									</BlobProvider>
 								</div>
 							) : (
 								<div></div>
 							)}
+							<p className="mt-2">
+								Requested: {moment(selected.CreateAt).utc().format("LLL")} by{" "}
+								{selected.Creator}
+							</p>
+							<p>
+								Approved: {moment(selected.ModifyAt).utc().format("LLL")} by{" "}
+								{selected.Modifier}
+							</p>
 
-							<Tag
-								icon="cloud-download"
-								interactive={true}
-								intent="primary"
-								className="p-2 my-2"
-								onClick={async () => {
-									window.location.assign(
-										`/api/file/get?ref=${
-											selected.RefNo
-										}&file=${encodeURIComponent(selected.F1)}`
-									);
-								}}
-							>
-								{selected.F1}
-							</Tag>
-							{selected.F2 && (
-								<Tag
-									icon="cloud-download"
-									interactive={true}
-									intent="primary"
-									className="p-2 my-2 mx-2"
-									onClick={async () => {
-										window.location.assign(
-											`/api/file/get?ref=${
-												selected.RefNo
-											}&file=${encodeURIComponent(selected.F2)}`
-										);
-									}}
-								>
-									{selected.F2}
-								</Tag>
-							)}
-							{ap ? (
+							{/* {ap ? (
 								<BlobProvider
 									document={
 										<CheckRequestForm
@@ -332,7 +412,7 @@ export default function request(props) {
 								</BlobProvider>
 							) : (
 								<></>
-							)}
+							)} */}
 						</div>
 					</div>
 				</div>

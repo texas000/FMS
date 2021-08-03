@@ -3,18 +3,16 @@ const sql = require("mssql");
 export default async (req, res) => {
 	const { ref } = req.query;
 
-	const MASTER = `select (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID =T_OOMMAIN.F_Agent) as AGENT,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OOMMAIN.F_Carrier) as CARRIER,
-  * from T_OOMMAIN WHERE F_RefNo='${ref}';`;
+	const MASTER = `select (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID =T_AIMMAIN.F_Agent) as AGENT,
+  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AIMMAIN.F_Carrier) as CARRIER,
+  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AIMMAIN.F_FLocation) as CYLOC,
+  * from T_AIMMAIN WHERE F_RefNo='${ref}';`;
 
-	const HOUSE = `SELECT (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OOHMAIN.F_Customer) as CUSTOMER,
-    (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OOHMAIN.F_Consignee) as CONSIGNEE,
-    (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OOHMAIN.F_Notify) as NOTIFY,
-    (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_OOHMAIN.F_Shipper) as SHIPPER, * FROM 
-    T_OOHMAIN WHERE F_OOMBLID=`;
-
-	const CONTAINER = `SELECT T_OOMCONTAINER.*, T_OOHCONTAINER.F_OOHBLID as F_OOHBLID from T_OOMCONTAINER
-    LEFT JOIN T_OOHCONTAINER on T_OOMCONTAINER.F_ID = T_OOHCONTAINER.F_OOMCNTID where F_OOMBLID=`;
+	const HOUSE = `SELECT (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AIHMAIN.F_Customer) as CUSTOMER,
+        (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AIHMAIN.F_Consignee) as CONSIGNEE,
+        (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AIHMAIN.F_Shipper) as SHIPPER,
+        (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AIHMAIN.F_Notify) as NOTIFY,
+        * FROM T_AIHMAIN WHERE F_AIMBLID=`;
 
 	var output = { M: false, H: [], C: [], A: [], P: [], I: [], CR: [] };
 	let pool = new sql.ConnectionPool(process.env.SERVER2);
@@ -28,16 +26,12 @@ export default async (req, res) => {
 				.request()
 				.query(HOUSE + `'${master.recordset[0].F_ID}'`);
 			output.H = house.recordset;
-			let container = await pool
-				.request()
-				.query(CONTAINER + `'${master.recordset[0].F_ID}'`);
-			output.C = container.recordset;
 			if (house.recordset.length) {
 				var houses = house.recordset.map((ga, i) => {
 					if (i) {
-						return ` OR F_TBID='${ga.F_ID}' AND F_TBName='T_OOHMAIN'`;
+						return ` OR F_TBID='${ga.F_ID}' AND F_TBName='T_AIHMAIN'`;
 					} else {
-						return `F_TBID='${ga.F_ID}' AND F_TBName='T_OOHMAIN'`;
+						return `F_TBID='${ga.F_ID}' AND F_TBName='T_AIHMAIN'`;
 					}
 				});
 				houses = houses.join("");

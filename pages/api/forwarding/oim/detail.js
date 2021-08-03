@@ -46,16 +46,17 @@ export default async (req, res) => {
 				let ap = await pool
 					.request()
 					.query(
-						`select T_APHD.*, T_COMPANY.F_Addr, T_COMPANY.F_City, T_COMPANY.F_State, T_COMPANY.F_ZipCode, T_COMPANY.F_SName, T_COMPANY.F_IRSNo, T_COMPANY.F_IRSType from T_APHD INNER JOIN T_COMPANY ON F_PayTo=T_COMPANY.F_ID WHERE ${houses};`
+						`SELECT *, (SELECT F_SName FROM T_COMPANY C WHERE C.F_ID=A.F_PayTo) as VENDOR FROM T_APHD A WHERE ${houses};`
 					);
 				output.A = ap.recordset;
 				let profit = await pool
 					.request()
 					.query(`select top 1 * from V_PROFIT_H where ${houses};`);
 				output.P = profit.recordset;
-				let invoice = await pool
-					.request()
-					.query(`select * from T_INVOHD where ${houses};`);
+				let invoice = await pool.request().query(`SELECT *, 
+					(SELECT F_SName FROM T_COMPANY C WHERE I.F_BillTo=C.F_ID) AS BILLTO, 
+					(SELECT F_SName FROM T_COMPANY C WHERE I.F_ShipTo=C.F_ID) AS SHIPTO 
+					from T_INVOHD I where ${houses};`);
 				output.I = invoice.recordset;
 				let crdr = await pool
 					.request()
@@ -65,6 +66,7 @@ export default async (req, res) => {
 		}
 		res.json(output);
 	} catch (err) {
+		// console.log(err);
 		res.json(err);
 	}
 	return pool.close();

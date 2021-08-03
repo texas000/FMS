@@ -133,6 +133,7 @@ const Detail = ({ Cookie, Reference, master }) => {
 								</Button>
 							</div>
 						</div>
+						{JSON.stringify(master)}
 					</div>
 				)}
 			</Layout>
@@ -149,12 +150,11 @@ export async function getServerSideProps({ req, query }) {
 	var info = false;
 	if (cookies.jamesworldwidetoken) {
 		info = await fetch(
-			`${process.env.BASE_URL}api/forwarding/other/getDetail`,
+			`${process.env.BASE_URL}api/forwarding/other/detail?ref=${query.Detail}`,
 			{
 				method: "GET",
 				headers: {
 					key: cookies.jamesworldwidetoken,
-					reference: query.Detail,
 				},
 			}
 		).then((j) => j.json());

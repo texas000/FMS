@@ -19,13 +19,19 @@ export default async (req, res) => {
 	});
 	const body = JSON.parse(req.body);
 	const ref = req.headers.ref;
+	var fileQuery = body.file
+		.map(
+			(ga) =>
+				`INSERT INTO T_FILEDETAIL VALUES ('${body.F_ID}','T_APHD','${ga}');`
+		)
+		.join(" ");
 
 	var query = `INSERT INTO T_REQUEST 
     (RefNo, Status, Title, Body, CreateAt, ModifyAt, CreateBy, ModifyBy, TBName, TBID, Attachment, ApType, Attachment2) 
-    VALUES ('${ref}','101','AP REQUEST FOR ${body.F_InvoiceNo}',
+    VALUES ('${ref}','101','${body.F_InvoiceNo}',
 	'${body.customer}',GETDATE(),GETDATE(),'${token.uid}','${token.uid}',
 	'T_APHD','${body.F_ID}', '${body.file}', '${body.type}', 
-	${body.file2 == false ? "NULL" : `'${body.file2}'`});`;
+	${body.file2 == false ? "NULL" : `'${body.file2}'`}); ${fileQuery}`;
 
 	let pool = new sql.ConnectionPool(process.env.SERVER21);
 	try {
@@ -34,8 +40,8 @@ export default async (req, res) => {
 		res.status(200).send(result.recordset || []);
 		const mailOptions = {
 			from: "JWIUSA <it@jamesworldwide.com>",
-			// to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
-			to: "IAN PYO [JW] <ian@jamesworldwide.com>",
+			to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
+			// to: "IAN PYO [JW] <ian@jamesworldwide.com>",
 			subject: `AP REQUEST FOR ${body.F_InvoiceNo}`,
 			html: `<h2><mark>REQUESTED </mark> BY ${token.first} CASE: <a href="https://jwiusa.com${body.path}">${ref}</a></h2>`,
 			cc: token.email,

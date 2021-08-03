@@ -18,6 +18,7 @@ import {
 	ButtonGroup,
 } from "reactstrap";
 import { Tag } from "@blueprintjs/core";
+import usdFormat from "../../../lib/currencyFormat";
 
 export const File = ({ Reference, House, Master, Container, Ap }) => {
 	const [isClient, setIsClient] = useState(false);
@@ -265,9 +266,7 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 														<CheckRequestForm
 															check={ga.F_CheckNo}
 															type={ApType}
-															payto={ga.F_SName}
-															address={`${ga.F_Addr} ${ga.F_City} ${ga.F_State} ${ga.F_ZipCode}`}
-															irs={`${ga.F_IRSType} ${ga.F_IRSNo}`}
+															payto={ga.VENDOR}
 															amt={ga.F_InvoiceAmt}
 															oim={Reference}
 															customer={House[0].CUSTOMER}
@@ -300,21 +299,25 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 																interactive={true}
 																fill={true}
 															>
-																<img
-																	src="/image/icons/file-pdf-solid.svg"
-																	width="15"
-																	height="15"
-																	className="mr-2"
-																	style={{
-																		filter:
-																			"brightness(0.5) invert(0.7) sepia(0.9)",
-																	}}
-																></img>
-																{loading || error
-																	? "LOADING..."
-																	: `${ga.F_SName} - $${Number.parseFloat(
-																			ga.F_InvoiceAmt || 0
-																	  ).toFixed(2)}`}
+																<div className="d-flex justify-content-between">
+																	<img
+																		src="/image/icons/file-pdf-solid.svg"
+																		width="15"
+																		height="15"
+																		className="mr-2"
+																		style={{
+																			filter:
+																				"brightness(0.5) invert(0.7) sepia(0.9)",
+																		}}
+																	></img>
+																	<span
+																		className="text-truncate"
+																		style={{ maxWidth: "100px" }}
+																	>
+																		{ga.VENDOR}
+																	</span>
+																	<span>{usdFormat(ga.F_InvoiceAmt)}</span>
+																</div>
 															</Tag>
 														</a>
 													)}
