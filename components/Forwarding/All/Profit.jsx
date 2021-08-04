@@ -73,23 +73,10 @@ export const Profit = ({
 		}
 	};
 
-	// async function getFiles() {
-	// 	const file = await fetch("/api/dashboard/getFileList", {
-	// 		method: "GET",
-	// 		headers: {
-	// 			ref: Reference,
-	// 		},
-	// 	});
-	// 	if (file.status === 200) {
-	// 		const list = await file.json();
-	// 		setFile(list);
-	// 	} else {
-	// 		setFile([]);
-	// 	}
-	// }
-	// useEffect(() => {
-	// 	getFiles();
-	// }, [Reference]);
+	useEffect(() => {
+		// WHEN THE REFERENCE CHANGED, RESET SELECTED FILE
+		setSelectedFile([]);
+	}, [Reference]);
 
 	const router = useRouter();
 	async function postReq(body) {
@@ -102,7 +89,6 @@ export const Profit = ({
 			body: JSON.stringify({
 				...body,
 				file: selectedFile,
-				file2: selectedFile2,
 				type: type,
 				customer: customer,
 				path: router.asPath,
@@ -275,7 +261,7 @@ export const Profit = ({
 													return (
 														<Tag
 															role="button"
-															key={ga.F_ID + "FILE"}
+															key={ga.F_FILENAME}
 															className="w-100 bg-gray-400 px-2 py-2 my-1"
 															onClick={async () => {
 																window.location.assign(

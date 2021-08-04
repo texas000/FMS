@@ -30,8 +30,7 @@ export default async (req, res) => {
     (RefNo, Status, Title, Body, CreateAt, ModifyAt, CreateBy, ModifyBy, TBName, TBID, Attachment, ApType, Attachment2) 
     VALUES ('${ref}','101','${body.F_InvoiceNo}',
 	'${body.customer}',GETDATE(),GETDATE(),'${token.uid}','${token.uid}',
-	'T_APHD','${body.F_ID}', '${body.file}', '${body.type}', 
-	${body.file2 == false ? "NULL" : `'${body.file2}'`}); ${fileQuery}`;
+	'T_APHD','${body.F_ID}', '0', '${body.type}', 'NULL'); ${fileQuery}`;
 
 	let pool = new sql.ConnectionPool(process.env.SERVER21);
 	try {
