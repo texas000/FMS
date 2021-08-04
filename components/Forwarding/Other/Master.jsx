@@ -20,12 +20,28 @@ export const Master = ({
 	<div className="card my-4 py-4 shadow">
 		<div className="row">
 			<div className="col-8 px-4 py-4">
-				<table className="table-borderless mt-2 table-sm text-xs">
+				<div className="d-flex justify-content-between text-center">
+					<Tag intent="primary" className="w-100 mr-1">
+						{M.F_Type}
+					</Tag>
+					{M.F_C1 && (
+						<Tag intent="primary" className="w-100 mx-1">
+							{M.F_C1}
+						</Tag>
+					)}
+					{M.F_C2 && (
+						<Tag intent="primary" className="w-100 mx-1">
+							{M.F_C2}
+						</Tag>
+					)}
+					{M.F_C3 && (
+						<Tag intent="primary" className="w-100 mx-1">
+							{M.F_C3}
+						</Tag>
+					)}
+				</div>
+				<table className="table table-hover mt-2 table-sm text-xs">
 					<tbody>
-						<tr>
-							<th className="text-success">TYPE</th>
-							<th className="text-secondary">{M.F_Type}</th>
-						</tr>
 						<tr>
 							<th className="text-success">CUSTOMER</th>
 							<th className="text-secondary">{M.CUSTOMER}</th>

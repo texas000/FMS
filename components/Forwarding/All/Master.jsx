@@ -32,6 +32,7 @@ export const Master = ({
 	CY,
 	Commodity,
 	Reference,
+	PPCC,
 }) => {
 	const { data, mutate } = useSWR("/api/forwarding/getstatus?id=" + Reference);
 	async function updateStatus(e) {
@@ -49,53 +50,48 @@ export const Master = ({
 		<div className="card my-4 py-4 shadow">
 			<div className="row">
 				<div className="col-lg-8 px-4 py-4">
-					<div className="d-flex justify-content-between">
-						<div>
+					<div>
+						<div className="d-flex justify-content-between text-center">
 							{MoveType && (
-								<Tag intent="primary" round={true} className="mx-1">
+								<Tag intent="primary" className="mx-1 w-100">
 									{MoveType}
 								</Tag>
 							)}
 							{LCLFCL && (
 								<Tag
 									intent={LCLFCL ? "primary" : "none"}
-									round={true}
-									className="mx-1"
+									className="mx-1 w-100"
 								>
 									{LCLFCL == "F" ? "FCL" : "LCL"}
 								</Tag>
 							)}
 							{IT && (
-								<Tag
-									intent={IT ? "primary" : "none"}
-									round={true}
-									className="mx-1"
-								>
+								<Tag intent={IT ? "primary" : "none"} className="mx-1 w-100">
 									IT
 								</Tag>
 							)}
 							{Express && (
 								<Tag
 									intent={Express == "1" ? "primary" : "none"}
-									round={true}
-									className="mx-1"
+									className="mx-1 w-100"
 								>
 									EXPRESS
 								</Tag>
 							)}
 							{Empty != "0" && (
-								<Tag
-									intent={Empty ? "primary" : "none"}
-									round={true}
-									className="mx-1"
-								>
+								<Tag intent={Empty ? "primary" : "none"} className="mx-1 w-100">
 									EMPTY
+								</Tag>
+							)}
+							{PPCC && (
+								<Tag intent="primary" className="mx-1 w-100">
+									{PPCC === "P" ? "PREPAID" : "COLLECT"}
 								</Tag>
 							)}
 						</div>
 					</div>
 
-					<table className="table-borderless mt-2 table-sm text-xs">
+					<table className="table table-hover mt-2 table-sm text-xs">
 						<tbody>
 							<tr>
 								<th className="text-success">MBL</th>

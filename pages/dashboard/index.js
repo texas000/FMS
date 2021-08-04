@@ -160,7 +160,7 @@ export default function dashboard(props) {
 																<span
 																	className="text-gray-800"
 																	style={{
-																		maxWidth: "130px",
+																		maxWidth: "50%",
 																		textOverflow: "ellipsis",
 																		whiteSpace: "nowrap",
 																		overflow: "hidden",
@@ -227,7 +227,7 @@ export default function dashboard(props) {
 																<span
 																	className="text-gray-800"
 																	style={{
-																		maxWidth: "130px",
+																		maxWidth: "50%",
 																		textOverflow: "ellipsis",
 																		whiteSpace: "nowrap",
 																		overflow: "hidden",
@@ -293,7 +293,7 @@ export default function dashboard(props) {
 																</span>
 																<span
 																	style={{
-																		maxWidth: "130px",
+																		maxWidth: "50%",
 																		textOverflow: "ellipsis",
 																		whiteSpace: "nowrap",
 																		overflow: "hidden",
@@ -361,7 +361,7 @@ export default function dashboard(props) {
 																<span
 																	className="text-gray-800"
 																	style={{
-																		maxWidth: "130px",
+																		maxWidth: "50%",
 																		textOverflow: "ellipsis",
 																		whiteSpace: "nowrap",
 																		overflow: "hidden",

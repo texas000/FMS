@@ -119,6 +119,7 @@ const Detail = ({ Cookie, Reference, master }) => {
 								Commodity={master.M.F_Description}
 								CY={master.M.CYLOC}
 								Reference={Reference}
+								PPCC={master.M.F_PPCC}
 							/>
 						)}
 						{/* MENU 2 - HOUSE */}
