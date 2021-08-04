@@ -56,7 +56,7 @@ export default async (req, res) => {
 		const mailOptions = {
 			from: "JWIUSA <it@jamesworldwide.com>",
 			to: `${result.recordset[0].Notify}, ACCOUNTING [JW] <accounting@jamesworldwide.com>`,
-			subject: result.recordset[0].Title,
+			subject: `AP REQUEST FOR ${result.recordset[0].Title}`,
 			html: `<h2>${Status(status)} BY ${token.first} CASE: ${
 				result.recordset[0].RefNo
 			}</h2>`,
