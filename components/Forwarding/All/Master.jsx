@@ -161,12 +161,6 @@ export const Master = ({
 											className="text-primary"
 											onClick={() => updateStatus("Delivered")}
 										/>
-										<MenuItem
-											text="Empty Return"
-											className="text-primary"
-											onClick={() => updateStatus("Empty Return")}
-										/>
-										<MenuItem text="Done" className="text-danger" />
 										<MenuItem text="Approved" disabled={true} />
 										<MenuItem text="Closed" disabled={true} />
 									</Menu>

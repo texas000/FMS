@@ -193,6 +193,10 @@ export default function request(props) {
 		},
 	];
 
+	const pageOption = {
+		sizePerPageList: [{ text: "10", value: 10 }],
+	};
+
 	const rowEvents = {
 		onClick: (e, row, rowIndex) => {
 			setSelected(row);
@@ -242,6 +246,7 @@ export default function request(props) {
 									filter={filterFactory()}
 									wrapperClasses="table rounded"
 									bordered={false}
+									pagination={paginationFactory(pageOption)}
 									rowEvents={rowEvents}
 								/>
 							</Col>
