@@ -21,10 +21,10 @@ export default async (req, res) => {
 	var status = 101;
 
 	if (token.admin == 6) {
-		approve ? (status = 111) : (status = 110);
+		approve == "true" ? (status = 111) : (status = 110);
 	}
 	if (token.admin > 6) {
-		approve ? (status = 121) : (status = 120);
+		approve == "true" ? (status = 121) : (status = 120);
 	}
 
 	function Status(data) {
