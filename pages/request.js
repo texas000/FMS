@@ -221,9 +221,7 @@ export default function request(props) {
 		<Layout TOKEN={props.token} TITLE="Dashboard">
 			<div className="d-flex flex-sm-row justify-content-between">
 				<div>
-					<h3 className="h3 text-dark">
-						Request <small className="text-gray-500">Demo</small>
-					</h3>
+					<h3 className="h3 text-dark">AP Request</h3>
 				</div>
 			</div>
 			<Card className="border-0 shadow mt-3 table-responsive-md">
@@ -431,7 +429,7 @@ export default function request(props) {
 						onClick={() => updateRequest(true)}
 						disabled={
 							props.token.admin === 6
-								? selected.Status !== 101
+								? !(selected.Status === 101 || selected.Status === 110)
 								: props.token.admin === 9
 								? selected.Status !== 111
 								: true

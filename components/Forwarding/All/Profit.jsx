@@ -96,8 +96,10 @@ export const Profit = ({
 		});
 		if (req.status === 200) {
 			alert("Requested, Thank you!");
+			setSelectedFile([]);
 			setSelected(false);
 		} else {
+			setSelectedFile([]);
 			alert(req.status);
 		}
 	}
