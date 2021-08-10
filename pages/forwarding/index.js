@@ -1,5 +1,5 @@
 import cookie from "cookie";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import fetch from "node-fetch";
 import Layout from "../../components/Layout";

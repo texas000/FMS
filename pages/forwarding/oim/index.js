@@ -2,29 +2,21 @@ import cookie from "cookie";
 import React, { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import Layout from "../../../components/Layout";
-import { useRouter } from "next/router";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
-import { Card, Row, Col, Spinner } from "reactstrap";
+import { Card } from "reactstrap";
 import moment from "moment";
 import Link from "next/link";
 import useSWR from "swr";
 
-const Index = ({ Cookie }) => {
+const Index = ({ token }) => {
 	const [Page, setPage] = useState(1);
-	const [pageSize, setPageSize] = useState(10);
+	const [pageSize, setPageSize] = useState(20);
 	const { data, mutate } = useSWR(
 		`/api/forwarding/oim/pagination?page=${Page}&size=${pageSize}`
 	);
-	const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
-	const [Result, setResult] = useState([]);
-	const [isOpen, setIsOpen] = useState(false);
-	const [selected, setSelected] = useState(false);
-	const [houses, setHouses] = useState([]);
-
-	const router = useRouter();
 
 	// INDICATION FOR TABLE
 	function indication() {
@@ -32,6 +24,17 @@ const Index = ({ Cookie }) => {
 			<span>
 				<span className="text-danger">No Ocean Import</span> at the moment
 			</span>
+		);
+	}
+
+	// HEADER STYLE FLEX COLUMN
+	function filterHeader(column, colIndex, { sortElement, filterElement }) {
+		return (
+			<div style={{ display: "flex", flexDirection: "column" }}>
+				{column.text}
+				{filterElement}
+				{sortElement}
+			</div>
 		);
 	}
 
@@ -54,13 +57,6 @@ const Index = ({ Cookie }) => {
 					setPage(Page - 1);
 				}
 			}
-			// if (page === ">>") {
-			// 	setPage(Page + 10);
-			// }
-			// if (page === "<<") {
-			// 	setPage(1);
-			// }
-			// mutate();
 		};
 		return (
 			<li className="page-item" key={page}>
@@ -105,7 +101,7 @@ const Index = ({ Cookie }) => {
 						key={option.text}
 						onClick={() => {
 							onSizePerPageChange(option.page);
-							setPageSize(option.page);
+							// setPageSize(option.page);
 							mutate();
 							// onSizePerPageChange(option.page);
 						}}
@@ -137,6 +133,7 @@ const Index = ({ Cookie }) => {
 				className: "text-xs text-center",
 			}),
 			headerSortingStyle,
+			headerFormatter: filterHeader,
 		},
 		{
 			dataField: "Company",
@@ -148,6 +145,7 @@ const Index = ({ Cookie }) => {
 				className: "text-xs text-center",
 			}),
 			headerSortingStyle,
+			headerFormatter: filterHeader,
 		},
 		{
 			dataField: "F_MBLNo",
@@ -160,6 +158,7 @@ const Index = ({ Cookie }) => {
 				className: "text-xs text-center",
 			}),
 			headerSortingStyle,
+			headerFormatter: filterHeader,
 		},
 		// {
 		// 	dataField: "F_HBLNo",
@@ -175,7 +174,7 @@ const Index = ({ Cookie }) => {
 		// },
 		{
 			dataField: "F_ETD",
-			text: "DISCHARGE",
+			text: "ETD",
 			classes: "text-truncate",
 			headerClasses:
 				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
@@ -184,6 +183,7 @@ const Index = ({ Cookie }) => {
 			filter: textFilter({
 				className: "text-xs text-center",
 			}),
+			headerFormatter: filterHeader,
 			formatter: (cell) => {
 				if (cell) {
 					return moment(cell).format("L");
@@ -192,7 +192,7 @@ const Index = ({ Cookie }) => {
 		},
 		{
 			dataField: "F_ETA",
-			text: "ARRIVAL",
+			text: "ETA",
 			classes: "text-truncate",
 			headerClasses:
 				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
@@ -201,6 +201,7 @@ const Index = ({ Cookie }) => {
 			filter: textFilter({
 				className: "text-xs text-center",
 			}),
+			headerFormatter: filterHeader,
 			formatter: (cell) => {
 				if (cell) {
 					return moment(cell).format("L");
@@ -218,6 +219,7 @@ const Index = ({ Cookie }) => {
 			filter: textFilter({
 				className: "text-xs text-center",
 			}),
+			headerFormatter: filterHeader,
 			formatter: (cell) => {
 				if (cell) {
 					return moment(cell).format("L");
@@ -232,9 +234,10 @@ const Index = ({ Cookie }) => {
 				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
 			sort: true,
 			headerSortingStyle,
+			headerFormatter: filterHeader,
 			filter: textFilter({
 				className: "text-xs text-center",
-				defaultValue: TOKEN.admin === 9 ? "" : TOKEN.fsid,
+				// defaultValue: token.admin === 9 ? "" : token.fsid,
 			}),
 		},
 	];
@@ -259,138 +262,65 @@ const Index = ({ Cookie }) => {
 		sizePerPageRenderer,
 	};
 
-	useEffect(() => {
-		!TOKEN && router.push("/login");
-		// getOim();
-		// In the dev mode, show result in the console.
-		// console.log(Result);
-		// console.log(Page);
-	}, []);
-
-	async function getOimSearch(e) {
-		if (e.length > 0) {
-			const oims = await fetch("/api/forwarding/oim/getList", {
-				headers: {
-					key: Cookie.jamesworldwidetoken,
-					search: e,
-				},
-			}).then(async (j) => await j.json());
-			setResult(oims);
-		} else {
-			alert("SEARCH VALUE MUST BE OVER 3 CHAR");
-		}
-	}
-	if (TOKEN && TOKEN.group) {
-		return (
-			<Layout TOKEN={TOKEN} TITLE="OCEAN IMPORT">
-				{/* <Dialog
-					isOpen={isOpen}
-					title={selected.F_RefNo}
-					onClose={() => setIsOpen(false)}
-					className="bg-white w-75"
-				>
-					<MasterDialog refs={selected} multi={houses} token={TOKEN} />
-				</Dialog> */}
-				<div className="d-flex flex-sm-row justify-content-between">
-					<div className="flex-column">
-						<h3 className="h3 text-dark">Ocean Import</h3>
-					</div>
-					{/* <InputGroup
-						leftIcon="search"
-						type="number"
-						placeholder="Search Number"
-						onKeyPress={(e) => {
-							if (e.key === "Enter") {
-								e.preventDefault();
-								getOimSearch(e.target.value);
-							}
-						}}
-					/> */}
+	return (
+		<Layout TOKEN={token} TITLE="OCEAN IMPORT" LOADING={!data}>
+			<div className="d-flex flex-sm-row justify-content-between">
+				<div className="flex-column">
+					<h3 className="h3 text-dark">Ocean Import</h3>
 				</div>
+			</div>
 
-				{/* <div className="d-lg-none">
-          <div className="list-group">
-            {Result.length !== 0 ? (
-              Result.map((ga) => (
-                <a
-                  href="#"
-                  key={ga.oihmain.ID}
-                  onClick={() => {
-                    router.push(
-                      `/forwarding/oim/[Detail]`,
-                      `/forwarding/oim/${ga.oimmain.RefNo}`
-                    );
-                  }}
-                  className="list-group-item list-group-item-action text-xs text-truncate"
-                >
-                  <span className="text-primary font-weight-bold">
-                    {ga.oimmain.RefNo}
-                  </span>
-                  <i className="fa fa-arrow-right text-success mx-2"></i>
-                  <span className="font-weight-light">
-                    {ga.oihmain.Customer_SName}
-                  </span>
-                  <i className="fa fa-arrow-right text-warning mx-2"></i>
-                  <span className="text-uppercase">{ga.oimmain.U2ID}</span>
-                </a>
-              ))
-            ) : (
-              <div
-                className="alert alert-secondary text-capitalize"
-                role="alert"
-              >
-                you do not have ocean import at the moment
-              </div>
-            )}
-          </div>
-        </div> */}
-
-				<Card className="border-0 shadow mt-3 table-responsive">
-					{!data ? (
-						<div className="text-center">
-							<Spinner color="primary" />
-						</div>
-					) : (
-						<Row>
-							{/* DISPLAY SEARCH RESULT */}
-							<ToolkitProvider
-								keyField="NUM"
+			<Card className="border-0 shadow mt-3 pb-3 w-auto">
+				{!data ? (
+					<></>
+				) : (
+					<ToolkitProvider
+						keyField="NUM"
+						bordered={false}
+						columns={column}
+						data={data ? data : []}
+						exportCSV
+						search
+					>
+						{(props) => (
+							<BootstrapTable
+								{...props.baseProps}
+								hover
+								condensed
 								bordered={false}
-								columns={column}
-								data={data ? data : []}
-								exportCSV
-								search
-							>
-								{(props) => (
-									<Col>
-										<BootstrapTable
-											{...props.baseProps}
-											hover
-											condensed
-											wrapperClasses="table rounded"
-											bordered={false}
-											filter={filterFactory()}
-											noDataIndication={indication}
-											pagination={paginationFactory(pageOption)}
-										/>
-									</Col>
-								)}
-							</ToolkitProvider>
-						</Row>
-					)}
-				</Card>
-			</Layout>
-		);
-	} else {
-		return <p>Redirecting...</p>;
-	}
+								wrapperClasses="table w-auto"
+								filter={filterFactory()}
+								noDataIndication={indication}
+								pagination={paginationFactory(pageOption)}
+							/>
+						)}
+					</ToolkitProvider>
+				)}
+			</Card>
+		</Layout>
+	);
 };
 
 export async function getServerSideProps({ req }) {
 	const cookies = cookie.parse(
 		req ? req.headers.cookie || "" : window.document.cookie
 	);
-	return { props: { Cookie: cookies } };
+	try {
+		const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
+
+		return {
+			props: {
+				token: token,
+			},
+		};
+	} catch (err) {
+		return {
+			redirect: {
+				permanent: false,
+				destination: "/login",
+			},
+		};
+	}
 }
 
 export default Index;

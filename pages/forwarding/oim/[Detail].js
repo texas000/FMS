@@ -2,7 +2,6 @@ import cookie from "cookie";
 import Layout from "../../../components/Layout";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import fetch from "node-fetch";
 import moment from "moment";
 import jwt from "jsonwebtoken";
 import Comment from "../../../components/Forwarding/All/Comment";
@@ -13,72 +12,48 @@ import Profit from "../../../components/Forwarding/All/Profit";
 import File from "../../../components/Forwarding/All/File";
 import Request from "../../../components/Forwarding/All/Request";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
-// import useSWR from "swr";
+import useSWR from "swr";
 import React from "react";
-// import axios, { post } from "axios";
 
-const Detail = ({ Cookie, Reference, master }) => {
+const Detail = ({ token, Reference }) => {
+	const { data } = useSWR(`/api/forwarding/oim/detail?ref=${Reference}`);
+
 	const router = useRouter();
-	const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
-	const [isReady, setIsReady] = useState(false);
+
 	const [menu, setMenu] = useState(1);
 
-	useEffect(() => {
-		!TOKEN && router.push("/login");
-		setIsReady(true);
-	}, [Reference]);
-
-	// ADD LOG DATA WHEN USER ACCESS THE PAGE
-	async function addLogData(Ref) {
-		const fetchPostLog = await fetch("/api/forwarding/postFreightExtLog", {
-			method: "POST",
-			body: JSON.stringify({
-				RefNo: Ref.RefNo,
-				TBName: Ref.TBName,
-				TBID: Ref.TBID,
-				Title: `${TOKEN.username} ACCESS GRANTED`,
-				Contents: JSON.stringify(TOKEN),
-			}),
-		});
-		if (fetchPostLog.status === 200) {
-			console.log("SUCCESS");
-		} else {
-			console.log(fetchPostLog.status);
-		}
-	}
-
 	var mailSubject, mailBody, emailHref;
-	if (master.M) {
-		mailSubject = `[JW] ${master.H.length > 0 && master.H[0].CUSTOMER} `;
-		mailSubject += `MBL# ${master.M.F_MBLNo} `;
-		mailSubject += `HBL# ${master.H.map((na) => `${na.F_HBLNo}`)} `;
+	if (data && data.M) {
+		mailSubject = `[JW] ${data.H.length > 0 && data.H[0].CUSTOMER} `;
+		mailSubject += `MBL# ${data.M.F_MBLNo} `;
+		mailSubject += `HBL# ${data.H.map((na) => `${na.F_HBLNo}`)} `;
 		mailSubject += `CNTR# ${
-			master.C && master.C.map((ga) => `${ga.F_ContainerNo} `)
+			data.C && data.C.map((ga) => `${ga.F_ContainerNo} `)
 		}`;
-		mailSubject += `ETD ${moment(master.M.F_ETD).utc().format("l")} `;
-		mailSubject += `ETA ${moment(master.M.F_ETA).utc().format("l")} // ${
-			master.M.F_RefNo
+		mailSubject += `ETD ${moment(data.M.F_ETD).utc().format("l")} `;
+		mailSubject += `ETA ${moment(data.M.F_ETA).utc().format("l")} // ${
+			data.M.F_RefNo
 		}`;
 
-		mailBody = `Dear ${master.H.length > 0 && master.H[0].CUSTOMER}
-      \nPlease note that there is an OCEAN IMPORT SHIPMENT for ${
-				master.H.length > 0 && master.H[0].CUSTOMER
-			} scheduled to depart on ${moment(master.M.F_ETA).utc().format("LL")}.
-      \n_______________________________________
-      ETD:  ${moment(master.M.F_ETD).format("L")}
-      POL:  ${master.M.F_LoadingPort}
-      ETA:  ${moment(master.M.F_ETA).format("L")}
-      POD:  ${master.M.F_DisCharge}
-      SHIPPER:  ${master.H.length > 0 && master.H[0].SHIPPER}
-      CONSIGNEE:  ${master.H.length > 0 && master.H[0].CONSIGNEE}
-      MBL:  ${master.M.F_MBLNo}
-      HBL:  ${master.H.map((ga) => `${ga.F_HBLNo} `)}
-      CONTAINER:  ${master.C.map(
-				(ga) => `${ga.F_ContainerNo}${ga.F_SealNo && `(${ga.F_SealNo})`} `
-			)}`;
+		mailBody = `Dear ${data.H.length > 0 && data.H[0].CUSTOMER}
+	  \nPlease note that there is an OCEAN IMPORT SHIPMENT for ${
+			data.H.length > 0 && data.H[0].CUSTOMER
+		} scheduled to depart on ${moment(data.M.F_ETA).utc().format("LL")}.
+	  \n_______________________________________
+	  ETD:  ${moment(data.M.F_ETD).format("L")}
+	  POL:  ${data.M.F_LoadingPort}
+	  ETA:  ${moment(data.M.F_ETA).format("L")}
+	  POD:  ${data.M.F_DisCharge}
+	  SHIPPER:  ${data.H.length > 0 && data.H[0].SHIPPER}
+	  CONSIGNEE:  ${data.H.length > 0 && data.H[0].CONSIGNEE}
+	  MBL:  ${data.M.F_MBLNo}
+	  HBL:  ${data.H.map((ga) => `${ga.F_HBLNo} `)}
+	  CONTAINER:  ${data.C.map(
+			(ga) => `${ga.F_ContainerNo}${ga.F_SealNo && `(${ga.F_SealNo})`} `
+		)}`;
 
-		emailHref = master.M
-			? `mailto:?cc=${TOKEN && TOKEN.email}&subject=${encodeURIComponent(
+		emailHref = data.M
+			? `mailto:?cc=${token && token.email}&subject=${encodeURIComponent(
 					mailSubject
 			  )}&body=${encodeURIComponent(mailBody)}`
 			: "";
@@ -94,212 +69,128 @@ const Detail = ({ Cookie, Reference, master }) => {
 		alert("COPIED");
 	};
 
-	if (TOKEN && TOKEN.group) {
-		return (
-			<Layout TOKEN={TOKEN} TITLE={Reference}>
-				{master.M ? (
-					<>
-						{/* NAVIGATION BAR - STATE: MENU, SETMENU, REFERENCE */}
-						<Navigation menu={menu} setMenu={setMenu} Reference={Reference} />
+	return (
+		<Layout TOKEN={token} TITLE={Reference} LOADING={!data}>
+			{data && data.M ? (
+				<>
+					{/* NAVIGATION BAR - STATE: MENU, SETMENU, REFERENCE */}
+					<Navigation menu={menu} setMenu={setMenu} Reference={Reference} />
 
-						{/* MENU 1 - MAIN */}
-						{menu === 1 && (
-							<Master
-								Clipboard={Clipboard}
-								Email={emailHref}
-								Closed={master.M.F_FileClosed}
-								Created={master.M.F_U1Date}
-								Updated={master.M.F_U2Date}
-								Creator={master.M.F_U1ID}
-								Updator={master.M.F_U2ID}
-								Post={master.M.F_PostDate}
-								ETA={master.M.F_ETA}
-								ETD={master.M.F_ETD}
-								Loading={master.M.F_LoadingPort}
-								Discharge={master.M.F_DisCharge}
-								FETA={master.M.F_FETA}
-								Destination={master.M.F_FinalDest}
-								MoveType={master.M.F_MoveType}
-								LCLFCL={master.M.F_LCLFCL}
-								IT={master.M.F_ITNo}
-								Express={master.M.F_ExpRLS}
-								Empty={master.M.F_EmptyRtn}
-								MBL={master.M.F_MBLNo}
-								Carrier={master.M.CARRIER}
-								Agent={master.M.AGENT}
-								Vessel={`${master.M.F_Vessel} ${master.M.F_Voyage}`}
-								CY={master.M.CYLOC}
-								Commodity={master.M.F_mCommodity}
-								Reference={Reference}
-							/>
-						)}
-						{/* MENU 2 - HOUSE */}
-						{menu === 2 && <House house={master.H} container={master.C} />}
-						{/* MENU 3 - PROFIT */}
-						{menu === 3 && (
-							<Profit
-								Reference={Reference}
-								TOKEN={TOKEN}
-								invoice={master.I}
-								ap={master.A}
-								crdr={master.CR}
-								profit={master.P}
-								customer={
-									master.H.length ? master.H[0].CUSTOMER : "NO CUSTOMER"
-								}
-							/>
-						)}
-						{/* MENU 4 - FILE */}
-						{menu === 4 && isReady && (
-							<File
-								Reference={Reference}
-								Master={master.M}
-								House={master.H}
-								Ap={master.A}
-								Container={master.C}
-							/>
-						)}
+					{/* MENU 1 - MAIN */}
+					{menu === 1 && (
+						<Master
+							Clipboard={Clipboard}
+							Email={emailHref}
+							Closed={data.M.F_FileClosed}
+							Created={data.M.F_U1Date}
+							Updated={data.M.F_U2Date}
+							Creator={data.M.F_U1ID}
+							Updator={data.M.F_U2ID}
+							Post={data.M.F_PostDate}
+							ETA={data.M.F_ETA}
+							ETD={data.M.F_ETD}
+							Loading={data.M.F_LoadingPort}
+							Discharge={data.M.F_DisCharge}
+							FETA={data.M.F_FETA}
+							Destination={data.M.F_FinalDest}
+							MoveType={data.M.F_MoveType}
+							LCLFCL={data.M.F_LCLFCL}
+							IT={data.M.F_ITNo}
+							Express={data.M.F_ExpRLS}
+							Empty={data.M.F_EmptyRtn}
+							MBL={data.M.F_MBLNo}
+							Carrier={data.M.CARRIER}
+							Agent={data.M.AGENT}
+							Vessel={`${data.M.F_Vessel} ${data.M.F_Voyage}`}
+							CY={data.M.CYLOC}
+							Commodity={data.M.F_mCommodity}
+							Reference={Reference}
+						/>
+					)}
+					{/* MENU 2 - HOUSE */}
+					{menu === 2 && <House house={data.H} container={data.C} />}
+					{/* MENU 3 - PROFIT */}
+					{menu === 3 && (
+						<Profit
+							Reference={Reference}
+							TOKEN={token}
+							invoice={data.I}
+							ap={data.A}
+							crdr={data.CR}
+							profit={data.P}
+							customer={data.H.length ? data.H[0].CUSTOMER : "NO CUSTOMER"}
+						/>
+					)}
+					{/* MENU 4 - FILE */}
+					{menu === 4 && (
+						<File
+							Reference={Reference}
+							Master={data.M}
+							House={data.H}
+							Ap={data.A}
+							Container={data.C}
+						/>
+					)}
 
-						{menu === 5 && (
-							<Request
-								Reference={Reference}
-								ap={master.A}
-								crdr={master.CR}
-								profit={master.P}
-								TOKEN={TOKEN}
-							/>
-						)}
+					{menu === 5 && (
+						<Request
+							Reference={Reference}
+							ap={data.A}
+							crdr={data.CR}
+							profit={data.P}
+							TOKEN={token}
+						/>
+					)}
 
-						<Comment Reference={Reference} Uid={TOKEN.uid} />
+					<Comment Reference={Reference} Uid={token.uid} />
 
-						<p className="d-none d-print-block text-center">
-							Printed at {moment().format("lll")}
+					<p className="d-none d-print-block text-center">
+						Printed at {moment().format("lll")}
+					</p>
+				</>
+			) : (
+				<div className="jumbotron jumbotron-fluid">
+					<div className="container">
+						<h1 className="display-4">{router.query.Detail} NOT FOUND!</h1>
+						<p className="lead">
+							Please make sure you have correct reference number
 						</p>
-					</>
-				) : (
-					<div className="jumbotron jumbotron-fluid">
-						<div className="container">
-							<h1 className="display-4">{router.query.Detail} NOT FOUND!</h1>
-							<p className="lead">
-								Please make sure you have correct reference number
-							</p>
-							<div className="d-flex justify-content-center mt-4">
-								<button
-									className="btn btn-secondary"
-									onClick={() => router.back()}
-								>
-									Return To Previous Page
-								</button>
-							</div>
+						<div className="d-flex justify-content-center mt-4">
+							<button
+								className="btn btn-secondary"
+								onClick={() => router.back()}
+							>
+								Return To Previous Page
+							</button>
 						</div>
 					</div>
-				)}
-			</Layout>
-		);
-	} else {
-		return <p>Redirecting...</p>;
-	}
+				</div>
+			)}
+		</Layout>
+	);
 };
 
 export async function getServerSideProps({ req, query }) {
 	const cookies = cookie.parse(
 		req ? req.headers.cookie || "" : window.document.cookie
 	);
-	var info = false;
-	if (cookies.jamesworldwidetoken) {
-		info = await fetch(
-			`${process.env.BASE_URL}api/forwarding/oim/detail?ref=${query.Detail}`,
-			{
-				method: "GET",
-				headers: {
-					key: cookies.jamesworldwidetoken,
-					reference: query.Detail,
-				},
-			}
-		).then((j) => j.json());
-	}
+	try {
+		const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
 
-	return { props: { Cookie: cookies, Reference: query.Detail, master: info } };
+		return {
+			props: {
+				token: token,
+				Reference: query.Detail,
+			},
+		};
+	} catch (err) {
+		return {
+			redirect: {
+				permanent: false,
+				destination: "/login",
+			},
+		};
+	}
 }
 
 export default Detail;
-
-// // DEFINE FLASE VARIABLE, WHEN THE DATA IS NOT FETCHED, RETURN FALSE
-// var MAIN = false;
-// var HOUSE = false;
-// var CONTAINER = false;
-
-// // ----- FETCH OIM EXT (OIMMAIN DATA + STATUS DATA)
-// const fetchOimmainExt = await fetch(
-//   `${process.env.FS_BASEPATH}oimmain_ext?RefNo=${query.Detail}`,
-//   {
-//     headers: { "x-api-key": process.env.JWT_KEY },
-//   }
-// );
-// // ASSIGN MAIN
-// if (fetchOimmainExt.status === 200) {
-//   MAIN = await fetchOimmainExt.json();
-//   // ----- GET OIHMAIN FROM BLID
-//   const fecthOihmain = await fetch(
-//     `${process.env.FS_BASEPATH}oihmain?oimblid=${MAIN[0].ID}`,
-//     {
-//       headers: { "x-api-key": process.env.JWT_KEY },
-//     }
-//   );
-//   if (fecthOihmain.status === 200) {
-//     HOUSE = await fecthOihmain.json();
-
-//     if (HOUSE.length > 0) {
-//       for (var i = 0; i < HOUSE.length; i++) {
-//         var APLIST = false;
-//         const fetchAP = await fetch(
-//           `${process.env.FS_BASEPATH}aphd?table=T_OIHMAIN&tbid=${HOUSE[i].ID}`,
-//           {
-//             headers: { "x-api-key": process.env.JWT_KEY },
-//           }
-//         );
-//         // IF AP EXISTS
-//         if (fetchAP.status === 200) {
-//           const Ap = await fetchAP.json();
-//           APLIST = Ap;
-//           for (var j = 0; j < Ap.length; j++) {
-//             const CompanyContactFetch = await fetch(
-//               `${process.env.FS_BASEPATH}Company_CompanyContact/${Ap[j].PayTo}`,
-//               {
-//                 headers: { "x-api-key": process.env.JWT_KEY },
-//               }
-//             );
-//             if (CompanyContactFetch.status === 200) {
-//               const Contact = await CompanyContactFetch.json();
-//               //EACH HOUSE HAS AP MULTIPLE AP LIST
-//               APLIST[j] = { ...APLIST[j], PayToCustomer: Contact };
-//             } else {
-//               APLIST[j] = { ...APLIST[j] };
-//             }
-//           }
-//         }
-//         HOUSE[i] = { ...HOUSE[i], AP: APLIST };
-//       }
-//     }
-//   }
-//   // ----- FETCH CONTAINER FROM BLID
-//   const fecthOimContainer = await fetch(
-//     `${process.env.FS_BASEPATH}oimcontainer_leftjoin_oihcontainer?oimblid=${MAIN[0].ID}`,
-//     {
-//       headers: { "x-api-key": process.env.JWT_KEY },
-//     }
-//   );
-//   // ASSIGN CONTAINER
-//   if (fecthOimContainer.status === 200) {
-//     CONTAINER = await fecthOimContainer.json();
-//   }
-//   return {
-//     props: {
-//       Cookie: cookies,
-//       Reference: query.Detail,
-//       OIMMAIN: MAIN,
-//       OIHMAIN: HOUSE,
-//       Firebase: process.env.FIREBASE_API_KEY,
-//       CONTAINER,
-//     },
-//   };

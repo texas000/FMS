@@ -15,6 +15,7 @@ import readXlsxFile from "read-excel-file";
 import moment from "moment";
 import fetch from "node-fetch";
 import Link from "next/link";
+import React from "react";
 
 export default function blank({ Cookie }) {
 	const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);

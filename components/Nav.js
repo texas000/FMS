@@ -5,20 +5,21 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import AsyncSelect from "react-select/async";
 import cookie from "cookie";
+import { useState, useEffect } from "react";
 
 const Top = ({ Token, toggle, setToggle }) => {
 	const router = useRouter();
-	const [search, setSearch] = React.useState(false);
-	const [alertToggle, setalertToggle] = React.useState(false);
-	const [messageToggle, setmessageToggle] = React.useState(false);
-	const [searchAlertToggle, setSearchAlertToggle] = React.useState(false);
+	const [search, setSearch] = useState(false);
+	const [alertToggle, setalertToggle] = useState(false);
+	const [messageToggle, setmessageToggle] = useState(false);
+	const [searchAlertToggle, setSearchAlertToggle] = useState(false);
 
-	const [userToggle, setuserToggle] = React.useState(false);
-	const [selected, setSelected] = React.useState(null);
-	const [searchType, setSearchType] = React.useState("oim");
+	const [userToggle, setuserToggle] = useState(false);
+	const [selected, setSelected] = useState(null);
+	const [searchType, setSearchType] = useState("oim");
 
-	const [Notifications, setNotifications] = React.useState([]);
-	const [Messages, setMessages] = React.useState([]);
+	const [Notifications, setNotifications] = useState([]);
+	const [Messages, setMessages] = useState([]);
 
 	const loadOptions = async (inputValue, callback) => {
 		if (inputValue.length > 1) {
@@ -31,7 +32,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 		}
 	};
 
-	React.useEffect(() => {
+	useEffect(() => {
 		//When window type is defined, and local stroage is defined, get notification and board board data from local storage and set to state value, otherwise, set noti and message as empty array
 		if (typeof window !== "undefined") {
 			if (localStorage.length) {

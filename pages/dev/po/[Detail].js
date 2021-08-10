@@ -19,6 +19,7 @@ import {
   Col,
   Card,
 } from "reactstrap";
+import React from "react";
 
 export default function blank({ Cookie, PO, Firebase }) {
   const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);

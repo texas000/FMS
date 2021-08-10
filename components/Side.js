@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
 import Link from "next/link";
+import { useState } from "react";
 const Sidebar = ({ Token, toggle, setToggle }) => {
 	const router = useRouter();
-	const [t1, setT1] = React.useState(false);
-	const [t2, setT2] = React.useState(false);
+	const [t1, setT1] = useState(false);
+	const [t2, setT2] = useState(false);
 	const collapse = () => setToggle(!toggle);
 	return (
 		<ul

@@ -1,13 +1,16 @@
 import { Button } from "@blueprintjs/core";
 import moment from "moment";
-import { useEffect } from "react";
+import fetch from "node-fetch";
+import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export const Comment = ({ Reference, Uid }) => {
+	const { data, mutate } = useSWR(`/api/comment/list?ref=${Reference}`);
 	const ReactQuill =
 		typeof window === "object" ? require("react-quill") : () => false;
-	const [html, setHtml] = React.useState("");
-	const [comments, setComment] = React.useState([]);
-	const [isOpen, setOpen] = React.useState(false);
+	const [html, setHtml] = useState("");
+	const [comments, setComment] = useState([]);
+	const [isOpen, setOpen] = useState(false);
 
 	const CommentList = ({ first, last, content, uid, date }) => (
 		<div className="media my-1">
@@ -52,7 +55,7 @@ export const Comment = ({ Reference, Uid }) => {
 		</div>
 	);
 
-	React.useEffect(() => {
+	useEffect(() => {
 		getComment();
 		setOpen(true);
 	}, [Reference]);
@@ -67,42 +70,35 @@ export const Comment = ({ Reference, Uid }) => {
 	}
 
 	async function uploadComment() {
-		var sqlfriendly = html.replace("--", "");
-		sqlfriendly = sqlfriendly.replace("'", '"');
-
-		const data = {
-			RefNo: Reference,
-			Content: sqlfriendly,
-			UID: Uid,
-			Link: "",
-		};
-		// F_RefNo, F_Content, F_UID, F_Date, F_Show, F_Link;
-		const fetchPostComment = await fetch("/api/dashboard/postComment", {
-			body: JSON.stringify(data),
+		const post = await fetch(`/api/comment/post?ref=${Reference}`, {
 			method: "POST",
+			headers: {
+				"Content-type": "application/json; charset=UTF-8",
+			},
+			body: JSON.stringify({ content: html }),
 		});
-
-		if (fetchPostComment.status === 200) {
-			getComment();
-			setHtml("");
-		} else {
-			alert(`Error ${fetchPostComment.status}`);
-		}
+		console.log(post.status);
+		setHtml("");
+		mutate();
 	}
 
 	return (
 		<div className="card my-4 shadow py-3 px-3">
 			<h5 className="h5 text-dark">Comments</h5>
 
-			{comments.map((ga) => (
-				<CommentList
-					key={ga.ID}
-					last={ga.UID_LNAME}
-					first={ga.UID_FNAME}
-					content={ga.Content}
-					date={ga.Date}
-				/>
-			))}
+			{data ? (
+				data.map((ga) => (
+					<CommentList
+						key={ga.F_ID}
+						last={ga.LNAME}
+						first={ga.FNAME}
+						content={ga.F_Content}
+						date={ga.F_Date}
+					/>
+				))
+			) : (
+				<></>
+			)}
 
 			{isOpen && ReactQuill && (
 				<ReactQuill

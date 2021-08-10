@@ -19,7 +19,7 @@ export default async (req, res) => {
 	try {
 		await pool.connect();
 		let master = await pool.request().query(MASTER);
-		output = { ...output, M: master.recordset[0] };
+		output = { ...output, M: master.recordset[0] || false };
 		if (master.recordset.length) {
 			let house = await pool
 				.request()

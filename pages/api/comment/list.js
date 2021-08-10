@@ -8,7 +8,9 @@ export default async (req, res) => {
 	}
 
 	let pool = new sql.ConnectionPool(process.env.SERVER21);
-	const qry = `SELECT * FROM T_FILE WHERE F_REF='${ref}' ORDER BY F_ID DESC;`;
+	const qry = `SELECT C.*, (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=C.F_UID) AS FNAME, 
+	(SELECT F_LNAME FROM T_MEMBER M WHERE M.F_ID=C.F_UID) AS LNAME
+	FROM T_FREIGHT_COMMENT C WHERE F_RefNo='${ref}' ORDER BY C.F_ID DESC;`;
 	try {
 		await pool.connect();
 		let result = await pool.request().query(qry);

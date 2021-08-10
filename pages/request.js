@@ -218,7 +218,7 @@ export default function request(props) {
 	}
 
 	return (
-		<Layout TOKEN={props.token} TITLE="Dashboard">
+		<Layout TOKEN={props.token} TITLE="Dashboard" LOADING={!data}>
 			<div className="d-flex flex-sm-row justify-content-between">
 				<div>
 					<h3 className="h3 text-dark">AP Request</h3>
@@ -370,52 +370,6 @@ export default function request(props) {
 								Approved: {moment(selected.ModifyAt).utc().format("LLL")} by{" "}
 								{selected.Modifier}
 							</p>
-
-							{/* {ap ? (
-								<BlobProvider
-									document={
-										<CheckRequestForm
-											oim={selected.RefNo}
-											pic={selected.Creator}
-											payto={ap.Vendor}
-											customer={selected.Body}
-											amt={ap.F_InvoiceAmt}
-											type={selected.ApType.toUpperCase()}
-											desc={ap.Detail.map(
-												(ga) => `\t\t${ga.F_Description}\n`
-											).join("")}
-											inv={ap.F_InvoiceNo}
-											due={
-												ap.F_DueDate
-													? moment(ap.F_DueDate).utc().format("L")
-													: ""
-											}
-											approved={
-												selected.Status === 111 || selected.Status === 121
-											}
-										/>
-									}
-								>
-									{({ blob, url, loading, error }) => (
-										<a
-											href={url}
-											target="__blank"
-											style={{ textDecoration: "none" }}
-										>
-											<Tag
-												icon="cloud-download"
-												interactive={true}
-												intent="primary"
-												className="p-2 my-2 ml-2"
-											>
-												Form
-											</Tag>
-										</a>
-									)}
-								</BlobProvider>
-							) : (
-								<></>
-							)} */}
 						</div>
 					</div>
 				</div>

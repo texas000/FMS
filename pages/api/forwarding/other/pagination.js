@@ -10,23 +10,22 @@ export default async function handler(req, res) {
 	try {
 		const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
 		var qry = `
-        WITH Paging AS (select *, ROW_NUMBER() OVER (ORDER BY F_ID DESC) NUM FROM(select M.F_ID, M.F_RefNo, M.F_ETA, M.F_ETD, M.F_FETA, M.F_PostDate, M.F_U2ID, M.F_MBLNo, (SELECT TOP 1 F_Customer from T_OIHMAIN H where H.F_OIMBLID=M.F_ID) as ID from T_OIMMAIN M where M.F_FileClosed='0')PG)
-        SELECT *, (SELECT F_SName from T_COMPANY C where C.F_ID=ID) as Company From Paging WHERE NUM BETWEEN ${
-					(page - 1) * size + 1
-				} AND ${page * size * 2} ORDER BY F_ID DESC;
+        WITH Paging AS (select *, ROW_NUMBER() OVER (ORDER BY F_ID DESC) NUM 
+		FROM(select M.F_ID, M.F_RefNo, M.F_ETA, M.F_ETD, M.F_PostDate, M.F_U2ID, M.F_MBLNo, 
+			(SELECT F_SName from T_COMPANY C where M.F_Customer=C.F_ID) as Company from T_GENMAIN M where M.F_FileClosed='0')PG)
+        SELECT * From Paging WHERE NUM 
+		BETWEEN ${(page - 1) * size + 1} AND ${page * size * 2} ORDER BY F_ID DESC;
         `;
 		if (token.admin !== 9) {
 			qry = `
 			WITH Paging AS (select *, ROW_NUMBER() OVER (ORDER BY F_ID DESC) NUM 
 			FROM(select M.F_ID, M.F_RefNo, M.F_ETA, M.F_ETD, M.F_FETA, M.F_PostDate, M.F_U2ID, M.F_MBLNo, 
-				(SELECT TOP 1 F_Customer from T_OIHMAIN H where H.F_OIMBLID=M.F_ID) as ID 
-				from T_OIMMAIN M where M.F_FileClosed='0' AND (M.F_U1ID='${
-					token.fsid
-				}' OR M.F_U2ID='${token.fsid}'))PG)
-			SELECT *, (SELECT F_SName from T_COMPANY C where C.F_ID=ID) as Company 
-			From Paging WHERE NUM BETWEEN ${(page - 1) * size + 1} AND ${
-				page * size * 2
-			} ORDER BY F_ID DESC;
+				(SELECT F_SName from T_COMPANY C where F_Customer=C.F_ID) as Company 
+				from T_GENMAIN M where M.F_FileClosed='0' AND 
+				(M.F_U1ID='${token.fsid}' OR M.F_U2ID='${token.fsid}')
+				)PG)
+			SELECT * From Paging WHERE NUM 
+			BETWEEN ${(page - 1) * size + 1} AND ${page * size * 2} ORDER BY F_ID DESC;
 			`;
 		}
 		let pool = new sql.ConnectionPool(process.env.SERVER2);
