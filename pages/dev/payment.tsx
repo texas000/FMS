@@ -63,7 +63,7 @@ const Payment = ({ Cookie }) => {
                 name="customDonation"
                 min={1.0}
                 max={10000.0}
-                step={1.0}
+                step={0.01}
                 value={input.customDonation || ""}
               ></input>
             </div>

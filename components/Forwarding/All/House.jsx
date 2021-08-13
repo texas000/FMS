@@ -1,81 +1,80 @@
-import { Tag } from "@blueprintjs/core";
 import React from "react";
 
 export const House = ({ house, container }) => (
 	<div className="card my-4 py-4 shadow">
 		{/* {JSON.stringify(house)} */}
-		<div className="row">
+		<div className="grid grid-cols-1 sm:grid-cols-2 p-3 gap-10">
 			{house &&
 				house.map((ga) => (
-					<div
-						className="col-lg-6 px-4 pb-4"
-						key={ga.F_HBLNo || ga.F_HawbNo || ga.F_HAWBNo}
-					>
-						<h1 className="h6 mb-3 text-dark">
+					<div key={ga.F_HBLNo || ga.F_HawbNo || ga.F_HAWBNo}>
+						<h4 className="text-xl">
 							{ga.F_HBLNo || ga.F_HawbNo || ga.F_HAWBNo}
-						</h1>
-						<div className="d-flex justify-content-between text-center">
-							<Tag
-								intent={ga.F_SHIPMENTID === "" ? "none" : "primary"}
-								className="mr-1 w-100"
+						</h4>
+						<div className="flex justify-between gap-4 text-center">
+							<div
+								className={`rounded-sm w-100 text-white ${
+									ga.F_SHIPMENTID == "" ? "bg-gray-400" : "bg-indigo-400"
+								}`}
 							>
 								ISF FILE
-							</Tag>
+							</div>
 							{ga.F_AMSBLNO && (
-								<Tag intent={ga.F_AMSBLNO && "primary"} className="mx-1 w-100">
+								<div
+									className={`rounded-sm w-100 text-white ${
+										ga.F_AMSBLNO == "" ? "bg-gray-400" : "bg-indigo-400"
+									}`}
+								>
 									AMS FILE
-								</Tag>
+								</div>
 							)}
 							{ga.F_MoveType && (
-								<Tag intent="primary" className="mx-1 w-100">
+								<div className={`rounded-sm w-100 text-white bg-indigo-400`}>
 									{ga.F_MoveType}
-								</Tag>
+								</div>
 							)}
 						</div>
-						<table className="table table-hover mt-2 table-sm text-xs">
+						<table className="table-hover mt-2 table-sm w-100">
 							<tbody>
-								<tr>
-									<th className="text-success">HBL</th>
-									<th className="text-secondary">
+								<tr className="border-b border-indigo-400">
+									<th className="text-indigo-500">HBL</th>
+									<th className="font-normal">
 										{ga.F_HBLNo || ga.F_HawbNo || ga.F_HAWBNo}
 									</th>
 								</tr>
-								<tr>
-									<th className="text-success">CUSTOMER</th>
-									<th className="text-secondary">{ga.CUSTOMER}</th>
+								<tr className="border-b border-indigo-400">
+									<th className="text-indigo-500">CUSTOMER</th>
+									<th className="font-normal">{ga.CUSTOMER}</th>
 								</tr>
-								<tr>
-									<th className="text-success">SHIPPER</th>
-									<th className="text-secondary">{ga.SHIPPER}</th>
+								<tr className="border-b border-indigo-400">
+									<th className="text-indigo-500">SHIPPER</th>
+									<th className="font-normal">{ga.SHIPPER}</th>
 								</tr>
-								<tr>
-									<th className="text-success">CONSIGNEE</th>
-									<th className="text-secondary">{ga.CONSIGNEE}</th>
+								<tr className="border-b border-indigo-400">
+									<th className="text-indigo-500">CONSIGNEE</th>
+									<th className="font-normal">{ga.CONSIGNEE}</th>
 								</tr>
-								<tr>
-									<th className="text-success">NOTIFY</th>
-									<th className="text-secondary">{ga.NOTIFY}</th>
+								<tr className="border-b border-indigo-400">
+									<th className="text-indigo-500">NOTIFY</th>
+									<th className="font-normal">{ga.NOTIFY}</th>
 								</tr>
-								<tr>
-									<th className="text-success">DESCIPRTION</th>
-									<th className="text-secondary">{ga.F_Description}</th>
+								<tr className="border-b border-indigo-400">
+									<th className="text-indigo-500">DESCIPRTION</th>
+									<th className="font-normal">{ga.F_Description}</th>
 								</tr>
-								<tr>
-									<th className="text-success">PACKAGE</th>
-									<th className="text-secondary">
-										{ga.F_MarkPkg || ga.F_Pkgs}
-									</th>
+								<tr className="border-b border-indigo-400">
+									<th className="text-indigo-500">PACKAGE</th>
+									<th className="font-normal">{ga.F_MarkPkg || ga.F_Pkgs}</th>
 								</tr>
-								<tr>
-									<th className="text-success">WEIGHT</th>
-									<th className="text-secondary">
+								<tr className="border-b border-indigo-400">
+									<th className="text-indigo-500">WEIGHT</th>
+									<th className="font-normal">
 										{ga.F_MarkGross || ga.F_GrossWeight}
 									</th>
 								</tr>
 								{ga.F_MarkMeasure ? (
-									<tr>
-										<th className="text-success">VOLUME</th>
-										<th className="text-secondary">{ga.F_MarkMeasure}</th>
+									<tr className="border-b border-indigo-400">
+										<th className="text-indigo-500">VOLUME</th>
+										<th className="font-normal">{ga.F_MarkMeasure}</th>
 									</tr>
 								) : null}
 							</tbody>
@@ -84,11 +83,11 @@ export const House = ({ house, container }) => (
 				))}
 		</div>
 		{/* {JSON.stringify(house)} */}
-		<div className="row">
+		<div className="grid grid-cols-1 sm:grid-cols-2 p-3 gap-10">
 			{container &&
 				container.map((ga, i) => (
-					<div className="col-lg-6 px-4 pb-4" key={ga.F_ContainerNo + i}>
-						<Tag intent="primary" className="py-1 w-100 text-center">
+					<div key={ga.F_ContainerNo + i}>
+						<div className="w-100 text-center bg-indigo-500 rounded-sm text-white">
 							Container {i + 1}: {ga.F_ContainerNo} {ga.F_ConType}
 							<a
 								href={`https://searates.com/container/tracking/?container=${ga.F_ContainerNo}&sealine=AUTO`}
@@ -97,7 +96,7 @@ export const House = ({ house, container }) => (
 							>
 								<span> 🚢 Track Container</span>
 							</a>
-						</Tag>
+						</div>
 					</div>
 				))}
 			{/* {JSON.stringify(container)} */}

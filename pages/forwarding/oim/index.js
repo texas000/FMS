@@ -266,7 +266,7 @@ const Index = ({ token }) => {
 		<Layout TOKEN={token} TITLE="OCEAN IMPORT" LOADING={!data}>
 			<div className="d-flex flex-sm-row justify-content-between">
 				<div className="flex-column">
-					<h3 className="h3 text-dark">Ocean Import</h3>
+					<h3 className="dark:text-white">Ocean Import</h3>
 				</div>
 			</div>
 

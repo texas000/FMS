@@ -1,38 +1,3 @@
-:root {
-	--blue: #4e73df;
-	--indigo: #6610f2;
-	--purple: #6f42c1;
-	--pink: #e83e8c;
-	--red: #e74a3b;
-	--orange: #fd7e14;
-	--yellow: #f6c23e;
-	--green: #1cc88a;
-	--teal: #20c9a6;
-	--cyan: #36b9cc;
-	--white: #fff;
-	--gray: #858796;
-	--gray-dark: #5a5c69;
-	--primary: #4e73df;
-	--secondary: #858796;
-	--success: #1cc88a;
-	--info: #36b9cc;
-	--warning: #f6c23e;
-	--danger: #e74a3b;
-	--light: #f8f9fc;
-	--dark: #5a5c69;
-	--breakpoint-xs: 0;
-	--breakpoint-sm: 576px;
-	--breakpoint-md: 768px;
-	--breakpoint-lg: 992px;
-	--breakpoint-xl: 1200px;
-	--font-family-sans-serif: "Roboto", sans-serif, -apple-system,
-		BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
-		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-	--font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
-		"Liberation Mono", "Courier New", monospace;
-	src: url("../../public/font/Montserrat-Regular.ttf");
-}
-
 *,
 *::before,
 *::after {
@@ -66,7 +31,7 @@ body {
 	line-height: 1.5;
 	color: #858796;
 	text-align: left;
-	background-color: #fff;
+	/* background-color: #fff; */
 }
 
 [tabindex="-1"]:focus:not(:focus-visible) {
@@ -184,14 +149,6 @@ a:not([href]):not([class]):hover {
 	text-decoration: none;
 }
 
-pre,
-code,
-kbd,
-samp {
-	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-		"Courier New", monospace;
-	font-size: 1em;
-}
 
 pre {
 	margin-top: 0;
@@ -1582,14 +1539,12 @@ pre code {
 .table {
 	width: 100%;
 	margin-bottom: 1rem;
-	color: #858796;
 }
 
 .table th,
 .table td {
 	padding: 0.75rem;
 	vertical-align: top;
-	border-top: 1px solid #e3e6f0;
 }
 
 .table thead th {
@@ -6180,9 +6135,6 @@ a.close.disabled {
 	z-index: 1070;
 	display: block;
 	margin: 0;
-	font-family: -apple-system, BlinkMacSystemFont, "Poppins-Regular", "Segoe UI",
-		Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	font-style: normal;
 	font-weight: 400;
 	line-height: 1.5;
@@ -6307,9 +6259,6 @@ a.close.disabled {
 	z-index: 1060;
 	display: block;
 	max-width: 276px;
-	font-family: -apple-system, BlinkMacSystemFont, "Poppins-Regular", "Segoe UI",
-		Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
-		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	font-style: normal;
 	font-weight: 400;
 	line-height: 1.5;
@@ -6848,14 +6797,6 @@ a.bg-dark:focus,
 button.bg-dark:hover,
 button.bg-dark:focus {
 	background-color: #42444e !important;
-}
-
-.bg-white {
-	background-color: #fff !important;
-}
-
-.bg-transparent {
-	background-color: transparent !important;
 }
 
 .border {
@@ -9830,10 +9771,7 @@ button.bg-dark:focus {
 	background-color: rgba(0, 0, 0, 0);
 }
 
-.text-monospace {
-	font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
-		"Courier New", monospace !important;
-}
+
 
 .text-justify {
 	text-align: justify !important;
@@ -10323,88 +10261,8 @@ a:focus {
 	background-size: cover;
 }
 
-.bg-gray-100 {
-	background-color: #f8f9fc !important;
-}
-
-.bg-gray-200 {
-	background-color: #eaecf4 !important;
-}
-
-.bg-gray-300 {
-	background-color: #dddfeb !important;
-}
-
-.bg-gray-400 {
-	background-color: #d1d3e2 !important;
-}
-
-.bg-gray-500 {
-	background-color: #b7b9cc !important;
-}
-
-.bg-gray-600 {
-	background-color: #858796 !important;
-}
-
-.bg-gray-700 {
-	background-color: #6e707e !important;
-}
-
-.bg-gray-800 {
-	background-color: #5a5c69 !important;
-}
-
-.bg-gray-900 {
-	background-color: #3a3b45 !important;
-}
-
 .o-hidden {
 	overflow: hidden !important;
-}
-
-.text-xs {
-	font-size: 0.7rem;
-}
-
-.text-lg {
-	font-size: 1.2rem;
-}
-
-.text-gray-100 {
-	color: #f8f9fc !important;
-}
-
-.text-gray-200 {
-	color: #eaecf4 !important;
-}
-
-.text-gray-300 {
-	color: #dddfeb !important;
-}
-
-.text-gray-400 {
-	color: #d1d3e2 !important;
-}
-
-.text-gray-500 {
-	color: #b7b9cc !important;
-}
-
-.text-gray-600 {
-	color: #858796 !important;
-}
-
-.text-gray-700 {
-	color: #6e707e !important;
-}
-
-.text-gray-800 {
-	color: #5a5c69 !important;
-}
-
-.text-gray-900 {
-	color: #3a3b45 !important;
 }
 
 .icon-circle {

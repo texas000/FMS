@@ -7,6 +7,7 @@ import React, { useState, useEffect } from "react";
 import useSWR from "swr";
 import Link from "next/link";
 import Notification from "../../components/Toaster";
+import Checkout from "../../components/Dashboard/Payment";
 
 export async function getServerSideProps({ req }) {
 	const cookies = cookie.parse(
@@ -44,26 +45,27 @@ export default function dashboard(props) {
 				msg="Hello"
 				intent="primary"
 			/> */}
+
 			<div className="d-sm-flex align-items-center justify-content-between mb-4 w-100">
-				<h3 className="h3 text-dark">Dashboard</h3>
+				<h3 className="dark:text-white">Dashboard</h3>
 			</div>
 
-			{/* Explain Row */}
-			<div className="row">
-				<div className="col-lg-3 mb-4">
-					<div className="card text-dark shadow">
-						<div className="card-body d-flex justify-content-between py-1">
+			{/* SUMMARY FREIGHT */}
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+				<div className="mb-4">
+					<div className="shadow rounded bg-white dark:bg-gray-800 text-black dark:text-white px-5">
+						<div className="flex justify-content-between py-1">
 							<div className="py-2">
-								<h5>Ocean Import</h5>
-								<div className="small">
+								<div className="text-lg">Ocean Import</div>
+								<div className="text-sm">
 									Total of {data && data.length ? data[0].length : "0"}
 								</div>
 							</div>
 							<Link href="/forwarding/oim">
 								<a className="d-flex align-items-center">
 									<span className="fa-stack fa-2x">
-										<i className="fa fa-circle fa-stack-2x text-gray-300"></i>
-										<i className="fa fa-anchor fa-stack-1x text-primary"></i>
+										<i className="fa fa-circle fa-stack-2x text-gray-200"></i>
+										<i className="fa fa-anchor fa-stack-1x text-blue-500"></i>
 									</span>
 								</a>
 							</Link>
@@ -71,20 +73,20 @@ export default function dashboard(props) {
 					</div>
 				</div>
 
-				<div className="col-lg-3 mb-4">
-					<div className="card text-dark shadow">
-						<div className="card-body d-flex justify-content-between py-1">
+				<div className="mb-4">
+					<div className="shadow rounded bg-white dark:bg-gray-800 text-black dark:text-white px-5">
+						<div className="flex justify-content-between py-1">
 							<div className="py-2">
-								<h5>Ocean Export</h5>
-								<div className="small">
+								<div className="text-lg">Ocean Export</div>
+								<div className="text-sm">
 									Total of {data && data.length ? data[1].length : "0"}
 								</div>
 							</div>
 							<Link href="/forwarding/oex">
 								<a className="d-flex align-items-center">
 									<span className="fa-stack fa-2x">
-										<i className="fa fa-circle fa-stack-2x text-gray-300"></i>
-										<i className="fa fa-anchor fa-flip-vertical fa-stack-1x text-primary"></i>
+										<i className="fa fa-circle fa-stack-2x text-gray-200"></i>
+										<i className="fa fa-anchor fa-flip-vertical fa-stack-1x text-blue-500"></i>
 									</span>
 								</a>
 							</Link>
@@ -92,20 +94,20 @@ export default function dashboard(props) {
 					</div>
 				</div>
 
-				<div className="col-lg-3 mb-4">
-					<div className="card text-dark shadow">
-						<div className="card-body d-flex justify-content-between py-1">
+				<div className="mb-4">
+					<div className="shadow rounded bg-white dark:bg-gray-800 text-black dark:text-white px-5">
+						<div className="flex justify-content-between py-1">
 							<div className="py-2">
-								<h5>Air Import</h5>
-								<div className="small">
+								<div className="text-lg">Air Import</div>
+								<div className="text-sm">
 									Total of {data && data.length ? data[2].length : "0"}
 								</div>
 							</div>
 							<Link href="/forwarding/aim">
 								<a className="d-flex align-items-center">
 									<span className="fa-stack fa-2x">
-										<i className="fa fa-circle fa-stack-2x text-gray-300"></i>
-										<i className="fa fa-plane fa-stack-1x text-info"></i>
+										<i className="fa fa-circle fa-stack-2x text-gray-200"></i>
+										<i className="fa fa-plane fa-stack-1x text-purple-500"></i>
 									</span>
 								</a>
 							</Link>
@@ -113,20 +115,20 @@ export default function dashboard(props) {
 					</div>
 				</div>
 
-				<div className="col-lg-3 mb-4">
-					<div className="card text-dark shadow">
-						<div className="card-body d-flex justify-content-between py-1">
+				<div className="mb-4">
+					<div className="shadow rounded bg-white dark:bg-gray-800 text-black dark:text-white px-5">
+						<div className="flex justify-content-between py-1">
 							<div className="py-2">
-								<h5>Air Export</h5>
-								<div className="small">
+								<div className="text-lg">Air Export</div>
+								<div className="text-sm">
 									Total of {data && data.length ? data[3].length : "0"}
 								</div>
 							</div>
 							<Link href="/forwarding/aex">
 								<a className="d-flex align-items-center">
 									<span className="fa-stack fa-2x">
-										<i className="fa fa-circle fa-stack-2x text-gray-300"></i>
-										<i className="fa fa-plane fa-flip-vertical fa-stack-1x text-info"></i>
+										<i className="fa fa-circle fa-stack-2x text-gray-200"></i>
+										<i className="fa fa-plane fa-flip-vertical fa-stack-1x text-purple-500"></i>
 									</span>
 								</a>
 							</Link>
@@ -135,250 +137,202 @@ export default function dashboard(props) {
 				</div>
 			</div>
 
-			<div className="row">
+			{/* RECENT LIST FREIGHT */}
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
 				{/*  ------------------- OIM ------------------------  */}
-				<div className="col-xl-3 col-md-6 mb-4">
-					<div className="card shadow h-100">
-						<div className="card-body px-3">
-							<div className="row no-gutters align-items-center">
-								<div className="col mr-2">
-									{/* <div className="font-weight-bold text-primary text-uppercase mb-2">
-											ocean import
-										</div> */}
-									<ListGroup>
-										{data && data.length ? (
-											data[0].map((ga, i) => {
-												return (
-													<Link
-														href={`/forwarding/oim/${ga.F_RefNo}`}
-														key={i + "oim"}
-													>
-														<a className="list-group-item d-flex py-2 justify-content-between align-items-center list-group-item-action">
-															<span className="font-weight-bold">
-																{ga.F_RefNo}
-															</span>
-															<span
-																className="text-gray-800"
-																style={{
-																	maxWidth: "50%",
-																	textOverflow: "ellipsis",
-																	whiteSpace: "nowrap",
-																	overflow: "hidden",
-																}}
-															>
-																{ga.Customer || "NO CUSTOMER"}
-															</span>
-															<span
-																className={`font-weight-bold ${
-																	moment()
-																		.startOf("day")
-																		.diff(moment(ga.F_ETA).utc(), "days") < 0
-																		? "text-danger"
-																		: "text-primary"
-																}`}
-															>
-																{moment(ga.F_ETA)
-																	.utc()
-																	.add(1, "days")
-																	.startOf("day")
-																	.diff(new Date().toDateString(), "days")}
-															</span>
-														</a>
-													</Link>
-												);
-											})
-										) : (
-											<div className="mt-2 text-danger text-xs">No Result</div>
-										)}
-									</ListGroup>
-								</div>
-							</div>
-						</div>
-					</div>
+
+				<div className="card shadow h-100 p-3">
+					<ul className="px-0 divide-y divide-gray-300">
+						{data && data.length ? (
+							data[0].map((ga, i) => {
+								return (
+									<li
+										className="px-2 py-1 hover:bg-gray-200 focus:ring-2 focus:ring-blue-600"
+										key={i + "oim"}
+									>
+										<Link href={`/forwarding/oim/${ga.F_RefNo}`}>
+											<a
+												className="flex justify-between"
+												style={{ textDecoration: "none" }}
+											>
+												<span className="w-1/4 truncate font-semibold">
+													{ga.F_RefNo}
+												</span>
+												<span className="w-1/2 truncate">
+													{ga.Customer || "NO CUSTOMER"}
+												</span>
+												<span
+													className={`font-weight-bold ${
+														moment()
+															.startOf("day")
+															.diff(moment(ga.F_ETA).utc(), "days") < 0
+															? "text-danger"
+															: "text-primary"
+													}`}
+												>
+													{moment(ga.F_ETA)
+														.utc()
+														.add(1, "days")
+														.startOf("day")
+														.diff(new Date().toDateString(), "days")}
+												</span>
+											</a>
+										</Link>
+									</li>
+								);
+							})
+						) : (
+							<div className="mt-2 text-danger text-xs">No Result</div>
+						)}
+					</ul>
 				</div>
 
 				{/*  ------------------- OEX ------------------------  */}
-				<div className="col-xl-3 col-md-6 mb-4">
-					<div className="card shadow h-100">
-						<div className="card-body px-3">
-							<div className="row no-gutters align-items-center">
-								<div className="col mr-2">
-									{/* <div className="font-weight-bold text-primary text-uppercase mb-2">
-											ocean export
-										</div> */}
-									<ListGroup>
-										{data && data.length ? (
-											data[1].map((ga, i) => {
-												return (
-													<Link
-														href={`/forwarding/oex/${ga.F_RefNo}`}
-														key={i + "oex"}
-													>
-														<a className="list-group-item d-flex py-2 justify-content-between align-items-center list-group-item-action">
-															<span className="font-weight-bold">
-																{ga.F_RefNo}
-															</span>
-															<span
-																className="text-gray-800"
-																style={{
-																	maxWidth: "50%",
-																	textOverflow: "ellipsis",
-																	whiteSpace: "nowrap",
-																	overflow: "hidden",
-																}}
-															>
-																{ga.Customer || "NO CUSTOMER"}
-															</span>
-															<span
-																className={`font-weight-bold ${
-																	moment()
-																		.startOf("day")
-																		.diff(moment(ga.F_ETA).utc(), "days") < 0
-																		? "text-danger"
-																		: "text-primary"
-																}`}
-															>
-																{moment(ga.F_ETA)
-																	.utc()
-																	.add(1, "days")
-																	.startOf("day")
-																	.diff(new Date().toDateString(), "days")}
-															</span>
-														</a>
-													</Link>
-												);
-											})
-										) : (
-											<div className="mt-2 text-danger text-xs">No Result</div>
-										)}
-									</ListGroup>
-								</div>
-							</div>
-						</div>
-					</div>
+
+				<div className="card shadow h-100 p-3">
+					<ul className="px-0 divide-y divide-gray-300">
+						{data && data.length ? (
+							data[1].map((ga, i) => {
+								return (
+									<li
+										className="px-2 py-1 hover:bg-gray-200 focus:ring-2 focus:ring-blue-600"
+										key={i + "oex"}
+									>
+										<Link href={`/forwarding/oex/${ga.F_RefNo}`}>
+											<a
+												className="flex justify-between"
+												style={{ textDecoration: "none" }}
+											>
+												<span className="w-1/4 truncate font-semibold">
+													{ga.F_RefNo}
+												</span>
+												<span className="w-1/2 truncate">
+													{ga.Customer || "NO CUSTOMER"}
+												</span>
+												<span
+													className={`font-weight-bold ${
+														moment()
+															.startOf("day")
+															.diff(moment(ga.F_ETA).utc(), "days") < 0
+															? "text-danger"
+															: "text-primary"
+													}`}
+												>
+													{moment(ga.F_ETA)
+														.utc()
+														.add(1, "days")
+														.startOf("day")
+														.diff(new Date().toDateString(), "days")}
+												</span>
+											</a>
+										</Link>
+									</li>
+								);
+							})
+						) : (
+							<div className="mt-2 text-danger text-xs">No Result</div>
+						)}
+					</ul>
 				</div>
 
 				{/*  ------------------- AIM ------------------------  */}
-				<div className="col-xl-3 col-md-6 mb-4">
-					<div className="card shadow h-100">
-						<div className="card-body px-3">
-							<div className="row no-gutters align-items-center">
-								<div className="col mr-2">
-									{/* <div className="font-weight-bold text-info text-uppercase mb-2">
-											air import
-										</div> */}
-									<ListGroup>
-										{data && data.length ? (
-											data[2].map((ga, i) => {
-												return (
-													<Link
-														href={`/forwarding/aim/${ga.F_RefNo}`}
-														key={i + "aim"}
-													>
-														<a className="list-group-item d-flex py-2 justify-content-between align-items-center list-group-item-action">
-															<span className="font-weight-bold">
-																{ga.F_RefNo}
-															</span>
-															<span
-																style={{
-																	maxWidth: "50%",
-																	textOverflow: "ellipsis",
-																	whiteSpace: "nowrap",
-																	overflow: "hidden",
-																}}
-															>
-																{ga.Customer || "NO CUSTOMER"}
-															</span>
-															<span
-																className={`font-weight-bold ${
-																	moment()
-																		.startOf("day")
-																		.diff(moment(ga.F_ETA).utc(), "days") < 0
-																		? "text-danger"
-																		: "text-info"
-																}`}
-															>
-																{moment(ga.F_ETA)
-																	.utc()
-																	.add(1, "days")
-																	.startOf("day")
-																	.diff(new Date().toDateString(), "days")}
-															</span>
-														</a>
-													</Link>
-												);
-											})
-										) : (
-											<div className="mt-2 text-danger text-xs">No Result</div>
-										)}
-									</ListGroup>
-								</div>
-							</div>
-						</div>
-					</div>
+
+				<div className="card shadow h-100 p-3">
+					<ul className="px-0 divide-y divide-gray-300">
+						{data && data.length ? (
+							data[2].map((ga, i) => {
+								return (
+									<li
+										className="px-2 py-1 hover:bg-gray-200 focus:ring-2 focus:ring-blue-600"
+										key={i + "aim"}
+									>
+										<Link href={`/forwarding/aim/${ga.F_RefNo}`}>
+											<a
+												className="flex justify-between"
+												style={{ textDecoration: "none" }}
+											>
+												<span className="w-1/4 truncate font-semibold">
+													{ga.F_RefNo}
+												</span>
+												<span className="w-1/2 truncate">
+													{ga.Customer || "NO CUSTOMER"}
+												</span>
+												<span
+													className={`font-weight-bold ${
+														moment()
+															.startOf("day")
+															.diff(moment(ga.F_ETA).utc(), "days") < 0
+															? "text-danger"
+															: "text-primary"
+													}`}
+												>
+													{moment(ga.F_ETA)
+														.utc()
+														.add(1, "days")
+														.startOf("day")
+														.diff(new Date().toDateString(), "days")}
+												</span>
+											</a>
+										</Link>
+									</li>
+								);
+							})
+						) : (
+							<div className="mt-2 text-danger text-xs">No Result</div>
+						)}
+					</ul>
 				</div>
 
 				{/*  ------------------- AEX ------------------------  */}
-				<div className="col-xl-3 col-md-6 mb-4">
-					<div className="card shadow h-100">
-						<div className="card-body px-3">
-							<div className="row no-gutters align-items-center">
-								<div className="col mr-2">
-									{/* <div className="font-weight-bold text-info text-uppercase mb-2">
-											air export
-										</div> */}
-									<ListGroup>
-										{data && data.length ? (
-											data[3].map((ga, i) => {
-												return (
-													<Link
-														href={`/forwarding/aex/${ga.F_RefNo}`}
-														key={i + "aex"}
-													>
-														<a className="list-group-item d-flex py-2 justify-content-between align-items-center list-group-item-action">
-															<span className="font-weight-bold">
-																{ga.F_RefNo}
-															</span>
-															<span
-																className="text-gray-800"
-																style={{
-																	maxWidth: "50%",
-																	textOverflow: "ellipsis",
-																	whiteSpace: "nowrap",
-																	overflow: "hidden",
-																}}
-															>
-																{ga.Customer || "NO CUSTOMER"}
-															</span>
-															<span
-																className={`font-weight-bold ${
-																	moment()
-																		.startOf("day")
-																		.diff(moment(ga.F_ETA).utc(), "days") < 0
-																		? "text-danger"
-																		: "text-info"
-																}`}
-															>
-																{moment(ga.F_ETA)
-																	.utc()
-																	.add(1, "days")
-																	.startOf("day")
-																	.diff(new Date().toDateString(), "days")}
-															</span>
-														</a>
-													</Link>
-												);
-											})
-										) : (
-											<div className="mt-2 text-danger text-xs">No Result</div>
-										)}
-									</ListGroup>
-								</div>
-							</div>
-						</div>
-					</div>
+
+				<div className="card shadow h-100 p-3">
+					<ul className="px-0 divide-y divide-gray-300">
+						{data && data.length ? (
+							data[3].map((ga, i) => {
+								return (
+									<li
+										className="px-2 py-1 hover:bg-gray-200 focus:ring-2 focus:ring-blue-600"
+										key={i + "aex"}
+									>
+										<Link href={`/forwarding/aex/${ga.F_RefNo}`}>
+											<a
+												className="flex justify-between"
+												style={{ textDecoration: "none" }}
+											>
+												<span className="w-1/4 truncate font-semibold">
+													{ga.F_RefNo}
+												</span>
+												<span className="w-1/2 truncate">
+													{ga.Customer || "NO CUSTOMER"}
+												</span>
+												<span
+													className={`font-weight-bold ${
+														moment()
+															.startOf("day")
+															.diff(moment(ga.F_ETA).utc(), "days") < 0
+															? "text-danger"
+															: "text-primary"
+													}`}
+												>
+													{moment(ga.F_ETA)
+														.utc()
+														.add(1, "days")
+														.startOf("day")
+														.diff(new Date().toDateString(), "days")}
+												</span>
+											</a>
+										</Link>
+									</li>
+								);
+							})
+						) : (
+							<div className="mt-2 text-danger text-xs">No Result</div>
+						)}
+					</ul>
 				</div>
 			</div>
+
+			<Checkout />
 		</Layout>
 	);
 }

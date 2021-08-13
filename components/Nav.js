@@ -71,7 +71,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 	}
 
 	return (
-		<nav className="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow w-100">
+		<nav className="navbar navbar-expand h-16 mb-4 static-top shadow w-100 bg-white dark:bg-gray-700 dark:text-white">
 			{/* <!-- Sidebar Toggle (Topbar) --> */}
 			<button
 				id="sidebarToggleTop"
@@ -82,7 +82,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 			</button>
 
 			{/* <!-- Topbar Search --> */}
-			<form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+			<form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search w-1/3">
 				{/* <InputGroup> */}
 				<AsyncSelect
 					instanceId="search"
@@ -130,9 +130,10 @@ const Top = ({ Token, toggle, setToggle }) => {
 			</form>
 
 			{/* <!-- Topbar Navbar --> */}
-			<ul className="navbar-nav ml-auto">
+			{/* topbar navbar-nav */}
+			<ul className="ml-auto flex flex-row my-auto">
 				{/* <!-- Nav Item - Search Dropdown (Visible Only XS) --> */}
-				<li className="nav-item dropdown no-arrow d-sm-none">
+				<li className="flex-1 dropdown no-arrow d-sm-none">
 					<a
 						className="nav-link dropdown-toggle"
 						href="#"
@@ -150,7 +151,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 						className="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
 						aria-labelledby="searchDropdown"
 					>
-						<form className="form-inline mr-auto w-100 navbar-search">
+						<form className="form-inline mr-auto navbar-search w-auto">
 							<div className="input-group">
 								<input
 									type="text"
@@ -173,8 +174,9 @@ const Top = ({ Token, toggle, setToggle }) => {
 						</form>
 					</div>
 				</li>
+
 				<li
-					className="nav-item dropdown no-arrow mx-1"
+					className="flex-1 nav-item dropdown no-arrow my-auto text-center"
 					onMouseEnter={() => setSearchAlertToggle(true)}
 					onMouseLeave={() => setSearchAlertToggle(false)}
 					onClick={() => setSearchAlertToggle((prev) => !prev)}
@@ -281,11 +283,11 @@ const Top = ({ Token, toggle, setToggle }) => {
 
 				{/* <!-- Nav Item - Alerts --> */}
 				<li
-					className="nav-item dropdown no-arrow mx-1"
+					className="flex-1 nav-item dropdown no-arrow mx-3 my-auto text-center"
 					onClick={() => setalertToggle((prev) => !prev)}
 				>
 					<a
-						className="nav-link dropdown-toggle"
+						className="dropdown-toggle"
 						href="#"
 						id="alertsDropdown"
 						role="button"
@@ -295,7 +297,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 					>
 						<i className="fa fa-bell fa-fw"></i>
 						{/* <!-- Counter - Alerts --> */}
-						{Notifications && (
+						{/* {Notifications && (
 							<span
 								className={`badge ${
 									Notifications.length ? "badge-danger" : "badge-secondary"
@@ -303,7 +305,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 							>
 								{Notifications.length}
 							</span>
-						)}
+						)} */}
 					</a>
 					{/* <!-- Dropdown - Alerts --> */}
 					<div
@@ -363,7 +365,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 
 				{/* <!-- Nav Item - Messages --> */}
 				<li
-					className="nav-item dropdown no-arrow mx-1"
+					className="flex-1 nav-item dropdown no-arrow my-auto mr-3 text-center"
 					onClick={() => setmessageToggle((prev) => !prev)}
 				>
 					<a
@@ -377,9 +379,9 @@ const Top = ({ Token, toggle, setToggle }) => {
 					>
 						<i className="fa fa-envelope fa-fw"></i>
 						{/* <!-- Counter - Messages --> */}
-						<span className="badge badge-secondary badge-counter">
+						{/* <span className="badge badge-secondary badge-counter">
 							{Messages && Messages.length}
-						</span>
+						</span> */}
 					</a>
 					{/* <!-- Dropdown - Messages --> */}
 					<div
@@ -424,15 +426,15 @@ const Top = ({ Token, toggle, setToggle }) => {
 					</div>
 				</li>
 
-				<div className="topbar-divider d-none d-sm-block"></div>
+				<div className="border-r h-10 my-auto"></div>
 
 				{/* <!-- Nav Item - User Information --> */}
 				<li
-					className="nav-item dropdown no-arrow"
+					className="flex-1 nav-item dropdown no-arrow mx-2"
 					onClick={() => setuserToggle((prev) => !prev)}
 				>
 					<a
-						className="nav-link dropdown-toggle"
+						className="nav-link dropdown-toggle flex flex-row mr-2"
 						href="#"
 						id="userDropdown"
 						role="button"
@@ -440,13 +442,13 @@ const Top = ({ Token, toggle, setToggle }) => {
 						aria-haspopup="true"
 						aria-expanded={userToggle}
 					>
-						<span className="mr-2 d-none d-lg-inline text-gray-600 small">
+						<span className="d-none d-lg-inline text-gray-700 text-xs pt-1 my-auto mr-2 dark:text-white">
 							{Token
 								? Token.displayName || `${Token.first} ${Token.last}`
 								: "Please Login"}
 						</span>
 						<img
-							className="img-profile rounded-circle"
+							className="rounded-full h-8 w-8 min-w-min min-h-min"
 							src={Token.photoURL || "/image/icons/sarah.svg"}
 						/>
 					</a>

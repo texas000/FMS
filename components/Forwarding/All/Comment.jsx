@@ -84,7 +84,7 @@ export const Comment = ({ Reference, Uid }) => {
 
 	return (
 		<div className="card my-4 shadow py-3 px-3">
-			<h5 className="h5 text-dark">Comments</h5>
+			<h4 className="text-lg">Comments</h4>
 
 			{data ? (
 				data.map((ga) => (
@@ -102,7 +102,7 @@ export const Comment = ({ Reference, Uid }) => {
 
 			{isOpen && ReactQuill && (
 				<ReactQuill
-					className="my-2"
+					className="my-3 w-100 dark:text-white"
 					value={html}
 					placeholder="Type here..."
 					modules={{
@@ -174,24 +174,21 @@ export const Comment = ({ Reference, Uid }) => {
 					}}
 					theme="snow"
 					onChange={setHtml}
-					style={{ width: "100%" }}
 				/>
 			)}
-			<div className="text-xs mt-2">
-				<Button
-					text="Save"
+			<div className="mt-2">
+				<button
 					onClick={uploadComment}
-					intent="primary"
-					fill={false}
-					className="mr-2 mb-2"
-				></Button>
-				<Button
-					text="Cancel"
-					minimal={true}
-					className="mb-2"
-					fill={false}
+					className="mr-2 mb-2 bg-blue-500 px-4 py-1 rounded-sm border text-white hover:bg-blue-600"
+				>
+					Save
+				</button>
+				<button
+					className="mb-2 px-3 py-1 rounded-sm text-gray-600 dark:text-white hover:bg-gray-300"
 					onClick={() => setHtml("")}
-				></Button>
+				>
+					Cancel
+				</button>
 			</div>
 		</div>
 	);

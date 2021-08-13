@@ -9,6 +9,7 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import "normalize.css/normalize.css";
 import "../public/css/quill.snow.css";
 import "../components/css/custom.css";
+import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
 	const [loading, setLoading] = useState(false);

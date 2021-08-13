@@ -47,118 +47,108 @@ export const Master = ({
 		}
 	}
 	return (
-		<div className="card my-4 py-4 shadow">
-			<div className="row">
-				<div className="col-lg-8 px-4 py-4">
-					<div>
-						<div className="d-flex justify-content-between text-center">
+		<div className="card my-4 shadow">
+			<div className="grid grid-cols-1 sm:grid-cols-3 gap-0 p-3 sm:gap-2">
+				{/* MASTER INFO */}
+				<div className="flex items-center flex-col my-auto col-span-2">
+					<div className="w-100">
+						<div className="grid grid-flow-col gap-2 text-center">
 							{MoveType && (
-								<Tag intent="primary" className="mx-1 w-100">
+								<div className="w-100 bg-green-600 text-white rounded-sm">
 									{MoveType}
-								</Tag>
+								</div>
 							)}
 							{LCLFCL && (
-								<Tag
-									intent={LCLFCL ? "primary" : "none"}
-									className="mx-1 w-100"
-								>
+								<div className="w-100 bg-green-600 text-white rounded-sm">
 									{LCLFCL == "F" ? "FCL" : "LCL"}
-								</Tag>
+								</div>
 							)}
 							{IT && (
-								<Tag intent={IT ? "primary" : "none"} className="mx-1 w-100">
+								<div className="w-100 bg-green-600 text-white rounded-sm">
 									IT
-								</Tag>
+								</div>
 							)}
-							{Express && (
-								<Tag
-									intent={Express == "1" ? "primary" : "none"}
-									className="mx-1 w-100"
-								>
+							{Express == "1" && (
+								<div className="w-100 bg-green-600 text-white rounded-sm">
 									EXPRESS
-								</Tag>
+								</div>
 							)}
 							{Empty != "0" && (
-								<Tag intent={Empty ? "primary" : "none"} className="mx-1 w-100">
+								<div className="w-100 bg-green-600 text-white rounded-sm">
 									EMPTY
-								</Tag>
+								</div>
 							)}
 							{PPCC && (
-								<Tag intent="primary" className="mx-1 w-100">
+								<div className="w-100 bg-green-600 text-white rounded-sm">
 									{PPCC === "P" ? "PREPAID" : "COLLECT"}
-								</Tag>
+								</div>
 							)}
 						</div>
 					</div>
 
-					<table className="table table-hover mt-2 table-sm text-xs">
+					<table className="table-hover mt-2 table-sm w-100">
 						<tbody>
-							<tr>
-								<th className="text-success">MBL</th>
-								<th className="text-secondary">{MBL}</th>
+							<tr className="border-b border-green-400">
+								<th className="text-green-500">MBL</th>
+								<th className="font-normal">{MBL}</th>
 							</tr>
-							<tr>
-								<th className="text-success">CARRIER</th>
-								<th className="text-secondary">{Carrier}</th>
+							<tr className="border-b border-green-400">
+								<th className="text-green-500">CARRIER</th>
+								<th className="font-normal">{Carrier}</th>
 							</tr>
-							<tr>
-								<th className="text-success">AGENT</th>
-								<th className="text-secondary">{Agent}</th>
+							<tr className="border-b border-green-400">
+								<th className="text-green-500">AGENT</th>
+								<th className="font-normal">{Agent}</th>
 							</tr>
-							<tr>
-								<th className="text-success">VESSEL</th>
-								<th className="text-secondary">{Vessel}</th>
+							<tr className="border-b border-green-400">
+								<th className="text-green-500">VESSEL</th>
+								<th className="font-normal">{Vessel}</th>
 							</tr>
 							{CY ? (
-								<tr>
-									<th className="text-success">CY</th>
-									<th className="text-secondary">{CY}</th>
+								<tr className="border-b border-green-400">
+									<th className="text-green-500">CY</th>
+									<th className="font-normal">{CY}</th>
 								</tr>
 							) : null}
 							{Commodity ? (
-								<tr>
-									<th className="text-success">COMMODITY</th>
-									<th className="text-secondary">{Commodity}</th>
+								<tr className="border-b border-green-400">
+									<th className="text-green-500">COMMODITY</th>
+									<th className="font-normal">{Commodity}</th>
 								</tr>
 							) : null}
 						</tbody>
 					</table>
 				</div>
 
-				<div className="col-lg-4 px-4 py-4">
-					<div className="row">
-						<div className="col">
+				{/* ACTION AND SHIPMENT ROUTE */}
+				<div className="px-2 py-4">
+					<div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+						<div>
 							<Popover2
 								content={
-									<Menu className="font-weight-bold text-uppercase">
+									<Menu className="text-uppercase">
 										<MenuItem
 											text="In Progress"
-											className="text-success"
 											onClick={() => updateStatus("In Progress")}
 										/>
 										<MenuItem
 											text="Booking Confirmed"
-											className="text-primary"
 											onClick={() => updateStatus("Booking Confirmed")}
 										/>
 										<MenuItem
 											text="ISF Field"
-											className="text-primary"
 											onClick={() => updateStatus("ISF Field")}
 										/>
 										<MenuItem
 											text="Customs Cleared"
-											className="text-primary"
 											onClick={() => updateStatus("Customs Cleared")}
 										/>
 										<MenuItem
 											text="Available for Pickup"
-											className="text-primary"
 											onClick={() => updateStatus("Available for Pickup")}
 										/>
 										<MenuItem
 											text="Delivered"
-											className="text-primary"
 											onClick={() => updateStatus("Delivered")}
 										/>
 										<MenuItem text="Approved" disabled={true} />
@@ -168,23 +158,21 @@ export const Master = ({
 								fill={true}
 							>
 								{Closed && (
-									<Button
-										text={
-											Closed == "0"
-												? data
-													? data.STATUS || "ADD STATUS"
-													: "OPEN"
-												: "CLOSED"
-										}
+									<button
 										disabled={Closed != "0"}
-										className="font-weight-bold"
-										rightIcon="caret-down"
-										fill={true}
-									></Button>
+										className="font-weight-bold w-100 bg-gray-200 text-gray-700 p-1 rounded-sm hover:bg-gray-300"
+									>
+										{Closed == "0"
+											? data
+												? data.STATUS || "ADD STATUS"
+												: "OPEN"
+											: "CLOSED"}{" "}
+										<i className="ml-2 fa fa-caret-down"></i>
+									</button>
 								)}
 							</Popover2>
 						</div>
-						<div className="col">
+						<div>
 							<Popover2
 								content={
 									<Menu className="text-uppercase">
@@ -202,62 +190,70 @@ export const Master = ({
 								}
 								fill={true}
 							>
-								<Button
-									text="ACTION"
-									rightIcon="caret-down"
-									className="font-weight-bold"
-									fill={true}
-								></Button>
+								<button className="font-weight-bold w-100 bg-gray-200 text-gray-700 p-1 rounded-sm hover:bg-gray-300">
+									ACTION <i className="ml-2 fa fa-caret-down"></i>
+								</button>
 							</Popover2>
 						</div>
 					</div>
+					<div className="divide-y gap-2">
+						<div className="leading-loose my-3">
+							<p>
+								Created{" "}
+								{Created &&
+									moment(
+										moment(Created).utc().format("YYYY-MM-DD HH:mm:ss")
+									).fromNow()}{" "}
+								by <span className="text-uppercase">{Creator}</span>
+							</p>
+							<p>
+								Updated{" "}
+								{Updated &&
+									moment(
+										moment(Updated).utc().format("YYYY-MM-DD HH:mm:ss")
+									).fromNow()}{" "}
+								by <span className="text-uppercase">{Updator}</span>
+							</p>
+							<p>
+								Post{" "}
+								{Post &&
+									moment(
+										moment(Post).utc().format("YYYY-MM-DD HH:mm:ss")
+									).fromNow()}
+							</p>
+						</div>
 
-					<div className="text-dark mt-2">
-						<p>
-							Created{" "}
-							{Created &&
-								moment(
-									moment(Created).utc().format("YYYY-MM-DD HH:mm:ss")
-								).fromNow()}{" "}
-							by <span className="text-uppercase">{Creator}</span>
-						</p>
-						<p>
-							Updated{" "}
-							{Updated &&
-								moment(
-									moment(Updated).utc().format("YYYY-MM-DD HH:mm:ss")
-								).fromNow()}{" "}
-							by <span className="text-uppercase">{Updator}</span>
-						</p>
-						<p>
-							Post{" "}
-							{Post &&
-								moment(
-									moment(Post).utc().format("YYYY-MM-DD HH:mm:ss")
-								).fromNow()}
-						</p>
-					</div>
-					<hr />
-					<div className="d-flex justify-content-between">
-						<div className="font-weight-bold">Ship: </div>
-						<div>{moment(ETD).isValid && moment(ETD).utc().format("L")}</div>
-					</div>
-					<div className="text-right text-gray-500 text-xs">{Loading}</div>
-					<div className="d-flex justify-content-between my-1">
-						<div className="font-weight-bold">Arrival: </div>
-						<div>{moment(ETA).isValid && moment(ETA).utc().format("L")}</div>
-					</div>
-					<div className="text-right text-gray-500 text-xs">{Discharge}</div>
-					<div className="d-flex justify-content-between my-1">
-						<div className="font-weight-bold">Delivery: </div>
 						<div>
-							{FETA &&
-								(typeof FETA === "string"
-									? moment(FETA).isValid && moment(FETA).utc().format("L")
-									: FETA.length && moment(FETA).utc().format("L"))}
+							<div className="d-flex justify-content-between mt-3">
+								<div className="font-weight-bold">Ship: </div>
+								<div>
+									{moment(ETD).isValid && moment(ETD).utc().format("L")}
+								</div>
+							</div>
+							<div className="text-right text-gray-500 text-xs">{Loading}</div>
+							<div className="d-flex justify-content-between my-1">
+								<div className="font-weight-bold">Arrival: </div>
+								<div>
+									{moment(ETA).isValid && moment(ETA).utc().format("L")}
+								</div>
+							</div>
+							<div className="text-right text-gray-500 text-xs">
+								{Discharge}
+							</div>
+							<div className="d-flex justify-content-between my-1">
+								<div className="font-weight-bold">Delivery: </div>
+								<div>
+									{FETA &&
+										(typeof FETA === "string"
+											? moment(FETA).isValid && moment(FETA).utc().format("L")
+											: FETA.length && moment(FETA).utc().format("L"))}
+								</div>
+							</div>
+							<div className="text-right text-gray-500 text-xs">
+								{Destination}
+							</div>
 						</div>
 					</div>
-					<div className="text-right text-gray-500 text-xs">{Destination}</div>
 				</div>
 			</div>
 		</div>

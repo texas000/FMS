@@ -132,7 +132,7 @@ const Index = ({ token, Board }) => {
 			<Layout TOKEN={token} TITLE="Board">
 				<div className="d-flex flex-sm-row justify-content-between">
 					<div className="flex-column">
-						<h3 className="mb-4 font-weight-light">Board</h3>
+						<h3 className="dark:text-white">Board</h3>
 					</div>
 					<div className="flex-column">
 						<Button

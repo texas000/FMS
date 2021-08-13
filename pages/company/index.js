@@ -81,7 +81,7 @@ const Account = ({ Cookie, Result }) => {
 		<Layout TOKEN={TOKEN} TITLE="Company">
 			<div className="d-flex flex-sm-row justify-content-between mb-4">
 				<div className="flex-column">
-					<h3 className="mb-4 font-weight-light">Company</h3>
+					<h3 className="dark:text-white">Company</h3>
 				</div>
 				<div className="flex-column">
 					<InputGroup

@@ -266,7 +266,7 @@ const Index = ({ token }) => {
 		<Layout TOKEN={token} TITLE="OTHER" LOADING={!data}>
 			<div className="d-flex flex-sm-row justify-content-between">
 				<div className="flex-column">
-					<h3 className="h3 text-dark">Other</h3>
+					<h3 className="dark:text-white">Other</h3>
 				</div>
 			</div>
 

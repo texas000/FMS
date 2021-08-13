@@ -1,4 +1,4 @@
-import { Tag, Classes, Dialog, Button, Checkbox } from "@blueprintjs/core";
+import { Classes, Dialog, Button, Checkbox } from "@blueprintjs/core";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import axios, { post } from "axios";
@@ -53,22 +53,26 @@ export const Profit = ({
 
 	const Status = ({ data }) => {
 		if (data == 101) {
-			return <span className="text-success font-weight-bold">Requested</span>;
+			return <span className="text-white">Current Status: Requested</span>;
 		}
 		if (data == 110) {
-			return <span className="text-danger font-weight-bold">Dir Rejected</span>;
+			return (
+				<span className="text-white">Current Status: Director Rejected</span>
+			);
 		}
 		if (data == 111) {
 			return (
-				<span className="text-success font-weight-bold">Dir Approved</span>
+				<span className="text-white">Current Status: Director Approved</span>
 			);
 		}
 		if (data == 120) {
-			return <span className="text-danger font-weight-bold">Acc Rejected</span>;
+			return (
+				<span className="text-white">Current Status: Account Rejected</span>
+			);
 		}
 		if (data == 121) {
 			return (
-				<span className="text-success font-weight-bold">Acc Approved</span>
+				<span className="text-white">Current Status: Account Approved</span>
 			);
 		}
 	};
@@ -186,67 +190,68 @@ export const Profit = ({
 		<div className="card my-4 py-4 shadow">
 			<div className="row px-4 py-2">
 				<div className="col-12">
-					<h4 className="h6">SUMMARY</h4>
+					<h4 className="text-xl mb-4">SUMMARY</h4>
 					{profit &&
 						profit.map((ga, i) => (
 							<div key={i + "PROFIT"}>
-								<div className="row">
-									<div className="col">
+								<div className="grid grid-cols-1 lg:grid-cols-4 sm:grid-cols-2 gap-4">
+									{/* AR */}
+									<div>
 										{/* AR SUMMARY */}
-										<Tag
+										<div
 											className={`${
 												arTotal != null && arTotal / ga.F_AR == 1
-													? "bg-primary"
-													: "bg-gray-600"
-											} w-100 text-white mr-4 px-4 py-2`}
+													? "bg-blue-400"
+													: "bg-gray-400"
+											} w-100 text-white rounded-sm px-3 py-1`}
 										>
-											<div className="d-flex justify-content-between font-weight-bold">
+											<div className="flex justify-between">
 												<span>AR</span>
 												<span>{usdFormat(ga.F_AR)}</span>
 											</div>
-										</Tag>
+										</div>
 										{/* INVOICE LIST */}
-										<div className="row p-2">
-											<div className="col-lg-3"></div>
-											<div className="col-lg-9">
+										<div className="grid grid-col-3 gap-2">
+											<div className="col-start-2 col-span-2">
 												{invoice &&
 													invoice.map((ga) => (
-														<Tag
+														<div
 															className={`${
 																ga.F_InvoiceAmt == ga.F_PaidAmt &&
 																ga.F_InvoiceAmt != 0
-																	? "bg-primary"
-																	: "bg-secondary"
-															} btn py-0 text-white btn-block`}
+																	? "bg-blue-400"
+																	: "bg-gray-400"
+															} px-2 py-1 text-white cursor-not-allowed bg-blue-500 rounded-sm font-light my-1 hover:bg-blue-600`}
 															key={ga.F_ID + "INVO"}
 															// onClick={() => setSelected(ga)}
 														>
-															<div className="d-flex justify-content-between font-weight-light">
+															<div className="flex justify-between">
 																<span>{ga.F_InvoiceNo}</span>
-																<span>{usdFormat(ga.F_InvoiceAmt)}</span>
+																<span className="font-bold">
+																	{usdFormat(ga.F_InvoiceAmt)}
+																</span>
 															</div>
-														</Tag>
+														</div>
 													))}
 											</div>
 										</div>
-										<hr />
 										{/* FILE UPLOAD */}
-										<form className="upload">
+										<form className="upload mt-4 font-light text-sm">
 											<Select
 												options={arfiles}
-												className="py-0"
+												className="w-80 mb-2"
 												onChange={(e) => setArtype(e)}
 												defaultValue={{ value: 0, label: "SELECT TYPE" }}
 											/>
-											<div className="input-group my-2" style={{ zIndex: "0" }}>
-												<div className="custom-file w-75">
+											<div className="input-group z-0 h-20">
+												<div className="custom-file">
 													<input
 														type="file"
 														id="invoice"
 														className="custom-file-input"
 														onChange={handleUpload}
 													/>
-													<label className="custom-file-label">
+													<label className="custom-file-label font-light">
 														Choose file
 													</label>
 												</div>
@@ -261,10 +266,9 @@ export const Profit = ({
 											data.map((ga) => {
 												if (ga.F_SECURITY == 10) {
 													return (
-														<Tag
-															role="button"
-															key={ga.F_FILENAME}
-															className="w-100 bg-gray-400 px-2 py-2 my-1"
+														<button
+															key={ga.F_ID + "FILE"}
+															className="w-100 px-2 bg-blue-500 text-white border-2 border-indigo-300 rounded py-2 my-1 hover:bg-indigo-600"
 															onClick={async () => {
 																window.location.assign(
 																	`/api/file/get?ref=${Reference}&file=${encodeURIComponent(
@@ -273,13 +277,13 @@ export const Profit = ({
 																);
 															}}
 														>
-															<div className="d-flex justify-content-between text-dark">
+															<div className="flex justify-between font-semibold text-xs">
 																<span className="text-uppercase">
 																	<i className="fa fa-download mr-1"></i>
 																	{ga.F_LABEL}
 																</span>
 																<span
-																	className="font-weight-bold text-truncate"
+																	className="text-truncate"
 																	style={{
 																		maxWidth: "180px",
 																	}}
@@ -287,51 +291,52 @@ export const Profit = ({
 																	{ga.F_FILENAME}
 																</span>
 															</div>
-														</Tag>
+														</button>
 													);
 												}
 											})
 										)}
 									</div>
-									<div className="col">
+									{/* CRDR */}
+									<div>
 										{/* CRDR SUMMARY */}
-										<Tag
+										<div
 											className={`${
 												crdrTotal != null && crdrTotal / ga.F_CrDr == 1
-													? "bg-primary"
-													: "bg-gray-600"
-											} w-100 text-white mr-4 px-4 py-2`}
+													? "bg-blue-400"
+													: "bg-gray-400"
+											} w-100 text-white rounded-sm mr-4 px-3 py-1`}
 										>
-											<div className="d-flex justify-content-between font-weight-bold">
+											<div className="flex justify-between">
 												<span>CRDR</span>
 												<span>{usdFormat(ga.F_CrDr)}</span>
 											</div>
-										</Tag>
+										</div>
 										{/* CRDR LIST */}
-										<div className="row p-2">
-											<div className="col-lg-3"></div>
-											<div className="col-lg-9">
+										<div className="grid grid-col-3 gap-2">
+											<div className="col-start-2 col-span-2">
 												{crdr &&
 													crdr.map((ga) => (
-														<Tag
+														<div
 															className={`${
 																ga.F_Total == ga.F_PaidAmt && ga.F_Total != 0
-																	? "bg-primary"
-																	: "bg-secondary"
-															} btn py-0 text-white btn-block`}
+																	? "bg-blue-400"
+																	: "bg-gray-400"
+															} px-2 py-1 text-white cursor-not-allowed bg-blue-500 rounded-sm font-light my-1 hover:bg-blue-600`}
 															key={ga.F_ID + "CRDR"}
 														>
-															<div className="d-flex justify-content-between font-weight-light">
+															<div className="flex justify-between">
 																<span>{ga.F_CrDbNo}</span>
-																<span>{usdFormat(ga.F_Total)}</span>
+																<span className="font-bold">
+																	{usdFormat(ga.F_Total)}
+																</span>
 															</div>
-														</Tag>
+														</div>
 													))}
 											</div>
 										</div>
-										<hr />
 										{/* FILE UPLOAD */}
-										<form className="upload">
+										<form className="upload mt-4 font-light text-sm">
 											<Select
 												options={crdrfiles}
 												className="py-0"
@@ -361,10 +366,9 @@ export const Profit = ({
 											data.map((ga) => {
 												if (ga.F_SECURITY == 20) {
 													return (
-														<Tag
-															role="button"
+														<button
 															key={ga.F_ID + "FILE"}
-															className="w-100 bg-gray-400 px-2 py-2 my-1"
+															className="w-100 px-2 bg-blue-500 text-white border-2 border-indigo-300 rounded py-2 my-1 hover:bg-indigo-600"
 															onClick={async () => {
 																window.location.assign(
 																	`/api/file/get?ref=${Reference}&file=${encodeURIComponent(
@@ -373,13 +377,13 @@ export const Profit = ({
 																);
 															}}
 														>
-															<div className="d-flex justify-content-between text-dark">
+															<div className="flex justify-between font-semibold text-xs">
 																<span className="text-uppercase">
 																	<i className="fa fa-download mr-1"></i>
 																	{ga.F_LABEL}
 																</span>
 																<span
-																	className="font-weight-bold text-truncate"
+																	className="text-truncate"
 																	style={{
 																		maxWidth: "180px",
 																	}}
@@ -387,60 +391,56 @@ export const Profit = ({
 																	{ga.F_FILENAME}
 																</span>
 															</div>
-														</Tag>
+														</button>
 													);
 												}
 											})
 										)}
 									</div>
-									<div className="col">
+									{/* AP */}
+									<div>
 										{/* AP SUMMARY */}
-										<Tag
+										<div
 											className={`${
 												apTotal != null && apTotal / ga.F_AP == 1
-													? "bg-primary"
-													: "bg-gray-600"
-											} w-100 text-white mr-4 px-4 py-2`}
+													? "bg-blue-400"
+													: "bg-gray-400"
+											} w-100 text-white rounded-sm mr-4 px-3 py-1`}
 										>
-											<div className="d-flex justify-content-between font-weight-bold">
+											<div className="flex justify-between">
 												<span>AP</span>
 												<span>{usdFormat(ga.F_AP)}</span>
 											</div>
-										</Tag>
+										</div>
 										{/* AP LIST */}
-										<div className="row p-2">
-											<div className="col-lg-3"></div>
-											<div className="col-lg-9">
+										<div className="grid grid-col-3 gap-2">
+											<div className="col-start-2 col-span-2">
 												{ap &&
 													ap.map((ga) => (
-														<Tag
+														<div
 															className={`${
 																ga.F_InvoiceAmt == ga.F_PaidAmt &&
 																ga.F_InvoiceAmt != 0
-																	? "bg-primary"
-																	: "bg-secondary"
-															} btn py-0 text-white btn-block`}
+																	? "bg-blue-400"
+																	: "bg-gray-400"
+															} px-2 py-1 text-white cursor-pointer bg-blue-500 rounded-sm font-light my-1 hover:bg-blue-600`}
 															key={ga.F_ID + "AP"}
 															onClick={() => setSelected(ga)}
 														>
-															<div className="d-flex justify-content-between font-weight-light">
-																<span
-																	className="text-truncate"
-																	style={{
-																		maxWidth: "130px",
-																	}}
-																>
+															<div className="flex justify-between">
+																<span className="truncate w-1/2">
 																	{ga.VENDOR}
 																</span>
-																<span>{usdFormat(ga.F_InvoiceAmt)}</span>
+																<span className="font-bold">
+																	{usdFormat(ga.F_InvoiceAmt)}
+																</span>
 															</div>
-														</Tag>
+														</div>
 													))}
 											</div>
 										</div>
-										<hr />
 										{/* FILE UPLOAD */}
-										<form className="upload">
+										<form className="upload mt-4 font-light text-sm">
 											<Select
 												options={apfiles}
 												className="py-0"
@@ -463,17 +463,16 @@ export const Profit = ({
 										</form>
 										{/* DISPLAY FILE */}
 										{!data ? (
-											<Spinner />
+											<div></div>
 										) : !data.length ? (
 											<div></div>
 										) : (
 											data.map((ga) => {
 												if (ga.F_SECURITY == 30) {
 													return (
-														<Tag
-															role="button"
+														<button
 															key={ga.F_ID + "FILE"}
-															className="w-100 bg-gray-400 px-2 py-2 my-1"
+															className="w-100 px-2 bg-blue-500 text-white border-2 border-indigo-300 rounded py-2 my-1 hover:bg-indigo-600"
 															onClick={async () => {
 																window.location.assign(
 																	`/api/file/get?ref=${Reference}&file=${encodeURIComponent(
@@ -482,13 +481,13 @@ export const Profit = ({
 																);
 															}}
 														>
-															<div className="d-flex justify-content-between text-dark">
+															<div className="flex justify-between font-semibold text-xs">
 																<span className="text-uppercase">
 																	<i className="fa fa-download mr-1"></i>
 																	{ga.F_LABEL}
 																</span>
 																<span
-																	className="font-weight-bold text-truncate"
+																	className="text-truncate"
 																	style={{
 																		maxWidth: "180px",
 																	}}
@@ -496,44 +495,45 @@ export const Profit = ({
 																	{ga.F_FILENAME}
 																</span>
 															</div>
-														</Tag>
+														</button>
 													);
 												}
 											})
 										)}
 									</div>
-									<div className="col">
-										<Tag
+									{/* TOTAL */}
+									<div>
+										<div
 											className={`${
 												((arTotal || 0) - (apTotal || 0) + (crdrTotal || 0)) /
 													(ga.F_HouseTotal || ga.F_MasterTotal) ==
 												1
-													? "bg-primary"
-													: "bg-gray-600"
-											} w-100 text-white mr-4 px-4 py-2`}
+													? "bg-blue-400"
+													: "bg-gray-400"
+											} w-100 text-white rounded-sm mr-4 px-3 py-1`}
 										>
-											<div className="d-flex justify-content-between font-weight-bold">
+											<div className="flex justify-between">
 												<span>TOTAL</span>
 												<span>
 													{usdFormat(ga.F_HouseTotal || ga.F_MasterTotal)}
 												</span>
 											</div>
-										</Tag>
+										</div>
 									</div>
 								</div>
 							</div>
 						))}
 					{requested && requested.length ? (
-						<div className="row mt-4">
-							<h4 className="ml-2 h6 col-12">REQUEST</h4>
+						<div className="w-100">
+							<h4 className="text-xl mb-4">REQUEST</h4>
 							{requested.map((ga) => (
-								<div key={ga.ID} className="col-lg-12">
-									<Tag fill={true} className="my-1">
-										<div className="d-flex justify-content-between p-1">
+								<div key={ga.ID}>
+									<div className="my-1">
+										<div className="flex justify-between p-1 bg-purple-500 rounded-sm text-white">
 											<span>{ga.Title}</span>
 											<Status data={ga.Status} />
 										</div>
-									</Tag>
+									</div>
 								</div>
 							))}
 						</div>
@@ -552,19 +552,18 @@ export const Profit = ({
 					// setFile(false);
 				}}
 				title="Request Approval"
+				className="dark:bg-gray-600"
 			>
 				<div className={Classes.DIALOG_BODY}>
 					<h5>Would you like to request approval?</h5>
 
-					<div className="card">
-						<div className="card-header font-weight-bold">
-							<div className="d-flex justify-content-between">
-								<span>INVOICE {selected.F_InvoiceNo}</span>
-								<span>DUE: {moment(selected.F_DueDate).utc().format("l")}</span>
-							</div>
+					<div className="card my-2">
+						<div className="d-flex justify-content-between bg-gray-100 dark:bg-gray-500 rounded-t shadow-inner p-3">
+							<span>INVOICE {selected.F_InvoiceNo}</span>
+							<span>DUE: {moment(selected.F_DueDate).utc().format("l")}</span>
 						</div>
-						<div className="card-body">
-							<p className="font-weight-bold text-dark">
+						<div className="leading-8 p-3">
+							<p>
 								{selected.VENDOR
 									? `Payable To: ${selected.VENDOR}`
 									: selected.BILLTO
@@ -576,15 +575,16 @@ export const Profit = ({
 									? `Ship Party: ${selected.SHIPTO}`
 									: `Description: ${selected.F_Descript}`}
 							</p>
-							<p className="font-weight-bold h5">
+							<p className="text-lg font-semibold">
 								Amount:{" "}
 								<mark>
 									{usdFormat(selected.F_InvoiceAmt)} {selected.F_Currency}
 								</mark>
 							</p>
-							<hr />
 							<div className="form-group mb-4">
-								<label htmlFor="type">AP Type</label>
+								<label htmlFor="type" className="text-indigo-400">
+									AP Type
+								</label>
 								<select
 									className="form-control"
 									id="type"
@@ -597,7 +597,7 @@ export const Profit = ({
 									<option value="wire">Wire</option>
 								</select>
 
-								<label htmlFor="type" className="mt-2">
+								<label htmlFor="type" className="mt-2 text-indigo-400">
 									File
 								</label>
 
@@ -626,44 +626,6 @@ export const Profit = ({
 											);
 										}
 									})}
-								{/* <select
-									className="form-control"
-									id="type"
-									onChange={(e) => setSelectedFile(e.target.value)}
-								>
-									<option value={false}>Please select file</option>
-									{data &&
-										data.map((ga) => {
-											if (ga.F_SECURITY == "30") {
-												return (
-													<option value={ga.F_ID} key={ga.F_ID + "FIRST"}>
-														[{ga.F_LABEL.toUpperCase()}] {ga.F_FILENAME}
-													</option>
-												);
-											}
-										})}
-								</select>
-
-								<label htmlFor="type" className="mt-2">
-									Backup Document
-								</label>
-								<select
-									className="form-control"
-									id="type"
-									onChange={(e) => setSelectedFile2(e.target.value)}
-								>
-									<option value={false}>Please select file</option>
-									{data &&
-										data.map((ga) => {
-											if (ga.F_SECURITY == "30" && ga.F_ID != selectedFile) {
-												return (
-													<option value={ga.F_ID} key={ga.F_ID + "FIRST"}>
-														[{ga.F_LABEL.toUpperCase()}] {ga.F_FILENAME}
-													</option>
-												);
-											}
-										})}
-								</select> */}
 							</div>
 						</div>
 					</div>

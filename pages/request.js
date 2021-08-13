@@ -6,7 +6,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
-import { Card, Col, Row, Progress } from "reactstrap";
+import { Progress } from "reactstrap";
 import { Dialog, Classes, Tag, Button } from "@blueprintjs/core";
 import { useState } from "react";
 import usdFormat from "../lib/currencyFormat";
@@ -52,30 +52,24 @@ export default function request(props) {
 
 	const Status = ({ data }) => {
 		if (data == 101) {
-			return <span className="text-success font-weight-bold">REQUESTED</span>;
+			return <span className="text-green-500 font-bold">REQUESTED</span>;
 		}
 		if (data == 110) {
-			return (
-				<span className="text-danger font-weight-bold">DIRECTOR REJECTED</span>
-			);
+			return <span className="text-red-500 font-bold">DIRECTOR REJECTED</span>;
 		}
 		if (data == 111) {
 			return (
-				<span className="text-success font-weight-bold">DIRECTOR APPROVED</span>
+				<span className="text-green-500 font-bold">DIRECTOR APPROVED</span>
 			);
 		}
 		if (data == 120) {
 			return (
-				<span className="text-danger font-weight-bold">
-					ACCOUNTING REJECTED
-				</span>
+				<span className="text-red-500 font-bold">ACCOUNTING REJECTED</span>
 			);
 		}
 		if (data == 121) {
 			return (
-				<span className="text-success font-weight-bold">
-					ACCOUNTING APPROVED
-				</span>
+				<span className="text-green-500 font-bold">ACCOUNTING APPROVED</span>
 			);
 		}
 	};
@@ -123,8 +117,7 @@ export default function request(props) {
 		{
 			dataField: "RefNo",
 			text: "REFERENCE",
-			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
 			filter: textFilter({
 				className: "text-xs text-center d-sm-none d-md-block",
 			}),
@@ -134,8 +127,7 @@ export default function request(props) {
 			dataField: "ApType",
 			text: "TYPE",
 			classes: "text-uppercase cursor-pointer",
-			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
 			filter: textFilter({
 				className: "text-xs text-center d-none d-xl-block",
 			}),
@@ -144,8 +136,7 @@ export default function request(props) {
 		{
 			dataField: "Title",
 			text: "INVOICE",
-			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
 			filter: textFilter({
 				className: "text-xs text-center d-sm-none d-md-block",
 			}),
@@ -154,8 +145,7 @@ export default function request(props) {
 		{
 			dataField: "Status",
 			text: "STATUS",
-			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
 			filter: textFilter({
 				className: "text-xs text-center d-none d-xl-block",
 			}),
@@ -169,8 +159,7 @@ export default function request(props) {
 		{
 			dataField: "Creator",
 			text: "CREATOR",
-			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
 			filter: textFilter({
 				className: "text-xs text-center d-none d-xl-block",
 			}),
@@ -179,8 +168,7 @@ export default function request(props) {
 		{
 			dataField: "CreateAt",
 			text: "CREATED",
-			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
 			filter: textFilter({
 				className: "text-xs text-center d-none d-xl-block",
 			}),
@@ -219,57 +207,52 @@ export default function request(props) {
 
 	return (
 		<Layout TOKEN={props.token} TITLE="Dashboard" LOADING={!data}>
-			<div className="d-flex flex-sm-row justify-content-between">
+			<div className="flex flex-sm-row justify-between">
 				<div>
-					<h3 className="h3 text-dark">AP Request</h3>
+					<h3 className="dark:text-white">AP Request</h3>
 				</div>
 			</div>
-			<Card className="border-0 shadow mt-3 table-responsive-md">
-				<Row>
-					<ToolkitProvider
-						keyField="ID"
-						bordered={false}
-						columns={column}
-						data={data ? data : []}
-						exportCSV
-						search
-					>
-						{(props) => (
-							<Col>
-								<BootstrapTable
-									{...props.baseProps}
-									hover
-									condensed
-									rowStyle={{ cursor: "pointer" }}
-									filter={filterFactory()}
-									wrapperClasses="table rounded"
-									bordered={false}
-									pagination={paginationFactory(pageOption)}
-									rowEvents={rowEvents}
-								/>
-							</Col>
-						)}
-					</ToolkitProvider>
-				</Row>
-			</Card>
+			<div className="card border-0 py-3 shadow mt-3">
+				<ToolkitProvider
+					keyField="ID"
+					bordered={false}
+					columns={column}
+					data={data ? data : []}
+					exportCSV
+					search
+				>
+					{(props) => (
+						<BootstrapTable
+							{...props.baseProps}
+							hover
+							condensed
+							rowStyle={{ cursor: "pointer" }}
+							filter={filterFactory()}
+							wrapperClasses="rounded"
+							bordered={false}
+							pagination={paginationFactory(pageOption)}
+							rowEvents={rowEvents}
+						/>
+					)}
+				</ToolkitProvider>
+			</div>
 			<Dialog
 				isOpen={selected}
 				onClose={() => {
 					setSelected(false);
 				}}
 				title="Manage Request"
+				className="dark:bg-gray-600"
 			>
 				<div className={`${Classes.DIALOG_BODY} h-100`}>
 					<h5>Would you like to accept request?</h5>
-					<div className="card">
-						<div className="card-header font-weight-bold">
-							<div className="d-flex text-dark justify-content-between">
-								<span>{selected.Title}</span>
-							</div>
+					<div className="card my-2">
+						<div className="d-flex justify-content-between bg-gray-100 text-black dark:bg-gray-500 dark:text-white font-semibold rounded-t shadow-inner p-3">
+							<span>{selected.Title}</span>
 						</div>
 						{/* RefNo */}
-						<div className="card-body">
-							<p className="font-weight-bold">Reference: {selected.RefNo}</p>
+						<div className="leading-8 p-3">
+							<p className="font-bold">Reference: {selected.RefNo}</p>
 							<p>
 								Status: <Status data={selected.Status} />
 							</p>
@@ -281,18 +264,15 @@ export default function request(props) {
 								<div>
 									<p>Vendor : {ap.Vendor}</p>
 									<p>
-										Request Amount:{" "}
-										<mark className="font-weight-bold">
+										Total Amount:{" "}
+										<mark className="font-bold">
 											{usdFormat(ap.F_InvoiceAmt)}
 										</mark>
 									</p>
-									<ul className="list-group">
+									<ul className="my-2 px-2 divide-y divide-gray-300 rounded border border-gray-100">
 										{ap.Detail.length &&
 											ap.Detail.map((ga) => (
-												<li
-													key={ga.F_ID}
-													className="list-group-item d-flex justify-content-between"
-												>
+												<li key={ga.F_ID} className="flex justify-between">
 													<span>{ga.F_Description}</span>
 													<span>{usdFormat(ga.F_Amount)}</span>
 												</li>

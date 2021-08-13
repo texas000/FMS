@@ -75,7 +75,7 @@ const Layout = (props) => {
 				{/* <link href="/font/Roboto-Regular.ttf" rel="stylesheet"></link> */}
 			</Head>
 
-			<div id="wrapper">
+			<div className="flex">
 				<Sidebar
 					Token={props.TOKEN}
 					toggle={toggle}
@@ -83,8 +83,8 @@ const Layout = (props) => {
 					isMobile={mobile}
 				/>
 				{/* Content Wrapper */}
-				<div id="content-wrapper" className="d-flex flex-column">
-					<div id="content">
+				<div className="w-full bg-gray-100 dark:bg-gray-600 overflow-x-hidden">
+					<div>
 						<Top Token={props.TOKEN} toggle={toggle} setToggle={setToggle} />
 						{!props.LOADING ? (
 							<Container fluid>{props.children}</Container>
