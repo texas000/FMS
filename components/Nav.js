@@ -6,6 +6,7 @@ import "firebase/auth";
 import AsyncSelect from "react-select/async";
 import cookie from "cookie";
 import { useState, useEffect } from "react";
+import NavSearch from "./NavSearch";
 
 const Top = ({ Token, toggle, setToggle }) => {
 	const router = useRouter();
@@ -82,8 +83,8 @@ const Top = ({ Token, toggle, setToggle }) => {
 			</button>
 
 			{/* <!-- Topbar Search --> */}
-			<form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search w-1/3">
-				{/* <InputGroup> */}
+			{/* <form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search w-1/3">
+				
 				<AsyncSelect
 					instanceId="search"
 					cacheOptions
@@ -95,7 +96,6 @@ const Top = ({ Token, toggle, setToggle }) => {
 					onInputChange={(e) => setSearch(e)}
 					onChange={(e) => {
 						setSelected(e);
-						// console.log(e.key);
 						router.push(`/forwarding/${searchType}/${e.F_RefNo}`);
 					}}
 					placeholder={`Search ${searchType.toUpperCase()}...`}
@@ -109,25 +109,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 						}
 					}}
 				/>
-				{/* <Input
-            onKeyPress={(e) => {
-              if (e.key == "Enter") {
-                e.preventDefault();
-                getResult();
-              }
-            }}
-            className="form-control bg-light border-0 small"
-            placeholder="Search for reference..."
-            aria-label="Search"
-            onChange={(e) => setSearch(e.target.value)}
-          /> */}
-				{/* <InputGroupAddon addonType="append">
-            <Button color="primary" type="button" size="sm" onClick={getResult}>
-              <i className="fa fa-search fa-sm py-0"></i>
-            </Button>
-          </InputGroupAddon> */}
-				{/* </InputGroup> */}
-			</form>
+			</form> */}
 
 			{/* <!-- Topbar Navbar --> */}
 			{/* topbar navbar-nav */}
@@ -177,8 +159,8 @@ const Top = ({ Token, toggle, setToggle }) => {
 
 				<li
 					className="flex-1 nav-item dropdown no-arrow my-auto text-center"
-					onMouseEnter={() => setSearchAlertToggle(true)}
-					onMouseLeave={() => setSearchAlertToggle(false)}
+					// onMouseEnter={() => setSearchAlertToggle(true)}
+					// onMouseLeave={() => setSearchAlertToggle(false)}
 					onClick={() => setSearchAlertToggle((prev) => !prev)}
 				>
 					<a
@@ -194,7 +176,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 						{/* <!-- Counter - Alerts --> */}
 						{/* <span className="badge badge-danger badge-counter">5</span> */}
 					</a>
-					<div
+					{/* <div
 						className={`dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in ${
 							searchAlertToggle && "show"
 						}`}
@@ -278,7 +260,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 								<span className="font-weight-bold text-primary">OTHER</span>
 							</div>
 						</a>
-					</div>
+					</div> */}
 				</li>
 
 				{/* <!-- Nav Item - Alerts --> */}
@@ -512,6 +494,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 					</div>
 				</li>
 			</ul>
+			{searchAlertToggle && <NavSearch setValue={setSearchAlertToggle} />}
 		</nav>
 	);
 };

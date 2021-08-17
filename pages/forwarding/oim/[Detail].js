@@ -17,8 +17,26 @@ import React from "react";
 
 const Detail = ({ token, Reference }) => {
 	const { data } = useSWR(`/api/forwarding/oim/detail?ref=${Reference}`);
-
 	const router = useRouter();
+	if (typeof window !== "undefined") {
+		// Define an empty array
+		var arr = [];
+		// Initial value is null value but change to empty array string
+		var history = localStorage.getItem("pageHistory");
+		// If the page history is empty
+		if (history == null) {
+			arr.unshift({ path: router.asPath, ref: Reference });
+			localStorage.setItem("pageHistory", JSON.stringify(arr));
+		} else {
+			arr = JSON.parse(history);
+			// If the page history is exist, check the most recent history
+			// If the reference is same as current reference, do not store data
+			if (arr[0].ref != Reference) {
+				arr.unshift({ path: router.asPath, ref: Reference });
+				localStorage.setItem("pageHistory", JSON.stringify(arr));
+			}
+		}
+	}
 
 	const [menu, setMenu] = useState(1);
 

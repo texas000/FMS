@@ -42,7 +42,7 @@ export default async (req, res) => {
 				output.A = ap.recordset;
 				let profit = await pool
 					.request()
-					.query(`select * from V_PROFIT_H where ${houses};`);
+					.query(`select top 1 * from V_PROFIT_H where ${houses};`);
 				output.P = profit.recordset;
 				let invoice = await pool.request().query(`SELECT *, 
 					(SELECT F_SName FROM T_COMPANY C WHERE I.F_BillTo=C.F_ID) AS BILLTO, 

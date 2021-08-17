@@ -4,7 +4,6 @@ import {
 	NavbarDivider,
 	NavbarGroup,
 	NavbarHeading,
-	Button,
 } from "@blueprintjs/core";
 
 export const Navigation = ({ menu, setMenu, Reference }) => (
@@ -60,46 +59,6 @@ export const Navigation = ({ menu, setMenu, Reference }) => (
 				<i className="fa mx-1 fa-folder"></i>
 				<span className="sr-only ml-1 sm:not-sr-only">File</span>
 			</button>
-			{/* <Button
-				icon="shield"
-				text="Master"
-				small={true}
-				minimal={true}
-				intent={menu === 1 ? "primary" : "none"}
-				onClick={() => setMenu(1)}
-			></Button>
-			<Button
-				icon="home"
-				text="House"
-				small={true}
-				minimal={true}
-				intent={menu === 2 ? "primary" : "none"}
-				onClick={() => setMenu(2)}
-			></Button>
-			<Button
-				icon="dashboard"
-				text="Summary"
-				small={true}
-				minimal={true}
-				intent={menu === 3 ? "primary" : "none"}
-				onClick={() => setMenu(3)}
-			></Button>
-			<Button
-				icon="document"
-				text="File"
-				small={true}
-				minimal={true}
-				intent={menu === 4 ? "primary" : "none"}
-				onClick={() => setMenu(4)}
-			></Button> */}
-			{/* <Button
-				icon="confirm"
-				text="Request"
-				small={true}
-				minimal={true}
-				intent={menu === 5 ? "primary" : "none"}
-				onClick={() => setMenu(5)}
-			></Button> */}
 		</NavbarGroup>
 	</Navbar>
 );

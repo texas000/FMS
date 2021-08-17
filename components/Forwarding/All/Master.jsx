@@ -2,8 +2,6 @@ import moment from "moment";
 import { Popover2 } from "@blueprintjs/popover2";
 import { Menu, MenuItem, Tag, Button } from "@blueprintjs/core";
 import useSWR from "swr";
-import { useState } from "react";
-import { useEffect } from "react";
 
 export const Master = ({
 	Clipboard,

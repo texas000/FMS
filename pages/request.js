@@ -27,7 +27,10 @@ export async function getServerSideProps({ req }) {
 		};
 	} catch (err) {
 		return {
-			props: { token: false },
+			redirect: {
+				permanent: false,
+				destination: "/login",
+			},
 		};
 	}
 }
