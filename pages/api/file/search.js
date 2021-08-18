@@ -8,7 +8,9 @@ export default async (req, res) => {
 	}
 
 	let pool = new sql.ConnectionPool(process.env.SERVER21);
-	const qry = `SELECT TOP 100 * FROM T_FILE WHERE F_FILENAME like '%${q}%';`;
+	// REPLACE THE SINGLE QUOTE TO EMPTY STRING TO PREVENT THE SQL INJECTION
+	const qry = `SELECT TOP 100 * FROM T_FILE 
+	WHERE F_FILENAME like '%${q.replace(/'/g, "")}%';`;
 	try {
 		await pool.connect();
 		let result = await pool.request().query(qry);

@@ -6,7 +6,8 @@ export default async function handler(req, res) {
 	var { q } = req.query;
 	const rawCookie = req.headers.cookie || "";
 	const cookies = cookie.parse(rawCookie);
-	q = q.toLowerCase().replace("'", "''");
+	// REPLACE THE SINGLE QUOTE TO EMPTY STRING TO PREVENT THE SQL INJECTION
+	q = q.toLowerCase().replace(/'/g, "");
 	try {
 		// GET TOKEN FROM COOKIE
 		const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
