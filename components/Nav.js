@@ -416,7 +416,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 					onClick={() => setuserToggle((prev) => !prev)}
 				>
 					<a
-						className="nav-link dropdown-toggle flex flex-row mr-2"
+						className="nav-link dropdown-toggle inline-flex mr-2"
 						href="#"
 						id="userDropdown"
 						role="button"
@@ -430,7 +430,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 								: "Please Login"}
 						</span>
 						<img
-							className="rounded-full h-8 w-8 min-w-min min-h-min"
+							className="w-8 min-w-max h-8"
 							src={Token.photoURL || "/image/icons/sarah.svg"}
 						/>
 					</a>
