@@ -1,44 +1,21 @@
 import cookie from "cookie";
 import Layout from "../../components/Layout";
-import {
-	Container,
-	Row,
-	Col,
-	Button,
-	Input,
-	ButtonGroup,
-	Alert,
-	Card,
-} from "reactstrap";
-import { useRouter } from "next/router";
 import fetch from "node-fetch";
-import { useEffect, useState } from "react";
 import jwt from "jsonwebtoken";
 import moment from "moment";
+import useSWR from "swr";
 
-export async function getServerSideProps({ req }) {
+export async function getServerSideProps({ req, query }) {
 	const cookies = cookie.parse(
 		req ? req.headers.cookie || "" : window.document.cookie
 	);
 	try {
 		const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
-		const FETCH = await fetch(`${process.env.BASE_URL}api/board/getPostData`, {
-			headers: { reference: query.Detail },
-		});
-		const FJSON = await FETCH.json();
 
-		const COMFETCH = await fetch(
-			`${process.env.BASE_URL}api/board/getComment`,
-			{
-				headers: { reference: query.Detail },
-			}
-		);
-		const COMMENTS = await COMFETCH.json();
 		return {
 			props: {
 				token: token,
-				Board: FJSON,
-				Comments: COMMENTS,
+				q: query.Detail,
 			},
 		};
 	} catch (err) {
@@ -51,133 +28,92 @@ export async function getServerSideProps({ req }) {
 	}
 }
 
-// export async function getServerSideProps({ req, query }) {
-//   const cookies = cookie.parse(
-//     req ? req.headers.cookie || "" : window.document.cookie
-//   );
-//   // Fetch data from FREIGHT STREAM
-//   const FETCH = await fetch(`${process.env.BASE_URL}api/board/getPostData`, {
-//     headers: { reference: query.Detail },
-//   });
-//   const FJSON = await FETCH.json();
-
-//   const COMFETCH = await fetch(`${process.env.BASE_URL}api/board/getComment`, {
-//     headers: { reference: query.Detail },
-//   });
-//   const COMMENTS = await COMFETCH.json();
-
-//   // Pass data to the page via props
-//   return { props: { Cookie: cookies, Board: FJSON, Comments: COMMENTS } };
-// }
-
-const Detail = ({ Cookie, Board, Comments }) => {
-	const A = Board.post;
-
-	const addComments = async (comment) => {
-		const COMMENT = comment.replace("'", "");
-		const TBID = A.ID;
-		const value = `'${TBID}', N'${COMMENT}', GETDATE(), ${TOKEN.uid}`;
-		const Fetch = await fetch("/api/board/addComment", {
-			body: value,
+const Detail = ({ token, q }) => {
+	const { data: post } = useSWR(`/api/board/getPostDetail?q=${q}`);
+	const { data: comment, mutate } = useSWR(`/api/board/getComment?q=${q}`);
+	async function handleSubmit(e) {
+		e.preventDefault();
+		var comment = e.target[0].value.replace(/'/g, "");
+		const res = await fetch("/api/board/addComment", {
+			body: `${post.ID}, N'${comment}', GETDATE(), ${token.uid}`,
 			method: "POST",
 		});
-		if (Fetch.status === 200) {
-			router.reload();
+		if (res.status == 200) {
+			mutate();
+		} else {
+			alert(res.status);
 		}
-	};
-
-	function createMarkup() {
-		return { __html: A.BODY };
 	}
 
-	function PostBody() {
-		return <div dangerouslySetInnerHTML={createMarkup()} />;
+	function createMarkup(html) {
+		return { __html: html };
+	}
+
+	function PostBody({ html }) {
+		return <div dangerouslySetInnerHTML={createMarkup(html)} />;
 	}
 
 	return (
 		<>
-			<Layout TOKEN={TOKEN} TITLE="Board">
-				<div className="d-flex flex-sm-row justify-content-between">
-					<div>
-						<i
-							id="back"
-							className="fa fa-reply fa-lg"
-							onClick={() => router.back()}
-						></i>
+			<Layout TOKEN={token} TITLE="Board" LOADING={!post}>
+				{post ? (
+					<div className="lg:p-10 sm:p-2">
+						<h3 className="dark:text-white">{post.TITLE}</h3>
+						<small className="dark:text-white font-bold">
+							{post.WRITER} at {moment(post.TIME).utc().format("LLL")}
+						</small>
+						<div className="card p-5 mx-auto my-4 leading-loose h-100">
+							<PostBody html={post.BODY} />
+						</div>
+						<div className="card p-5 mx-auto my-4">
+							<h4>Comment</h4>
+							{comment ? (
+								comment.map((ga) => (
+									<div
+										className="antialiased w-100 bg-gray-100 rounded-3xl p-2 rounded mt-2"
+										key={ga.ID}
+									>
+										<div className="font-semibold text-sm leading-relaxed">
+											{ga.WRITER}
+										</div>
+										<div className="text-normal leading-snug md:leading-normal">
+											{ga.COMMENT}
+										</div>
+										<small>{moment(ga.TIME).utc().calendar()}</small>
+									</div>
+								))
+							) : (
+								<></>
+							)}
+							<form
+								className="w-full rounded-lg px-4 pt-2"
+								onSubmit={handleSubmit}
+							>
+								<div className="flex flex-wrap -mx-3 mb-6">
+									<h2 className="pt-3 pb-2 text-gray-800 dark:text-white text-lg">
+										Add a new comment
+									</h2>
+									<textarea
+										className="bg-gray-100 dark:bg-gray-300 text-black rounded border border-gray-400 leading-normal resize-none w-full h-20 py-2 px-3 font-medium placeholder-gray-700 focus:outline-none focus:bg-white"
+										name="body"
+										placeholder="Type Your Comment"
+										required
+									></textarea>
+									<div className="ml-auto -mr-1 mt-2">
+										<input
+											type="submit"
+											className="bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
+											value="Post Comment"
+										/>
+									</div>
+								</div>
+							</form>
+						</div>
 					</div>
-					<div className="text-right">
-						<span>{moment.utc(A.TIME).format("LLL")}</span>
-						<br />
-						<span>WRITER: {A.WRITER}</span>
-					</div>
-				</div>
-				{Board && Board.status ? (
-					<>
-						<Container>
-							<Row className="my-4">
-								<Col>
-									<h1 className="text-primary">{A.TITLE}</h1>
-								</Col>
-							</Row>
-							<Row className="mt-4">
-								<Col lg={12}>
-									<Card className="shadow h-100 py-4 px-4">
-										<PostBody />
-									</Card>
-								</Col>
-								<hr />
-								<Col
-									lg={12}
-									style={{
-										marginTop: "2rem",
-										borderTop: "1px solid gray",
-										paddingTop: "2rem",
-									}}
-								>
-									<h5>COMMENT</h5>
-									<Row>
-										<Col>
-											<Input
-												className="mt-4 mb-4"
-												placeholder="TYPE HERE"
-												onKeyPress={(e) => {
-													if (e.key == "Enter") addComments(e.target.value);
-												}}
-											/>
-										</Col>
-										{/* <Col lg="2">
-                      <Button style={{position: 'absolute', top: '1.62rem', right: '0rem', borderRadius: '0'}}>SAVE</Button>
-                    </Col> */}
-									</Row>
-									{Comments.status &&
-										Comments.comments.map((ga) => (
-											<Row
-												key={ga.ID}
-												className="mt-3"
-												lg={12}
-												style={{
-													marginTop: "10rem",
-													borderBottom: "1px solid #EBEDEF",
-												}}
-											>
-												<Col>
-													<p style={{ fontSize: "0.8rem" }}>
-														<span className="text-primary">{ga.WRITER}</span>{" "}
-														{moment.utc(ga.TIME).calendar()}
-													</p>
-													<p style={{ color: "gray" }}>{ga.COMMENT}</p>
-												</Col>
-												<hr />
-											</Row>
-										))}
-								</Col>
-							</Row>
-						</Container>
-					</>
 				) : (
-					<Container>
-						<h1>NOT EXIST</h1>
-					</Container>
+					<>
+						<h1>Not Found</h1>
+					</>
 				)}
 			</Layout>
 		</>

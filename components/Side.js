@@ -143,18 +143,6 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 					</Link>
 				</li>
 			)}
-			<li
-				className={`nav-item ${
-					router.pathname.substring(1, 8) == "company" && "active"
-				}`}
-			>
-				<Link href="/company">
-					<a className="nav-link">
-						<i className="fa fa-address-card"></i>
-						<span>Company</span>
-					</a>
-				</Link>
-			</li>
 
 			{/* Board */}
 

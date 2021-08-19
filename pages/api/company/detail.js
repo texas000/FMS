@@ -6,12 +6,13 @@ export default async (req, res) => {
 		res.status(400).send("BAD REQUEST");
 		return;
 	}
-	let pool = new sql.ConnectionPool(process.env.SERVER21);
-	const qry = `SELECT (SELECT F_ACCOUNT FROM T_MEMBER WHERE T_BOARD_COMMENT.USERID=T_MEMBER.F_ID ) AS WRITER, * FROM T_BOARD_COMMENT WHERE TBID=('${q}');`;
+
+	let pool = new sql.ConnectionPool(process.env.SERVER2);
+	const qry = `SELECT TOP 1 * FROM T_COMPANY WHERE F_ID='${q}'; SELECT * FROM T_COMPANYCONTACT WHERE F_CompanyID='${q}';`;
 	try {
 		await pool.connect();
 		let result = await pool.request().query(qry);
-		res.json(result.recordsets[0]);
+		res.json(result.recordsets);
 	} catch (err) {
 		res.json(err);
 	}

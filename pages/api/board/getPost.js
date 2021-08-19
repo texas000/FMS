@@ -1,47 +1,20 @@
 const sql = require("mssql");
 
-const SQLconfig = {
-  server: process.env.JWDB_SVR,
-  database: process.env.JWDB_3,
-  user: process.env.JWDB_USER,
-  password: process.env.JWDB_PASS,
-  options: {
-    appName: "test",
-    encrypt: false,
-    enableArithAbort: false,
-    database: process.env.JWDB_2,
-  },
-};
-
 export default async (req, res) => {
-  return new Promise((resolve) => {
-    async function NEW() {
-      const pool = new sql.ConnectionPool(SQLconfig);
-      pool.on("error", (err) => {
-        console.log("sql error", err);
-      });
-      try {
-        await pool.connect();
-        const QRY = `SELECT (SELECT F_ACCOUNT FROM T_MEMBER WHERE T_BOARD.USERID=T_MEMBER.F_ID ) AS WRITER, ID, TITLE, TIME, VIEWS FROM T_BOARD ORDER BY ID DESC;`;
-        let result = await pool.request().query(QRY);
-        if (result.rowsAffected[0]) {
-          res.status(200).end(JSON.stringify(result.recordsets[0]));
-        } else {
-          res.status(401).end(false);
-        }
-      } catch (err) {
-        return { err: err };
-      } finally {
-        pool.close();
-      }
-    }
-    NEW();
-    resolve();
-  });
+	let pool = new sql.ConnectionPool(process.env.SERVER21);
+	const qry = `SELECT (SELECT F_ACCOUNT FROM T_MEMBER WHERE T_BOARD.USERID=T_MEMBER.F_ID ) AS WRITER, ID, TITLE, TIME, VIEWS FROM T_BOARD ORDER BY ID DESC;`;
+	try {
+		await pool.connect();
+		let result = await pool.request().query(qry);
+		res.json(result.recordsets[0]);
+	} catch (err) {
+		res.json(err);
+	}
+	return pool.close();
 };
 
 export const config = {
-  api: {
-    externalResolver: true,
-  },
+	api: {
+		externalResolver: true,
+	},
 };

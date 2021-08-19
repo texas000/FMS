@@ -42,6 +42,9 @@ export default function search(props) {
 	const { data: file } = useSWR(
 		props.word ? `/api/file/search?q=${props.word}` : null
 	);
+	const { data: company } = useSWR(
+		props.word ? `/api/company/search?q=${props.word}` : null
+	);
 	const [collapseShip, setCollapseShip] = useState(false);
 	const [collapseFile, setCollapseFile] = useState(false);
 	return (
@@ -102,6 +105,7 @@ export default function search(props) {
 					<></>
 				)}
 			</div>
+
 			<div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl my-3">
 				<div className="px-4 py-3 sm:px-6">
 					<h3 className="text-base leading-6 font-medium text-gray-900">
@@ -157,6 +161,40 @@ export default function search(props) {
 				) : (
 					<></>
 				)}
+			</div>
+			<div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl my-3">
+				<div className="px-4 py-3 sm:px-6">
+					<h3 className="text-base leading-6 font-medium text-gray-900">
+						Company
+						<p className="text-xs">
+							{(company && company.length) || "0"} search results
+						</p>
+					</h3>
+				</div>
+				<div className="border-t border-gray-200">
+					{company &&
+						company.map((ga, i) => (
+							<dl
+								key={i + "COMPANY"}
+								className={`${
+									i % 2 ? "bg-gray-200" : "bg-gray-50"
+								} p-2 text-gray-800 hover:text-white hover:bg-indigo-500`}
+							>
+								<Link href={`/company/${ga.F_ID}`}>
+									<a
+										className="hover:text-white"
+										style={{
+											textDecoration: "none",
+										}}
+									>
+										<dt className="px-2 font-medium uppercase block w-100">
+											{ga.F_SName}
+										</dt>
+									</a>
+								</Link>
+							</dl>
+						))}
+				</div>
 			</div>
 			<div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl my-3">
 				<div className="px-4 py-3 sm:px-6">

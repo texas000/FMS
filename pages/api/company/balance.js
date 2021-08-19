@@ -1,8 +1,14 @@
 const sql = require("mssql");
 
 export default async (req, res) => {
-	let pool = new sql.ConnectionPool(process.env.SERVER21);
-	const qry = `INSERT INTO T_BOARD_COMMENT VALUES (${req.body});`;
+	const { q } = req.query;
+	if (!q) {
+		res.status(400).send("BAD REQUEST");
+		return;
+	}
+
+	let pool = new sql.ConnectionPool(process.env.SERVER2);
+	const qry = `select * from V_CustomerBalance where f_id='${q}';`;
 	try {
 		await pool.connect();
 		let result = await pool.request().query(qry);

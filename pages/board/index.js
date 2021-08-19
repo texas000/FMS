@@ -6,13 +6,8 @@ import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import {
 	Button,
-	Card,
-	Col,
 	Input,
-	Row,
 	InputGroup,
-	InputGroupAddon,
-	InputGroupText,
 	Modal,
 	ModalBody,
 	ModalHeader,
@@ -62,14 +57,11 @@ const Index = ({ token, Board }) => {
 			dataField: "TITLE",
 			text: "TITLE",
 			align: "center",
-			headerClasses: "text-white bg-primary font-weight-light",
-			classes: "btn-link",
 			headerAlign: "center",
 		},
 		{
 			dataField: "WRITER",
 			text: "WRITER",
-			headerClasses: "text-white bg-primary font-weight-light",
 			headerStyle: { width: "10%" },
 			align: "center",
 			headerAlign: "center",
@@ -77,7 +69,6 @@ const Index = ({ token, Board }) => {
 		{
 			dataField: "VIEWS",
 			text: "VIEWS",
-			headerClasses: "text-white bg-primary font-weight-light",
 			headerStyle: { width: "10%" },
 			align: "center",
 			headerAlign: "center",
@@ -86,7 +77,6 @@ const Index = ({ token, Board }) => {
 		{
 			dataField: "TIME",
 			text: "TIME",
-			headerClasses: "text-white bg-primary font-weight-light",
 			headerStyle: { width: "30%" },
 			align: "center",
 			headerAlign: "center",
@@ -103,13 +93,13 @@ const Index = ({ token, Board }) => {
 
 	const rowEvents = {
 		onClick: (e, row, rowIndex) => {
-			router.push(`board/${row.ID}`);
+			router.push(`/board/${row.ID}`);
 		},
 	};
 	const addNew = async () => {
 		const Write = {
 			Title: title,
-			body: encodeURIComponent(Text),
+			body: Text,
 			UserID: token.uid,
 		};
 		const fetchs = await fetch("/api/board/postBoard", {
@@ -126,24 +116,16 @@ const Index = ({ token, Board }) => {
 
 	return (
 		<>
-			<Head>
-				<meta charSet="utf-8" />
-			</Head>
 			<Layout TOKEN={token} TITLE="Board">
-				<div className="d-flex flex-sm-row justify-content-between">
-					<div className="flex-column">
-						<h3 className="dark:text-white">Board</h3>
-					</div>
-					<div className="flex-column">
-						<Button
-							onClick={() => setModal(true)}
-							size="sm"
-							color="primary"
-							outline
-						>
-							Write <i className="fa fa-edit fa-lg ml-2"></i>
-						</Button>
-					</div>
+				<div className="flex justify-between">
+					<h3 className="dark:text-white">Board</h3>
+
+					<button
+						onClick={() => setModal(true)}
+						className="bg-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
+					>
+						Write <i className="fa fa-edit fa-lg ml-2"></i>
+					</button>
 				</div>
 
 				<Modal isOpen={modal} toggle={toggle} size="lg">
@@ -151,55 +133,41 @@ const Index = ({ token, Board }) => {
 						Share your idea..
 					</ModalHeader>
 					<ModalBody className="pt-4 px-4">
-						<InputGroup className="mb-2">
-							<Input
-								placeholder="TITLE"
-								onChange={(e) => setTitle(e.target.value)}
+						<input
+							className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-7 py-2 pr-12 sm:text-sm border border-gray-300 rounded-md"
+							placeholder="Type Title..."
+							onChange={(e) => setTitle(e.target.value)}
+						></input>
+						{ReactQuill && (
+							<ReactQuill
+								value={Text}
+								onChange={setText}
+								className="w-100 h-20 my-3"
 							/>
-						</InputGroup>
+						)}
+						<button
+							className="mt-5 w-100 bg-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
+							onClick={addNew}
+						>
+							SUBMIT
+						</button>
 					</ModalBody>
-					<ModalBody className="px-4">
-						<InputGroup className="mb-4">
-							{ReactQuill && (
-								<ReactQuill
-									value={Text}
-									onChange={setText}
-									style={{ width: "100%" }}
-								/>
-							)}
-							{/* <Input
-                    type="textarea"
-                    placeholder="TYPE HERE"
-                    style={{ height: "20rem" }}
-                    onChange={(e) =>
-                      setBody(encodeURIComponent(e.target.value))
-                    }
-                  /> */}
-						</InputGroup>
-					</ModalBody>
-					<Button className="mx-4 my-4" color="success" onClick={addNew}>
-						SUBMIT
-					</Button>
 				</Modal>
 
-				<Card className="bg-transparent border-0">
-					<Row className="my-4">
-						<Col>
-							<BootstrapTable
-								data={Board}
-								columns={columns}
-								rowEvents={rowEvents}
-								wrapperClasses="table-responsive text-xs rounded"
-								keyField="ID"
-								striped
-								hover
-								condensed={true}
-								bordered={false}
-								defaultSorted={defaultSorted}
-							/>
-						</Col>
-					</Row>
-				</Card>
+				<div className="card my-3 pb-0">
+					<BootstrapTable
+						data={Board}
+						columns={columns}
+						rowEvents={rowEvents}
+						wrapperClasses="w-auto"
+						headerClasses="dark:text-white text-black font-semibold"
+						rowClasses="hover:bg-indigo-500 hover:text-white cursor-pointer border-b-2 border-gray-200 bg-gray-100 dark:bg-gray-700 dark:text-white"
+						keyField="ID"
+						condensed={true}
+						bordered={false}
+						defaultSorted={defaultSorted}
+					/>
+				</div>
 			</Layout>
 		</>
 	);
