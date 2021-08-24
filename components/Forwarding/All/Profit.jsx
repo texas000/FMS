@@ -221,9 +221,9 @@ export const Profit = ({
 																ga.F_InvoiceAmt != 0
 																	? "bg-blue-400"
 																	: "bg-gray-400"
-															} px-2 py-1 text-white cursor-not-allowed bg-blue-500 rounded-sm font-light my-1 hover:bg-blue-600`}
+															} px-2 py-1 text-white cursor-pointer bg-blue-500 rounded-sm font-light my-1 hover:bg-blue-600`}
 															key={ga.F_ID + "INVO"}
-															// onClick={() => setSelected(ga)}
+															onClick={() => router.push(`/invoice/${ga.F_InvoiceNo}`)}
 														>
 															<div className="flex justify-between">
 																<span>{ga.F_InvoiceNo}</span>
