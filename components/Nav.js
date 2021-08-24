@@ -16,22 +16,9 @@ const Top = ({ Token, toggle, setToggle }) => {
 	const [searchAlertToggle, setSearchAlertToggle] = useState(false);
 
 	const [userToggle, setuserToggle] = useState(false);
-	const [selected, setSelected] = useState(null);
-	const [searchType, setSearchType] = useState("oim");
 
 	const [Notifications, setNotifications] = useState([]);
 	const [Messages, setMessages] = useState([]);
-
-	const loadOptions = async (inputValue, callback) => {
-		if (inputValue.length > 1) {
-			return fetch(`/api/forwarding/${searchType}/getList`, {
-				headers: {
-					key: cookie.parse(window.document.cookie).jamesworldwidetoken,
-					search: inputValue,
-				},
-			}).then((res) => res.json());
-		}
-	};
 
 	useEffect(() => {
 		//When window type is defined, and local stroage is defined, get notification and board board data from local storage and set to state value, otherwise, set noti and message as empty array
@@ -81,35 +68,6 @@ const Top = ({ Token, toggle, setToggle }) => {
 			>
 				<i className="fa fa-bars"></i>
 			</button>
-
-			{/* <!-- Topbar Search --> */}
-			{/* <form className="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search w-1/3">
-				
-				<AsyncSelect
-					instanceId="search"
-					cacheOptions
-					value={selected}
-					getOptionLabel={(e) =>
-						`${e.F_RefNo} - ${e.Customer || "NO CUSTOMER"}`
-					}
-					getOptionValue={(e) => e.F_ID}
-					onInputChange={(e) => setSearch(e)}
-					onChange={(e) => {
-						setSelected(e);
-						router.push(`/forwarding/${searchType}/${e.F_RefNo}`);
-					}}
-					placeholder={`Search ${searchType.toUpperCase()}...`}
-					loadOptions={loadOptions}
-					className="w-100"
-					onKeyDown={(e) => {
-						if (e.key == "Enter") {
-							if (!e.target.value) {
-								e.preventDefault();
-							}
-						}
-					}}
-				/>
-			</form> */}
 
 			{/* <!-- Topbar Navbar --> */}
 			{/* topbar navbar-nav */}
