@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import useSWR from "swr";
 import Link from "next/link";
 import { useState } from "react";
+import router from "next/router";
 
 export async function getServerSideProps({ req, query }) {
 	const cookies = cookie.parse(
@@ -45,8 +46,12 @@ export default function search(props) {
 	const { data: company } = useSWR(
 		props.word ? `/api/company/search?q=${props.word}` : null
 	);
+	const { data: invoice } = useSWR(
+		props.word ? `/api/invoice/search?q=${props.word}` : null
+	);
 	const [collapseShip, setCollapseShip] = useState(false);
 	const [collapseFile, setCollapseFile] = useState(false);
+	const [collapseInvo, setCollapseInvo] = useState(false);
 	return (
 		<Layout TOKEN={props.token} TITLE="Search">
 			<div className="flex flex-sm-row justify-between">
@@ -162,6 +167,58 @@ export default function search(props) {
 					<></>
 				)}
 			</div>
+
+			<div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl my-3">
+				<div className="px-4 py-3 sm:px-6">
+					<h3 className="text-base leading-6 font-medium text-gray-900">
+						Invoice
+						<p className="text-xs">
+							{(invoice && invoice.length) || "0"} search results
+						</p>
+					</h3>
+				</div>
+				<div className="border-t border-gray-200">
+					{invoice &&
+						invoice.map((ga, i) => {
+							if (i < 10 || (i >= 10 && collapseInvo))
+								return (
+									<dl
+										key={i + "INVOICE"}
+										className={`${
+											i % 2 ? "bg-gray-200" : "bg-gray-50"
+										} p-2 text-gray-800 hover:text-white hover:bg-indigo-500 group`}
+									>
+										<a
+											className="sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6 hover:text-white"
+											onClick={() => router.push(`/invoice/${ga.F_InvoiceNo}`)}
+											style={{
+												textDecoration: "none",
+											}}
+										>
+											<dt className="font-medium uppercase">
+												{ga.F_InvoiceNo}
+											</dt>
+										</a>
+									</dl>
+								);
+						})}
+				</div>
+				{invoice && invoice.length > 9 ? (
+					<div
+						className="text-center hover:bg-indigo-500 hover:text-white cursor-pointer"
+						onClick={() => setCollapseInvo(!collapseInvo)}
+					>
+						<i
+							className={`fa ${
+								collapseInvo ? "fa-chevron-up" : "fa-chevron-down"
+							} `}
+						></i>
+					</div>
+				) : (
+					<></>
+				)}
+			</div>
+
 			<div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl my-3">
 				<div className="px-4 py-3 sm:px-6">
 					<h3 className="text-base leading-6 font-medium text-gray-900">
