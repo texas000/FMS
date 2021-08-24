@@ -7,11 +7,24 @@ export default async (req, res) => {
 	const cookies = cookie.parse(rawCookie);
 	const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
 	let pool = new sql.ConnectionPool(process.env.SERVER2);
-	const qry = `select SUM(F_InvoiceAmt-F_PaidAmt) as pending from V_JWI_ACCT where PIC='${token.fsid}' AND F_InvoiceAmt-F_PaidAmt!='0' AND F_TBName='T_INVOHD';`;
+	const { q } = req.query;
+
 	try {
 		await pool.connect();
-		let result = await pool.request().query(qry);
-		res.json(result.recordset);
+		let result = await pool
+			.request()
+			.query(`select top 1 * from T_INVOHD where F_InvoiceNo='${q}';`);
+		if (result.recordset.length) {
+			let detail = await pool
+				.request()
+				.query(
+					`SELECT * FROM T_INVODETAIL WHERE F_INVOHDID='${result.recordset[0].F_ID}'`
+				);
+			result.recordset.push(detail.recordset);
+			res.json(result.recordset);
+		} else {
+			res.json(result.recordset);
+		}
 	} catch (err) {
 		res.json(err);
 	}
