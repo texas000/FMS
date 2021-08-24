@@ -15,7 +15,7 @@
 	}
 	.card {
 		@apply shadow;
-		@apply rounded;
+		@apply rounded-lg;
 		@apply bg-white;
 		@apply dark:text-white;
 		@apply dark:bg-gray-800;
