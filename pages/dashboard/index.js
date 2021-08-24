@@ -8,6 +8,7 @@ import useSWR from "swr";
 import Link from "next/link";
 import Notification from "../../components/Toaster";
 import Checkout from "../../components/Dashboard/Payment";
+import usdFormat from "../../lib/currencyFormat";
 
 export async function getServerSideProps({ req }) {
 	const cookies = cookie.parse(
@@ -32,6 +33,7 @@ export async function getServerSideProps({ req }) {
 
 export default function dashboard(props) {
 	const { data } = useSWR("/api/dashboard/list");
+	const { data: invoice } = useSWR("/api/dashboard/invoice");
 	// useEffect(() => {
 	// 	// if (typeof window !== "undefined") {
 	// 	// localStorage.setItem("board", JSON.stringify(Board));
@@ -46,8 +48,16 @@ export default function dashboard(props) {
 				intent="primary"
 			/> */}
 
-			<div className="d-sm-flex align-items-center justify-content-between mb-4 w-100">
+			<div className="flex justify-between mb-4">
 				<h3 className="dark:text-white">Dashboard</h3>
+				<Link href="/invoice">
+					<a
+						className="bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
+						style={{ textDecoration: "none" }}
+					>
+						Pending Invoice {invoice && usdFormat(invoice[0].pending)}
+					</a>
+				</Link>
 			</div>
 
 			{/* SUMMARY FREIGHT */}

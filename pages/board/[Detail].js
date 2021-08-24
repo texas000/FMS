@@ -70,7 +70,7 @@ const Detail = ({ token, q }) => {
 							{comment ? (
 								comment.map((ga) => (
 									<div
-										className="antialiased w-100 bg-gray-100 rounded-3xl p-2 rounded mt-2"
+										className="antialiased w-100 bg-gray-100 p-2 rounded mt-2"
 										key={ga.ID}
 									>
 										<div className="font-semibold text-sm leading-relaxed">
