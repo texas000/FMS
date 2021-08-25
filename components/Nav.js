@@ -59,14 +59,37 @@ const Top = ({ Token, toggle, setToggle }) => {
 	}
 
 	return (
-		<nav className="navbar navbar-expand h-16 mb-4 static-top shadow w-100 bg-white dark:bg-gray-700 dark:text-white">
+		<nav className="flex content-between px-3 h-16 mb-4 static-top shadow w-100 bg-white dark:bg-gray-700 dark:text-white">
+			{/* navbar navbar-expand */}
 			{/* <!-- Sidebar Toggle (Topbar) --> */}
-			<button
-				id="sidebarToggleTop"
-				className="btn btn-link d-md-none rounded-circle mr-3"
-				onClick={collapse}
-			>
-				<i className="fa fa-bars"></i>
+			<button className="block md:hidden" onClick={collapse}>
+				{/* HAMBURGER ICON */}
+				<svg
+					width="24"
+					height="24"
+					viewBox="0 0 24 24"
+					fill="none"
+					xmlns="http://www.w3.org/2000/svg"
+				>
+					<path
+						fillRule="evenodd"
+						clipRule="evenodd"
+						d="M19.75 12C19.75 11.5858 19.4142 11.25 19 11.25H5C4.58579 11.25 4.25 11.5858 4.25 12C4.25 12.4142 4.58579 12.75 5 12.75H19C19.4142 12.75 19.75 12.4142 19.75 12Z"
+						fill="black"
+					/>
+					<path
+						fillRule="evenodd"
+						clipRule="evenodd"
+						d="M19.75 7C19.75 6.58579 19.4142 6.25 19 6.25H5C4.58579 6.25 4.25 6.58579 4.25 7C4.25 7.41421 4.58579 7.75 5 7.75H19C19.4142 7.75 19.75 7.41421 19.75 7Z"
+						fill="black"
+					/>
+					<path
+						fillRule="evenodd"
+						clipRule="evenodd"
+						d="M19.75 17C19.75 16.5858 19.4142 16.25 19 16.25H5C4.58579 16.25 4.25 16.5858 4.25 17C4.25 17.4142 4.58579 17.75 5 17.75H19C19.4142 17.75 19.75 17.4142 19.75 17Z"
+						fill="black"
+					/>
+				</svg>
 			</button>
 
 			{/* <!-- Topbar Navbar --> */}
@@ -115,10 +138,9 @@ const Top = ({ Token, toggle, setToggle }) => {
 					</div>
 				</li>
 
+				{/* SEARCH ICON */}
 				<li
 					className="flex-1 nav-item dropdown no-arrow my-auto text-center"
-					// onMouseEnter={() => setSearchAlertToggle(true)}
-					// onMouseLeave={() => setSearchAlertToggle(false)}
 					onClick={() => setSearchAlertToggle((prev) => !prev)}
 				>
 					<a
@@ -130,98 +152,24 @@ const Top = ({ Token, toggle, setToggle }) => {
 						aria-haspopup="true"
 						aria-expanded={searchAlertToggle}
 					>
-						<i className="fa fa-search fa-fw"></i>
-						{/* <!-- Counter - Alerts --> */}
-						{/* <span className="badge badge-danger badge-counter">5</span> */}
+						<svg
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fillRule="evenodd"
+								clipRule="evenodd"
+								d="M14.385 15.4458C11.7348 17.5685 7.85532 17.4014 5.39854 14.9446C2.7625 12.3086 2.7625 8.0347 5.39854 5.39866C8.03458 2.76262 12.3084 2.76262 14.9445 5.39866C17.4013 7.85544 17.5683 11.7349 15.4457 14.3851L20.6013 19.5408C20.8942 19.8337 20.8942 20.3085 20.6013 20.6014C20.3084 20.8943 19.8335 20.8943 19.5407 20.6014L14.385 15.4458ZM6.4592 13.8839C4.40895 11.8337 4.40895 8.50957 6.4592 6.45932C8.50945 4.40907 11.8336 4.40907 13.8838 6.45932C15.9326 8.50807 15.9341 11.8288 13.8883 13.8794C13.8868 13.8809 13.8853 13.8824 13.8838 13.8839C13.8823 13.8854 13.8808 13.8869 13.8793 13.8884C11.8287 15.9342 8.50795 15.9327 6.4592 13.8839Z"
+								fill="black"
+							/>
+						</svg>
 					</a>
-					{/* <div
-						className={`dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in ${
-							searchAlertToggle && "show"
-						}`}
-						aria-labelledby="alertsDropdown"
-					>
-						<h6 className="dropdown-header">Search Option</h6>
-						<a
-							className="dropdown-item d-flex align-items-center"
-							href="#"
-							onClick={() => setSearchType("oim")}
-						>
-							<div className="mr-3">
-								<div className="icon-circle bg-primary">
-									<i className="fa fa-ship text-white"></i>
-								</div>
-							</div>
-							<div>
-								<div className="small text-gray-500">Forwarding OIM search</div>
-								<span className="font-weight-bold text-primary">OIM</span>
-							</div>
-						</a>
-						<a
-							className="dropdown-item d-flex align-items-center"
-							href="#"
-							onClick={() => setSearchType("oex")}
-						>
-							<div className="mr-3">
-								<div className="icon-circle bg-primary">
-									<i className="fa fa-ship text-white"></i>
-								</div>
-							</div>
-							<div>
-								<div className="small text-gray-500">Forwarding OEX search</div>
-								<span className="font-weight-bold text-primary">OEX</span>
-							</div>
-						</a>
-						<a
-							className="dropdown-item d-flex align-items-center"
-							href="#"
-							onClick={() => setSearchType("aim")}
-						>
-							<div className="mr-3">
-								<div className="icon-circle bg-primary">
-									<i className="fa fa-plane text-white"></i>
-								</div>
-							</div>
-							<div>
-								<div className="small text-gray-500">Forwarding AIM search</div>
-								<span className="font-weight-bold text-primary">AIM</span>
-							</div>
-						</a>
-						<a
-							className="dropdown-item d-flex align-items-center"
-							href="#"
-							onClick={() => setSearchType("aex")}
-						>
-							<div className="mr-3">
-								<div className="icon-circle bg-primary">
-									<i className="fa fa-plane text-white"></i>
-								</div>
-							</div>
-							<div>
-								<div className="small text-gray-500">Forwarding AEX search</div>
-								<span className="font-weight-bold text-primary">AEX</span>
-							</div>
-						</a>
-						<a
-							className="dropdown-item d-flex align-items-center"
-							href="#"
-							onClick={() => setSearchType("other")}
-						>
-							<div className="mr-3">
-								<div className="icon-circle bg-primary">
-									<i className="fa fa-flag text-white"></i>
-								</div>
-							</div>
-							<div>
-								<div className="small text-gray-500">
-									Forwarding OTHER search
-								</div>
-								<span className="font-weight-bold text-primary">OTHER</span>
-							</div>
-						</a>
-					</div> */}
 				</li>
 
-				{/* <!-- Nav Item - Alerts --> */}
+				{/* ALARM */}
 				<li
 					className="flex-1 nav-item dropdown no-arrow mx-3 my-auto text-center"
 					onClick={() => setalertToggle((prev) => !prev)}
@@ -235,68 +183,54 @@ const Top = ({ Token, toggle, setToggle }) => {
 						aria-haspopup="true"
 						aria-expanded={alertToggle}
 					>
-						<i className="fa fa-bell fa-fw"></i>
-						{/* <!-- Counter - Alerts --> */}
-						{/* {Notifications && (
-							<span
-								className={`badge ${
-									Notifications.length ? "badge-danger" : "badge-secondary"
-								} badge-counter`}
-							>
-								{Notifications.length}
-							</span>
-						)} */}
+						<svg
+							width="24"
+							height="24"
+							viewBox="0 0 24 24"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								fillRule="evenodd"
+								clipRule="evenodd"
+								d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V3.75H10.4426C8.21751 3.75 6.37591 5.48001 6.23702 7.70074L6.01601 11.2342C5.93175 12.5814 5.47946 13.8797 4.7084 14.9876C4.01172 15.9886 4.63194 17.3712 5.84287 17.5165L9.25 17.9254V19C9.25 20.5188 10.4812 21.75 12 21.75C13.5188 21.75 14.75 20.5188 14.75 19V17.9254L18.1571 17.5165C19.3681 17.3712 19.9883 15.9886 19.2916 14.9876C18.5205 13.8797 18.0682 12.5814 17.984 11.2342L17.763 7.70074C17.6241 5.48001 15.7825 3.75 13.5574 3.75H13V3ZM10.4426 5.25C9.00958 5.25 7.82354 6.36417 7.73409 7.79438L7.51309 11.3278C7.41169 12.949 6.86744 14.5112 5.93959 15.8444C5.88924 15.9168 5.93406 16.0167 6.02159 16.0272L9.75925 16.4757C11.2477 16.6543 12.7523 16.6543 14.2407 16.4757L17.9784 16.0272C18.0659 16.0167 18.1108 15.9168 18.0604 15.8444C17.1326 14.5112 16.5883 12.949 16.4869 11.3278L16.2659 7.79438C16.1764 6.36417 14.9904 5.25 13.5574 5.25H10.4426ZM12 20.25C11.3096 20.25 10.75 19.6904 10.75 19V18.25H13.25V19C13.25 19.6904 12.6904 20.25 12 20.25Z"
+								fill="black"
+							/>
+						</svg>
 					</a>
-					{/* <!-- Dropdown - Alerts --> */}
+					{/* dropdown-list dropdown-menu */}
 					<div
-						className={`dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in ${
-							alertToggle && "show"
+						className={`absolute top-full left-auto right-0 z-50 bg-white list-none p-2 float-left text-left rounded-xl shadow-xl border border-gray-100 ${
+							alertToggle ? "scale-100" : "hidden scale-0"
 						}`}
 						aria-labelledby="alertsDropdown"
 					>
-						<h6 className="dropdown-header">Alerts Center</h6>
-						{/* {navAlert &&
-              navAlert.map((ga, i) => (
-                <a
-                  key={ga.id + i}
-                  className="dropdown-item d-flex align-items-center"
-                  href="#"
-                >
-                  <div>
-                    <span className="font-weight-bold">{ga.title}</span>
-                    <div className="small text-gray-500">
-                      {moment(ga.created.seconds * 1000).fromNow()}
-                    </div>
-                  </div>
-                </a>
-              ))} */}
-						{Notifications &&
-							Notifications.map((ga) => (
-								<a
-									key={ga.ID}
-									className="dropdown-item d-flex align-items-center"
-									href="#"
-									onClick={() => router.push(`/forwarding/oim/${ga.RefNo}`)}
-								>
-									<div className="mr-3">
-										<div className="icon-circle bg-primary">
-											<i className="fa fa-ship text-white"></i>
-										</div>
-									</div>
-									<div>
-										<span className="font-weight-bold">{ga.RefNo}</span>
-										<div className="small text-gray-500">
-											{ga.Customer}
-											<br />
-											Arrival {moment(ga.ETA).fromNow()}
-										</div>
-									</div>
-								</a>
-							))}
+						<h6 className="p-2 font-semibold text-gray-800">Alarm</h6>
 						<a
-							className="dropdown-item text-center small text-gray-500"
+							className="p-2 rounded max-w-20 whitespace-nowrap flex align-middle text-gray-700 hover:bg-indigo-50 hover:no-underline"
 							href="#"
-							onClick={() => router.push("/dashboard")}
+						>
+							<div>
+								<span className="font-medium w-80">PENDING ALARM FUNCTION</span>
+								<div className="text-xs truncate w-80">
+									SORRY, THE NOTIFICATION IS UNDER CONSTRUCTION
+								</div>
+							</div>
+						</a>
+						<a
+							className="p-2 rounded max-w-20 whitespace-nowrap flex align-middle text-gray-700 hover:bg-indigo-50 hover:no-underline"
+							href="#"
+						>
+							<div>
+								<span className="font-medium w-80">PENDING ALARM FUNCTION</span>
+								<div className="text-xs truncate w-80">
+									SORRY, THE NOTIFICATION IS UNDER CONSTRUCTION
+								</div>
+							</div>
+						</a>
+						<a
+							className="p-2 rounded max-w-20 whitespace-nowrap flex text-center text-gray-700 hover:bg-indigo-50 hover:no-underline"
+							href="#"
 						>
 							Read More Messages
 						</a>
@@ -304,77 +238,16 @@ const Top = ({ Token, toggle, setToggle }) => {
 				</li>
 
 				{/* <!-- Nav Item - Messages --> */}
-				<li
-					className="flex-1 nav-item dropdown no-arrow my-auto mr-3 text-center"
-					onClick={() => setmessageToggle((prev) => !prev)}
-				>
-					<a
-						className="nav-link dropdown-toggle"
-						href="#"
-						id="messagesDropdown"
-						role="button"
-						data-toggle="dropdown"
-						aria-haspopup="true"
-						aria-expanded={messageToggle}
-					>
-						<i className="fa fa-envelope fa-fw"></i>
-						{/* <!-- Counter - Messages --> */}
-						{/* <span className="badge badge-secondary badge-counter">
-							{Messages && Messages.length}
-						</span> */}
-					</a>
-					{/* <!-- Dropdown - Messages --> */}
-					<div
-						className={`dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in ${
-							messageToggle && "show"
-						}`}
-						aria-labelledby="messagesDropdown"
-					>
-						<h6 className="dropdown-header">Message Center</h6>
-						{/* {Messages &&
-              Messages.length &&
-              Messages.map((ga) => (
-                <a
-                  className="dropdown-item d-flex align-items-center"
-                  href="#"
-                  onClick={() => router.push(`/board/${ga.ID}`)}
-                  key={ga.ID}
-                >
-                  <div className="dropdown-list-image mr-3">
-                    <img
-                      className="rounded-circle"
-                      src="/image/icons/sarah.svg"
-                      alt=""
-                    />
-                    <div className="status-indicator bg-success"></div>
-                  </div>
-                  <div className="font-weight-bold">
-                    <div className="text-truncate">{ga.TITLE}</div>
-                    <div className="small text-gray-500">
-                      {moment(ga.TIME).format("LL")}
-                    </div>
-                  </div>
-                </a>
-              ))} */}
-						<a
-							className="dropdown-item text-center small text-gray-500"
-							href="#"
-							onClick={() => router.push("/board")}
-						>
-							Read More Messages
-						</a>
-					</div>
-				</li>
 
 				<div className="border-r h-10 my-auto"></div>
 
 				{/* <!-- Nav Item - User Information --> */}
 				<li
-					className="flex-1 nav-item dropdown no-arrow mx-2"
+					className="flex-1 nav-item dropdown no-arrow mx-4"
 					onClick={() => setuserToggle((prev) => !prev)}
 				>
 					<a
-						className="nav-link dropdown-toggle inline-flex mr-2"
+						className="nav-link whitespace-nowrap hover:no-underline inline-flex p-1"
 						href="#"
 						id="userDropdown"
 						role="button"

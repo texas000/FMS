@@ -60,9 +60,9 @@ export default function Checkout() {
 		<div className="w-full xl:w-1/2 card p-3 mb-4">
 			<h3 className="dark:text-white mb-2">Credit Card Transaction</h3>
 			{/* FAKE CARD */}
-			<div className="w-96 h-56 m-auto bg-red-100 rounded-xl relative text-white shadow-2xl transition-transform transform hover:scale-110">
+			<div className="w-96 h-56 m-auto bg-red-100 rounded-xl relative text-white shadow-2xl transition-transform transform hover:scale-110 hidden sm:block">
 				<img
-					className="relative object-cover w-full h-full rounded-xl"
+					className="relative object-cover w-100 h-100 rounded-xl"
 					src="https://i.imgur.com/kGkSg1v.png"
 				/>
 				<div className="w-full px-8 absolute top-8">
