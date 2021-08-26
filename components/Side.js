@@ -306,13 +306,13 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 
 			{/* <!-- Mobile View --> */}
 			{/* <!-- Sidebar Toggler (Sidebar) --> */}
-			<div className="text-center d-none d-md-inline">
+			{/* <div className="text-center d-none d-md-inline">
 				<button
 					className="rounded-circle border-0"
 					id="sidebarToggle"
 					onClick={collapse}
 				></button>
-			</div>
+			</div> */}
 
 			{/* <!-- Sidebar Message --> */}
 			<div className="sidebar-card">
