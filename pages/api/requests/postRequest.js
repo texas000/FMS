@@ -30,35 +30,58 @@ export default async (req, res) => {
     (RefNo, Status, Title, Body, CreateAt, ModifyAt, CreateBy, ModifyBy, TBName, TBID, Attachment, ApType, Attachment2) 
     VALUES ('${ref}','101','${body.F_InvoiceNo}',
 	'${body.customer}',GETDATE(),GETDATE(),'${token.uid}','${token.uid}',
-	'T_APHD','${body.F_ID}', '0', '${body.type}', NULL); ${fileQuery}`;
+	'T_APHD','${body.F_ID}', '0', '${body.type}', NULL);`;
+
+	// ADDING FILE LIST
+	query += fileQuery;
+	// ADDING MESSAGE TO IAN(22)
+	query += `INSERT INTO T_MESSAGE VALUES ('ACCOUNTING PAYABLE REQUEST FOR ${body.F_InvoiceNo}', '${body.path}', GETDATE(), '${token.uid}');
+	INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
 
 	let pool = new sql.ConnectionPool(process.env.SERVER21);
 	try {
 		await pool.connect();
 		let result = await pool.request().query(query);
-		res.status(200).send(result.recordset || []);
+
+		let attach = body.filenames.map((ga) => ({
+			filename: ga,
+			path: `https://jwiusa.com/api/file/get?ref=${ref}&file=${encodeURIComponent(
+				ga
+			)}`,
+		}));
+
 		const mailOptions = {
 			from: "JWIUSA <it@jamesworldwide.com>",
-			// to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
-			to: "IAN PYO [JW] <ian@jamesworldwide.com>",
+			to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
+			// to: "IAN PYO [JW] <ian@jamesworldwide.com>",
 			subject: `AP REQUEST FOR ${body.F_InvoiceNo}`,
 			html: `<h2><mark>REQUESTED </mark> BY ${token.first} CASE: <a href="https://jwiusa.com${body.path}">${ref}</a></h2>`,
 			cc: token.email,
+			attachments: attach,
 		};
-		transport.sendMail(mailOptions, function (error, info) {
-			if (error) {
-				console.log(error);
-				res.status(500).send(error);
-			} else {
-				console.log("Email Sent: " + info.response);
-				res.status(200).send(info.response);
-			}
-		});
+
+		// TRY SEND EMAIL NOTIFICATION
+		try {
+			transport.sendMail(mailOptions, function (error, info) {
+				if (error) {
+					console.log(error);
+					res.status(404).send(error);
+				} else {
+					console.log("Email Sent: " + info.response);
+					res.status(200).send(result.recordset || []);
+					// res.status(200).send(info.response);
+				}
+			});
+		} catch (err) {
+			console.log("EMAIL ERROR");
+			console.log(err);
+			res.status(405).send(error);
+		}
 	} catch (err) {
 		console.log(err);
-		res.json([]);
+		res.status(406).send(err);
 	}
-	pool.close();
+	return pool.close();
 };
 
 export const config = {

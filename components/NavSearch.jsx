@@ -41,7 +41,7 @@ export default function NavSearch({ setValue }) {
 						</label>
 						<input
 							id="modal-search"
-							className="w-full border-0 focus:ring-transparent placeholder-gray-400 appearance-none py-3 pl-10 pr-4 text-gray-700"
+							className="w-full border-0 focus:ring-transparent placeholder-gray-400 appearance-none py-3 pl-10 pr-4 text-gray-700 focus:outline-none"
 							autoFocus={true}
 							autoCorrect="off"
 							autoComplete="off"

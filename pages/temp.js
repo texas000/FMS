@@ -1,6 +1,3 @@
-import { useEffect } from "react";
-import { useState } from "react";
-
 export default function search(props) {
 	return (
 		<div className="flex flex-col min-h-screen overflow-hidden">
@@ -20,7 +17,7 @@ export default function search(props) {
 								</span>
 							</a>
 							<div className="mt-4 fixed top-0 left-0 z-40 items-center hidden w-full h-full p-3 text-xl bg-gray-900 bg-opacity-50 md:text-sm lg:text-base md:w-3/4 md:bg-transparent md:p-0 md:relative md:flex">
-								<div className="flex-col w-full h-auto h-full overflow-hidden bg-white rounded-lg select-none md:bg-transparent md:rounded-none md:relative md:flex md:flex-row md:overflow-auto">
+								<div className="flex-col w-full h-full overflow-hidden bg-white rounded-lg select-none md:bg-transparent md:rounded-none md:relative md:flex md:flex-row md:overflow-auto">
 									<div className="flex flex-col items-center justify-center w-full h-full mt-12 text-center text-blue-600 md:text-blue-600 md:w-2/3 md:mt-0 md:flex-row md:items-center">
 										<a
 											href="#"

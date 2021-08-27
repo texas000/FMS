@@ -1,14 +1,14 @@
-// import { Button, Input, InputGroup, InputGroupAddon } from "reactstrap";
 import { useRouter } from "next/router";
 import moment from "moment";
 import firebase from "firebase/app";
 import "firebase/auth";
-import AsyncSelect from "react-select/async";
-import cookie from "cookie";
 import { useState, useEffect } from "react";
 import NavSearch from "./NavSearch";
+import useSWR from "swr";
+import Link from "next/link";
 
 const Top = ({ Token, toggle, setToggle }) => {
+	const { data: unread, mutate } = useSWR("/api/message/unread");
 	const router = useRouter();
 	const [search, setSearch] = useState(false);
 	const [alertToggle, setalertToggle] = useState(false);
@@ -17,28 +17,15 @@ const Top = ({ Token, toggle, setToggle }) => {
 
 	const [userToggle, setuserToggle] = useState(false);
 
-	const [Notifications, setNotifications] = useState([]);
-	const [Messages, setMessages] = useState([]);
+	const { data: msg } = useSWR(
+		alertToggle ? "/api/message/getMessageList" : null
+	);
 
-	useEffect(() => {
-		//When window type is defined, and local stroage is defined, get notification and board board data from local storage and set to state value, otherwise, set noti and message as empty array
-		if (typeof window !== "undefined") {
-			if (localStorage.length) {
-				// get notification from local stroage,
-				const noti = localStorage.getItem("notification");
-				if (noti != "undefined") {
-					//if notification is defined at the local storage, then set the notification to the state
-					setNotifications(JSON.parse(noti));
-				}
-				// get board notification from local stroage
-				const board = localStorage.getItem("board");
-				if (board != "undefined") {
-					// if board notification is defined at the local storage, then set the message to the state
-					setMessages(JSON.parse(board));
-				}
-			}
-		}
-	}, []);
+	async function markAsRead(id) {
+		const res = await fetch(`/api/message/markAsRead?q=${id}`);
+		console.log(res.status);
+		mutate();
+	}
 
 	// ROUTE TO THE FORWARDING SEARCH PAGE WHEN USER SUBMIT AT NAV SERCH BAR - /forwarding?query.search  (FORWARDING SEARCH PAGE)
 	const getResult = async () => {
@@ -59,7 +46,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 	}
 
 	return (
-		<nav className="flex content-between px-3 h-16 mb-4 static-top shadow w-100 bg-white dark:bg-gray-700 dark:text-white">
+		<nav className="flex content-between px-3 h-16 mb-4 static-top w-100 bg-gray-100 dark:bg-gray-600 dark:text-white">
 			{/* navbar navbar-expand */}
 			{/* <!-- Sidebar Toggle (Topbar) --> */}
 			<button className="block md:hidden" onClick={collapse}>
@@ -158,12 +145,12 @@ const Top = ({ Token, toggle, setToggle }) => {
 							viewBox="0 0 24 24"
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
+							className="fill-current dark:text-white"
 						>
 							<path
 								fillRule="evenodd"
 								clipRule="evenodd"
 								d="M14.385 15.4458C11.7348 17.5685 7.85532 17.4014 5.39854 14.9446C2.7625 12.3086 2.7625 8.0347 5.39854 5.39866C8.03458 2.76262 12.3084 2.76262 14.9445 5.39866C17.4013 7.85544 17.5683 11.7349 15.4457 14.3851L20.6013 19.5408C20.8942 19.8337 20.8942 20.3085 20.6013 20.6014C20.3084 20.8943 19.8335 20.8943 19.5407 20.6014L14.385 15.4458ZM6.4592 13.8839C4.40895 11.8337 4.40895 8.50957 6.4592 6.45932C8.50945 4.40907 11.8336 4.40907 13.8838 6.45932C15.9326 8.50807 15.9341 11.8288 13.8883 13.8794C13.8868 13.8809 13.8853 13.8824 13.8838 13.8839C13.8823 13.8854 13.8808 13.8869 13.8793 13.8884C11.8287 15.9342 8.50795 15.9327 6.4592 13.8839Z"
-								fill="black"
 							/>
 						</svg>
 					</a>
@@ -174,6 +161,21 @@ const Top = ({ Token, toggle, setToggle }) => {
 					className="flex-1 nav-item dropdown no-arrow mx-3 my-auto text-center"
 					onClick={() => setalertToggle((prev) => !prev)}
 				>
+					{unread && unread.COUNT ? (
+						<span className="flex absolute h-4 w-4 top-0 right-0 left-auto -mt-1 text-cneter">
+							<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+							<span className="relative inline-flex rounded-full h-full w-full bg-blue-500">
+								<div
+									className="flex-1 text-gray-100 font-semibold left-0"
+									style={{ fontSize: "0.7rem" }}
+								>
+									{unread.COUNT}
+								</div>
+							</span>
+						</span>
+					) : (
+						<div></div>
+					)}
 					<a
 						className="dropdown-toggle"
 						href="#"
@@ -189,12 +191,12 @@ const Top = ({ Token, toggle, setToggle }) => {
 							viewBox="0 0 24 24"
 							fill="none"
 							xmlns="http://www.w3.org/2000/svg"
+							className="fill-current dark:text-white"
 						>
 							<path
 								fillRule="evenodd"
 								clipRule="evenodd"
 								d="M13 3C13 2.44772 12.5523 2 12 2C11.4477 2 11 2.44772 11 3V3.75H10.4426C8.21751 3.75 6.37591 5.48001 6.23702 7.70074L6.01601 11.2342C5.93175 12.5814 5.47946 13.8797 4.7084 14.9876C4.01172 15.9886 4.63194 17.3712 5.84287 17.5165L9.25 17.9254V19C9.25 20.5188 10.4812 21.75 12 21.75C13.5188 21.75 14.75 20.5188 14.75 19V17.9254L18.1571 17.5165C19.3681 17.3712 19.9883 15.9886 19.2916 14.9876C18.5205 13.8797 18.0682 12.5814 17.984 11.2342L17.763 7.70074C17.6241 5.48001 15.7825 3.75 13.5574 3.75H13V3ZM10.4426 5.25C9.00958 5.25 7.82354 6.36417 7.73409 7.79438L7.51309 11.3278C7.41169 12.949 6.86744 14.5112 5.93959 15.8444C5.88924 15.9168 5.93406 16.0167 6.02159 16.0272L9.75925 16.4757C11.2477 16.6543 12.7523 16.6543 14.2407 16.4757L17.9784 16.0272C18.0659 16.0167 18.1108 15.9168 18.0604 15.8444C17.1326 14.5112 16.5883 12.949 16.4869 11.3278L16.2659 7.79438C16.1764 6.36417 14.9904 5.25 13.5574 5.25H10.4426ZM12 20.25C11.3096 20.25 10.75 19.6904 10.75 19V18.25H13.25V19C13.25 19.6904 12.6904 20.25 12 20.25Z"
-								fill="black"
 							/>
 						</svg>
 					</a>
@@ -206,28 +208,20 @@ const Top = ({ Token, toggle, setToggle }) => {
 						aria-labelledby="alertsDropdown"
 					>
 						<h6 className="p-2 font-semibold text-gray-800">Alarm</h6>
-						<a
-							className="p-2 rounded max-w-20 whitespace-nowrap flex align-middle text-gray-700 hover:bg-indigo-50 hover:no-underline"
-							href="#"
-						>
-							<div>
-								<span className="font-medium w-80">PENDING ALARM FUNCTION</span>
-								<div className="text-xs truncate w-80">
-									SORRY, THE NOTIFICATION IS UNDER CONSTRUCTION
-								</div>
-							</div>
-						</a>
-						<a
-							className="p-2 rounded max-w-20 whitespace-nowrap flex align-middle text-gray-700 hover:bg-indigo-50 hover:no-underline"
-							href="#"
-						>
-							<div>
-								<span className="font-medium w-80">PENDING ALARM FUNCTION</span>
-								<div className="text-xs truncate w-80">
-									SORRY, THE NOTIFICATION IS UNDER CONSTRUCTION
-								</div>
-							</div>
-						</a>
+						{msg &&
+							msg.map((ga) => (
+								<Link href={ga.F_LINK} key={ga.F_ID}>
+									<a
+										className="p-2 rounded max-w-20 whitespace-nowrap flex align-middle text-gray-700 hover:bg-indigo-50 hover:no-underline"
+										onClick={markAsRead(ga.F_ID)}
+									>
+										<div>
+											<span className="font-medium w-80">{ga.CREATOR}</span>
+											<div className="text-xs truncate w-80">{ga.F_BODY}</div>
+										</div>
+									</a>
+								</Link>
+							))}
 						<a
 							className="p-2 rounded max-w-20 whitespace-nowrap flex text-center text-gray-700 hover:bg-indigo-50 hover:no-underline"
 							href="#"
@@ -243,11 +237,11 @@ const Top = ({ Token, toggle, setToggle }) => {
 
 				{/* <!-- Nav Item - User Information --> */}
 				<li
-					className="flex-1 nav-item dropdown no-arrow mx-4"
+					className="flex-1 dropdown pl-3 pr-5 my-auto"
 					onClick={() => setuserToggle((prev) => !prev)}
 				>
 					<a
-						className="nav-link whitespace-nowrap hover:no-underline inline-flex p-1"
+						className="whitespace-nowrap hover:no-underline"
 						href="#"
 						id="userDropdown"
 						role="button"
@@ -255,13 +249,13 @@ const Top = ({ Token, toggle, setToggle }) => {
 						aria-haspopup="true"
 						aria-expanded={userToggle}
 					>
-						<span className="d-none d-lg-inline text-gray-700 text-xs pt-1 my-auto mr-2 dark:text-white">
+						<span className="d-none d-lg-inline text-gray-700 px-2 text-xs font-medium dark:text-white">
 							{Token
 								? Token.displayName || `${Token.first} ${Token.last}`
 								: "Please Login"}
 						</span>
 						<img
-							className="w-8 min-w-max h-8"
+							className="w-8 min-w-max h-8 inline"
 							src={Token.photoURL || "/image/icons/sarah.svg"}
 						/>
 					</a>

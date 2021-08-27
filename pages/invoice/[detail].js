@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import moment from "moment";
 import useSWR from "swr";
 import usdFormat from "../../lib/currencyFormat";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps({ req, query }) {
 	const cookies = cookie.parse(
@@ -106,6 +107,27 @@ const HouseTable = ({ hus }) => (
 
 export default function invoice(props) {
 	const { data } = useSWR(`/api/invoice/detail?q=${props.q}`);
+	const router = useRouter();
+	if (typeof window !== "undefined") {
+		// Define an empty array
+		var arr = [];
+		// Initial value is null value but change to empty array string
+		var history = localStorage.getItem("pageHistory");
+		// If the page history is empty
+		if (history == null) {
+			arr.unshift({ path: router.asPath, ref: props.q });
+			localStorage.setItem("pageHistory", JSON.stringify(arr));
+		} else {
+			arr = JSON.parse(history);
+			// If the page history is exist, check the most recent history
+			// If the reference is same as current reference, do not store data
+			if (arr[0].ref != props.q) {
+				arr.unshift({ path: router.asPath, ref: props.q });
+				localStorage.setItem("pageHistory", JSON.stringify(arr));
+			}
+		}
+	}
+
 	return (
 		<Layout TOKEN={props.token} TITLE={props.q} LOADING={!data}>
 			{data && data.length ? (

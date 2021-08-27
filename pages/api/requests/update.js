@@ -47,6 +47,13 @@ export default async (req, res) => {
 
 	var query = `UPDATE T_REQUEST SET Status='${status}', ModifyBy='${token.uid}', ModifyAt=GETDATE() WHERE ID='${id}'; 
     SELECT R.Title, R.Status, R.RefNo, (SELECT F_EMAIL FROM T_MEMBER M WHERE M.F_ID=R.CreateBy) AS Notify FROM T_REQUEST R WHERE ID='${id}';`;
+
+	// ADDING MESSAGE TO KEVIN(18)
+	// if(token.admin == 6) {
+	// 	query += `INSERT INTO T_MESSAGE VALUES ('ACCOUNTING PAYABLE REQUEST FOR ${body.F_InvoiceNo}', '${body.path}', GETDATE(), '${token.uid}');
+	// 	INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
+	// }
+
 	let pool = new sql.ConnectionPool(process.env.SERVER21);
 	try {
 		await pool.connect();

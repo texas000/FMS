@@ -55,7 +55,8 @@ export default function dashboard(props) {
 						className="bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
 						style={{ textDecoration: "none" }}
 					>
-						Pending Invoice {invoice && usdFormat(invoice[0].pending)}
+						Pending Invoice{" "}
+						{invoice && invoice.length && usdFormat(invoice[0].pending)}
 					</a>
 				</Link>
 			</div>
