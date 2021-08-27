@@ -9,7 +9,7 @@ export const Comment = ({ Reference, Uid }) => {
 	const ReactQuill =
 		typeof window === "object" ? require("react-quill") : () => false;
 	const [html, setHtml] = useState("");
-	const [comments, setComment] = useState([]);
+	// const [comments, setComment] = useState([]);
 	const [isOpen, setOpen] = useState(false);
 
 	const CommentList = ({ first, last, content, uid, date }) => (
@@ -56,18 +56,18 @@ export const Comment = ({ Reference, Uid }) => {
 	);
 
 	useEffect(() => {
-		getComment();
+		// getComment();
 		setOpen(true);
 	}, [Reference]);
 
-	async function getComment() {
-		const comment = await fetch("/api/dashboard/comment", {
-			headers: {
-				ref: Reference,
-			},
-		}).then(async (j) => await j.json());
-		setComment(comment);
-	}
+	// async function getComment() {
+	// 	const comment = await fetch("/api/dashboard/comment", {
+	// 		headers: {
+	// 			ref: Reference,
+	// 		},
+	// 	}).then(async (j) => await j.json());
+	// 	setComment(comment);
+	// }
 
 	async function uploadComment() {
 		const post = await fetch(`/api/comment/post?ref=${Reference}`, {

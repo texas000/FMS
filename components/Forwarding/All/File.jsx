@@ -29,133 +29,15 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 		setIsClient(true);
 	}, [Reference]);
 
-	// function uploadFile(e) {
-	// 	var uploadedFile = e.target.files[0];
-	// 	if (uploadedFile) {
-	// 		const formData = new FormData();
-	// 		formData.append("userPhoto", uploadedFile);
-	// 		const config = {
-	// 			headers: {
-	// 				"content-type": "multipart/form-data",
-	// 				label: e.target.id,
-	// 				level: "99",
-	// 			},
-	// 		};
-	// 		try {
-	// 			const upload = new Promise((res, rej) => {
-	// 				try {
-	// 					res(post(`/api/file/upload?ref=${Reference}`, formData, config));
-	// 				} catch (err) {
-	// 					console.log(err);
-	// 					res("uploaded");
-	// 				}
-	// 			});
-	// 			upload.then((ga) => {
-	// 				// if (ga.status === 200) {
-	// 				// }
-	// 			});
-	// 		} catch (err) {
-	// 			if (err.response) {
-	// 				console.log(err.response);
-	// 			} else if (err.request) {
-	// 				console.log(err.request);
-	// 			} else {
-	// 				console.log(err);
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-	// const acceptFileType =
-	// 	"image/*, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, .msg, application/pdf";
-	// const baseStyle = {
-	// 	flex: 1,
-	// 	display: "flex",
-	// 	flexDirection: "column",
-	// 	outline: "none",
-	// 	transition: "border .1s ease-in-out",
-	// };
-	// const onDrop = React.useCallback(async (acceptedFiles) => {
-	// 	acceptedFiles.map(async (data) => {
-	// 		const formData = new FormData();
-	// 		formData.append("userPhoto", data);
-	// 		const config = {
-	// 			headers: {
-	// 				"content-type": "multipart/form-data",
-	// 				reference: Reference,
-	// 			},
-	// 		};
-	// 		try {
-	// 			const upload = new Promise((res, rej) => {
-	// 				try {
-	// 					res(post(`/api/dashboard/uploadFile`, formData, config));
-	// 				} catch (err) {
-	// 					console.log(err);
-	// 					res("uploaded");
-	// 				}
-	// 			});
-	// 			upload.then((ga) => {
-	// 				if (ga.status === 200) {
-	// 					alert(`File Uploaded: ${data.name}`);
-	// 					// getFiles();
-	// 					// setShow(true);
-	// 				}
-	// 			});
-	// 		} catch (err) {
-	// 			if (err.response) {
-	// 				console.log(err.response);
-	// 			} else if (err.request) {
-	// 				console.log(err.request);
-	// 			} else {
-	// 				console.log(err);
-	// 			}
-	// 		}
-	// 	});
-	// });
-	// Define the functions from Dropzone package
-	// const {
-	// 	getRootProps,
-	// 	getInputProps,
-	// 	fileRejections,
-	// 	isDragActive,
-	// 	isDragAccept,
-	// 	isDragReject,
-	// 	acceptedFiles,
-	// } = useDropzone({
-	// 	accept: acceptFileType,
-	// 	minSize: 0,
-	// 	maxSize: 10485760,
-	// 	onDrop,
-	// });
-
-	// const activeStyle = {
-	// 	borderColor: "blue",
-	// 	borderStyle: "dashed",
-	// 	borderWidth: "thick",
-	// };
-
-	// const acceptStyle = {
-	// 	borderColor: "green",
-	// 	borderStyle: "dashed",
-	// 	borderWidth: "thick",
-	// };
-
-	// const rejectStyle = {
-	// 	borderColor: "red",
-	// 	borderStyle: "dashed",
-	// 	borderWidth: "thick",
-	// };
-
-	// Custom styles when the file is changed
-	// const style = React.useMemo(
-	// 	() => ({
-	// 		...baseStyle,
-	// 		...(isDragActive ? activeStyle : {}),
-	// 		...(isDragAccept ? acceptStyle : {}),
-	// 		...(isDragReject ? rejectStyle : {}),
-	// 	}),
-	// 	[isDragActive, isDragReject, isDragAccept]
-	// );
+	async function handleDelete(id) {
+		const verify = confirm("DELETE?");
+		if (verify) {
+			const res = await fetch(`/api/file/hide?q=${id}`);
+			if (res.ok) {
+				mutate();
+			}
+		}
+	}
 
 	return (
 		<div className="card my-4 shadow">
@@ -208,7 +90,7 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 																			cy="12"
 																			r="10"
 																			stroke="currentColor"
-																			stroke-width="4"
+																			strokeWidth="4"
 																		></circle>
 																		<path
 																			className="opacity-75"
@@ -361,7 +243,7 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 																				cy="12"
 																				r="10"
 																				stroke="currentColor"
-																				stroke-width="4"
+																				strokeWidth="4"
 																			></circle>
 																			<path
 																				className="opacity-75"
@@ -395,27 +277,76 @@ export const File = ({ Reference, House, Master, Container, Ap }) => {
 
 								{data && data.length ? (
 									data.map((ga) => (
-										<button
+										<div
+											className="flex flex-row text-center"
 											key={ga.F_ID + "FILE"}
-											className="w-100 bg-gray-200 p-2 my-1 rounded border-2 border-gray-300 hover:bg-gray-400 hover:text-white"
-											onClick={async () => {
-												window.location.assign(
-													`/api/file/get?ref=${Reference}&file=${encodeURIComponent(
-														ga.F_FILENAME
-													)}`
-												);
-											}}
 										>
-											<div className="flex justify-between">
-												<span className="uppercase">
-													<i className="fa fa-download mx-2"></i>
-													{ga.F_LABEL}
-												</span>
-												<span className="truncate text-right w-2/3">
-													{ga.F_FILENAME}
-												</span>
-											</div>
-										</button>
+											<button
+												className="w-100 bg-gray-200 p-2 my-1 rounded border-2 border-gray-300 hover:bg-gray-400 hover:text-white"
+												onClick={async () => {
+													window.location.assign(
+														`/api/file/get?ref=${Reference}&file=${encodeURIComponent(
+															ga.F_FILENAME
+														)}`
+													);
+												}}
+											>
+												<div className="flex justify-between">
+													<span className="uppercase">
+														<svg
+															width="24"
+															height="24"
+															viewBox="0 0 24 24"
+															fill="none"
+															xmlns="http://www.w3.org/2000/svg"
+															className="inline mr-1"
+														>
+															<path
+																className="fill-current"
+																d="M15.0856 12.5315C14.8269 12.2081 14.3549 12.1557 14.0315 12.4144L12.75 13.4396V10.0001C12.75 9.58585 12.4142 9.25006 12 9.25006C11.5858 9.25006 11.25 9.58585 11.25 10.0001V13.4396L9.96849 12.4144C9.64505 12.1557 9.17308 12.2081 8.91432 12.5315C8.65556 12.855 8.708 13.327 9.03145 13.5857L11.5287 15.5835C11.6575 15.6877 11.8215 15.7501 12 15.7501C12.1801 15.7501 12.3453 15.6866 12.4746 15.5809L14.9685 13.5857C15.2919 13.327 15.3444 12.855 15.0856 12.5315Z"
+															/>
+															<path
+																className="fill-current"
+																fillRule="evenodd"
+																clipRule="evenodd"
+																d="M8.46038 7.28393C9.40301 5.8274 11.0427 4.86182 12.9091 4.86182C15.7228 4.86182 18.024 7.05632 18.1944 9.82714C18.2506 9.825 18.307 9.82392 18.3636 9.82392C20.7862 9.82392 22.75 11.7878 22.75 14.2103C22.75 16.6328 20.7862 18.5966 18.3636 18.5966L7 18.5966C3.82436 18.5966 1.25 16.0223 1.25 12.8466C1.25 9.67101 3.82436 7.09665 7 7.09665C7.50391 7.09665 7.99348 7.16164 8.46038 7.28393ZM12.9091 6.36182C11.404 6.36182 10.1021 7.23779 9.48806 8.51108C9.31801 8.86369 8.90536 9.0262 8.54054 8.88424C8.0639 8.69877 7.54477 8.59665 7 8.59665C4.65279 8.59665 2.75 10.4994 2.75 12.8466C2.75 15.1939 4.65279 17.0966 7 17.0966L18.3627 17.0966C19.9568 17.0966 21.25 15.8044 21.25 14.2103C21.25 12.6162 19.9577 11.3239 18.3636 11.3239C18.1042 11.3239 17.8539 11.358 17.6164 11.4214C17.3762 11.4855 17.1198 11.4265 16.9319 11.2637C16.7439 11.1009 16.6489 10.8556 16.6781 10.6087C16.6955 10.461 16.7045 10.3103 16.7045 10.1573C16.7045 8.0611 15.0053 6.36182 12.9091 6.36182Z"
+															/>
+														</svg>
+
+														{ga.F_LABEL}
+													</span>
+													<span className="truncate text-right w-2/3">
+														{ga.F_FILENAME}
+													</span>
+												</div>
+											</button>
+											<button
+												className="w-10 mx-2 my-1 rounded border-2 border-gray-300 hover:bg-red-200 hover:text-white"
+												onClick={() => handleDelete(ga.F_ID)}
+											>
+												<svg
+													width="24"
+													height="24"
+													viewBox="0 0 24 24"
+													fill="none"
+													xmlns="http://www.w3.org/2000/svg"
+													className="mx-auto"
+												>
+													<path
+														d="M8.46445 15.5354L15.5355 8.46436"
+														stroke="black"
+														strokeWidth="1.5"
+														strokeLinecap="round"
+													/>
+													<path
+														d="M8.46446 8.46458L15.5355 15.5356"
+														stroke="black"
+														strokeWidth="1.5"
+														strokeLinecap="round"
+													/>
+												</svg>
+											</button>
+										</div>
 									))
 								) : (
 									<div className="w-100 bg-gray-200 p-2 rounded text-center">

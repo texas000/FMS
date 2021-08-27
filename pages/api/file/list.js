@@ -1,5 +1,11 @@
 const sql = require("mssql");
 
+// * F_SECURITY LEVEL
+// ! HIDE - 0
+// ! INVOICE - 10
+// ! CRDR - 20
+// ! AP - 30
+
 export default async (req, res) => {
 	const { ref } = req.query;
 	if (!ref) {
@@ -8,7 +14,7 @@ export default async (req, res) => {
 	}
 
 	let pool = new sql.ConnectionPool(process.env.SERVER21);
-	const qry = `SELECT * FROM T_FILE WHERE F_REF='${ref}' ORDER BY F_ID DESC;`;
+	const qry = `SELECT * FROM T_FILE WHERE F_REF='${ref}' AND F_SECURITY!='0' ORDER BY F_ID DESC;`;
 	try {
 		await pool.connect();
 		let result = await pool.request().query(qry);
