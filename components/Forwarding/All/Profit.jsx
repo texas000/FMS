@@ -22,11 +22,13 @@ export const Profit = ({
 	const [selected, setSelected] = useState(false);
 	// const [file, setFile] = useState(false);
 	const [selectedFile, setSelectedFile] = useState([]);
-	const [selectedFile2, setSelectedFile2] = useState(false);
+	const [fileNames, setFileNames] = useState([]);
 	const [type, setType] = useState(false);
 	const [arType, setArtype] = useState(false);
 	const [crType, setCrtype] = useState(false);
 	const [apType, setAptype] = useState(false);
+
+	const [submitLoading, setSubmitLoading] = useState(false);
 
 	const arfiles = [
 		{ level: 10, value: "isf", label: "ISF" },
@@ -53,27 +55,19 @@ export const Profit = ({
 
 	const Status = ({ data }) => {
 		if (data == 101) {
-			return <span className="text-white">Current Status: Requested</span>;
+			return <span>Current Status: Requested</span>;
 		}
 		if (data == 110) {
-			return (
-				<span className="text-white">Current Status: Director Rejected</span>
-			);
+			return <span>Current Status: Director Rejected</span>;
 		}
 		if (data == 111) {
-			return (
-				<span className="text-white">Current Status: Director Approved</span>
-			);
+			return <span>Current Status: Director Approved</span>;
 		}
 		if (data == 120) {
-			return (
-				<span className="text-white">Current Status: Account Rejected</span>
-			);
+			return <span>Current Status: Account Rejected</span>;
 		}
 		if (data == 121) {
-			return (
-				<span className="text-white">Current Status: Account Approved</span>
-			);
+			return <span>Current Status: Account Approved</span>;
 		}
 	};
 
@@ -84,6 +78,7 @@ export const Profit = ({
 
 	const router = useRouter();
 	async function postReq(body) {
+		setSubmitLoading(true);
 		const req = await fetch("/api/requests/postRequest", {
 			method: "POST",
 			headers: {
@@ -93,6 +88,7 @@ export const Profit = ({
 			body: JSON.stringify({
 				...body,
 				file: selectedFile,
+				filenames: fileNames,
 				type: type,
 				customer: customer,
 				path: router.asPath,
@@ -100,11 +96,14 @@ export const Profit = ({
 		});
 		if (req.status === 200) {
 			alert("Requested, Thank you!");
+			setSubmitLoading(false);
 			setSelectedFile([]);
 			setSelected(false);
+			setSubmitLoading(false);
 		} else {
 			setSelectedFile([]);
 			alert(req.status);
+			setSubmitLoading(false);
 		}
 	}
 	var arTotal = null;
@@ -223,7 +222,9 @@ export const Profit = ({
 																	: "bg-gray-400"
 															} px-2 py-1 text-white cursor-pointer bg-blue-500 rounded-sm font-light my-1 hover:bg-blue-600`}
 															key={ga.F_ID + "INVO"}
-															onClick={() => router.push(`/invoice/${ga.F_InvoiceNo}`)}
+															onClick={() =>
+																router.push(`/invoice/${ga.F_InvoiceNo}`)
+															}
 														>
 															<div className="flex justify-between">
 																<span>{ga.F_InvoiceNo}</span>
@@ -239,11 +240,11 @@ export const Profit = ({
 										<form className="upload mt-4 font-light text-sm">
 											<Select
 												options={arfiles}
-												className="w-80 mb-2"
+												className="py-0"
 												onChange={(e) => setArtype(e)}
 												defaultValue={{ value: 0, label: "SELECT TYPE" }}
 											/>
-											<div className="input-group z-0 h-20">
+											<div className="input-group z-0 h-20 my-2">
 												<div className="custom-file">
 													<input
 														type="file"
@@ -428,7 +429,7 @@ export const Profit = ({
 															onClick={() => setSelected(ga)}
 														>
 															<div className="flex justify-between">
-																<span className="truncate w-1/2">
+																<span className="truncate w-32">
 																	{ga.VENDOR}
 																</span>
 																<span className="font-bold">
@@ -472,7 +473,7 @@ export const Profit = ({
 													return (
 														<button
 															key={ga.F_ID + "FILE"}
-															className="w-100 px-2 bg-blue-500 text-white border-2 border-indigo-300 rounded py-2 my-1 hover:bg-indigo-600"
+															className="w-100 my-1 bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium py-2 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
 															onClick={async () => {
 																window.location.assign(
 																	`/api/file/get?ref=${Reference}&file=${encodeURIComponent(
@@ -529,7 +530,7 @@ export const Profit = ({
 							{requested.map((ga) => (
 								<div key={ga.ID}>
 									<div className="my-1">
-										<div className="flex justify-between p-1 bg-purple-500 rounded-sm text-white">
+										<div className="flex justify-between bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100">
 											<span>{ga.Title}</span>
 											<Status data={ga.Status} />
 										</div>
@@ -548,8 +549,7 @@ export const Profit = ({
 					setSelected(false);
 					setType(false);
 					setSelectedFile([]);
-					// setSelectedFile2(false);
-					// setFile(false);
+					setFileNames([]);
 				}}
 				title="Request Approval"
 				className="dark:bg-gray-600"
@@ -610,12 +610,19 @@ export const Profit = ({
 													onChange={(e) => {
 														if (e.target.checked) {
 															setSelectedFile((prev) => [...prev, ga.F_ID]);
+															setFileNames((prev) => [...prev, ga.F_FILENAME]);
 														} else {
 															var arr = [...selectedFile];
 															var index = arr.indexOf(ga.F_ID);
 															if (index !== -1) {
 																arr.splice(index, 1);
 																setSelectedFile(arr);
+															}
+															var nameArr = [...fileNames];
+															var nameIndex = nameArr.indexOf(ga.F_FILENAME);
+															if (nameIndex !== -1) {
+																nameArr.splice(nameIndex, 1);
+																setFileNames(nameArr);
 															}
 														}
 													}}
@@ -634,8 +641,14 @@ export const Profit = ({
 					<Button
 						text="Confirm"
 						fill={true}
+						loading={submitLoading}
 						onClick={() => postReq(selected)}
-						disabled={!selectedFile.length || type == false || type == "false"}
+						disabled={
+							!selectedFile.length ||
+							type == false ||
+							type == "false" ||
+							submitLoading
+						}
 					/>
 					{/* WHEN REQUEST HAPPEN, UPLOAD TO DATABASE AND SEND THE NOTIFICATION TO IAN */}
 				</div>
