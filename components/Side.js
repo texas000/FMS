@@ -8,42 +8,37 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 	const collapse = () => setToggle(!toggle);
 	return (
 		<ul
-			className={`navbar-nav bg-gradient-to-b from-blue-500 to-indigo-500 dark:from-blue-900 dark:to-indigo-900 sidebar sidebar-dark accordion d-print-none ${
+			className={`navbar-nav bg-gradient-to-b from-blue-600 to-blue-500 dark:from-blue-900 dark:to-indigo-900 sidebar sidebar-dark accordion d-print-none ${
 				toggle && "toggled"
 			}`}
-			id="accordionSidebar"
 		>
 			{/* <!-- Sidebar Logo --> */}
 			<Link href="/dashboard">
-				<a className="sidebar-brand d-flex align-items-center justify-content-center">
-					<div className="sidebar-brand-icon">
+				<a className="h-16 d-flex align-items-center justify-content-center">
+					<div>
 						<img
 							src="/favicon/apple-touch-icon.png"
-							className="avatar"
-							style={{ borderRadius: "50%", width: "35px", height: "35px" }}
+							className="avatar rounded-full w-9 h-9"
 						/>
-					</div>
-					<div className="sidebar-brand-text mx-3">
-						JWI FMS <sup>1.0.1</sup>
 					</div>
 				</a>
 			</Link>
 
-			{/* <!-- Divider --> */}
-			<hr className="sidebar-divider my-0" />
+			{/* Divider */}
+			<hr className="border-t border-blue-500 mx-3 my-1" />
 
 			{/* <!-- Nav Item --> */}
 			<li className={`nav-item ${router.pathname == "/dashboard" && "active"}`}>
 				<Link href="/dashboard">
-					<a className="nav-link">
+					<a className="nav-link hover:no-underline">
 						<i className="fa fa-clipboard"></i>
-						<span>Dashboard</span>
+						<span className="font-light overflow-hidden">Dashboard</span>
 					</a>
 				</Link>
 			</li>
 
 			{/* <!-- Divider --> */}
-			<hr className="sidebar-divider" />
+			<hr className="border-t border-blue-500 mx-3 my-1" />
 
 			{/* <!-- Heading --> */}
 			<div className="sidebar-heading">FMS</div>
@@ -219,7 +214,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 				</>
 			)}
 			{/* <!-- Divider --> */}
-			<hr className="sidebar-divider" />
+			<hr className="border-t border-blue-500 mx-3 my-1" />
 
 			{/* <!-- Heading --> */}
 			{/* <!-- Nav Item - Pages Collapse Menu --> */}
@@ -300,7 +295,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 					</li>
 
 					{/* <!-- Divider --> */}
-					<hr className="sidebar-divider d-none d-md-block" />
+					<hr className="border-t border-blue-500 mx-3 my-1" />
 				</>
 			)}
 

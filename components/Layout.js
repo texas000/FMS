@@ -16,14 +16,14 @@ const Layout = (props) => {
 			setToggle(true);
 		}
 	}, []);
-	// LAYOUT IS EXTREMELY IMPORTANT PAGE SINCE IT MADE UP ALL OF THE PAGES
+	// * LAYOUT IS EXTREMELY IMPORTANT PAGE SINCE IT MADE UP ALL OF THE PAGES
 	// 1. When there is no title props provided, title will display JW
 	// 2. Link list: google font, awesome font, favicon, meta data for marketing purpose
 
 	return (
 		<>
 			<Head>
-				<title>{props.TITLE || "JW"}</title>
+				<title>{props.TITLE || "JWIUSA"}</title>
 				<link
 					rel="stylesheet"
 					href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
@@ -87,7 +87,7 @@ const Layout = (props) => {
 					<div>
 						<Top Token={props.TOKEN} toggle={toggle} setToggle={setToggle} />
 						{!props.LOADING ? (
-							<Container fluid>{props.children}</Container>
+							<div className="px-4">{props.children}</div>
 						) : (
 							<Fragment></Fragment>
 						)}
