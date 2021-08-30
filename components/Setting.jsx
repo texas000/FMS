@@ -12,27 +12,33 @@ export default function Setting({ setOpen, open }) {
 				icon: "/image/JLOGO.png",
 				body: "Hey there! How do you want the notification",
 			};
-			switch (Notification.permission) {
-				case "granted":
-					const noti = new Notification(title, option);
-					noti.onclick = function () {
-						window.open("https://jwiusa.com");
-					};
-					break;
-				case "default":
-					Notification.requestPermission().then((ga) => setNotiEndabled(ga));
-					break;
-				case "denied":
-					Notification.requestPermission().then((ga) => setNotiEndabled(ga));
-					break;
+			try {
+				switch (Notification.permission) {
+					case "granted":
+						const noti = new Notification(title, option);
+						noti.onclick = function () {
+							window.open("https://jwiusa.com");
+						};
+						break;
+					case "default":
+						Notification.requestPermission().then((ga) => setNotiEndabled(ga));
+						break;
+					case "denied":
+						Notification.requestPermission().then((ga) => setNotiEndabled(ga));
+						break;
+				}
+			} catch (err) {
+				console.log(err);
 			}
 		}
 	}
 
 	useEffect(() => {
 		if (navigator.userAgent.search("Chrome")) {
-			if (Notification) {
+			try {
 				setNotiEndabled(Notification.permission);
+			} catch (err) {
+				console.log(err);
 			}
 		}
 	}, []);
