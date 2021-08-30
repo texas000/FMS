@@ -4,6 +4,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import { useState, useEffect } from "react";
 import NavSearch from "./NavSearch";
+import Setting from "./Setting";
+import Contact from "./Contact";
 import useSWR from "swr";
 import Link from "next/link";
 
@@ -12,14 +14,14 @@ const Top = ({ Token, toggle, setToggle }) => {
 	const router = useRouter();
 	const [search, setSearch] = useState(false);
 	const [alertToggle, setalertToggle] = useState(false);
-	const [messageToggle, setmessageToggle] = useState(false);
 	const [searchAlertToggle, setSearchAlertToggle] = useState(false);
-
 	const [userToggle, setuserToggle] = useState(false);
-
 	const { data: msg } = useSWR(
 		alertToggle ? "/api/message/getMessageList" : null
 	);
+
+	const [settingOpen, setSettingOpen] = useState(false);
+	const [contactOpen, setContactOpen] = useState(false);
 
 	async function markAsRead(id) {
 		const res = await fetch(`/api/message/markAsRead?q=${id}`);
@@ -46,7 +48,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 	}
 
 	return (
-		<nav className="flex content-between px-3 h-16 mb-4 static-top w-100 bg-gray-100 dark:bg-gray-600 dark:text-white">
+		<nav className="flex content-between px-3 h-16 static-top w-100 bg-gray-100 dark:bg-gray-600 dark:text-white">
 			{/* navbar navbar-expand */}
 			{/* <!-- Sidebar Toggle (Topbar) --> */}
 			<button className="block md:hidden" onClick={collapse}>
@@ -80,6 +82,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 			</button>
 
 			{/* <!-- Topbar Navbar --> */}
+
 			{/* topbar navbar-nav */}
 			<ul className="ml-auto flex flex-row my-auto">
 				{/* <!-- Nav Item - Search Dropdown (Visible Only XS) --> */}
@@ -281,26 +284,16 @@ const Top = ({ Token, toggle, setToggle }) => {
 						</a>
 						<a
 							className="dropdown-item"
-							href="#"
-							onClick={() =>
-								router.push({
-									pathname: "/user/setting",
-									query: { page: 2 },
-								})
-							}
+							href="#setting"
+							onClick={() => setSettingOpen(true)}
 						>
 							<i className="fa fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-							Change Password
+							Setting
 						</a>
 						<a
 							className="dropdown-item"
 							href="#"
-							onClick={() =>
-								router.push({
-									pathname: "/user/setting",
-									query: { page: 3 },
-								})
-							}
+							onClick={() => setContactOpen(true)}
 						>
 							<i className="fa fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
 							Company Contacts
@@ -320,6 +313,8 @@ const Top = ({ Token, toggle, setToggle }) => {
 				</li>
 			</ul>
 			{searchAlertToggle && <NavSearch setValue={setSearchAlertToggle} />}
+			<Setting setOpen={setSettingOpen} open={settingOpen} />
+			<Contact setOpen={setContactOpen} open={contactOpen} />
 		</nav>
 	);
 };
