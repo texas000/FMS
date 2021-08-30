@@ -214,6 +214,90 @@ const Login = ({ Firebase, AccessKey }) => {
 					integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
 					crossOrigin="anonymous"
 				/>
+				<link
+					rel="apple-touch-icon"
+					sizes="180x180"
+					href="/favicon/apple-touch-icon.png"
+				/>
+				<link
+					rel="icon"
+					type="image/png"
+					sizes="32x32"
+					href="/favicon/favicon-32x32.png"
+				/>
+				<link
+					rel="icon"
+					type="image/png"
+					sizes="16x16"
+					href="/favicon/favicon-16x16.png"
+				/>
+				<meta
+					property="og:title"
+					content="JAMES WORLDWIDE INC, ADDING VALUES TO YOUR CARGO!"
+				></meta>
+				<meta
+					name="description"
+					content="James Worldwide moves your cargo in the safest and fastest way possible, keeping you informed every step of the way and providing customized and innovative solutions."
+				></meta>
+				<meta
+					property="og:description"
+					content="James Worldwide moves your cargo in the safest and fastest way possible, keeping you informed every step of the way and providing customized and innovative solutions."
+				></meta>
+				<meta property="og:url" content="https://jwiusa.com"></meta>
+				<meta
+					property="og:image"
+					content="https://jwiusa.com/image/JLOGO.png"
+				></meta>
+				<link rel="manifest" href="/manifest.json" />
+				<link
+					rel="mask-icon"
+					href="/favicon/safari-pinned-tab.svg"
+					color="#5bbad5"
+				/>
+				<meta name="msapplication-TileColor" content="#da532c" />
+				<meta name="theme-color" content="#ffffff" />
+				<link
+					rel="apple-touch-icon"
+					sizes="180x180"
+					href="/favicon/apple-touch-icon.png"
+				/>
+				<link
+					rel="icon"
+					type="image/png"
+					sizes="32x32"
+					href="/favicon/favicon-32x32.png"
+				/>
+				<link
+					rel="icon"
+					type="image/png"
+					sizes="16x16"
+					href="/favicon/favicon-16x16.png"
+				/>
+				<meta
+					property="og:title"
+					content="JAMES WORLDWIDE INC, ADDING VALUES TO YOUR CARGO!"
+				></meta>
+				<meta
+					name="description"
+					content="James Worldwide moves your cargo in the safest and fastest way possible, keeping you informed every step of the way and providing customized and innovative solutions."
+				></meta>
+				<meta
+					property="og:description"
+					content="James Worldwide moves your cargo in the safest and fastest way possible, keeping you informed every step of the way and providing customized and innovative solutions."
+				></meta>
+				<meta property="og:url" content="https://jwiusa.com"></meta>
+				<meta
+					property="og:image"
+					content="https://jwiusa.com/image/JLOGO.png"
+				></meta>
+				<link rel="manifest" href="/manifest.json" />
+				<link
+					rel="mask-icon"
+					href="/favicon/safari-pinned-tab.svg"
+					color="#5bbad5"
+				/>
+				<meta name="msapplication-TileColor" content="#da532c" />
+				<meta name="theme-color" content="#ffffff" />
 			</Head>
 			<img
 				src="/image/wave.png"

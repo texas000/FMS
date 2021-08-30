@@ -34,11 +34,6 @@ export async function getServerSideProps({ req }) {
 export default function dashboard(props) {
 	const { data } = useSWR("/api/dashboard/list");
 	const { data: invoice } = useSWR("/api/dashboard/invoice");
-	// useEffect(() => {
-	// 	// if (typeof window !== "undefined") {
-	// 	// localStorage.setItem("board", JSON.stringify(Board));
-	// 	// }
-	// }, []);
 	return (
 		<Layout TOKEN={props.token} TITLE="Dashboard" LOADING={!data}>
 			{/* <Notification
