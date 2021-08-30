@@ -30,8 +30,10 @@ export default function Setting({ setOpen, open }) {
 	}
 
 	useEffect(() => {
-		if (Notification) {
-			setNotiEndabled(Notification.permission);
+		if (navigator.userAgent.search("Chrome")) {
+			if (Notification) {
+				setNotiEndabled(Notification.permission);
+			}
 		}
 	}, []);
 
