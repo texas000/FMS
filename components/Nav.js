@@ -272,12 +272,7 @@ const Top = ({ Token, toggle, setToggle }) => {
 						<a
 							className="dropdown-item"
 							href="#"
-							onClick={() =>
-								router.push({
-									pathname: "/user/setting",
-									query: { page: 1 },
-								})
-							}
+							onClick={() => router.push("/profile")}
 						>
 							<i className="fa fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
 							Profile
