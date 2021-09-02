@@ -13,7 +13,7 @@ export default async function handler(req, res) {
         WITH Paging AS (select *, ROW_NUMBER() OVER (ORDER BY F_ID DESC) NUM FROM(select M.F_ID, M.F_RefNo, M.F_ETA, M.F_ETD, M.F_FETA, M.F_PostDate, M.F_U2ID, M.F_MBLNo, (SELECT TOP 1 F_Customer from T_OIHMAIN H where H.F_OIMBLID=M.F_ID) as ID from T_OIMMAIN M where M.F_FileClosed='0')PG)
         SELECT *, (SELECT F_SName from T_COMPANY C where C.F_ID=ID) as Company From Paging WHERE NUM BETWEEN ${
 					(page - 1) * size + 1
-				} AND ${page * size * 2} ORDER BY F_ID DESC;
+				} AND ${page * size} ORDER BY F_ID DESC;
         `;
 		if (token.admin !== 9) {
 			qry = `
@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 				}' OR M.F_U2ID='${token.fsid}'))PG)
 			SELECT *, (SELECT F_SName from T_COMPANY C where C.F_ID=ID) as Company 
 			From Paging WHERE NUM BETWEEN ${(page - 1) * size + 1} AND ${
-				page * size * 2
+				page * size
 			} ORDER BY F_ID DESC;
 			`;
 		}

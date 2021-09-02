@@ -4,7 +4,10 @@ import jwt from "jsonwebtoken";
 import Layout from "../../../components/Layout";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
-import paginationFactory from "react-bootstrap-table2-paginator";
+import paginationFactory, {
+	PaginationProvider,
+	PaginationListStandalone,
+} from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import { Card } from "reactstrap";
 import moment from "moment";
@@ -13,7 +16,7 @@ import useSWR from "swr";
 
 const Index = ({ token }) => {
 	const [Page, setPage] = useState(1);
-	const [pageSize, setPageSize] = useState(20);
+	const [pageSize, setPageSize] = useState(50);
 	const { data, mutate } = useSWR(
 		`/api/forwarding/oim/pagination?page=${Page}&size=${pageSize}`
 	);
@@ -127,10 +130,10 @@ const Index = ({ token }) => {
 			),
 			classes: "text-center text-truncate text-uppercase",
 			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+				"text-dark text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			sort: true,
 			filter: textFilter({
-				className: "text-xs text-center",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			headerSortingStyle,
 			headerFormatter: filterHeader,
@@ -139,10 +142,11 @@ const Index = ({ token }) => {
 			dataField: "Company",
 			text: "CUSTOMER",
 			classes: "text-truncate",
-			headerClasses: "text-dark text-center align-middle pb-0 font-weight-bold",
+			headerClasses:
+				"text-dark text-center align-middle pb-0 font-weight-bold w-40 min-w-full",
 			sort: true,
 			filter: textFilter({
-				className: "text-xs text-center",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			headerSortingStyle,
 			headerFormatter: filterHeader,
@@ -152,10 +156,10 @@ const Index = ({ token }) => {
 			text: "MASTER BL",
 			classes: "text-truncate",
 			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+				"text-dark text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			sort: true,
 			filter: textFilter({
-				className: "text-xs text-center",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			headerSortingStyle,
 			headerFormatter: filterHeader,
@@ -165,7 +169,7 @@ const Index = ({ token }) => {
 		// 	text: "HBL",
 		// 	classes: "text-truncate",
 		// 	headerClasses:
-		// 		"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+		// 		"text-dark text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 		// 	sort: true,
 		// 	filter: textFilter({
 		// 		className: "text-xs text-center",
@@ -177,11 +181,11 @@ const Index = ({ token }) => {
 			text: "ETD",
 			classes: "text-truncate",
 			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+				"text-dark text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			sort: true,
 			headerSortingStyle,
 			filter: textFilter({
-				className: "text-xs text-center",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			headerFormatter: filterHeader,
 			formatter: (cell) => {
@@ -195,11 +199,11 @@ const Index = ({ token }) => {
 			text: "ETA",
 			classes: "text-truncate",
 			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+				"text-dark text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			sort: true,
 			headerSortingStyle,
 			filter: textFilter({
-				className: "text-xs text-center",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			headerFormatter: filterHeader,
 			formatter: (cell) => {
@@ -213,11 +217,11 @@ const Index = ({ token }) => {
 			text: "POST DATE",
 			classes: "text-truncate",
 			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+				"text-dark text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			sort: true,
 			headerSortingStyle,
 			filter: textFilter({
-				className: "text-xs text-center",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			headerFormatter: filterHeader,
 			formatter: (cell) => {
@@ -231,12 +235,12 @@ const Index = ({ token }) => {
 			text: "EDITOR",
 			classes: "text-truncate text-uppercase",
 			headerClasses:
-				"text-dark text-center px-4 align-middle pb-0 font-weight-bold",
+				"text-dark text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			sort: true,
 			headerSortingStyle,
 			headerFormatter: filterHeader,
 			filter: textFilter({
-				className: "text-xs text-center",
+				className: "text-xs text-center hidden sm:block",
 				// defaultValue: token.admin === 9 ? "" : token.fsid,
 			}),
 		},
@@ -255,8 +259,9 @@ const Index = ({ token }) => {
 		// 	console.log(sizePerPage);
 		// 	// mutate();
 		// },
+		custom: true,
 		alwaysShowAllBtns: true,
-		showTotal: true,
+		// showTotal: true,
 		pageButtonRenderer,
 		paginationTotalRenderer: customTotal,
 		sizePerPageRenderer,
@@ -270,7 +275,7 @@ const Index = ({ token }) => {
 				</div>
 			</div>
 
-			<Card className="border-0 shadow mt-3 pb-3 w-auto">
+			<Card className="border-0 shadow mt-3 w-auto overflow-x-auto">
 				{!data ? (
 					<></>
 				) : (
@@ -283,16 +288,25 @@ const Index = ({ token }) => {
 						search
 					>
 						{(props) => (
-							<BootstrapTable
-								{...props.baseProps}
-								hover
-								condensed
-								bordered={false}
-								wrapperClasses="table w-auto"
-								filter={filterFactory()}
-								noDataIndication={indication}
-								pagination={paginationFactory(pageOption)}
-							/>
+							<PaginationProvider pagination={paginationFactory(pageOption)}>
+								{({ paginationProps, paginationTableProps }) => (
+									<div className="flex flex-col">
+										<div className="flex flex-row-reverse p-2">
+											<PaginationListStandalone {...paginationProps} />
+										</div>
+										<BootstrapTable
+											{...props.baseProps}
+											{...paginationTableProps}
+											hover
+											condensed
+											bordered={false}
+											wrapperClasses="table w-auto"
+											filter={filterFactory()}
+											noDataIndication={indication}
+										/>
+									</div>
+								)}
+							</PaginationProvider>
 						)}
 					</ToolkitProvider>
 				)}
