@@ -4,7 +4,10 @@ import jwt from "jsonwebtoken";
 import useSWR from "swr";
 import BootstrapTable from "react-bootstrap-table-next";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
-import paginationFactory from "react-bootstrap-table2-paginator";
+import paginationFactory, {
+	PaginationProvider,
+	PaginationListStandalone,
+} from "react-bootstrap-table2-paginator";
 import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import { Progress } from "reactstrap";
 import { Dialog, Classes, Tag, Button } from "@blueprintjs/core";
@@ -45,7 +48,12 @@ export default function request(props) {
 
 	function filterHeader(column, colIndex, { sortElement, filterElement }) {
 		return (
-			<div style={{ display: "flex", flexDirection: "column" }}>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+				}}
+			>
 				{column.text}
 				{filterElement}
 				{sortElement}
@@ -120,9 +128,10 @@ export default function request(props) {
 		{
 			dataField: "RefNo",
 			text: "REFERENCE",
-			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses:
+				"text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			filter: textFilter({
-				className: "text-xs text-center d-sm-none d-md-block",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			headerFormatter: filterHeader,
 		},
@@ -130,27 +139,30 @@ export default function request(props) {
 			dataField: "ApType",
 			text: "TYPE",
 			classes: "text-uppercase cursor-pointer",
-			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses:
+				"text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			filter: textFilter({
-				className: "text-xs text-center d-none d-xl-block",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			headerFormatter: filterHeader,
 		},
 		{
 			dataField: "Title",
 			text: "INVOICE",
-			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses:
+				"text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			filter: textFilter({
-				className: "text-xs text-center d-sm-none d-md-block",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			headerFormatter: filterHeader,
 		},
 		{
 			dataField: "Status",
 			text: "STATUS",
-			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses:
+				"text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			filter: textFilter({
-				className: "text-xs text-center d-none d-xl-block",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			formatter: (cell) => {
 				if (cell) {
@@ -162,18 +174,20 @@ export default function request(props) {
 		{
 			dataField: "Creator",
 			text: "CREATOR",
-			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses:
+				"text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			filter: textFilter({
-				className: "text-xs text-center d-none d-xl-block",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			headerFormatter: filterHeader,
 		},
 		{
 			dataField: "CreateAt",
 			text: "CREATED",
-			headerClasses: "text-center px-4 align-middle pb-0 font-weight-bold",
+			headerClasses:
+				"text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
 			filter: textFilter({
-				className: "text-xs text-center d-none d-xl-block",
+				className: "text-xs text-center hidden sm:block",
 			}),
 			headerFormatter: filterHeader,
 			formatter: (cell) => {
@@ -186,6 +200,7 @@ export default function request(props) {
 
 	const pageOption = {
 		sizePerPageList: [{ text: "10", value: 10 }],
+		custom: true,
 	};
 
 	const rowEvents = {
@@ -215,7 +230,7 @@ export default function request(props) {
 					<h3 className="dark:text-white">AP Request</h3>
 				</div>
 			</div>
-			<div className="card border-0 py-3 shadow mt-3">
+			<div className="card border-0 py-3 px-0 shadow mt-3 overflow-x-auto">
 				<ToolkitProvider
 					keyField="ID"
 					bordered={false}
@@ -225,17 +240,27 @@ export default function request(props) {
 					search
 				>
 					{(props) => (
-						<BootstrapTable
-							{...props.baseProps}
-							hover
-							condensed
-							rowStyle={{ cursor: "pointer" }}
-							filter={filterFactory()}
-							wrapperClasses="rounded"
-							bordered={false}
-							pagination={paginationFactory(pageOption)}
-							rowEvents={rowEvents}
-						/>
+						<PaginationProvider pagination={paginationFactory(pageOption)}>
+							{({ paginationProps, paginationTableProps }) => (
+								<div className="flex flex-col">
+									<div className="flex flex-row-reverse mr-2">
+										<PaginationListStandalone {...paginationProps} />
+									</div>
+									<BootstrapTable
+										{...props.baseProps}
+										{...paginationTableProps}
+										hover
+										condensed
+										rowStyle={{ cursor: "pointer" }}
+										filter={filterFactory()}
+										wrapperClasses="rounded table-fixed mx-0 px-0"
+										bordered={false}
+										// pagination={paginationFactory(pageOption)}
+										rowEvents={rowEvents}
+									/>
+								</div>
+							)}
+						</PaginationProvider>
 					)}
 				</ToolkitProvider>
 			</div>
