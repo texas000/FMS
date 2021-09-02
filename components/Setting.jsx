@@ -50,7 +50,7 @@ export default function Setting({ setOpen, open }) {
 				setOpen(false);
 			}}
 			title="Preference"
-			className="dark:bg-gray-600 bg-white rounded-xl w-1/2"
+			className="dark:bg-gray-600 bg-white rounded-xl lg:w-1/2"
 		>
 			{/* <div className={Classes.DIALOG_BODY}> */}
 			<div className="p-4 bg-white">
