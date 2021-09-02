@@ -51,7 +51,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 				}`}
 			>
 				<Link href="/request">
-					<a className="nav-link">
+					<a className="nav-link hover:no-underline">
 						<i className="fa fa-thumbs-up"></i>
 						<span>Request</span>
 					</a>
@@ -64,7 +64,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 				}`}
 			>
 				<Link href="/forwarding/oim">
-					<a className="nav-link">
+					<a className="nav-link hover:no-underline">
 						<i className="fa fa-anchor"></i>
 						<span>Ocean Import</span>
 					</a>
@@ -77,7 +77,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 				}`}
 			>
 				<Link href="/forwarding/oex">
-					<a className="nav-link">
+					<a className="nav-link hover:no-underline">
 						<i className="fa fa-anchor fa-flip-vertical"></i>
 						<span>Ocean Export</span>
 					</a>
@@ -90,7 +90,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 				}`}
 			>
 				<Link href="/forwarding/aim">
-					<a className="nav-link">
+					<a className="nav-link hover:no-underline">
 						<i className="fa fa-plane"></i>
 						<span>Air Import</span>
 					</a>
@@ -103,7 +103,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 				}`}
 			>
 				<Link href="/forwarding/aex">
-					<a className="nav-link">
+					<a className="nav-link hover:no-underline">
 						<i className="fa fa-plane fa-flip-vertical"></i>
 						<span>Air Export</span>
 					</a>
@@ -116,7 +116,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 				}`}
 			>
 				<Link href="/forwarding/other">
-					<a className="nav-link">
+					<a className="nav-link hover:no-underline">
 						<i className="fa fa-link"></i>
 						<span>Other</span>
 					</a>
@@ -131,7 +131,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 					}`}
 				>
 					<Link href="/forwarding/trucking">
-						<a className="nav-link">
+						<a className="nav-link hover:no-underline">
 							<i className="fa fa-truck"></i>
 							<span>Trucking</span>
 						</a>
@@ -147,7 +147,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 				}`}
 			>
 				<Link href="/board">
-					<a className="nav-link">
+					<a className="nav-link hover:no-underline">
 						<i className="fa fa-pencil"></i>
 						<span>Board</span>
 					</a>
@@ -161,7 +161,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 					}`}
 				>
 					<Link href="/accounting">
-						<a className="nav-link">
+						<a className="nav-link hover:no-underline">
 							<i className="fa fa-dollar"></i>
 							<span>Accounting</span>
 						</a>
@@ -176,7 +176,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 						}`}
 					>
 						<a
-							className={`nav-link ${!t2 && "collapsed"}`}
+							className={`nav-link hover:no-underline ${!t2 && "collapsed"}`}
 							onClick={() => setT2(!t2)}
 							data-toggle="collapse"
 							data-target="#collapsePages"
@@ -204,7 +204,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 					{Token.admin === 9 && (
 						<li className={`nav-item ${router.pathname == "/hr" && "active"}`}>
 							<Link href="/hr">
-								<a className="nav-link">
+								<a className="nav-link hover:no-underline">
 									<i className="fa fa-user"></i>
 									<span>Human Resource</span>
 								</a>
@@ -223,7 +223,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 					<div className="sidebar-heading">Addons</div>
 					<li className={`nav-item`}>
 						<a
-							className={`nav-link ${!t1 && "collapsed"}`}
+							className={`nav-link hover:no-underline ${!t1 && "collapsed"}`}
 							href="#"
 							onClick={() => setT1(!t1)}
 							data-toggle="collapse"
@@ -273,7 +273,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 					{/* <!-- Nav Item - Charts --> */}
 					<li className="nav-item">
 						<a
-							className="nav-link"
+							className="nav-link hover:no-underline"
 							href="#"
 							onClick={() => alert("Chart page is under construction")}
 						>
@@ -285,7 +285,7 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
 					{/* <!-- Nav Item - Tables --> */}
 					<li className="nav-item">
 						<a
-							className="nav-link"
+							className="nav-link hover:no-underline"
 							href="#"
 							onClick={() => alert("Tables page is under construction")}
 						>
