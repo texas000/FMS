@@ -70,7 +70,7 @@ const Index = ({ token }) => {
 						(page === ">>" || page === "<<") && "d-none"
 					}`}
 				>
-					{typeof page === "number" ? page + Page - 1 : page}
+					{typeof page === "number" ? (Page - 1) * 5 + page : page}
 				</a>
 			</li>
 		);
