@@ -13,7 +13,6 @@ export default function Contact({ setOpen, open }) {
 			title="Company Contact"
 			className="dark:bg-gray-600 bg-white rounded-xl lg:w-1/2"
 		>
-			{/* <div className={Classes.DIALOG_BODY}> */}
 			<div className="p-4 bg-white">
 				<div className="shadow overflow-hidden sm:rounded-lg">
 					<div className="px-4 py-3 sm:px-6">
@@ -24,6 +23,7 @@ export default function Contact({ setOpen, open }) {
 					<div className="border-t border-gray-200 pt-3">
 						<dl>
 							{data &&
+								data.length &&
 								data.map((ga, i) => (
 									<div
 										className={`${
