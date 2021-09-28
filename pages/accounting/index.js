@@ -9,13 +9,12 @@ import {
 	Dialog,
 } from "@blueprintjs/core";
 import jwt from "jsonwebtoken";
-import { useRouter } from "next/router";
-import { useEffect } from "react";
 import Layout from "../../components/Layout";
 import BootstrapTable from "react-bootstrap-table-next";
 import moment from "moment";
 import "@blueprintjs/core/lib/css/blueprint.css";
 import React from "react";
+import useSWR from "swr";
 
 export async function getServerSideProps({ req }) {
 	const cookies = cookie.parse(
@@ -41,33 +40,38 @@ export async function getServerSideProps({ req }) {
 
 export const Navigation = ({ Cookie }) => {
 	const [menu, setMenu] = React.useState(1);
+	const { data: checkList } = useSWR("/api/accounting/getCheckList");
+	const { data: depositList } = useSWR(
+		menu === 2 ? "/api/accounting/getDepositList" : null
+	);
+
 	const [checks, setChecks] = React.useState([]);
 	const [isOpen, setIsOpen] = React.useState(false);
 	const [checkDetails, setCheckDetails] = React.useState([]);
 	const TOKEN = jwt.decode(Cookie.jamesworldwidetoken);
+
+	// When click check, the data is display
 	async function getCheckDetail(id) {
 		const check = await fetch("/api/accounting/getCheckDetail", {
 			headers: {
-				key: Cookie.jamesworldwidetoken,
 				id: id,
 			},
 		}).then(async (j) => await j.json());
-		setCheckDetails(check);
+		setCheckDetails(check || []);
 	}
 
 	async function getDepositDetail(id) {
 		const check = await fetch("/api/accounting/getDepositDetail", {
 			headers: {
-				key: Cookie.jamesworldwidetoken,
 				id: id,
 			},
 		}).then(async (j) => await j.json());
-		setCheckDetails(check);
+		setCheckDetails(check || []);
 	}
 
 	const rowEvents = {
 		onClick: (e, row, rowIndex) => {
-			console.log(row);
+			// console.log(row);
 			if (menu == 1) {
 				getCheckDetail(row.F_ID);
 			}
@@ -86,14 +90,13 @@ export const Navigation = ({ Cookie }) => {
 		}
 	}
 
-	const classes =
-		"text-xs text-left text-truncate text-uppercase font-weight-bold";
+	const classes = "text-xs text-left text-truncate text-uppercase";
 	const column = [
 		{
 			dataField: "F_ID",
 			text: "ID",
 			classes:
-				"w-50 text-xs text-center text-truncate text-uppercase font-weight-bold",
+				"text-xs text-center text-truncate text-uppercase font-weight-bold",
 			headerStyle: (column, colIndex) => {
 				return { width: "100px", textAlign: "center" };
 			},
@@ -142,71 +145,51 @@ export const Navigation = ({ Cookie }) => {
 			sort: true,
 		},
 	];
-	async function getChecks() {
-		const check = await fetch("/api/accounting/getCheckList", {
-			headers: {
-				key: Cookie.jamesworldwidetoken,
-			},
-		}).then(async (j) => await j.json());
-		setChecks(check);
-	}
-	async function getDeposit() {
-		const check = await fetch("/api/accounting/getDepositList", {
-			headers: {
-				key: Cookie.jamesworldwidetoken,
-			},
-		}).then(async (j) => await j.json());
-		setChecks(check);
-	}
-
-	useEffect(() => {
-		if (TOKEN.admin > 6) {
-			setChecks([]);
-			switch (menu) {
-				case 1:
-					getChecks();
-				case 2:
-					getDeposit();
-			}
-		} else {
-			console.log("ACCESS DENIED");
-		}
-	}, [menu]);
 
 	return (
-		<Layout TOKEN={TOKEN} TITLE="Accounting">
-			<Navbar fixedToTop={false} className="my-1 shadow" style={{ zIndex: 0 }}>
+		<Layout TOKEN={TOKEN} TITLE="Accounting" LOADING={!checkList}>
+			<Navbar
+				fixedToTop={false}
+				className="my-1 shadow card"
+				style={{ zIndex: 0 }}
+			>
 				<NavbarGroup align={Alignment.LEFT}>
 					<NavbarHeading>Accounting</NavbarHeading>
 					<NavbarDivider />
 					<Button
 						icon="book"
-						text="Check"
 						small={true}
 						minimal={true}
-						intent={menu === 1 ? "primary" : "none"}
 						onClick={() => setMenu(1)}
-					></Button>
+					>
+						<span
+							className={menu === 1 ? "text-blue-400" : "dark:text-gray-200"}
+						>
+							Check
+						</span>
+					</Button>
 					<Button
 						icon="bank-account"
-						text="Deposit"
 						small={true}
 						minimal={true}
 						intent={menu === 2 ? "primary" : "none"}
 						onClick={() => setMenu(2)}
-					></Button>
+					>
+						<span
+							className={menu === 2 ? "text-blue-400" : "dark:text-gray-200"}
+						>
+							Deposit
+						</span>
+					</Button>
 				</NavbarGroup>
 			</Navbar>
 			{menu == 1 && (
 				<>
-					<div
-						className="card shadow py-2 px-2 my-4"
-						style={{ cursor: "pointer" }}
-					>
+					<div className="card shadow my-4" style={{ cursor: "pointer" }}>
 						<BootstrapTable
 							keyField="F_ID"
 							hover
-							data={checks}
+							data={checkList || []}
 							columns={column}
 							rowEvents={rowEvents}
 							defaultSorted={[{ dataField: "F_PostDate", order: "desc" }]}
@@ -229,21 +212,21 @@ export const Navigation = ({ Cookie }) => {
 									<input
 										type="text"
 										defaultValue={isOpen.PAY}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>PAY TO</label>
 									<input
 										type="text"
 										defaultValue={isOpen.BILL}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>BANK</label>
 									<input
 										type="text"
 										defaultValue={isOpen.BANK}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 								</div>
@@ -252,21 +235,21 @@ export const Navigation = ({ Cookie }) => {
 									<input
 										type="text"
 										defaultValue={moment(isOpen.F_PostDate).utc().format("L")}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>CHECK NUMBER</label>
 									<input
 										type="text"
 										defaultValue={isOpen.F_CheckNo}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>CURRENCY</label>
 									<input
 										type="text"
 										defaultValue={isOpen.F_Currency}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 								</div>
@@ -279,21 +262,21 @@ export const Navigation = ({ Cookie }) => {
 												? moment(isOpen.F_DepositDate).utc().format("L")
 												: ""
 										}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>VOID DATE</label>
 									<input
 										type="text"
 										defaultValue=""
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>VOID</label>
 									<input
 										type="text"
 										defaultValue=""
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 								</div>
@@ -315,35 +298,36 @@ export const Navigation = ({ Cookie }) => {
 									</tr>
 								</thead>
 								<tbody>
-									{checkDetails.map((ga) => (
-										<tr key={ga.F_ID}>
-											<td>{ga.F_Type}</td>
-											<td className="text-uppercase">
-												{ga.CREATOR || isOpen.F_U2ID}
-											</td>
-											<td>{ga.F_OthInvNo || ga.F_InvoiceNo}</td>
-											<td>{ga.F_GLno}</td>
-											<td>{ga.F_RefNo || ga.DESCRIPTION}</td>
-											<td>{ga.F_BLNo || ga.F_Description}</td>
-											<td>{usdFormat(ga.F_PaidAmt) || 0}</td>
-											<td>{usdFormat(ga.F_Amount)}</td>
-										</tr>
-									))}
-									<tr className="font-weight-bold text-center bg-gray-500 text-white">
-										<td colSpan="6">TOTAL</td>
-										<td colSpan="2">
-											{usdFormat(
-												checkDetails.reduce((sum, item) => {
-													return (sum = sum + item.F_Amount);
-												}, 0)
-											)}
-										</td>
-									</tr>
+									{checkDetails &&
+										checkDetails.map((ga) => (
+											<tr key={ga.F_ID}>
+												<td>{ga.F_Type}</td>
+												<td className="text-uppercase">
+													{ga.CREATOR || isOpen.F_U2ID}
+												</td>
+												<td>{ga.F_OthInvNo || ga.F_InvoiceNo}</td>
+												<td>{ga.F_GLno}</td>
+												<td>{ga.F_RefNo || ga.DESCRIPTION}</td>
+												<td>{ga.F_BLNo || ga.F_Description}</td>
+												<td>{usdFormat(ga.F_PaidAmt) || 0}</td>
+												<td>{usdFormat(ga.F_Amount)}</td>
+											</tr>
+										))}
 								</tbody>
 							</table>
+							<div className="border-t flex justify-center py-2 px-4 font-bold text-indigo-500">
+								TOTAL{" "}
+								{usdFormat(
+									checkDetails
+										? checkDetails.reduce((sum, item) => {
+												return (sum = sum + item.F_Amount);
+										  }, 0)
+										: 0
+								)}
+							</div>
 						</div>
 						{isOpen.F_Remark && (
-							<div className="card shadow my-2 mx-2 px-4 pt-2">
+							<div className="card shadow m-2 p-3 font-semibold">
 								<h5>{isOpen.F_Remark}</h5>
 							</div>
 						)}
@@ -352,14 +336,11 @@ export const Navigation = ({ Cookie }) => {
 			)}
 			{menu === 2 && (
 				<>
-					<div
-						className="card shadow py-2 px-2 my-4"
-						style={{ cursor: "pointer" }}
-					>
+					<div className="card shadow my-4" style={{ cursor: "pointer" }}>
 						<BootstrapTable
 							keyField="F_ID"
 							hover
-							data={checks}
+							data={depositList || []}
 							columns={column}
 							rowEvents={rowEvents}
 							defaultSorted={[{ dataField: "F_PostDate", order: "desc" }]}
@@ -382,21 +363,21 @@ export const Navigation = ({ Cookie }) => {
 									<input
 										type="text"
 										defaultValue={isOpen.BILL}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>RECEIVED FROM</label>
 									<input
 										type="text"
 										defaultValue={isOpen.F_ReceivedFrom}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>BANK</label>
 									<input
 										type="text"
 										defaultValue={isOpen.BANK}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 								</div>
@@ -405,21 +386,21 @@ export const Navigation = ({ Cookie }) => {
 									<input
 										type="text"
 										defaultValue={moment(isOpen.F_PostDate).utc().format("L")}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>CHECK NUMBER</label>
 									<input
 										type="text"
 										defaultValue={isOpen.F_CheckNo}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>CURRENCY</label>
 									<input
 										type="text"
 										defaultValue={isOpen.F_Currency}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 								</div>
@@ -432,21 +413,21 @@ export const Navigation = ({ Cookie }) => {
 												? moment(isOpen.F_DepositDate).utc().format("L")
 												: ""
 										}
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>VOID DATE</label>
 									<input
 										type="text"
 										defaultValue=""
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 									<label>VOID</label>
 									<input
 										type="text"
 										defaultValue=""
-										className="form-control font-weight-light mb-2"
+										className="form-control font-weight-light text-xs mb-2"
 										disabled
 									/>
 								</div>
@@ -467,37 +448,37 @@ export const Navigation = ({ Cookie }) => {
 									</tr>
 								</thead>
 								<tbody>
-									{checkDetails.map((ga) => (
-										<tr key={ga.F_ID}>
-											<td>{ga.F_Type}</td>
-											<td className="text-uppercase">
-												{ga.CREATOR || isOpen.F_U2ID}
-											</td>
-											<td>{ga.F_OthInvNo || ga.F_InvoiceNo}</td>
-											<td>{ga.F_GLno}</td>
-											<td>{ga.F_RefNo || ga.DESCRIPTION}</td>
-											<td>{ga.F_BLNo || ga.F_Description}</td>
-											<td>{usdFormat(ga.F_PaidAmt) || 0}</td>
-											<td>{usdFormat(ga.F_Amount)}</td>
-										</tr>
-									))}
-									<tr className="font-weight-bold text-center bg-gray-500 text-white">
-										<td colSpan="6">TOTAL</td>
-										<td colSpan="2">
-											{usdFormat(
-												checkDetails.reduce((sum, item) => {
-													return (sum = sum + item.F_Amount);
-												}, 0)
-											)}
-										</td>
-									</tr>
+									{checkDetails &&
+										checkDetails.map((ga) => (
+											<tr key={ga.F_ID}>
+												<td>{ga.F_Type}</td>
+												<td className="text-uppercase">
+													{ga.CREATOR || isOpen.F_U2ID}
+												</td>
+												<td>{ga.F_OthInvNo || ga.F_InvoiceNo}</td>
+												<td>{ga.F_GLno}</td>
+												<td>{ga.F_RefNo || ga.DESCRIPTION}</td>
+												<td>{ga.F_BLNo || ga.F_Description}</td>
+												<td>{usdFormat(ga.F_PaidAmt) || 0}</td>
+												<td>{usdFormat(ga.F_Amount)}</td>
+											</tr>
+										))}
 								</tbody>
 							</table>
-							{/* <code>{JSON.stringify(checkDetails)}</code> */}
+							<div className="border-t flex justify-center py-2 px-4 font-bold text-indigo-500">
+								TOTAL{" "}
+								{usdFormat(
+									checkDetails
+										? checkDetails.reduce((sum, item) => {
+												return (sum = sum + item.F_Amount);
+										  }, 0)
+										: 0
+								)}
+							</div>
 						</div>
 
 						{isOpen.F_Remark && (
-							<div className="card shadow my-2 mx-2 px-4 pt-2">
+							<div className="card shadow m-2 p-3 font-semibold">
 								<h5>{isOpen.F_Remark}</h5>
 							</div>
 						)}
