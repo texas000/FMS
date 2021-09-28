@@ -9,7 +9,7 @@ import {
 export const Navigation = ({ menu, setMenu, Reference }) => (
 	<Navbar
 		fixedToTop={false}
-		className="my-1 shadow dark:bg-gray-700 dark:text-white"
+		className="my-1 shadow card"
 		style={{ zIndex: 0, fontFamily: "inherit" }}
 	>
 		<NavbarGroup align={Alignment.LEFT}>

@@ -7,11 +7,7 @@ import {
 } from "@blueprintjs/core";
 
 export const Navigation = ({ menu, setMenu, Reference }) => (
-	<Navbar
-		fixedToTop={false}
-		className="my-1 shadow dark:bg-gray-700 dark:text-white"
-		style={{ zIndex: 0 }}
-	>
+	<Navbar fixedToTop={false} className="my-1 shadow card" style={{ zIndex: 0 }}>
 		<NavbarGroup align={Alignment.LEFT}>
 			<NavbarHeading>{Reference}</NavbarHeading>
 			<NavbarDivider className="dark:text-white" />
