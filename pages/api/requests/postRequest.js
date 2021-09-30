@@ -54,7 +54,7 @@ export default async (req, res) => {
       from: "JWIUSA <it@jamesworldwide.com>",
       // to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
       to: "IAN PYO [JW] <ian@jamesworldwide.com>",
-      subject: `AP REQUEST FOR ${body.F_InvoiceNo}`,
+      subject: `ACCOUNT PAYABLE REQUEST [${body.F_InvoiceNo}]`,
       html: `<!DOCTYPE html>
 <html
   lang="en"
@@ -77,11 +77,12 @@ export default async (req, res) => {
     />
   </head>
   <body width="100%" style="background-color: #fafafa">
-    <div
+  	<!-- Inbox Preview -->
+ 	<div
       style="max-height: 0; overflow: hidden; mso-hide: all"
       aria-hidden="true"
     >
-      Inbox Preview Test
+      [JWI REQUEST SYSTEM]
     </div>
     <!-- Email Body Begin -->
     <div style="background-color: white; max-width: 600px; margin: 0 auto">
@@ -140,7 +141,7 @@ export default async (req, res) => {
               <li style="margin: 0 0 10px">Requested By:&nbsp;${token.first}</li>
               <li style="margin: 0 0 10px">Request Type: Account Payable - ${body.type}</li>
               <li style="margin: 0 0 10px">Invoice Vendor: ${body.customer}</li>
-              <li>Invoice Number: ${body.F_InvoiceNo}</li>
+              <li style="margin: 0 0 10px">Invoice Number: ${body.F_InvoiceNo}</li>
             </ul>
           </td>
         </tr>
