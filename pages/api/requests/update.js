@@ -110,7 +110,7 @@ export default async (req, res) => {
   }
 
   var query = `UPDATE T_REQUEST SET Status='${status}', ModifyBy='${token.uid}', ModifyAt=GETDATE() WHERE ID='${id}'; 
-    SELECT R.Title, R.Status, R.RefNo, (SELECT F_EMAIL FROM T_MEMBER M WHERE M.F_ID=R.CreateBy) AS Notify FROM T_REQUEST R WHERE ID='${id}';`;
+    SELECT R.Title, R.Body, R.Status, R.ApType, R.RefNo, (SELECT F_EMAIL FROM T_MEMBER M WHERE M.F_ID=R.CreateBy) AS Notify FROM T_REQUEST R WHERE ID='${id}';`;
 
   // ADDING MESSAGE TO KEVIN(18)
   // if(token.admin == 6) {
