@@ -216,6 +216,7 @@ export default function request(props) {
     );
     console.log(res.status);
     mutate();
+    setSelected(false);
   }
 
   return (
