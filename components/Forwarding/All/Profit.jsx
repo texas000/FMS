@@ -881,7 +881,7 @@ export const Profit = ({
                   <Button
                     text="Approve"
                     fill={true}
-                    disabled={submitLoading || TOKEN.uid !== 6}
+                    disabled={submitLoading || TOKEN.admin != 6}
                     loading={submitLoading}
                     onClick={() => handleInvoiceUpdate(true, ga.ID)}
                     small={true}
@@ -890,7 +890,7 @@ export const Profit = ({
                     text="Reject"
                     fill={true}
                     minimal={true}
-                    disabled={submitLoading || TOKEN.uid !== 6}
+                    disabled={submitLoading || TOKEN.admin != 6}
                     loading={submitLoading}
                     onClick={() => handleInvoiceUpdate(false, ga.ID)}
                     small={true}
