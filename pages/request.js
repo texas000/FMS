@@ -16,6 +16,7 @@ import usdFormat from "../lib/currencyFormat";
 import moment from "moment";
 import { BlobProvider } from "@react-pdf/renderer";
 import CheckRequestForm from "../components/Dashboard/CheckRequestForm";
+import router from "next/router";
 
 export async function getServerSideProps({ req }) {
   const cookies = cookie.parse(
@@ -40,6 +41,7 @@ export async function getServerSideProps({ req }) {
 export default function request(props) {
   const [selected, setSelected] = useState(false);
   const { data, mutate } = useSWR("/api/requests/get");
+  const { data: invoice } = useSWR("api/requests/getInvoiceList");
   const { data: ap } = useSWR(
     selected
       ? `/api/requests/detail?table=${selected.TBName}&id=${selected.TBID}`
@@ -124,6 +126,26 @@ export default function request(props) {
     }
   };
 
+  const InvoiceStatusBar = ({ data }) => {
+    if (data == 101) {
+      return (
+        <Progress color="secondary" value="100">
+          REQUESTED
+        </Progress>
+      );
+    }
+    if (data == 110) {
+      return (
+        <Progress color="danger" value="100">
+          DIRECTOR
+        </Progress>
+      );
+    }
+    if (data == 111) {
+      return <Progress value="100">DIRECTOR</Progress>;
+    }
+  };
+
   const column = [
     {
       dataField: "RefNo",
@@ -198,6 +220,79 @@ export default function request(props) {
     },
   ];
 
+  const invoiceColumn = [
+    {
+      dataField: "REFNO",
+      text: "REFERENCE",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "BILLTO",
+      text: "CUSTOMER",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "INVOICE",
+      text: "INVOICE",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "STATUS",
+      text: "STATUS",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      formatter: (cell) => {
+        if (cell) {
+          return <InvoiceStatusBar data={cell} />;
+        }
+      },
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "CREATOR",
+      text: "CREATOR",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "CREATED",
+      text: "CREATED",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      headerFormatter: filterHeader,
+      formatter: (cell) => {
+        if (cell) {
+          return moment(cell).utc().format("lll");
+        }
+      },
+    },
+  ];
+
   const pageOption = {
     sizePerPageList: [{ text: "10", value: 10 }],
     custom: true,
@@ -206,6 +301,12 @@ export default function request(props) {
   const rowEvents = {
     onClick: (e, row, rowIndex) => {
       setSelected(row);
+    },
+  };
+
+  const invoiceRowEvents = {
+    onClick: (e, row, rowIndex) => {
+      router.push(row.PATH);
     },
   };
 
@@ -222,9 +323,7 @@ export default function request(props) {
   return (
     <Layout TOKEN={props.token} TITLE="Dashboard" LOADING={!data}>
       <div className="flex flex-sm-row justify-between">
-        <div>
-          <h3 className="dark:text-white">AP Request</h3>
-        </div>
+        <h3 className="dark:text-white">Account Payable</h3>
       </div>
       <div className="card border-0 py-3 px-0 shadow mt-3 overflow-x-auto">
         <ToolkitProvider
@@ -260,6 +359,45 @@ export default function request(props) {
           )}
         </ToolkitProvider>
       </div>
+      <div className="flex flex-sm-row mt-4 justify-between">
+        <h3 className="dark:text-white">Invoice</h3>
+      </div>
+
+      <div className="card border-0 py-3 px-0 shadow mt-3 overflow-x-auto">
+        <ToolkitProvider
+          keyField="ID"
+          bordered={false}
+          columns={invoiceColumn}
+          data={invoice ? invoice : []}
+          exportCSV
+          search
+        >
+          {(props) => (
+            <PaginationProvider pagination={paginationFactory(pageOption)}>
+              {({ paginationProps, paginationTableProps }) => (
+                <div className="flex flex-col">
+                  <div className="flex flex-row-reverse mr-2">
+                    <PaginationListStandalone {...paginationProps} />
+                  </div>
+                  <BootstrapTable
+                    {...props.baseProps}
+                    {...paginationTableProps}
+                    hover
+                    condensed
+                    rowStyle={{ cursor: "pointer" }}
+                    filter={filterFactory()}
+                    wrapperClasses="rounded table-fixed mx-0 px-0"
+                    bordered={false}
+                    // pagination={paginationFactory(pageOption)}
+                    rowEvents={invoiceRowEvents}
+                  />
+                </div>
+              )}
+            </PaginationProvider>
+          )}
+        </ToolkitProvider>
+      </div>
+
       <Dialog
         isOpen={selected}
         onClose={() => {
@@ -303,9 +441,9 @@ export default function request(props) {
                       ))}
                   </ul>
                   {ap.Files.length &&
-                    ap.Files.map((ga) => (
+                    ap.Files.map((ga, i) => (
                       <Tag
-                        key={`${ga.TBID}FILE`}
+                        key={`FILE${i}`}
                         icon="cloud-download"
                         interactive={true}
                         intent="primary"

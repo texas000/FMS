@@ -21,11 +21,16 @@ export default async (req, res) => {
   var status = 101;
 
   if (token.admin == 6) {
+    // If approve, status is director approved otherwise, director rejected
     approve == "true" ? (status = 111) : (status = 110);
   }
   if (token.admin > 6) {
+    // If approve, status is accounting approved otherwise, accounting rejected
     approve == "true" ? (status = 121) : (status = 120);
   }
+  //   if (token.admin == CEO) {
+  // need another code for CEO approval or rejection
+  //   }
 
   function Status(data) {
     if (data == 101) {
