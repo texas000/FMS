@@ -20,7 +20,9 @@ export default async (req, res) => {
     let result = await pool
       .request()
       .query(
-        `INSERT INTO T_MEMBER_COMPANY VALUES('${token.uid}','${id}',GETDATE(), N'${company}');`
+        `INSERT INTO T_MEMBER_COMPANY VALUES('${
+          token.uid
+        }','${id}',GETDATE(), N'${decodeURIComponent(company)}');`
       );
     res.send(result);
   } catch (err) {

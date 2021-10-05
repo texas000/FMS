@@ -11,9 +11,12 @@ export default async (req, res) => {
   }
   var qry = "SELECT F_ID AS value, F_SName AS label FROM T_COMPANY;";
   const { search } = req.query;
+
   if (search) {
-    qry = `SELECT F_ID AS value, F_SName AS label FROM T_COMPANY WHERE F_SName like '%${search}%';`;
+    qry = `SELECT TOP 100 F_ID AS value, F_SName AS label 
+    FROM T_COMPANY WHERE F_SName like '%${decodeURIComponent(search)}%';`;
   }
+  console.log(qry);
   let pool = new sql.ConnectionPool(process.env.SERVER2);
   try {
     await pool.connect();

@@ -34,14 +34,14 @@ export default function search(props) {
   );
 
   const handleInputChange = (newValue) => {
-    const inputValue = newValue.replace(/'/g, "");
+    var inputValue = newValue.replace(/'/g, "");
     return inputValue;
   };
   const loadOptions = async (inputValue, callback) => {
     if (inputValue.length > 1) {
-      return fetch(`/api/company/getCompanyList?search=${inputValue}`).then(
-        (res) => res.json()
-      );
+      return fetch(
+        `/api/company/getCompanyList?search=${encodeURIComponent(inputValue)}`
+      ).then((res) => res.json());
     }
   };
 
@@ -51,10 +51,12 @@ export default function search(props) {
     );
     if (check) {
       const res = await fetch(
-        `/api/company/postCompanyList?id=${companySelected.value}&company=${companySelected.label}`
+        `/api/company/postCompanyList?id=${
+          companySelected.value
+        }&company=${encodeURIComponent(companySelected.label)}`
       );
       if (res.status === 200) {
-        alert(`${companySelected.label} successfully added!`);
+        // alert(`${companySelected.label} successfully added!`);
         setCompanySelected(false);
         mutate();
       } else {
@@ -72,7 +74,8 @@ export default function search(props) {
         `/api/company/addCompanyContact?id=${customer.COMPANY_ID}&email=${e.target[0].value}&name=${e.target[1].value}`
       );
       if (res.status === 200) {
-        alert(`${e.target[1].value}'s information successfully added!`);
+        // alert(`${e.target[1].value}'s information successfully added!`);
+        mutate();
       } else {
         alert(res.status);
       }
