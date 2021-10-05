@@ -55,6 +55,7 @@ export const Profit = ({
     { level: 10, value: "invoice", label: "Commercial Invoice" },
     { level: 10, value: "customs", label: "Customs Document" },
     { level: 10, value: "pod", label: "Proof of delivery" },
+    { level: 10, value: "quote", label: "Quotation" },
     { level: 10, value: "others", label: "Others" },
   ];
   const crdrfiles = [
@@ -164,12 +165,12 @@ export const Profit = ({
       }),
     });
     if (req.status === 200) {
-      alert("Requested, Thank you!");
       setSubmitLoading(false);
       setSelectedFile([]);
       setFileNames([]);
       setSelected(false);
       setSubmitLoading(false);
+      alert("Requested, Thank you!");
     } else {
       setSelectedFile([]);
       setFileNames([]);
@@ -415,7 +416,7 @@ export const Profit = ({
                                   : "bg-gray-400"
                               } px-2 py-1 text-white cursor-not-allowed bg-blue-500 rounded-sm font-light my-1 hover:bg-blue-600`}
                               key={ga.F_ID + "CRDR"}
-                              onClick={() => setInvoiceReq(ga)}
+                              // onClick={() => setInvoiceReq(ga)}
                             >
                               <div className="flex justify-between">
                                 <span>{ga.F_CrDbNo}</span>
@@ -865,7 +866,7 @@ export const Profit = ({
           setFileNames([]);
         }}
         title="Request Invoice Approval"
-        className="className=dark:bg-gray-600"
+        className="dark:bg-gray-600 w-50"
       >
         <div className={Classes.DIALOG_BODY}>
           {invRequest &&
@@ -997,20 +998,77 @@ export const Profit = ({
               </ul>
 
               <div className="pl-2 font-bold text-lg">Invoice Detail</div>
-              <ul className="my-2 px-2 divide-y divide-gray-300 rounded border border-gray-100">
+              {/* <ul className="my-2 px-2 divide-y divide-gray-300 rounded border border-gray-100">
                 {invoiceDetail &&
                   invoiceDetail.map((ga) => (
-                    <li
-                      className="flex justify-between py-2 text-gray-500"
-                      key={ga.F_ID}
-                    >
+                    <li className="flex justify-between py-2" key={ga.F_ID}>
                       <span>{ga.F_Description}</span>
-                      <span className="font-semibold">
-                        {usdFormat(ga.F_Amount)}
+                      <span>
+                        {ga.F_Rate}X{ga.F_Qty}
                       </span>
+                      <span>{usdFormat(ga.F_Amount)}</span>
                     </li>
                   ))}
-              </ul>
+              </ul> */}
+              <div className="shadow overflow-auto border-b border-gray-200 sm:rounded-lg">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Description
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Rate
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Qty
+                      </th>
+                      <th
+                        scope="col"
+                        className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      >
+                        Amount
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {invoiceDetail &&
+                      invoiceDetail.map((inv) => (
+                        <tr key={inv.F_ID}>
+                          <td className="px-6 py-2 whitespace-nowrap">
+                            <div className="flex items-center text-xs">
+                              {inv.F_Description}
+                              {/* <div className="flex-shrink-0 h-10 w-10">
+                              </div> */}
+                            </div>
+                          </td>
+                          <td className="px-6 py-2 whitespace-nowrap">
+                            <div className="text-xs text-gray-900">
+                              {usdFormat(inv.F_Rate)}
+                            </div>
+                          </td>
+                          <td className="px-6 py-2 whitespace-nowrap">
+                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                              {inv.F_Qty}
+                            </span>
+                          </td>
+                          <td className="px-6 py-2 whitespace-nowrap text-xs text-gray-500 text-right">
+                            {usdFormat(inv.F_Amount)}
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </div>
 
               {/* Input Field and File Selection */}
               <div className="p-3">
