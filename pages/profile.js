@@ -34,8 +34,8 @@ export default function search(props) {
   );
 
   const handleInputChange = (newValue) => {
-    var inputValue = newValue.replace(/'/g, "");
-    return inputValue;
+    // var inputValue = newValue.replace(/'/g, "");
+    return newValue;
   };
   const loadOptions = async (inputValue, callback) => {
     if (inputValue.length > 1) {
@@ -98,13 +98,30 @@ export default function search(props) {
       }
     }
   }
+  async function handleDeleteContact(contact) {
+    const check = confirm(
+      `Would you like to remove contact for ${contact.NAME}?`
+    );
+    if (check) {
+      const res = await fetch(
+        `/api/company/removeCompanyContact?id=${
+          contact.COMPANY_ID
+        }&email=${encodeURIComponent(contact.EMAIL)}`
+      );
+      if (res.status === 200) {
+        mutate();
+      } else {
+        alert(`ERROR ${res.status}`);
+      }
+    }
+  }
   return (
     <Layout TOKEN={props.token} TITLE="Profile">
       <div className="flex flex-sm-row justify-between">
         <h3 className="dark:text-white mb-3">Profile</h3>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-4">
         <div className="card flex justify-center items-center p-3 gap-2">
           <img
             src="/image/icons/sarah.svg"
@@ -178,12 +195,13 @@ export default function search(props) {
                 </div>
                 {ga.CONTACT.length != 0 && (
                   <ul className="bg-gray-100 rounded p-1">
-                    {ga.CONTACT.map((ga) => (
+                    {ga.CONTACT.map((na) => (
                       <li
-                        key={ga.EMAIL}
-                        className="ml-3 tracking-wider list-disc uppercase"
+                        key={na.EMAIL}
+                        className="ml-3 tracking-wider list-disc uppercase hover:text-red-500 cursor-pointer"
+                        onClick={() => handleDeleteContact(na)}
                       >
-                        &#60;{ga.NAME}&#62; {ga.EMAIL}
+                        &#60;{na.NAME}&#62; {na.EMAIL}
                       </li>
                     ))}
                   </ul>

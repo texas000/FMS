@@ -19,10 +19,11 @@ export default async (req, res) => {
     await pool.connect();
     let result = await pool.request().query(
       `INSERT INTO T_COMPANY_CONTACT 
-        VALUES('${id}','${email}', '${name || ""}',GETDATE(), '${token.uid}');`
+        VALUES('${id}','${email}', N'${name || ""}',GETDATE(), '${token.uid}');`
     );
     res.send(result);
   } catch (err) {
+    console.log(err);
     res.send(err);
   }
   return pool.close();

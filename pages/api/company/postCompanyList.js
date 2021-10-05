@@ -15,6 +15,7 @@ export default async (req, res) => {
     return;
   }
   let pool = new sql.ConnectionPool(process.env.SERVER21);
+  var safeCompany = company.replace(/'/g, "''");
   try {
     await pool.connect();
     let result = await pool
@@ -22,7 +23,7 @@ export default async (req, res) => {
       .query(
         `INSERT INTO T_MEMBER_COMPANY VALUES('${
           token.uid
-        }','${id}',GETDATE(), N'${decodeURIComponent(company)}');`
+        }','${id}',GETDATE(), N'${decodeURIComponent(safeCompany)}');`
       );
     res.send(result);
   } catch (err) {

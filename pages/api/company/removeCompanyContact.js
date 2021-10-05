@@ -9,19 +9,24 @@ export default async (req, res) => {
     res.send("ACCESS DENIED");
     return;
   }
-  var qry = "SELECT F_ID AS value, F_SName AS label FROM T_COMPANY;";
-  const { search } = req.query;
-  var safeSearch = search.replace(/'/g, "''");
-  if (search) {
-    qry = `SELECT TOP 100 F_ID AS value, F_SName AS label 
-    FROM T_COMPANY WHERE F_SName like '%${decodeURIComponent(safeSearch)}%';`;
+  const { id, email } = req.query;
+  if (!id || !email) {
+    res.send("INVALID ENTRY");
+    return;
   }
-  let pool = new sql.ConnectionPool(process.env.SERVER2);
+  let pool = new sql.ConnectionPool(process.env.SERVER21);
   try {
     await pool.connect();
-    let result = await pool.request().query(qry);
-    res.send(result.recordset);
+    let result = await pool
+      .request()
+      .query(
+        `DELETE T_COMPANY_CONTACT WHERE COMPANY_ID='${id}' AND EMAIL='${decodeURIComponent(
+          email
+        )}' AND UPDATE_USER='${token.uid}';`
+      );
+    res.send(result);
   } catch (err) {
+    console.log(err);
     res.send(err);
   }
   return pool.close();
