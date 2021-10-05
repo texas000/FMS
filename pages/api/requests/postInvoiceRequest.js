@@ -44,9 +44,9 @@ export default async (req, res) => {
     // Add notification message
     qry += `INSERT INTO T_MESSAGE VALUES
     ('INVOICE REQUEST FOR ${body.invoiceReq.F_InvoiceNo}', '${body.path}', GETDATE(), '${token.uid}');
-    INSERT INTO T_MESSAGE_RECIPIENT VALUES ('14', NULL, @@IDENTITY, 0);`;
+    INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
 
-    // console.log(qry);
+    // When invoice requested, the notification goes to IAN(22)
 
     let result = await pool.request().query(qry);
 
