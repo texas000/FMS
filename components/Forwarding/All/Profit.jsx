@@ -29,6 +29,7 @@ export const Profit = ({
   const [crType, setCrtype] = useState(false);
   const [apType, setAptype] = useState(false);
   const [memo, setMemo] = useState(false);
+  const [autosend, setAutosend] = useState(1);
 
   const [invoiceReq, setInvoiceReq] = useState(false);
   const { data: invoiceDetail } = useSWR(
@@ -110,6 +111,7 @@ export const Profit = ({
         selectedFile,
         fileNames,
         Reference,
+        autosend,
         path: router.asPath,
       }),
     });
@@ -145,6 +147,10 @@ export const Profit = ({
       console.log(invoiceUpdate.status);
       setSubmitLoading(false);
     }
+  }
+
+  async function handleSendInvoice(invoice) {
+    console.log(invoice);
   }
 
   async function postReq(body) {
@@ -897,6 +903,17 @@ export const Profit = ({
                     small={true}
                   />
                 </div>
+                {/* ONLY IF DIRECTOR APPROVED, THE INVOICE CAN BE SENT TO THE CUSTOMER */}
+                {/* {ga.STATUS == 111 && (
+                  <Button
+                    text="Send Invoice"
+                    icon="envelope"
+                    className="mt-2"
+                    loading={submitLoading}
+                    onClick={() => handleSendInvoice(ga)}
+                    // disabled={TOKEN.admin != 6}
+                  />
+                )} */}
               </div>
             ))}
           {invRequest &&
@@ -1081,12 +1098,31 @@ export const Profit = ({
 
                 {/* Message Field has a limit of 100 character */}
                 <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 my-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   id="memo"
                   type="text"
                   maxLength="100"
                   placeholder="Write Memo"
                   onChange={(e) => setMemo(e.target.value)}
+                />
+
+                <label
+                  className="block text-gray-700 text-sm font-semibold my-2"
+                  htmlFor="mail"
+                >
+                  Email Setting <span className="text-red-600">*</span>
+                </label>
+                <Checkbox
+                  label="Auto Mail"
+                  defaultChecked
+                  id="mail"
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setAutosend(1);
+                    } else {
+                      setAutosend(0);
+                    }
+                  }}
                 />
 
                 <label

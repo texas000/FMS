@@ -40,7 +40,7 @@ export default async (req, res) => {
     // Add request invoice data
     qry += `INSERT INTO T_REQUEST_INV VALUES 
     (101, '${body.Reference}', GETDATE(), '${token.uid}' , GETDATE(), '${token.uid}',
-    'T_INVOHD', '${body.invoiceReq.F_ID}', N'${sanitizedMemo}', N'${body.invoiceReq.BILLTO}', N'${body.invoiceReq.F_InvoiceNo}', N'${body.path}');`;
+    'T_INVOHD', '${body.invoiceReq.F_ID}', N'${sanitizedMemo}', N'${body.invoiceReq.BILLTO}', N'${body.invoiceReq.F_InvoiceNo}', N'${body.path}', '${body.invoiceReq.F_BillTo}', '${body.autosend}');`;
     // Add notification message
     qry += `INSERT INTO T_MESSAGE VALUES
     ('INVOICE REQUEST FOR ${body.invoiceReq.F_InvoiceNo}', '${body.path}', GETDATE(), '${token.uid}');
