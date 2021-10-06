@@ -21,7 +21,6 @@ export default async (req, res) => {
     let result = await pool.request().query(query);
     res.status(200).send(result.recordsets || []);
   } catch (err) {
-    console.log(err);
     res.status(400).json(err);
   }
   return pool.close();

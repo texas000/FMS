@@ -236,6 +236,7 @@ export default function request(props) {
       text: "CUSTOMER",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      classes: "truncate",
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
@@ -363,7 +364,7 @@ export default function request(props) {
         <h3 className="dark:text-white">Invoice</h3>
       </div>
 
-      <div className="card border-0 py-3 px-0 shadow mt-3 overflow-x-auto">
+      <div className="card border-0 py-3 px-0 shadow my-3 overflow-x-auto">
         <ToolkitProvider
           keyField="ID"
           bordered={false}
