@@ -158,11 +158,12 @@ export default function request(props) {
       headerFormatter: filterHeader,
     },
     {
-      dataField: "ApType",
-      text: "TYPE",
+      dataField: "Body",
+      text: "VENDOR",
       classes: "text-uppercase cursor-pointer",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      classes: "truncate",
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
