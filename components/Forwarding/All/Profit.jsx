@@ -16,6 +16,9 @@ export const Profit = ({
   TOKEN,
   Reference,
   customer,
+  MBL,
+  HBL,
+  CONTAINER,
 }) => {
   const { data, mutate } = useSWR("/api/file/list?ref=" + Reference);
   const { data: apRequest } = useSWR("/api/requests/get?ref=" + Reference);
@@ -150,7 +153,25 @@ export const Profit = ({
   }
 
   async function handleSendInvoice(invoice) {
-    console.log(invoice);
+    setSubmitLoading(true);
+    const sendInvoice = await fetch(`/api/requests/sendInvoice`, {
+      method: "POST",
+      body: JSON.stringify({
+        invoice,
+        invoiceReq,
+        MBL,
+        HBL,
+        CONTAINER,
+        files: invRequest[1],
+      }),
+    });
+    if (sendInvoice.status == 200) {
+      alert(await sendInvoice.text());
+    } else {
+      alert(sendInvoice.status);
+    }
+
+    setSubmitLoading(false);
   }
 
   async function postReq(body) {
@@ -348,7 +369,7 @@ export const Profit = ({
                           return (
                             <button
                               key={ga.F_ID + "FILE"}
-                              className="w-100 my-1 bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium py-2 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
+                              className="w-100 my-1 bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium p-2 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
                               onClick={async () => {
                                 window.location.assign(
                                   `/api/file/get?ref=${Reference}&file=${encodeURIComponent(
@@ -357,11 +378,11 @@ export const Profit = ({
                                 );
                               }}
                             >
-                              <div className="flex justify-between font-semibold text-xs">
-                                <span className="text-uppercase inline-block">
+                              <div className="flex justify-between text-xs">
+                                <span className="text-uppercase inline-block font-semibold">
                                   <svg
-                                    width="20"
-                                    height="20"
+                                    width="18"
+                                    height="18"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -380,12 +401,7 @@ export const Profit = ({
                                   </svg>
                                   {ga.F_LABEL}
                                 </span>
-                                <span
-                                  className="text-truncate"
-                                  style={{
-                                    maxWidth: "180px",
-                                  }}
-                                >
+                                <span className="text-truncate w-1/2 text-right">
                                   {ga.F_FILENAME}
                                 </span>
                               </div>
@@ -467,7 +483,7 @@ export const Profit = ({
                           return (
                             <button
                               key={ga.F_ID + "FILE"}
-                              className="w-100 my-1 bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium py-2 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
+                              className="w-100 my-1 bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium p-2 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
                               onClick={async () => {
                                 window.location.assign(
                                   `/api/file/get?ref=${Reference}&file=${encodeURIComponent(
@@ -476,11 +492,11 @@ export const Profit = ({
                                 );
                               }}
                             >
-                              <div className="flex justify-between font-semibold text-xs">
-                                <span className="text-uppercase inline-block">
+                              <div className="flex justify-between text-xs">
+                                <span className="text-uppercase inline-block font-semibold">
                                   <svg
-                                    width="20"
-                                    height="20"
+                                    width="18"
+                                    height="18"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -499,12 +515,7 @@ export const Profit = ({
                                   </svg>
                                   {ga.F_LABEL}
                                 </span>
-                                <span
-                                  className="text-truncate"
-                                  style={{
-                                    maxWidth: "180px",
-                                  }}
-                                >
+                                <span className="text-truncate w-1/2 text-right">
                                   {ga.F_FILENAME}
                                 </span>
                               </div>
@@ -589,7 +600,7 @@ export const Profit = ({
                           return (
                             <button
                               key={ga.F_ID + "FILE"}
-                              className="w-100 my-1 bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium py-2 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
+                              className="w-100 my-1 bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium p-2 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
                               onClick={async () => {
                                 window.location.assign(
                                   `/api/file/get?ref=${Reference}&file=${encodeURIComponent(
@@ -598,11 +609,11 @@ export const Profit = ({
                                 );
                               }}
                             >
-                              <div className="flex justify-between font-semibold text-xs">
-                                <span className="text-uppercase inline-block">
+                              <div className="flex justify-between text-xs">
+                                <span className="text-uppercase inline-block font-semibold">
                                   <svg
-                                    width="20"
-                                    height="20"
+                                    width="18"
+                                    height="18"
                                     viewBox="0 0 24 24"
                                     fill="none"
                                     xmlns="http://www.w3.org/2000/svg"
@@ -621,12 +632,7 @@ export const Profit = ({
                                   </svg>
                                   {ga.F_LABEL}
                                 </span>
-                                <span
-                                  className="text-truncate"
-                                  style={{
-                                    maxWidth: "180px",
-                                  }}
-                                >
+                                <span className="text-truncate w-1/2 text-right">
                                   {ga.F_FILENAME}
                                 </span>
                               </div>
@@ -904,16 +910,16 @@ export const Profit = ({
                   />
                 </div>
                 {/* ONLY IF DIRECTOR APPROVED, THE INVOICE CAN BE SENT TO THE CUSTOMER */}
-                {/* {ga.STATUS == 111 && (
+                {ga.STATUS == 111 && (
                   <Button
-                    text="Send Invoice"
+                    text="Send Invoice (Test Only)"
                     icon="envelope"
                     className="mt-2"
                     loading={submitLoading}
                     onClick={() => handleSendInvoice(ga)}
-                    // disabled={TOKEN.admin != 6}
+                    disabled={ga.AUTOSEND == 0}
                   />
-                )} */}
+                )}
               </div>
             ))}
           {invRequest &&
@@ -1029,7 +1035,7 @@ export const Profit = ({
               </ul> */}
               <div className="shadow overflow-auto border-b border-gray-200 sm:rounded-lg">
                 <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-gray-50 dark:bg-gray-700">
                     <tr>
                       <th
                         scope="col"
@@ -1057,7 +1063,7 @@ export const Profit = ({
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
+                  <tbody className="bg-white dark:bg-gray-500 divide-y divide-gray-200">
                     {invoiceDetail &&
                       invoiceDetail.map((inv) => (
                         <tr key={inv.F_ID}>
@@ -1069,7 +1075,7 @@ export const Profit = ({
                             </div>
                           </td>
                           <td className="px-6 py-2 whitespace-nowrap">
-                            <div className="text-xs text-gray-900">
+                            <div className="text-xs text-gray-900 dark:text-white">
                               {usdFormat(inv.F_Rate)}
                             </div>
                           </td>
@@ -1078,7 +1084,7 @@ export const Profit = ({
                               {inv.F_Qty}
                             </span>
                           </td>
-                          <td className="px-6 py-2 whitespace-nowrap text-xs text-gray-500 text-right">
+                          <td className="px-6 py-2 whitespace-nowrap text-xs text-gray-500 dark:text-gray-200 text-right">
                             {usdFormat(inv.F_Amount)}
                           </td>
                         </tr>
