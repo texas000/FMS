@@ -29,7 +29,7 @@ export default async (req, res) => {
   var query = `INSERT INTO T_REQUEST 
     (RefNo, Status, Title, Body, CreateAt, ModifyAt, CreateBy, ModifyBy, TBName, TBID, Attachment, ApType, Attachment2) 
     VALUES ('${ref}','101','${body.F_InvoiceNo}',
-	'${body.customer}',GETDATE(),GETDATE(),'${token.uid}','${token.uid}',
+	'${body.VENDOR}',GETDATE(),GETDATE(),'${token.uid}','${token.uid}',
 	'T_APHD','${body.F_ID}', '0', '${body.type}', NULL);`;
 
   // ADDING FILE LIST
@@ -140,7 +140,7 @@ export default async (req, res) => {
               <li style="margin: 0 0 10px">Reference Number: <a href="https://jwiusa.com${body.path}">${ref}</a></li>
               <li style="margin: 0 0 10px">Requested By:&nbsp;${token.first}</li>
               <li style="margin: 0 0 10px">Request Type: Account Payable - ${body.type}</li>
-              <li style="margin: 0 0 10px">Invoice Vendor: ${body.customer}</li>
+              <li style="margin: 0 0 10px">Payable Vendor: ${body.VENDOR}</li>
               <li style="margin: 0 0 10px">Invoice Number: ${body.F_InvoiceNo}</li>
             </ul>
           </td>
