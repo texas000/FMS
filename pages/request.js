@@ -411,8 +411,10 @@ export default function request(props) {
         <div className={`${Classes.DIALOG_BODY} h-100`}>
           <h5>Would you like to accept request?</h5>
           <div className="card my-2">
-            <div className="d-flex justify-content-between bg-gray-100 text-black dark:bg-gray-500 dark:text-white font-semibold rounded-t shadow-inner p-3">
-              <span>{selected.Title}</span>
+            <div className="d-flex justify-content-between bg-gray-100 text-black dark:bg-gray-500 dark:text-white rounded-t shadow-inner p-2">
+              <span className="font-extrabold text-lg px-2">
+                {selected.Title}
+              </span>
             </div>
             {/* RefNo */}
             <div className="leading-8 p-3">
@@ -423,10 +425,12 @@ export default function request(props) {
               <p>
                 Type: <mark className="text-uppercase">{selected.ApType}</mark>
               </p>
+              {/* {JSON.stringify(selected)} */}
               {/* <p>Customer: {selected.Body}</p> */}
               {ap ? (
                 <div>
-                  <p>Vendor : {ap.Vendor}</p>
+                  <p>Customer: {ap.Customer}</p>
+                  <p>Vendor : {selected.Body}</p>
                   <p>
                     Total Amount:{" "}
                     <mark className="font-bold">
@@ -495,7 +499,7 @@ export default function request(props) {
                           icon="cloud-download"
                           interactive={true}
                           intent="primary"
-                          className="p-2 my-2 ml-2"
+                          className="p-2 my-2 mx-1"
                         >
                           Form
                         </Tag>
