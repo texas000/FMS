@@ -423,7 +423,7 @@ export default function request(props) {
               <p>
                 Type: <mark className="text-uppercase">{selected.ApType}</mark>
               </p>
-              <p>Customer: {selected.Body}</p>
+              {/* <p>Customer: {selected.Body}</p> */}
               {ap ? (
                 <div>
                   <p>Vendor : {ap.Vendor}</p>
