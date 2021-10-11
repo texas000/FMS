@@ -471,7 +471,7 @@ export default function request(props) {
                         oim={selected.RefNo}
                         pic={selected.Creator}
                         payto={ap.Vendor}
-                        customer={selected.Body}
+                        customer={ap.Customer}
                         amt={ap.F_InvoiceAmt}
                         type={selected.ApType.toUpperCase()}
                         desc={ap.Detail.map(
