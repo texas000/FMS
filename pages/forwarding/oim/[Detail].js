@@ -190,14 +190,14 @@ const Detail = ({ token, Reference }) => {
       // Success
       const apRequestFetch = await fetch("/api/requests/postRequest", {
         method: "POST",
-        headers: {ref: Reference, token=JSON.stringify(token)},
+        headers: { ref: Reference, token: JSON.stringify(token) },
         body: JSON.stringify({
           ...selectedPayment,
           file: selectedFile.map((ga) => ga.ID),
-            filenames: selectedFile.map((ga) => ga.NAME),
-            type: selectedApType,
-            customer: data.H[0].CUSTOMER,
-            path: router.asPath
+          filenames: selectedFile.map((ga) => ga.NAME),
+          type: selectedApType,
+          customer: data.H[0].CUSTOMER,
+          path: router.asPath,
         }),
       });
       if (apRequestFetch.status == 200) {
