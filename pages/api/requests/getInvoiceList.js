@@ -3,6 +3,7 @@ const cookie = require("cookie");
 const jwt = require("jsonwebtoken");
 
 export default async (req, res) => {
+  var { ref } = req.query;
   var cookies = cookie.parse(req.headers.cookie);
   const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
   // Check if token is valid
@@ -24,7 +25,9 @@ export default async (req, res) => {
   if (token.admin > 6) {
     query = `SELECT TOP 100 * , (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CREATEDBY) AS CREATOR FROM T_REQUEST_INV ORDER BY CREATED DESC;`;
   }
-
+  if (ref) {
+    query = `SELECT * FROM T_REQUEST_INV WHERE REFNO='${ref}'`;
+  }
   try {
     await pool.connect();
     let result = await pool.request().query(query);

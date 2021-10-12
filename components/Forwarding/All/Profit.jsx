@@ -102,9 +102,6 @@ export const Profit = ({
   const router = useRouter();
 
   async function handleInvoiceRequest() {
-    // console.log(invoiceReq);
-    // console.log(memo);
-    // console.log(selectedFile);
     setSubmitLoading(true);
     const invoiceRequest = await fetch("/api/requests/postInvoiceRequest", {
       method: "POST",
