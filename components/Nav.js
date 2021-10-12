@@ -254,7 +254,7 @@ const Top = ({ Token, toggle, setToggle }) => {
                 : "Please Login"}
             </span>
             <img
-              className="w-8 h-8 inline"
+              className="w-8 h-8 inline ml-2"
               src={Token.photoURL || "/image/icons/sarah.svg"}
             />
           </a>

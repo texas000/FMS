@@ -24,6 +24,7 @@ import CheckRequestForm from "../../../components/Dashboard/CheckRequestForm";
 import moment from "moment";
 import { useRouter } from "next/router";
 import { post } from "axios";
+import shipmentFileType from "../../../lib/shipmentFileType";
 
 const Detail = ({ token, Reference }) => {
   const router = useRouter();
@@ -51,30 +52,6 @@ const Detail = ({ token, Reference }) => {
   const { data: comment, mutate: commentMutate } = useSWR(
     `/api/comment/list?ref=${Reference}`
   );
-
-  const invoiceFiles = [
-    { level: 10, value: "isf", label: "ISF" },
-    { level: 10, value: "hbl", label: "House B/L" },
-    { level: 10, value: "packing", label: "Packing List" },
-    { level: 10, value: "invoice", label: "Commercial Invoice" },
-    { level: 10, value: "customs", label: "Customs Document" },
-    { level: 10, value: "pod", label: "Proof of delivery" },
-    { level: 10, value: "quote", label: "Quotation" },
-    { level: 10, value: "others", label: "Others" },
-  ];
-  const crdrFiles = [
-    { level: 20, value: "debit", label: "Debit Note" },
-    { level: 20, value: "credit", label: "Credit Note" },
-    { level: 20, value: "others", label: "Others" },
-  ];
-  const apFiles = [
-    { level: 30, value: "mbl", label: "Master B/L" },
-    { level: 30, value: "truck", label: "Trucking Invoice" },
-    { level: 30, value: "do", label: "Delivery Order" },
-    { level: 30, value: "an", label: "Carrier Arrival Notice" },
-    { level: 30, value: "cinvoice", label: "Customs Invoice" },
-    { level: 30, value: "others", label: "Others" },
-  ];
 
   // For Comment Textfield
   const ReactQuill =
@@ -213,8 +190,15 @@ const Detail = ({ token, Reference }) => {
       // Success
       const apRequestFetch = await fetch("/api/requests/postRequest", {
         method: "POST",
-        headers: {},
-        body: JSON.stringify({}),
+        headers: {ref: Reference, token=JSON.stringify(token)},
+        body: JSON.stringify({
+          ...selectedPayment,
+          file: selectedFile.map((ga) => ga.ID),
+            filenames: selectedFile.map((ga) => ga.NAME),
+            type: selectedApType,
+            customer: data.H[0].CUSTOMER,
+            path: router.asPath
+        }),
       });
       if (apRequestFetch.status == 200) {
         setMsg(`Requested approval for ${selectedPayment.F_InvoiceNo}`);
@@ -881,7 +865,7 @@ const Detail = ({ token, Reference }) => {
                 </div>
                 <div className="p-3 grid grid-cols-2 gap-4">
                   <Select
-                    options={invoiceFiles}
+                    options={shipmentFileType(10)}
                     onChange={(e) => setFileTypeSelected(e)}
                     defaultValue={{ value: 0, label: "INVOICE FILE TYPE" }}
                     styles={{
@@ -917,7 +901,7 @@ const Detail = ({ token, Reference }) => {
                 </div>
                 <div className="p-3 grid grid-cols-2 gap-4">
                   <Select
-                    options={crdrFiles}
+                    options={shipmentFileType(20)}
                     onChange={(e) => setFileTypeSelected(e)}
                     defaultValue={{ value: 0, label: "CRDR FILE TYPE" }}
                     styles={{
@@ -950,7 +934,7 @@ const Detail = ({ token, Reference }) => {
                 </div>
                 <div className="p-3 grid grid-cols-2 gap-4">
                   <Select
-                    options={apFiles}
+                    options={shipmentFileType(30)}
                     onChange={(e) => setFileTypeSelected(e)}
                     defaultValue={{ value: 0, label: "AP FILE TYPE" }}
                     styles={{
