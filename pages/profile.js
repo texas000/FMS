@@ -121,7 +121,7 @@ export default function search(props) {
         <h3 className="dark:text-white mb-3">Profile</h3>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid lg:grid-cols-2 gap-4">
         <div className="card flex justify-center items-center p-3 gap-2">
           <img
             src="/image/icons/sarah.svg"
@@ -155,7 +155,7 @@ export default function search(props) {
             <span>{props.token.fsid}</span>
           </p>
         </div>
-        <div className="card p-3">
+        <div className="card p-3 mb-3">
           <h3 className="dark:text-white mb-3 text-center">Manage Customer</h3>
           <label>Company</label>
           <AsyncSelect
@@ -173,9 +173,8 @@ export default function search(props) {
             >
               <span>{companySelected.label}</span>
               <img
+                className="w-8 h-8 inline"
                 src="https://cdn-icons-png.flaticon.com/512/1237/1237946.png"
-                width="20"
-                height="20"
               />
             </div>
           )}
@@ -188,9 +187,8 @@ export default function search(props) {
                 >
                   <span>{ga.COMPANY_NAME}</span>
                   <img
+                    className="object-cover h-5 w-5"
                     src="https://cdn-icons-png.flaticon.com/512/126/126497.png"
-                    width="20"
-                    height="20"
                   />
                 </div>
                 {ga.CONTACT.length != 0 && (
