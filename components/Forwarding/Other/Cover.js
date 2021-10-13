@@ -129,21 +129,21 @@ export const Cover = ({ master }) => {
       first: "POD",
       second: "PKGS",
       data1: master.F_DisCharge,
-      data2: master.F_Pkgs,
+      data2: `${master.F_Pkgs} ${master.F_Punit}`,
     },
     {
       row: 3,
       first: "DESTINATION",
-      second: "UNIT",
+      second: "SHIPPER",
       data1: master.F_FinalDest,
-      data2: master.F_Punit,
+      data2: master.F_C1,
     },
     {
       row: 4,
       first: "WEIGHT(LB)",
-      second: "WEIGHT(KG)",
+      second: "CONSIGNEE",
       data1: master.F_Lbs,
-      data2: master.F_Kgs,
+      data2: master.F_C2,
     },
   ];
 
@@ -212,7 +212,7 @@ export const Cover = ({ master }) => {
                   padding: "0px 1px 0px 2px",
                 }}
               >
-                {master.F_MBLNo}
+                {master.F_Mblno}
               </TableCell>
               <TableCell style={styles.upperTableCol1} weighting={0.295}>
                 JWI REF#
