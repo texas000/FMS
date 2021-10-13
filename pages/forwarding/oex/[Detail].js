@@ -15,7 +15,7 @@ import {
   Button,
 } from "@blueprintjs/core";
 import { BlobProvider } from "@react-pdf/renderer";
-import Cover from "../../../components/Forwarding/Oex/Cover";
+import Cover from "../../../components/Forwarding/OexCover";
 import moment from "moment";
 import usdFormat from "../../../lib/currencyFormat";
 import FreightPayment from "../../../components/Forwarding/FreightPayment";
@@ -1309,13 +1309,19 @@ const Detail = ({ token, Reference }) => {
                       type={selectedApType}
                       inv={selectedPayment.F_InvoiceNo}
                       desc={selectedPayment.F_Descript}
-                      customer={data.H[0].CUSTOMER}
+                      customer={
+                        data.H.length > 0 ? data.H[0].CUSTOMER : "NO CUSTOMER"
+                      }
                       metd={moment(data.M.F_ETD).utc().format("MM/DD/YY")}
                       meta={moment(data.M.F_ETA).utc().format("MM/DD/YY")}
                       pod={data.M.F_DisCharge}
                       comm={data.H[0].F_Commodity || ""}
-                      shipper={data.H[0].SHIPPER}
-                      consignee={data.H[0].CONSIGNEE}
+                      shipper={
+                        data.H.length > 0 ? data.H[0].SHIPPER : "NO SHIPPER"
+                      }
+                      consignee={
+                        data.H.length > 0 ? data.H[0].CONSIGNEE : "NO CONSIGNEE"
+                      }
                     />
                   }
                 >

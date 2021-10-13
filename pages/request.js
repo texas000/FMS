@@ -8,7 +8,10 @@ import paginationFactory, {
   PaginationProvider,
   PaginationListStandalone,
 } from "react-bootstrap-table2-paginator";
-import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
+import filterFactory, {
+  textFilter,
+  selectFilter,
+} from "react-bootstrap-table2-filter";
 import { Progress } from "reactstrap";
 import { Dialog, Classes, Tag, Button } from "@blueprintjs/core";
 import { useState } from "react";
@@ -146,6 +149,20 @@ export default function request(props) {
     }
   };
 
+  const selectOptions = {
+    101: "REQUESTED",
+    110: "DIRECTOR REJECTED",
+    111: "DIRECTOR",
+    120: "ACCOUNTING REJECTED",
+    121: "APPROVED",
+  };
+
+  const selectInvoiceOptions = {
+    101: "REQUESTED",
+    110: "REJECTED",
+    111: "APPROVED",
+  };
+
   const column = [
     {
       dataField: "RefNo",
@@ -184,14 +201,25 @@ export default function request(props) {
       text: "STATUS",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
-      filter: textFilter({
+      filter: selectFilter({
         className: "text-xs text-center hidden sm:block",
+        options: selectOptions,
       }),
-      formatter: (cell) => {
-        if (cell) {
-          return <StatusBar data={cell} />;
-        }
-      },
+      formatter: (cell) => (
+        <div
+          className={`rounded text-xs rounded text-center text-white ${
+            cell == 121
+              ? "bg-blue-500"
+              : cell == 101
+              ? "bg-gray-400"
+              : cell == 110 || cell == 120
+              ? "bg-red-500"
+              : "bg-gray-500"
+          }`}
+        >
+          {selectOptions[cell]}
+        </div>
+      ),
       headerFormatter: filterHeader,
     },
     {
@@ -258,14 +286,23 @@ export default function request(props) {
       text: "STATUS",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
-      filter: textFilter({
+      filter: selectFilter({
         className: "text-xs text-center hidden sm:block",
+        options: selectInvoiceOptions,
       }),
-      formatter: (cell) => {
-        if (cell) {
-          return <InvoiceStatusBar data={cell} />;
-        }
-      },
+      formatter: (cell) => (
+        <div
+          className={`rounded text-xs rounded text-center text-white ${
+            cell == 101
+              ? "bg-gray-500"
+              : cell == 111
+              ? "bg-blue-500"
+              : "bg-red-500"
+          }`}
+        >
+          {selectInvoiceOptions[cell]}
+        </div>
+      ),
       headerFormatter: filterHeader,
     },
     {
@@ -346,7 +383,7 @@ export default function request(props) {
                   <BootstrapTable
                     {...props.baseProps}
                     {...paginationTableProps}
-                    hover
+                    rowClasses="hover:bg-indigo-500 hover:text-white cursor-pointer dark:bg-gray-700 dark:text-white"
                     condensed
                     rowStyle={{ cursor: "pointer" }}
                     filter={filterFactory()}
@@ -384,13 +421,12 @@ export default function request(props) {
                   <BootstrapTable
                     {...props.baseProps}
                     {...paginationTableProps}
-                    hover
+                    rowClasses="hover:bg-indigo-500 hover:text-white cursor-pointer dark:bg-gray-700 dark:text-white"
                     condensed
                     rowStyle={{ cursor: "pointer" }}
                     filter={filterFactory()}
                     wrapperClasses="rounded table-fixed mx-0 px-0"
                     bordered={false}
-                    // pagination={paginationFactory(pageOption)}
                     rowEvents={invoiceRowEvents}
                   />
                 </div>

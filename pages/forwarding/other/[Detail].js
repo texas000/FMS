@@ -15,7 +15,7 @@ import {
   Button,
 } from "@blueprintjs/core";
 import { BlobProvider } from "@react-pdf/renderer";
-import Cover from "../../../components/Forwarding/Other/Cover";
+import Cover from "../../../components/Forwarding/OtherCover";
 import moment from "moment";
 import usdFormat from "../../../lib/currencyFormat";
 import FreightPayment from "../../../components/Forwarding/FreightPayment";

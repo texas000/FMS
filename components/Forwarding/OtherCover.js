@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Page,
   Text,
@@ -85,12 +84,14 @@ const styles = StyleSheet.create({
   },
   lowerTableText: {
     fontSize: 9,
-    padding: "18 2 18 2",
+    paddingLeft: "2px",
+    paddingTop: "18px",
+    paddingBottom: "18px",
+    paddingRight: "2px",
   },
   commentBox: {
-    backgroundColor: "silver",
-    marginLeft: 30,
-    marginRight: 30,
+    borderTopColor: "black",
+    borderTopWidth: 1,
     marginTop: 20,
   },
   commentText: {
@@ -107,13 +108,85 @@ const styles = StyleSheet.create({
   },
 });
 
-export const OtherCover = ({ master }) => {
+export const Cover = ({ master }) => {
+  var upperTableOhter = [
+    {
+      row: 1,
+      first: "HOUSE#",
+      second: "COMMODITY",
+      data1: master.F_Hblno,
+      data2: master.F_Commodity,
+    },
+    {
+      row: 2,
+      first: "POL",
+      second: "TYPE",
+      data1: master.F_LoadingPort,
+      data2: master.F_Type,
+    },
+    {
+      row: 3,
+      first: "POD",
+      second: "PKGS",
+      data1: master.F_DisCharge,
+      data2: `${master.F_Pkgs} ${master.F_Punit}`,
+    },
+    {
+      row: 3,
+      first: "DESTINATION",
+      second: "SHIPPER",
+      data1: master.F_FinalDest,
+      data2: master.F_C1,
+    },
+    {
+      row: 4,
+      first: "WEIGHT(LB)",
+      second: "CONSIGNEE",
+      data1: master.F_Lbs,
+      data2: master.F_C2,
+    },
+  ];
+
+  // Adding Containers to the upper table
+  var lowerTableOther = [
+    {
+      first: "INTERNAL\nMEMO",
+      second: "TRUCK\nINVOICE",
+      data1: master.F_IMemo,
+      data2: "",
+    },
+    {
+      first: "PUBLIC\nMEMO",
+      second: "STORAGE\nINVOICE",
+      data1: master.F_PMemo,
+      data2: "",
+    },
+    {
+      first: "TRUCK\nARRANGE",
+      second: "PAYMENT\nRECEIVED",
+      data1: "",
+      data2: "",
+    },
+    {
+      first: "PICKED UP",
+      second: "ADDITIONAL",
+      data1: "",
+      data2: "",
+    },
+    {
+      first: "ARRIVAL",
+      second: "CONFIRMED",
+      data1: "",
+      data2: "",
+    },
+  ];
+
   return (
     <Document
-      title={master.RefNo}
+      title={master.F_RefNo}
       author="IT TEAM"
-      subject={`COVER FOR ${master.RefNo}`}
-      keywords={master.RefNo}
+      subject={`COVER FOR ${master.F_RefNo}`}
+      keywords={master.F_RefNo}
       producer="JWIUSA.COM"
       creator="JWIUSA.COM"
     >
@@ -125,7 +198,7 @@ export const OtherCover = ({ master }) => {
       >
         <Image style={styles.logo} src="/image/JLOGO.png" fixed />
         <Text style={styles.pageDescription} fixed>
-          FORM CO-OTH-1.2
+          FORM 21.2
         </Text>
         <View style={styles.section}>
           <Table data={upperTableOhter}>
@@ -139,7 +212,7 @@ export const OtherCover = ({ master }) => {
                   padding: "0px 1px 0px 2px",
                 }}
               >
-                {master.Mblno}
+                {master.F_Mblno}
               </TableCell>
               <TableCell style={styles.upperTableCol1} weighting={0.295}>
                 JWI REF#
@@ -150,7 +223,7 @@ export const OtherCover = ({ master }) => {
                   padding: "0px 1px 0px 2px",
                 }}
               >
-                {master.RefNo}
+                {master.F_RefNo}
               </TableCell>
             </TableHeader>
             <TableBody>
@@ -179,14 +252,13 @@ export const OtherCover = ({ master }) => {
         {/* SECTION 1 - TITLE: CUSTOMER - SHIPPER - CONSIGNEE */}
 
         <View style={styles.section1}>
-          <Text style={styles.title}>{master.Customer_SName}</Text>
+          <Text style={styles.title}>
+            ({master.F_Type}) {master.CUSTOMER}
+          </Text>
           <Text style={styles.subhead}>
-            {moment(master.ETD).isValid()
-              ? moment(master.ETD).utc().format("ll") + " ~ "
-              : ""}
-            {moment(master.ETA).isValid()
-              ? moment(master.ETA).utc().format("ll")
-              : ""}
+            {master.F_ETD != null &&
+              `${moment(master.F_ETD).utc().format("ll")} ~ `}
+            {master.F_ETA != null && moment(master.F_ETA).utc().format("ll")}
           </Text>
         </View>
 
@@ -230,4 +302,4 @@ export const OtherCover = ({ master }) => {
   );
 };
 
-export default OtherCover;
+export default Cover;

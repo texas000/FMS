@@ -15,12 +15,11 @@ import {
 } from "@blueprintjs/core";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 import { BlobProvider } from "@react-pdf/renderer";
-import Cover from "../../../components/Forwarding/Oim/Cover";
+import Cover from "../../../components/Forwarding/OimCover";
 import usdFormat from "../../../lib/currencyFormat";
 import CheckRequestForm from "../../../components/Dashboard/CheckRequestForm";
 import moment from "moment";
 import { useRouter } from "next/router";
-import { post } from "axios";
 import FreightPayment from "../../../components/Forwarding/FreightPayment";
 import FreightFile from "../../../components/Forwarding/FreightFile";
 import FreightComment from "../../../components/Forwarding/FreightComment";
@@ -189,7 +188,7 @@ const Detail = ({ token, Reference }) => {
           file: selectedFile.map((ga) => ga.ID),
           filenames: selectedFile.map((ga) => ga.NAME),
           type: selectedApType,
-          customer: data.H[0].CUSTOMER,
+          customer: data.H.length > 0 ? data.H[0].CUSTOMER : "NO CUSTOMER",
           path: router.asPath,
         }),
       });
@@ -1247,13 +1246,19 @@ const Detail = ({ token, Reference }) => {
                       type={selectedApType}
                       inv={selectedPayment.F_InvoiceNo}
                       desc={selectedPayment.F_Descript}
-                      customer={data.H[0].CUSTOMER}
+                      customer={
+                        data.H.length > 0 ? data.H[0].CUSTOMER : "NO CUSTOMER"
+                      }
                       metd={moment(data.M.F_ETD).utc().format("MM/DD/YY")}
                       meta={moment(data.M.F_ETA).utc().format("MM/DD/YY")}
                       pod={data.M.F_DisCharge}
                       comm={data.M.F_mCommodity}
-                      shipper={data.H[0].SHIPPER}
-                      consignee={data.H[0].CONSIGNEE}
+                      shipper={
+                        data.H.length > 0 ? data.H[0].SHIPPER : "NO SHIPPER"
+                      }
+                      consignee={
+                        data.H.length > 0 ? data.H[0].CONSIGNEE : "NO CONSIGNEE"
+                      }
                     />
                   }
                 >
