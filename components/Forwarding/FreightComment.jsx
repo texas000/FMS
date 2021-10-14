@@ -181,7 +181,7 @@ export default function FreightComment({ Reference, setMsg, setShow, token }) {
           Save
         </button>
         <button
-          className="bg-white hover:bg-gray-200 rounded px-4 py-2"
+          className="bg-white dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-600 rounded px-4 py-2"
           onClick={() => setCommentHtml("")}
         >
           Cancel

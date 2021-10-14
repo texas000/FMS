@@ -149,7 +149,7 @@ export default function FreightFile({
                 ...styles,
               }),
             }}
-            className="w-100"
+            className="w-100 dark:text-gray-800"
           />
           <div className="input-group">
             <input
@@ -184,7 +184,7 @@ export default function FreightFile({
             styles={{
               menuPortal: (base) => ({ ...base, zIndex: 9999 }),
             }}
-            className="w-100"
+            className="w-100 dark:text-gray-800"
           />
           <div className="input-group">
             <input
@@ -219,7 +219,7 @@ export default function FreightFile({
             styles={{
               menuPortal: (base) => ({ ...base, zIndex: 9999 }),
             }}
-            className="w-100"
+            className="w-100 dark:text-gray-800"
           />
           <div className="input-group">
             <input

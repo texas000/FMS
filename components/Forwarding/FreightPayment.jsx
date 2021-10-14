@@ -53,7 +53,7 @@ export default function FreightPayment({
             ))}
           </tbody>
         </table>
-        <div className="flex bg-gray-50 justify-between px-4 py-2 border-t border-gray-200 mt-auto">
+        <div className="flex bg-gray-50 dark:bg-gray-800 justify-between px-4 py-2 border-t border-gray-200 mt-auto">
           <div className="flex flex-col">
             <span className="text-gray-300 text-xs">number of invoice</span>
             <span className="text-xl font-bold">{Invoice.length}</span>
@@ -114,7 +114,7 @@ export default function FreightPayment({
             ))}
           </tbody>
         </table>
-        <div className="flex bg-gray-50 justify-between px-4 py-2 border-t border-gray-200 mt-auto">
+        <div className="flex bg-gray-50 dark:bg-gray-800 justify-between px-4 py-2 border-t border-gray-200 mt-auto">
           <div className="flex flex-col">
             <span className="text-gray-300 text-xs">
               number of credit debit
@@ -177,7 +177,7 @@ export default function FreightPayment({
             ))}
           </tbody>
         </table>
-        <div className="flex bg-gray-50 justify-between px-4 py-2 border-t border-gray-200 mt-auto">
+        <div className="flex bg-gray-50 dark:bg-gray-800 justify-between px-4 py-2 border-t border-gray-200 mt-auto">
           <div className="flex flex-col">
             <span className="text-gray-300 text-xs">
               number of account payable
