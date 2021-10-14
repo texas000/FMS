@@ -124,6 +124,9 @@ const Detail = ({ token, Reference }) => {
       `/api/requests/updateInvoice?id=${id}&approve=${approve}`,
       {
         method: "POST",
+        body: JSON.stringify({
+          invohd: selectedPayment,
+        }),
       }
     );
 
@@ -510,7 +513,11 @@ const Detail = ({ token, Reference }) => {
                         <Button
                           text="Approve"
                           fill={true}
-                          disabled={submitLoading || token.admin != 6}
+                          disabled={
+                            submitLoading ||
+                            ga.STATUS == 111 ||
+                            token.admin != 6
+                          }
                           loading={submitLoading}
                           onClick={() => handleInvoiceUpdate(true, ga.ID)}
                           small={true}
@@ -519,7 +526,11 @@ const Detail = ({ token, Reference }) => {
                           text="Reject"
                           fill={true}
                           minimal={true}
-                          disabled={submitLoading || token.admin != 6}
+                          disabled={
+                            submitLoading ||
+                            ga.STATUS == 111 ||
+                            token.admin != 6
+                          }
                           loading={submitLoading}
                           onClick={() => handleInvoiceUpdate(false, ga.ID)}
                           small={true}

@@ -15,6 +15,7 @@ export default async (req, res) => {
   if (!id || !approve) {
     res.status(400).send("INVALID ENTRY");
   }
+  const body = JSON.parse(req.body);
   // Default status is
   var status = 101;
   // If approve, status is director approved, otherwise, director rejected
@@ -25,9 +26,9 @@ export default async (req, res) => {
   //   if (token.admin > 6) {
   //     approve == "true" ? (status = 111) : (status = 110);
   //   }
+  let pool = new sql.ConnectionPool(process.env.SERVER21);
   var query = `UPDATE T_REQUEST_INV SET STATUS='${status}', UPDATEDBY='${token.uid}', UPDATED=GETDATE() WHERE ID='${id}';
     SELECT TOP 1 *, (SELECT F_EMAIL FROM T_MEMBER M WHERE M.F_ID=T_REQUEST_INV.CREATEDBY) AS CREATOR FROM T_REQUEST_INV WHERE ID='${id}';`;
-  let pool = new sql.ConnectionPool(process.env.SERVER21);
   let transport = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -39,6 +40,22 @@ export default async (req, res) => {
   try {
     await pool.connect();
     let result = await pool.request().query(query);
+    // ** Update Closed Status as 1 (Operation Closed)
+    // Only if the case is approved
+    if (approve == "true") {
+      let pool2 = new sql.ConnectionPool(process.env.SERVER2);
+      try {
+        await pool2.connect();
+        await pool2
+          .request()
+          .query(
+            `UPDATE ${body.invohd.F_TBName} SET F_FileClosed='1', F_ClosedBy='${token.fsid}' WHERE F_ID='${body.invohd.F_TBID}';`
+          );
+      } catch (err) {
+        console.log(err);
+      }
+      pool2.close();
+    }
 
     const mailOptions = {
       from: "JWIUSA <it@jamesworldwide.com>",
@@ -215,6 +232,7 @@ export default async (req, res) => {
             </html>`,
       cc: token.email,
     };
+
     try {
       transport.sendMail(mailOptions, function (error, info) {
         if (error) {
