@@ -160,6 +160,7 @@ export default function search(props) {
           <label>Company</label>
           <AsyncSelect
             instanceId="companySearch"
+            className="dark:text-gray-800"
             cacheOptions
             onInputChange={handleInputChange}
             loadOptions={loadOptions}
@@ -171,9 +172,11 @@ export default function search(props) {
               className="p-3 mt-4 bg-gray-200 rounded flex justify-between border-2 border-indigo-400 hover:bg-gray-300 cursor-pointer"
               onClick={handleAddCompany}
             >
-              <span>{companySelected.label}</span>
+              <span className="dark:text-gray-800">
+                {companySelected.label}
+              </span>
               <img
-                className="w-8 h-8 inline"
+                className="object-cover w-4 h-4"
                 src="https://cdn-icons-png.flaticon.com/512/1237/1237946.png"
               />
             </div>
@@ -182,17 +185,17 @@ export default function search(props) {
             assignedCustomer.map((ga) => (
               <div key={ga.COMPANY_ID}>
                 <div
-                  className="p-2 mt-4 bg-gray-200 rounded shadow flex justify-between hover:bg-gray-300 cursor-pointer"
+                  className="p-2 mt-4 bg-gray-200 rounded shadow flex justify-between hover:bg-gray-300 cursor-pointer dark:text-gray-800"
                   onClick={() => handleRemoveCompany(ga)}
                 >
                   <span>{ga.COMPANY_NAME}</span>
                   <img
-                    className="object-cover h-5 w-5"
+                    className="object-cover h-4 w-4"
                     src="https://cdn-icons-png.flaticon.com/512/126/126497.png"
                   />
                 </div>
                 {ga.CONTACT.length != 0 && (
-                  <ul className="bg-gray-100 rounded p-1">
+                  <ul className="bg-gray-100 rounded p-1 dark:bg-gray-600">
                     {ga.CONTACT.map((na) => (
                       <li
                         key={na.EMAIL}
@@ -205,12 +208,22 @@ export default function search(props) {
                   </ul>
                 )}
                 <form
-                  className="card p-2 grid grid-cols-3 gap-2"
+                  className="card p-2 grid grid-cols-3 gap-2 dark:bg-gray-700"
                   onSubmit={(e) => handleAddEmail(e, ga)}
                 >
-                  <input type="email" placeholder="email" />
-                  <input type="text" placeholder="name" />
-                  <button className="bg-gray-100 rounded">Add</button>
+                  <input
+                    type="email"
+                    placeholder="email"
+                    className="dark:bg-gray-700"
+                  />
+                  <input
+                    type="text"
+                    placeholder="name"
+                    className="dark:bg-gray-700"
+                  />
+                  <button className="bg-gray-100 rounded dark:bg-gray-800">
+                    Add
+                  </button>
                 </form>
               </div>
             ))

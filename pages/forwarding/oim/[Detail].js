@@ -128,7 +128,7 @@ const Detail = ({ token, Reference }) => {
 
     if (invoiceUpdate.status == 200) {
       setMsg(
-        `The invoice is successfully ${approved ? "approved" : "rejected"}!`
+        `The invoice is successfully ${approve ? "approved" : "rejected"}!`
       );
       setSelectedPayment(false);
     } else {
@@ -275,7 +275,9 @@ const Detail = ({ token, Reference }) => {
         {data && data.M ? (
           <div>
             <div className="flex justify-between">
-              <h3 className="text-xl font-bold uppercase">{Reference}</h3>
+              <h3 className="text-xl font-bold uppercase dark:text-white">
+                {Reference}
+              </h3>
               <Popover2
                 content={
                   <Menu className="card p-3 m-1">

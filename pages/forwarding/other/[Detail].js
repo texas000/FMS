@@ -129,7 +129,7 @@ const Detail = ({ token, Reference }) => {
 
     if (invoiceUpdate.status == 200) {
       setMsg(
-        `The invoice is successfully ${approved ? "approved" : "rejected"}!`
+        `The invoice is successfully ${approve ? "approved" : "rejected"}!`
       );
       setSelectedPayment(false);
     } else {
@@ -235,13 +235,46 @@ const Detail = ({ token, Reference }) => {
     }
   };
 
+  var mailSubject, mailBody, mailHref;
+  if (data && data.M) {
+    mailSubject = `[JW] ${data.M.CUSTOMER} `;
+    mailSubject += `MBL# ${data.M.F_Mblno} `;
+    mailSubject += `HBL# ${data.M.F_Hblno} `;
+    mailSubject += `ETD ${moment(data.M.F_ETD).utc().format("l")} `;
+    mailSubject += `ETA ${moment(data.M.F_ETA).utc().format("l")} // ${
+      data.M.F_RefNo
+    }`;
+
+    mailBody = `Dear ${data.M.CUSTOMER}
+      \nPlease note that there is an OCEAN IMPORT SHIPMENT for ${
+        data.M.CUSTOMER
+      } scheduled to depart on ${moment(data.M.F_ETA).utc().format("LL")}.
+      \n_______________________________________
+      ETD:  ${moment(data.M.F_ETD).format("L")}
+      POL:  ${data.M.F_LoadingPort}
+      ETA:  ${moment(data.M.F_ETA).format("L")}
+      POD:  ${data.M.F_DisCharge}
+      SHIPPER:  ${data.M.F_C1}
+      CONSIGNEE:  ${data.M.F_C2}
+      MBL:  ${data.M.F_Mblno}
+      HBL:  ${data.M.F_Hblno}`;
+
+    mailHref = data.M
+      ? `mailto:?cc=${token && token.email}&subject=${encodeURIComponent(
+          mailSubject
+        )}&body=${encodeURIComponent(mailBody)}`
+      : "";
+  }
+
   return (
     <Layout TOKEN={token} TITLE={Reference} LOADING={!data}>
       <div>
         {data && data.M ? (
           <div>
             <div className="flex justify-between">
-              <h3 className="text-xl font-bold uppercase">{Reference}</h3>
+              <h3 className="text-xl font-bold uppercase dark:text-white">
+                {Reference}
+              </h3>
               <Popover2
                 content={
                   <Menu className="card p-3 m-1">
@@ -1225,7 +1258,7 @@ const Detail = ({ token, Reference }) => {
                       customer={data.M.CUSTOMER}
                       metd={moment(data.M.F_ETD).utc().format("MM/DD/YY")}
                       meta={moment(data.M.F_ETA).utc().format("MM/DD/YY")}
-                      pod={data.M.F_Discharge}
+                      pod={data.M.F_DisCharge}
                       comm={data.M.F_Commodity || ""}
                       shipper={data.M.F_C1}
                       consignee={data.M.F_C2}
