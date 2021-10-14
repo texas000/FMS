@@ -32,6 +32,11 @@ export default function NavSearch({ setValue }) {
       className="fixed inset-0 z-50 overflow-hidden flex items-start top-20 mb-4 justify-center transform px-4 sm:px-6 exit-done"
       role="dialog"
       aria-modal="true"
+      onKeyDown={(e) => {
+        if (e.key === "Escape") {
+          setValue(false);
+        }
+      }}
     >
       <div className="bg-white overflow-auto max-w-2xl w-full max-h-full rounded shadow-lg">
         <form className="border-b border-gray-200" onSubmit={handleSearch}>
