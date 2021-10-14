@@ -796,7 +796,7 @@ const Detail = ({ token, Reference }) => {
               </div>
               <div className={Classes.DIALOG_FOOTER}>
                 <Button
-                  text="Submit"
+                  text="Submit request"
                   fill={true}
                   loading={submitLoading}
                   disabled={!invoiceMemo}
@@ -1024,10 +1024,11 @@ const Detail = ({ token, Reference }) => {
               </div>
               <div className={Classes.DIALOG_FOOTER}>
                 <Button
-                  text="Submit"
+                  text="Submit request"
                   fill={true}
                   disabled={!invoiceMemo}
                   onClick={handleCreditDebitRequest}
+                  loading={submitLoading}
                 />
               </div>
             </Dialog>
@@ -1064,8 +1065,53 @@ const Detail = ({ token, Reference }) => {
                     <span>{selectedPayment.F_InvoiceNo}</span>
                   </div>
                   <div className="p-2">
-                    <div className="pl-2 font-bold text-lg">
-                      Account Payable Summary
+                    <div className="pl-2 font-bold text-lg flex justify-between">
+                      <span>Account Payable Summary</span>
+                      <BlobProvider
+                        document={
+                          <CheckRequestForm
+                            pic={selectedPayment.F_U1ID || ""}
+                            payto={selectedPayment.VENDOR}
+                            amt={selectedPayment.F_InvoiceAmt}
+                            oim={Reference.toUpperCase()}
+                            type={selectedApType}
+                            inv={selectedPayment.F_InvoiceNo}
+                            desc={selectedPayment.F_Descript}
+                            customer={
+                              data.H.length > 0
+                                ? data.H[0].CUSTOMER
+                                : "NO CUSTOMER"
+                            }
+                            metd={moment(data.M.F_ETD).utc().format("MM/DD/YY")}
+                            meta={moment(data.M.F_ETA).utc().format("MM/DD/YY")}
+                            pod={data.M.F_DisCharge}
+                            comm={data.M.F_mCommodity}
+                            shipper={
+                              data.H.length > 0
+                                ? data.H[0].SHIPPER
+                                : "NO SHIPPER"
+                            }
+                            consignee={
+                              data.H.length > 0
+                                ? data.H[0].CONSIGNEE
+                                : "NO CONSIGNEE"
+                            }
+                          />
+                        }
+                      >
+                        {({ blob, url, loading, error }) => (
+                          <Button
+                            text="Request Form"
+                            fill={true}
+                            className="w-50"
+                            onClick={() => window.open(url, "__blank")}
+                            icon="document-open"
+                            small={true}
+                            disabled={error}
+                            loading={loading}
+                          />
+                        )}
+                      </BlobProvider>
                     </div>
                     <div className="m-2 shadow overflow-auto border-b border-gray-200 sm:rounded-lg">
                       <table className="min-w-full divide-y divide-gray-200">
@@ -1238,50 +1284,12 @@ const Detail = ({ token, Reference }) => {
                 </div>
               </div>
               <div className={Classes.DIALOG_FOOTER}>
-                <BlobProvider
-                  document={
-                    <CheckRequestForm
-                      pic={selectedPayment.F_U1ID || ""}
-                      payto={selectedPayment.VENDOR}
-                      amt={selectedPayment.F_InvoiceAmt}
-                      oim={Reference.toUpperCase()}
-                      type={selectedApType}
-                      inv={selectedPayment.F_InvoiceNo}
-                      desc={selectedPayment.F_Descript}
-                      customer={
-                        data.H.length > 0 ? data.H[0].CUSTOMER : "NO CUSTOMER"
-                      }
-                      metd={moment(data.M.F_ETD).utc().format("MM/DD/YY")}
-                      meta={moment(data.M.F_ETA).utc().format("MM/DD/YY")}
-                      pod={data.M.F_DisCharge}
-                      comm={data.M.F_mCommodity}
-                      shipper={
-                        data.H.length > 0 ? data.H[0].SHIPPER : "NO SHIPPER"
-                      }
-                      consignee={
-                        data.H.length > 0 ? data.H[0].CONSIGNEE : "NO CONSIGNEE"
-                      }
-                    />
-                  }
-                >
-                  {({ blob, url, loading, error }) => (
-                    <Button
-                      text="Account Payable Request Form"
-                      fill={true}
-                      className="mb-4"
-                      onClick={() => window.open(url, "__blank")}
-                      icon="document-open"
-                      disabled={error}
-                      loading={loading}
-                    />
-                  )}
-                </BlobProvider>
-
                 <Button
-                  text="Submit"
+                  text="Submit request"
                   fill={true}
                   disabled={!selectedApType || !selectedFile.length}
                   onClick={handleAccountPayableRequest}
+                  loading={submitLoading}
                 />
               </div>
             </Dialog>

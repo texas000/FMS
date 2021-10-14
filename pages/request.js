@@ -12,7 +12,6 @@ import filterFactory, {
   textFilter,
   selectFilter,
 } from "react-bootstrap-table2-filter";
-import { Progress } from "reactstrap";
 import { Dialog, Classes, Tag, Button } from "@blueprintjs/core";
 import { useState } from "react";
 import usdFormat from "../lib/currencyFormat";
@@ -87,65 +86,6 @@ export default function request(props) {
       return (
         <span className="text-green-500 font-bold">ACCOUNTING APPROVED</span>
       );
-    }
-  };
-
-  const StatusBar = ({ data }) => {
-    if (data == 101) {
-      return (
-        <Progress color="secondary" value="100">
-          REQUESTED
-        </Progress>
-      );
-    }
-    if (data == 110) {
-      return (
-        <Progress color="danger" value="100">
-          DIRECTOR REJECTED
-        </Progress>
-      );
-    }
-    if (data == 111) {
-      return <Progress value="50">DIRECTOR</Progress>;
-    }
-    if (data == 120) {
-      return (
-        <Progress color="danger" value="100">
-          ACCOUNTING REJECTED
-        </Progress>
-      );
-    }
-    if (data == 121) {
-      return (
-        <Progress multi>
-          <Progress bar value="50">
-            DIRECTOR
-          </Progress>
-          <Progress bar color="success" value="50">
-            ACCOUNTING
-          </Progress>
-        </Progress>
-      );
-    }
-  };
-
-  const InvoiceStatusBar = ({ data }) => {
-    if (data == 101) {
-      return (
-        <Progress color="secondary" value="100">
-          REQUESTED
-        </Progress>
-      );
-    }
-    if (data == 110) {
-      return (
-        <Progress color="danger" value="100">
-          DIRECTOR
-        </Progress>
-      );
-    }
-    if (data == 111) {
-      return <Progress value="100">DIRECTOR</Progress>;
     }
   };
 
