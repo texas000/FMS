@@ -112,6 +112,7 @@ export default function request(props) {
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
+      classes: "truncate sm:px-0 px-4",
       headerFormatter: filterHeader,
     },
     {
@@ -120,7 +121,7 @@ export default function request(props) {
       classes: "text-uppercase cursor-pointer",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
-      classes: "truncate",
+      classes: "truncate sm:px-0 px-4",
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
@@ -134,6 +135,7 @@ export default function request(props) {
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
+      classes: "truncate sm:px-0 px-4",
       headerFormatter: filterHeader,
     },
     {
@@ -147,14 +149,14 @@ export default function request(props) {
       }),
       formatter: (cell) => (
         <div
-          className={`rounded text-xs rounded text-center text-white ${
+          className={`rounded text-xs rounded text-center ${
             cell == 121
-              ? "bg-blue-500"
+              ? "bg-blue-500 text-white"
               : cell == 101
-              ? "bg-gray-400"
+              ? "bg-white border border-gray-800 text-gray-500"
               : cell == 110 || cell == 120
-              ? "bg-red-500"
-              : "bg-gray-500"
+              ? "bg-red-500 text-white"
+              : "bg-gray-400 text-white"
           }`}
         >
           {selectOptions[cell]}
@@ -170,6 +172,7 @@ export default function request(props) {
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
+      classes: "truncate sm:px-0 px-4",
       headerFormatter: filterHeader,
     },
     {
@@ -180,6 +183,7 @@ export default function request(props) {
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
+      classes: "truncate sm:px-0 px-4",
       headerFormatter: filterHeader,
       formatter: (cell) => {
         if (cell) {
@@ -198,6 +202,7 @@ export default function request(props) {
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
+      classes: "truncate sm:px-0 px-4",
       headerFormatter: filterHeader,
     },
     {
@@ -205,7 +210,7 @@ export default function request(props) {
       text: "CUSTOMER",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
-      classes: "truncate",
+      classes: "truncate sm:px-0 px-4",
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
@@ -219,6 +224,7 @@ export default function request(props) {
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
+      classes: "truncate sm:px-0 px-4",
       headerFormatter: filterHeader,
     },
     {
@@ -232,12 +238,12 @@ export default function request(props) {
       }),
       formatter: (cell) => (
         <div
-          className={`rounded text-xs rounded text-center text-white ${
+          className={`rounded text-xs rounded text-center ${
             cell == 101
-              ? "bg-gray-500"
+              ? "bg-white border border-gray-800 text-gray-500"
               : cell == 111
-              ? "bg-blue-500"
-              : "bg-red-500"
+              ? "bg-blue-500 text-white"
+              : "bg-red-500 text-white"
           }`}
         >
           {selectInvoiceOptions[cell]}
@@ -253,6 +259,7 @@ export default function request(props) {
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
+      classes: "truncate sm:px-0 px-4",
       headerFormatter: filterHeader,
     },
     {
@@ -260,6 +267,7 @@ export default function request(props) {
       text: "CREATED",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      classes: "truncate sm:px-0 px-4",
       filter: textFilter({
         className: "text-xs text-center hidden sm:block",
       }),
