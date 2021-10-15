@@ -44,6 +44,7 @@ export default function request(props) {
   const [selected, setSelected] = useState(false);
   const { data, mutate } = useSWR("/api/requests/get");
   const { data: invoice } = useSWR("api/requests/getInvoiceList");
+  const { data: crdr } = useSWR("api/requests/getCrdrList");
   const { data: ap } = useSWR(
     selected
       ? `/api/requests/detail?table=${selected.TBName}&id=${selected.TBID}`
@@ -280,6 +281,93 @@ export default function request(props) {
     },
   ];
 
+  const crdrColumn = [
+    {
+      dataField: "REFNO",
+      text: "REFERENCE",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      classes: "truncate sm:px-0 px-4",
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "AGENT",
+      text: "AGENT",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      classes: "truncate sm:px-0 px-4",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "CRDB",
+      text: "CRDR REF",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      classes: "truncate sm:px-0 px-4",
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "STATUS",
+      text: "STATUS",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: selectFilter({
+        className: "text-xs text-center hidden sm:block",
+        options: selectInvoiceOptions,
+      }),
+      formatter: (cell) => (
+        <div
+          className={`rounded text-xs rounded text-center ${
+            cell == 101
+              ? "bg-white border border-gray-800 text-gray-500"
+              : cell == 111
+              ? "bg-blue-500 text-white"
+              : "bg-red-500 text-white"
+          }`}
+        >
+          {selectInvoiceOptions[cell]}
+        </div>
+      ),
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "CREATOR",
+      text: "CREATOR",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      classes: "truncate sm:px-0 px-4",
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "CREATED",
+      text: "CREATED",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      classes: "truncate sm:px-0 px-4",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      headerFormatter: filterHeader,
+      formatter: (cell) => {
+        if (cell) {
+          return moment(cell).utc().format("lll");
+        }
+      },
+    },
+  ];
+
   const pageOption = {
     sizePerPageList: [{ text: "10", value: 10 }],
     custom: true,
@@ -294,6 +382,7 @@ export default function request(props) {
   const invoiceRowEvents = {
     onClick: (e, row, rowIndex) => {
       router.push(row.PATH);
+      router.push("/", "", "_blank");
     },
   };
 
@@ -356,6 +445,44 @@ export default function request(props) {
           bordered={false}
           columns={invoiceColumn}
           data={invoice ? invoice : []}
+          exportCSV
+          search
+        >
+          {(props) => (
+            <PaginationProvider pagination={paginationFactory(pageOption)}>
+              {({ paginationProps, paginationTableProps }) => (
+                <div className="flex flex-col">
+                  <div className="flex flex-row-reverse mr-2">
+                    <PaginationListStandalone {...paginationProps} />
+                  </div>
+                  <BootstrapTable
+                    {...props.baseProps}
+                    {...paginationTableProps}
+                    rowClasses="hover:bg-indigo-500 hover:text-white cursor-pointer dark:bg-gray-700 dark:text-white"
+                    condensed
+                    rowStyle={{ cursor: "pointer" }}
+                    filter={filterFactory()}
+                    wrapperClasses="rounded table-fixed mx-0 px-0"
+                    bordered={false}
+                    rowEvents={invoiceRowEvents}
+                  />
+                </div>
+              )}
+            </PaginationProvider>
+          )}
+        </ToolkitProvider>
+      </div>
+
+      <div className="flex flex-sm-row mt-4 justify-between">
+        <h3 className="dark:text-white">Credit Debit</h3>
+      </div>
+
+      <div className="card border-0 py-3 px-0 shadow my-3 overflow-x-auto">
+        <ToolkitProvider
+          keyField="ID"
+          bordered={false}
+          columns={crdrColumn}
+          data={crdr ? crdr : []}
           exportCSV
           search
         >
