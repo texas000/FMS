@@ -12,38 +12,38 @@ import "../components/css/custom.css";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }) {
-	const router = useRouter();
+  const router = useRouter();
 
-	useEffect(() => {
-		if ("serviceWorker" in navigator) {
-			window.addEventListener("load", function () {
-				navigator.serviceWorker.register("/sw.js").then(function (err) {
-					console.log("Service Worker registration failed: ", err);
-				});
-			});
-		}
+  useEffect(() => {
+    // if ("serviceWorker" in navigator) {
+    // 	window.addEventListener("load", function () {
+    // 		navigator.serviceWorker.register("/sw.js").then(function (err) {
+    // 			console.log("Service Worker registration failed: ", err);
+    // 		});
+    // 	});
+    // }
 
-		const Start = () => {
-			NProgress.start();
-		};
+    const Start = () => {
+      NProgress.start();
+    };
 
-		const End = (url) => {
-			NProgress.done();
-		};
+    const End = (url) => {
+      NProgress.done();
+    };
 
-		router.events.on("routeChangeStart", Start);
-		router.events.on("routeChangeComplete", End);
-		router.events.on("routeChangeError", End);
+    router.events.on("routeChangeStart", Start);
+    router.events.on("routeChangeComplete", End);
+    router.events.on("routeChangeError", End);
 
-		// If the component is unmounted, unsubscribe
-		// from the event with the `off` method:
-		return () => {
-			router.events.off("routeChangeStart", Start);
-			router.events.off("routeChangeComplete", End);
-			router.events.off("routeChangeError", End);
-		};
-	}, []);
+    // If the component is unmounted, unsubscribe
+    // from the event with the `off` method:
+    return () => {
+      router.events.off("routeChangeStart", Start);
+      router.events.off("routeChangeComplete", End);
+      router.events.off("routeChangeError", End);
+    };
+  }, []);
 
-	return <Component {...pageProps} />;
+  return <Component {...pageProps} />;
 }
 export default MyApp;
