@@ -16,9 +16,9 @@ import router from "next/router";
 
 const Index = ({ token }) => {
   const [Page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(50);
+  const [loading, setLoading] = useState(false);
   const { data, mutate } = useSWR(
-    `/api/forwarding/other/pagination?page=${Page}&size=${pageSize}`
+    `/api/forwarding/other/pagination?page=${Page}&size=50`
   );
 
   // INDICATION FOR TABLE
@@ -251,12 +251,13 @@ const Index = ({ token }) => {
 
   const rowEvents = {
     onClick: (e, row, rowIndex) => {
+      setLoading(true);
       router.push(`/forwarding/other/${row.F_RefNo}`);
     },
   };
 
   return (
-    <Layout TOKEN={token} TITLE="OTHER" LOADING={!data}>
+    <Layout TOKEN={token} TITLE="OTHER" LOADING={!data || loading}>
       <div className="d-flex flex-sm-row justify-content-between">
         <div className="flex-column">
           <h3 className="dark:text-white">Other</h3>

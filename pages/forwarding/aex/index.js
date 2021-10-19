@@ -16,9 +16,9 @@ import router from "next/router";
 
 const Index = ({ token }) => {
   const [Page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(50);
+  const [loading, setLoading] = useState(false);
   const { data, mutate } = useSWR(
-    `/api/forwarding/aex/pagination?page=${Page}&size=${pageSize}`
+    `/api/forwarding/aex/pagination?page=${Page}&size=50`
   );
 
   // INDICATION FOR TABLE
@@ -251,12 +251,13 @@ const Index = ({ token }) => {
 
   const rowEvents = {
     onClick: (e, row, rowIndex) => {
+      setLoading(true);
       router.push(`/forwarding/aex/${row.F_RefNo}`);
     },
   };
 
   return (
-    <Layout TOKEN={token} TITLE="AIR EXPORT" LOADING={!data}>
+    <Layout TOKEN={token} TITLE="AIR EXPORT" LOADING={!data || loading}>
       <div className="d-flex flex-sm-row justify-content-between">
         <div className="flex-column">
           <h3 className="dark:text-white">Air Export</h3>
