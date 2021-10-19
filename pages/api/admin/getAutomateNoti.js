@@ -1,20 +1,8 @@
 const sql = require("mssql");
 const jwt = require("jsonwebtoken");
 
-const sqlConfig = {
-  server: "jameswi.com",
-  port: 1533,
-  database: "RYANDB",
-  user: "jamesworldwide",
-  password: process.env.JWDB_PASS,
-  options: {
-    encrypt: false,
-    enableArithAbort: false,
-  },
-};
-
 export default async (req, res) => {
-  var db = new sql.ConnectionPool(sqlConfig);
+  var db = new sql.ConnectionPool(process.env.SERVER5);
 
   db.connect().then(() => {
     var request = new sql.Request(db);
@@ -37,9 +25,6 @@ export default async (req, res) => {
         res.status(400).send(errmsg);
       });
   });
-  // .then(() => {
-  //   console.log("success");
-  // });
 };
 
 export const config = {

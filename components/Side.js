@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
-import Link from "next/link";
 import { useState } from "react";
-const Sidebar = ({ Token, toggle, setToggle }) => {
+const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
   const router = useRouter();
   const [t1, setT1] = useState(false);
   const [t2, setT2] = useState(false);
@@ -13,28 +12,37 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
       }`}
     >
       {/* <!-- Sidebar Logo --> */}
-      <Link href="/dashboard">
-        <a className="h-16 d-flex align-items-center justify-content-center">
-          <div>
-            <img
-              src="/favicon/apple-touch-icon.png"
-              className="avatar rounded-full w-9 h-9"
-            />
-          </div>
-        </a>
-      </Link>
+
+      <a
+        className="h-16 d-flex align-items-center justify-content-center"
+        onClick={() => {
+          setLoading(true);
+          router.push("/dashboard");
+        }}
+      >
+        <div>
+          <img
+            src="/favicon/apple-touch-icon.png"
+            className="avatar rounded-full w-9 h-9"
+          />
+        </div>
+      </a>
 
       {/* Divider */}
       <hr className="border-t border-blue-500 mx-3 my-1" />
 
       {/* <!-- Nav Item --> */}
       <li className={`nav-item ${router.pathname == "/dashboard" && "active"}`}>
-        <Link href="/dashboard">
-          <a className="nav-link hover:no-underline">
-            <i className="fa fa-clipboard"></i>
-            <span className="font-light overflow-hidden">Dashboard</span>
-          </a>
-        </Link>
+        <a
+          className="nav-link hover:no-underline"
+          onClick={() => {
+            setLoading(true);
+            router.push("/dashboard");
+          }}
+        >
+          <i className="fa fa-clipboard"></i>
+          <span className="font-light overflow-hidden">Dashboard</span>
+        </a>
       </li>
 
       {/* <!-- Divider --> */}
@@ -50,12 +58,16 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           router.pathname.substring(1, 11) == "request" && "active"
         }`}
       >
-        <Link href="/request">
-          <a className="nav-link hover:no-underline">
-            <i className="fa fa-thumbs-up"></i>
-            <span>Request</span>
-          </a>
-        </Link>
+        <a
+          className="nav-link hover:no-underline"
+          onClick={() => {
+            setLoading(true);
+            router.push("/request");
+          }}
+        >
+          <i className="fa fa-thumbs-up"></i>
+          <span>Request</span>
+        </a>
       </li>
 
       <li
@@ -63,12 +75,16 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           router.pathname.substring(1, 15) == "forwarding/oim" && "active"
         }`}
       >
-        <Link href="/forwarding/oim">
-          <a className="nav-link hover:no-underline">
-            <i className="fa fa-anchor"></i>
-            <span>Ocean Import</span>
-          </a>
-        </Link>
+        <a
+          className="nav-link hover:no-underline"
+          onClick={() => {
+            setLoading(true);
+            router.push("/forwarding/oim");
+          }}
+        >
+          <i className="fa fa-anchor"></i>
+          <span>Ocean Import</span>
+        </a>
       </li>
 
       <li
@@ -76,12 +92,16 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           router.pathname.substring(1, 15) == "forwarding/oex" && "active"
         }`}
       >
-        <Link href="/forwarding/oex">
-          <a className="nav-link hover:no-underline">
-            <i className="fa fa-anchor fa-flip-vertical"></i>
-            <span>Ocean Export</span>
-          </a>
-        </Link>
+        <a
+          className="nav-link hover:no-underline"
+          onClick={() => {
+            setLoading(true);
+            router.push("/forwarding/oex");
+          }}
+        >
+          <i className="fa fa-anchor fa-flip-vertical"></i>
+          <span>Ocean Export</span>
+        </a>
       </li>
 
       <li
@@ -89,12 +109,16 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           router.pathname.substring(1, 15) == "forwarding/aim" && "active"
         }`}
       >
-        <Link href="/forwarding/aim">
-          <a className="nav-link hover:no-underline">
-            <i className="fa fa-plane"></i>
-            <span>Air Import</span>
-          </a>
-        </Link>
+        <a
+          className="nav-link hover:no-underline"
+          onClick={() => {
+            setLoading(true);
+            router.push("/forwarding/aim");
+          }}
+        >
+          <i className="fa fa-plane"></i>
+          <span>Air Import</span>
+        </a>
       </li>
 
       <li
@@ -102,12 +126,16 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           router.pathname.substring(1, 15) == "forwarding/aex" && "active"
         }`}
       >
-        <Link href="/forwarding/aex">
-          <a className="nav-link hover:no-underline">
-            <i className="fa fa-plane fa-flip-vertical"></i>
-            <span>Air Export</span>
-          </a>
-        </Link>
+        <a
+          className="nav-link hover:no-underline"
+          onClick={() => {
+            setLoading(true);
+            router.push("/forwarding/aex");
+          }}
+        >
+          <i className="fa fa-plane fa-flip-vertical"></i>
+          <span>Air Export</span>
+        </a>
       </li>
 
       <li
@@ -115,12 +143,16 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           router.pathname.substring(1, 15) == "forwarding/oth" && "active"
         }`}
       >
-        <Link href="/forwarding/other">
-          <a className="nav-link hover:no-underline">
-            <i className="fa fa-link"></i>
-            <span>Other</span>
-          </a>
-        </Link>
+        <a
+          className="nav-link hover:no-underline"
+          onClick={() => {
+            setLoading(true);
+            router.push("/forwarding/other");
+          }}
+        >
+          <i className="fa fa-link"></i>
+          <span>Other</span>
+        </a>
       </li>
 
       {/* Trucking */}
@@ -130,12 +162,16 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
             router.pathname == "/forwarding/trucking" && "active"
           }`}
         >
-          <Link href="/forwarding/trucking">
-            <a className="nav-link hover:no-underline">
-              <i className="fa fa-truck"></i>
-              <span>Trucking</span>
-            </a>
-          </Link>
+          <a
+            className="nav-link hover:no-underline"
+            onClick={() => {
+              setLoading(true);
+              router.push("/forwarding/trucking");
+            }}
+          >
+            <i className="fa fa-truck"></i>
+            <span>Trucking</span>
+          </a>
         </li>
       )}
 
@@ -146,12 +182,16 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
           router.pathname.substring(1, 6) == "board" && "active"
         }`}
       >
-        <Link href="/board">
-          <a className="nav-link hover:no-underline">
-            <i className="fa fa-pencil"></i>
-            <span>Board</span>
-          </a>
-        </Link>
+        <a
+          className="nav-link hover:no-underline"
+          onClick={() => {
+            setLoading(true);
+            router.push("/board");
+          }}
+        >
+          <i className="fa fa-pencil"></i>
+          <span>Board</span>
+        </a>
       </li>
 
       {Token.admin > 5 && (
@@ -160,12 +200,16 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
             router.pathname.substring(1, 11) == "manage" && "active"
           }`}
         >
-          <Link href="/manage">
-            <a className="nav-link hover:no-underline">
-              <i className="fa fa-tasks"></i>
-              <span>Manage</span>
-            </a>
-          </Link>
+          <a
+            className="nav-link hover:no-underline"
+            onClick={() => {
+              setLoading(true);
+              router.push("/manage");
+            }}
+          >
+            <i className="fa fa-tasks"></i>
+            <span>Manage</span>
+          </a>
         </li>
       )}
 
@@ -175,12 +219,16 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
             router.pathname.substring(1, 11) == "accounting" && "active"
           }`}
         >
-          <Link href="/accounting">
-            <a className="nav-link hover:no-underline">
-              <i className="fa fa-dollar"></i>
-              <span>Accounting</span>
-            </a>
-          </Link>
+          <a
+            className="nav-link hover:no-underline"
+            onClick={() => {
+              setLoading(true);
+              router.push("/accounting");
+            }}
+          >
+            <i className="fa fa-dollar"></i>
+            <span>Accounting</span>
+          </a>
         </li>
       )}
       {Token.admin > 3 && (
@@ -204,26 +252,51 @@ const Sidebar = ({ Token, toggle, setToggle }) => {
             <div className={`collapse ${t2 && "show"}`}>
               <div className="bg-white py-2 collapse-inner rounded">
                 <h6 className="collapse-header">Company</h6>
-                <Link href="/statistic/custom">
-                  <a className="collapse-item">Custom</a>
-                </Link>
-                <Link href="/statistic/house">
-                  <a className="collapse-item">House</a>
-                </Link>
-                <Link href="/statistic/container">
-                  <a className="collapse-item">Container</a>
-                </Link>
+
+                <a
+                  className="collapse-item"
+                  onClick={() => {
+                    setLoading(true);
+                    router.push("/statistic/custom");
+                  }}
+                >
+                  Custom
+                </a>
+
+                <a
+                  className="collapse-item"
+                  onClick={() => {
+                    setLoading(true);
+                    router.push("/statistic/house");
+                  }}
+                >
+                  House
+                </a>
+
+                <a
+                  className="collapse-item"
+                  onClick={() => {
+                    setLoading(true);
+                    router.push("/statistic/container");
+                  }}
+                >
+                  Container
+                </a>
               </div>
             </div>
           </li>
           {Token.admin === 9 && (
             <li className={`nav-item ${router.pathname == "/hr" && "active"}`}>
-              <Link href="/hr">
-                <a className="nav-link hover:no-underline">
-                  <i className="fa fa-user"></i>
-                  <span>Human Resource</span>
-                </a>
-              </Link>
+              <a
+                className="nav-link hover:no-underline"
+                onClick={() => {
+                  setLoading(true);
+                  router.push("/hr");
+                }}
+              >
+                <i className="fa fa-user"></i>
+                <span>Human Resource</span>
+              </a>
             </li>
           )}
         </>

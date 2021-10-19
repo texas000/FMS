@@ -10,6 +10,8 @@ const Layout = (props) => {
   const [toggle, setToggle] = useState(true);
   // State that check if the screen is mobile
   const [mobile, setMobile] = useState(false);
+  // Loading
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (window.innerWidth < 600) {
       setMobile(true);
@@ -94,6 +96,7 @@ const Layout = (props) => {
           toggle={toggle}
           setToggle={setToggle}
           isMobile={mobile}
+          setLoading={setLoading}
         />
         {/* Content Wrapper */}
         <div className="w-full bg-gray-100 dark:bg-gray-600 overflow-x-hidden">
@@ -106,7 +109,7 @@ const Layout = (props) => {
             )}
           </div>
         </div>
-        <Loading show={props.LOADING} />
+        <Loading show={props.LOADING || loading} />
       </div>
     </>
   );

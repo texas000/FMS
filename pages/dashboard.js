@@ -6,6 +6,7 @@ import moment from "moment";
 import React, { useState, useEffect, Fragment } from "react";
 import useSWR from "swr";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import Notification from "../components/Toaster";
 import Checkout from "../components/Dashboard/Payment";
 import usdFormat from "../lib/currencyFormat";
@@ -34,8 +35,10 @@ export async function getServerSideProps({ req }) {
 export default function dashboard(props) {
   const { data } = useSWR("/api/dashboard/list");
   const { data: invoice } = useSWR("/api/dashboard/invoice");
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   return (
-    <Layout TOKEN={props.token} TITLE="Dashboard" LOADING={!data}>
+    <Layout TOKEN={props.token} TITLE="Dashboard" LOADING={!data || loading}>
       {/* <Notification
 				show={show}
 				setShow={setShow}
@@ -45,15 +48,17 @@ export default function dashboard(props) {
 
       <div className="flex justify-between mb-4">
         <h3 className="dark:text-white">Dashboard</h3>
-        <Link href="/invoice">
-          <a
-            className="bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
-            style={{ textDecoration: "none" }}
-          >
-            Pending Invoice{" "}
-            {invoice && invoice.length && usdFormat(invoice[0].pending)}
-          </a>
-        </Link>
+        <a
+          className="bg-white dark:bg-gray-700 dark:text-white text-gray-700 font-medium py-1 px-4 border border-gray-400 rounded-lg tracking-wide mr-1 hover:bg-gray-100"
+          style={{ textDecoration: "none" }}
+          onClick={() => {
+            setLoading(true);
+            router.push("/invoice");
+          }}
+        >
+          Pending Invoice{" "}
+          {invoice && invoice.length && usdFormat(invoice[0].pending)}
+        </a>
       </div>
       {/* RECENT LIST FREIGHT */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -82,34 +87,36 @@ export default function dashboard(props) {
                       } p-2 text-xs text-gray-800 dark:text-white hover:text-white hover:bg-indigo-500 group`}
                       key={i + "oim"}
                     >
-                      <Link href={`/forwarding/oim/${ga.F_RefNo}`}>
-                        <a
-                          className="flex justify-between hover:text-white"
-                          style={{ textDecoration: "none" }}
-                        >
-                          <dt className="w-1/4 truncate font-semibold">
-                            {ga.F_RefNo}
-                          </dt>
-                          <dd className="w-1/2 truncate">
-                            {ga.Customer || "NO CUSTOMER"}
-                          </dd>
-                          <dd
-                            className={`font-weight-bold ${
-                              moment()
-                                .startOf("day")
-                                .diff(moment(ga.F_ETA).utc(), "days") < 0
-                                ? "text-danger"
-                                : "text-primary"
-                            }`}
-                          >
-                            {moment(ga.F_ETA)
-                              .utc()
-                              .add(1, "days")
+                      <a
+                        className="flex justify-between hover:text-white"
+                        style={{ textDecoration: "none" }}
+                        onClick={() => {
+                          setLoading(true);
+                          router.push(`/forwarding/oim/${ga.F_RefNo}`);
+                        }}
+                      >
+                        <dt className="w-1/4 truncate font-semibold">
+                          {ga.F_RefNo}
+                        </dt>
+                        <dd className="w-1/2 truncate">
+                          {ga.Customer || "NO CUSTOMER"}
+                        </dd>
+                        <dd
+                          className={`font-weight-bold ${
+                            moment()
                               .startOf("day")
-                              .diff(new Date().toDateString(), "days")}
-                          </dd>
-                        </a>
-                      </Link>
+                              .diff(moment(ga.F_ETA).utc(), "days") < 0
+                              ? "text-danger"
+                              : "text-primary"
+                          }`}
+                        >
+                          {moment(ga.F_ETA)
+                            .utc()
+                            .add(1, "days")
+                            .startOf("day")
+                            .diff(new Date().toDateString(), "days")}
+                        </dd>
+                      </a>
                     </dl>
                   ))}
                 </div>
@@ -141,34 +148,36 @@ export default function dashboard(props) {
                       } p-2 text-xs text-gray-800 dark:text-white hover:text-white hover:bg-indigo-500 group`}
                       key={i + "oex"}
                     >
-                      <Link href={`/forwarding/oex/${ga.F_RefNo}`}>
-                        <a
-                          className="flex justify-between hover:text-white"
-                          style={{ textDecoration: "none" }}
-                        >
-                          <dt className="w-1/4 truncate font-semibold">
-                            {ga.F_RefNo}
-                          </dt>
-                          <dd className="w-1/2 truncate">
-                            {ga.Customer || "NO CUSTOMER"}
-                          </dd>
-                          <dd
-                            className={`font-weight-bold ${
-                              moment()
-                                .startOf("day")
-                                .diff(moment(ga.F_ETA).utc(), "days") < 0
-                                ? "text-danger"
-                                : "text-primary"
-                            }`}
-                          >
-                            {moment(ga.F_ETA)
-                              .utc()
-                              .add(1, "days")
+                      <a
+                        className="flex justify-between hover:text-white"
+                        style={{ textDecoration: "none" }}
+                        onClick={() => {
+                          setLoading(true);
+                          router.push(`/forwarding/oex/${ga.F_RefNo}`);
+                        }}
+                      >
+                        <dt className="w-1/4 truncate font-semibold">
+                          {ga.F_RefNo}
+                        </dt>
+                        <dd className="w-1/2 truncate">
+                          {ga.Customer || "NO CUSTOMER"}
+                        </dd>
+                        <dd
+                          className={`font-weight-bold ${
+                            moment()
                               .startOf("day")
-                              .diff(new Date().toDateString(), "days")}
-                          </dd>
-                        </a>
-                      </Link>
+                              .diff(moment(ga.F_ETA).utc(), "days") < 0
+                              ? "text-danger"
+                              : "text-primary"
+                          }`}
+                        >
+                          {moment(ga.F_ETA)
+                            .utc()
+                            .add(1, "days")
+                            .startOf("day")
+                            .diff(new Date().toDateString(), "days")}
+                        </dd>
+                      </a>
                     </dl>
                   ))}
                 </div>
@@ -200,34 +209,36 @@ export default function dashboard(props) {
                       } p-2 text-xs text-gray-800 dark:text-white hover:text-white hover:bg-indigo-500 group`}
                       key={i + "aim"}
                     >
-                      <Link href={`/forwarding/aim/${ga.F_RefNo}`}>
-                        <a
-                          className="flex justify-between hover:text-white"
-                          style={{ textDecoration: "none" }}
-                        >
-                          <dt className="w-1/4 truncate font-semibold">
-                            {ga.F_RefNo}
-                          </dt>
-                          <dd className="w-1/2 truncate">
-                            {ga.Customer || "NO CUSTOMER"}
-                          </dd>
-                          <dd
-                            className={`font-weight-bold ${
-                              moment()
-                                .startOf("day")
-                                .diff(moment(ga.F_ETA).utc(), "days") < 0
-                                ? "text-danger"
-                                : "text-primary"
-                            }`}
-                          >
-                            {moment(ga.F_ETA)
-                              .utc()
-                              .add(1, "days")
+                      <a
+                        className="flex justify-between hover:text-white"
+                        style={{ textDecoration: "none" }}
+                        onClick={() => {
+                          setLoading(true);
+                          router.push(`/forwarding/aim/${ga.F_RefNo}`);
+                        }}
+                      >
+                        <dt className="w-1/4 truncate font-semibold">
+                          {ga.F_RefNo}
+                        </dt>
+                        <dd className="w-1/2 truncate">
+                          {ga.Customer || "NO CUSTOMER"}
+                        </dd>
+                        <dd
+                          className={`font-weight-bold ${
+                            moment()
                               .startOf("day")
-                              .diff(new Date().toDateString(), "days")}
-                          </dd>
-                        </a>
-                      </Link>
+                              .diff(moment(ga.F_ETA).utc(), "days") < 0
+                              ? "text-danger"
+                              : "text-primary"
+                          }`}
+                        >
+                          {moment(ga.F_ETA)
+                            .utc()
+                            .add(1, "days")
+                            .startOf("day")
+                            .diff(new Date().toDateString(), "days")}
+                        </dd>
+                      </a>
                     </dl>
                   ))}
                 </div>
@@ -259,34 +270,36 @@ export default function dashboard(props) {
                       } p-2 text-xs text-gray-800 dark:text-white hover:text-white hover:bg-indigo-500 group`}
                       key={i + "aex"}
                     >
-                      <Link href={`/forwarding/aex/${ga.F_RefNo}`}>
-                        <a
-                          className="flex justify-between hover:text-white"
-                          style={{ textDecoration: "none" }}
-                        >
-                          <dt className="w-1/4 truncate font-semibold">
-                            {ga.F_RefNo}
-                          </dt>
-                          <dd className="w-1/2 truncate">
-                            {ga.Customer || "NO CUSTOMER"}
-                          </dd>
-                          <dd
-                            className={`font-weight-bold ${
-                              moment()
-                                .startOf("day")
-                                .diff(moment(ga.F_ETA).utc(), "days") < 0
-                                ? "text-danger"
-                                : "text-primary"
-                            }`}
-                          >
-                            {moment(ga.F_ETA)
-                              .utc()
-                              .add(1, "days")
+                      <a
+                        className="flex justify-between hover:text-white"
+                        style={{ textDecoration: "none" }}
+                        onClick={() => {
+                          setLoading(true);
+                          router.push(`/forwarding/aex/${ga.F_RefNo}`);
+                        }}
+                      >
+                        <dt className="w-1/4 truncate font-semibold">
+                          {ga.F_RefNo}
+                        </dt>
+                        <dd className="w-1/2 truncate">
+                          {ga.Customer || "NO CUSTOMER"}
+                        </dd>
+                        <dd
+                          className={`font-weight-bold ${
+                            moment()
                               .startOf("day")
-                              .diff(new Date().toDateString(), "days")}
-                          </dd>
-                        </a>
-                      </Link>
+                              .diff(moment(ga.F_ETA).utc(), "days") < 0
+                              ? "text-danger"
+                              : "text-primary"
+                          }`}
+                        >
+                          {moment(ga.F_ETA)
+                            .utc()
+                            .add(1, "days")
+                            .startOf("day")
+                            .diff(new Date().toDateString(), "days")}
+                        </dd>
+                      </a>
                     </dl>
                   ))}
                 </div>
