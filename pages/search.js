@@ -139,13 +139,18 @@ export default function search(props) {
                   >
                     <a
                       className="sm:grid sm:grid-cols-4 sm:gap-4 sm:px-6 hover:text-white"
-                      onClick={() =>
-                        window.location.assign(
+                      onClick={async () => {
+                        const data = await fetch(
                           `/api/file/get?ref=${
                             ga.F_REF
                           }&file=${encodeURIComponent(ga.F_FILENAME)}`
-                        )
-                      }
+                        );
+                        var file = new Blob([await data.blob()], {
+                          type: "application/pdf",
+                        });
+                        var fileURL = URL.createObjectURL(file);
+                        window.open(fileURL);
+                      }}
                       style={{
                         textDecoration: "none",
                       }}
