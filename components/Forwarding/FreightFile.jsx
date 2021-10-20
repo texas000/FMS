@@ -118,8 +118,9 @@ export default function FreightFile({
                           ga.F_FILENAME
                         )}`
                       );
-                      var file = new Blob([await data.blob()], {
-                        type: "application/pdf",
+                      const blob = await data.blob();
+                      var file = new Blob([blob], {
+                        type: blob.type,
                       });
                       var fileURL = URL.createObjectURL(file);
                       window.open(fileURL);
