@@ -70,7 +70,7 @@ export default function FreightFile({
           {File.map((ga) => {
             if (ga.F_SECURITY == Level) {
               return (
-                <div key={ga.F_ID} className="relative">
+                <div key={ga.F_ID} className="flex flex-row">
                   <button
                     className="mb-2 w-100 bg-white dark:bg-gray-700 p-1 border border-gray-400 rounded-lg hover:bg-indigo-500 hover:text-white z-0"
                     onClick={async () => {
@@ -109,17 +109,37 @@ export default function FreightFile({
                       </span>
                     </div>
                   </button>
+
+                  <button
+                    className="mb-2 bg-white dark:bg-gray-700 p-1 border border-gray-400 rounded-lg hover:bg-indigo-500 hover:text-white z-0 text-xs mx-1"
+                    onClick={async () => {
+                      const data = await fetch(
+                        `/api/file/get?ref=${Reference}&file=${encodeURIComponent(
+                          ga.F_FILENAME
+                        )}`
+                      );
+                      var file = new Blob([await data.blob()], {
+                        type: "application/pdf",
+                      });
+                      var fileURL = URL.createObjectURL(file);
+                      window.open(fileURL);
+                    }}
+                  >
+                    Open
+                  </button>
+
                   {ga.F_UPLOADER == token.uid && (
-                    <div
-                      className="bg-white dark:bg-gray-700 border border-white dark:border-gray-700 rounded-full float-right absolute top-0 right-0 shadow items-center cursor-pointer hover:bg-indigo-500 z-10"
+                    <button
+                      className="mb-2 bg-white dark:bg-gray-700 p-1 border border-gray-400 rounded-lg hover:bg-indigo-500 hover:text-white z-0 text-xs"
                       onClick={() => handleFileHide(ga.F_ID)}
                     >
-                      <img
+                      Delete
+                      {/* <img
                         src="https://cdn-icons-png.flaticon.com/512/126/126497.png"
                         width="20"
                         height="20"
-                      />
-                    </div>
+                      /> */}
+                    </button>
                   )}
                 </div>
               );
