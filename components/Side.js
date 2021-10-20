@@ -16,7 +16,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
       <a
         className="h-16 d-flex align-items-center justify-content-center"
         onClick={() => {
-          setLoading(true);
+          if(router.asPath!='/dashboard') {
+            setLoading(true);
+          }
           router.push("/dashboard");
         }}
       >
@@ -32,11 +34,13 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
       <hr className="border-t border-blue-500 mx-3 my-1" />
 
       {/* <!-- Nav Item --> */}
-      <li className={`nav-item ${router.pathname == "/dashboard" && "active"}`}>
+      <li className={`nav-item ${router.asPath == "/dashboard" ? "active" : 'inactive'}`}>
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            setLoading(true);
+            if(router.asPath!='/dashboard') {
+              setLoading(true);
+            }
             router.push("/dashboard");
           }}
         >
@@ -55,13 +59,15 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
 
       <li
         className={`nav-item ${
-          router.pathname.substring(1, 11) == "request" && "active"
+          router.asPath == "/request" ? "active" : 'inactive'
         }`}
       >
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            setLoading(true);
+            if(router.asPath!='/request') {
+              setLoading(true);
+            }
             router.push("/request");
           }}
         >
@@ -78,7 +84,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            setLoading(true);
+            if(router.asPath!='/forwarding/oim') {
+              setLoading(true);
+            }
             router.push("/forwarding/oim");
           }}
         >
@@ -95,7 +103,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            setLoading(true);
+            if(router.asPath!='/forwarding/oex') {
+              setLoading(true);
+            }
             router.push("/forwarding/oex");
           }}
         >
@@ -112,7 +122,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            setLoading(true);
+            if(router.asPath!='/forwarding/aim') {
+              setLoading(true);
+            }
             router.push("/forwarding/aim");
           }}
         >
@@ -129,7 +141,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            setLoading(true);
+            if(router.asPath!='/forwarding/aex') {
+              setLoading(true);
+            }
             router.push("/forwarding/aex");
           }}
         >
@@ -146,7 +160,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            setLoading(true);
+            if(router.asPath!='/forwarding/other') {
+              setLoading(true);
+            }
             router.push("/forwarding/other");
           }}
         >
@@ -165,7 +181,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
           <a
             className="nav-link hover:no-underline"
             onClick={() => {
-              setLoading(true);
+              if(router.asPath!='/forwarding/trucking') {
+                setLoading(true);
+              }
               router.push("/forwarding/trucking");
             }}
           >
@@ -185,7 +203,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            setLoading(true);
+            if(router.asPath!='/board') {
+              setLoading(true);
+            }
             router.push("/board");
           }}
         >
@@ -197,13 +217,15 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
       {Token.admin > 5 && (
         <li
           className={`nav-item ${
-            router.pathname.substring(1, 11) == "manage" && "active"
+            router.asPath == "/manage" && "active"
           }`}
         >
           <a
             className="nav-link hover:no-underline"
             onClick={() => {
-              setLoading(true);
+              if(router.asPath!='/manage') {
+                setLoading(true);
+              }
               router.push("/manage");
             }}
           >
@@ -222,7 +244,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
           <a
             className="nav-link hover:no-underline"
             onClick={() => {
-              setLoading(true);
+              if(router.asPath!='/accounting') {
+                setLoading(true);
+              }
               router.push("/accounting");
             }}
           >
@@ -256,7 +280,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
                 <a
                   className="collapse-item"
                   onClick={() => {
-                    setLoading(true);
+                    if(router.asPath!='/statistic/custom') {
+                      setLoading(true);
+                    }
                     router.push("/statistic/custom");
                   }}
                 >
@@ -266,7 +292,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
                 <a
                   className="collapse-item"
                   onClick={() => {
-                    setLoading(true);
+                    if(router.asPath!='/statistic/house') {
+                      setLoading(true);
+                    }
                     router.push("/statistic/house");
                   }}
                 >
@@ -276,7 +304,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
                 <a
                   className="collapse-item"
                   onClick={() => {
-                    setLoading(true);
+                    if(router.asPath!='/statistic/container') {
+                      setLoading(true);
+                    }
                     router.push("/statistic/container");
                   }}
                 >
@@ -290,7 +320,9 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
               <a
                 className="nav-link hover:no-underline"
                 onClick={() => {
-                  setLoading(true);
+                  if(router.asPath!='/hr') {
+                    setLoading(true);
+                  }
                   router.push("/hr");
                 }}
               >
