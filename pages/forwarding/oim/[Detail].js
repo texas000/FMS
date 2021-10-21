@@ -224,6 +224,23 @@ const Detail = ({ token, Reference }) => {
 
   async function handleAccountPayableRequest() {
     setSubmitLoading(true);
+    if (apRequested) {
+      // Check if the current request has accounting approved, director approved, or requested
+      const approved = apRequested.map((ga) => {
+        if (ga.Title == selectedPayment.F_InvoiceNo) {
+          if (ga.Status == 121 || ga.Status == 111 || ga.Status == 101) {
+            return true;
+          }
+        }
+      });
+      const disabled = approved.includes(true);
+      if (disabled) {
+        alert(`Invoice ${selectedPayment.F_InvoiceNo} has already requested.`);
+        setSelectedPayment(false);
+        setSubmitLoading(false);
+        return;
+      }
+    }
     const sure = confirm(
       `Are you sure you want to request for Account Payable ${selectedPayment.F_InvoiceNo}?`
     );
