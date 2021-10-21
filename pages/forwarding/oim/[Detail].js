@@ -32,17 +32,21 @@ const Detail = ({ token, Reference }) => {
   if (typeof window !== "undefined") {
     var arr = [];
     var history = localStorage.getItem("pageHistory");
-    if (history == null) {
-      arr.unshift({ path: router.asPath, ref: Reference });
-      localStorage.setItem("pageHistory", JSON.stringify(arr));
-    } else {
-      arr = JSON.parse(history);
-      // If the page history is exist, check the most recent history
-      // If the reference is same as current reference, do not store data
-      if (arr[0].ref != Reference) {
+    try {
+      if (history == null) {
         arr.unshift({ path: router.asPath, ref: Reference });
         localStorage.setItem("pageHistory", JSON.stringify(arr));
+      } else {
+        arr = JSON.parse(history);
+        // If the page history is exist, check the most recent history
+        // If the reference is same as current reference, do not store data
+        if (arr[0].ref != Reference) {
+          arr.unshift({ path: router.asPath, ref: Reference });
+          localStorage.setItem("pageHistory", JSON.stringify(arr));
+        }
       }
+    } catch (err) {
+      console.log(err);
     }
   }
   const { data } = useSWR(`/api/forwarding/oim/detail?ref=${Reference}`);
@@ -90,6 +94,18 @@ const Detail = ({ token, Reference }) => {
   async function handleInvoiceRequest() {
     // Set submit loading to be true
     setSubmitLoading(true);
+    const approved = invoiceRequested[0].map((ga) => {
+      if (ga.STATUS == 111 || ga.STATUS == 101) {
+        return true;
+      }
+    });
+    let disabled = approved.includes(true);
+    if (disabled) {
+      alert(`Invoice ${selectedPayment.F_InvoiceNo} has already requested`);
+      setSelectedPayment(false);
+      setSubmitLoading(false);
+      return;
+    }
     const sure = confirm(
       `Are you sure you want to request for invoice ${selectedPayment.F_InvoiceNo}?`
     );
@@ -167,6 +183,19 @@ const Detail = ({ token, Reference }) => {
 
   async function handleCreditDebitRequest() {
     setSubmitLoading(true);
+
+    const approved = crdrRequested[0].map((ga) => {
+      if (ga.STATUS == 111 || ga.STATUS == 101) {
+        return true;
+      }
+    });
+    let disabled = approved.includes(true);
+    if (disabled) {
+      alert(`Credit Debit ${selectedPayment.F_CrDbNo} has already requested`);
+      setSelectedPayment(false);
+      setSubmitLoading(false);
+      return;
+    }
     const sure = confirm(
       `Are you sure you want to request for Credit Debit ${selectedPayment.F_CrDbNo}?`
     );

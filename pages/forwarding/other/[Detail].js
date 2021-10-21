@@ -92,6 +92,18 @@ const Detail = ({ token, Reference }) => {
   async function handleInvoiceRequest() {
     // Set submit loading to be true
     setSubmitLoading(true);
+    const approved = invoiceRequested[0].map((ga) => {
+      if (ga.STATUS == 111 || ga.STATUS == 101) {
+        return true;
+      }
+    });
+    let disabled = approved.includes(true);
+    if (disabled) {
+      alert(`Invoice ${selectedPayment.F_InvoiceNo} has already requested`);
+      setSelectedPayment(false);
+      setSubmitLoading(false);
+      return;
+    }
     const sure = confirm(
       `Are you sure you want to request for invoice ${selectedPayment.F_InvoiceNo}?`
     );
@@ -169,6 +181,18 @@ const Detail = ({ token, Reference }) => {
 
   async function handleCreditDebitRequest() {
     setSubmitLoading(true);
+    const approved = crdrRequested[0].map((ga) => {
+      if (ga.STATUS == 111 || ga.STATUS == 101) {
+        return true;
+      }
+    });
+    let disabled = approved.includes(true);
+    if (disabled) {
+      alert(`Credit Debit ${selectedPayment.F_CrDbNo} has already requested`);
+      setSelectedPayment(false);
+      setSubmitLoading(false);
+      return;
+    }
     const sure = confirm(
       `Are you sure you want to request for Credit Debit ${selectedPayment.F_CrDbNo}?`
     );
