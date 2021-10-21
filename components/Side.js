@@ -16,7 +16,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
       <a
         className="h-16 d-flex align-items-center justify-content-center"
         onClick={() => {
-          if(router.asPath!='/dashboard') {
+          if (router.asPath != "/dashboard") {
             setLoading(true);
           }
           router.push("/dashboard");
@@ -34,11 +34,15 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
       <hr className="border-t border-blue-500 mx-3 my-1" />
 
       {/* <!-- Nav Item --> */}
-      <li className={`nav-item ${router.asPath == "/dashboard" ? "active" : 'inactive'}`}>
+      <li
+        className={`nav-item ${
+          router.asPath == "/dashboard" ? "active" : "inactive"
+        }`}
+      >
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            if(router.asPath!='/dashboard') {
+            if (router.asPath != "/dashboard") {
               setLoading(true);
             }
             router.push("/dashboard");
@@ -59,13 +63,13 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
 
       <li
         className={`nav-item ${
-          router.asPath == "/request" ? "active" : 'inactive'
+          router.asPath == "/request" ? "active" : "inactive"
         }`}
       >
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            if(router.asPath!='/request') {
+            if (router.asPath != "/request") {
               setLoading(true);
             }
             router.push("/request");
@@ -84,7 +88,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            if(router.asPath!='/forwarding/oim') {
+            if (router.asPath != "/forwarding/oim") {
               setLoading(true);
             }
             router.push("/forwarding/oim");
@@ -103,7 +107,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            if(router.asPath!='/forwarding/oex') {
+            if (router.asPath != "/forwarding/oex") {
               setLoading(true);
             }
             router.push("/forwarding/oex");
@@ -122,7 +126,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            if(router.asPath!='/forwarding/aim') {
+            if (router.asPath != "/forwarding/aim") {
               setLoading(true);
             }
             router.push("/forwarding/aim");
@@ -141,7 +145,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            if(router.asPath!='/forwarding/aex') {
+            if (router.asPath != "/forwarding/aex") {
               setLoading(true);
             }
             router.push("/forwarding/aex");
@@ -160,7 +164,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            if(router.asPath!='/forwarding/other') {
+            if (router.asPath != "/forwarding/other") {
               setLoading(true);
             }
             router.push("/forwarding/other");
@@ -181,7 +185,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
           <a
             className="nav-link hover:no-underline"
             onClick={() => {
-              if(router.asPath!='/forwarding/trucking') {
+              if (router.asPath != "/forwarding/trucking") {
                 setLoading(true);
               }
               router.push("/forwarding/trucking");
@@ -203,7 +207,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
         <a
           className="nav-link hover:no-underline"
           onClick={() => {
-            if(router.asPath!='/board') {
+            if (router.asPath != "/board") {
               setLoading(true);
             }
             router.push("/board");
@@ -215,15 +219,11 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
       </li>
 
       {Token.admin > 5 && (
-        <li
-          className={`nav-item ${
-            router.asPath == "/manage" && "active"
-          }`}
-        >
+        <li className={`nav-item ${router.asPath == "/manage" && "active"}`}>
           <a
             className="nav-link hover:no-underline"
             onClick={() => {
-              if(router.asPath!='/manage') {
+              if (router.asPath != "/manage") {
                 setLoading(true);
               }
               router.push("/manage");
@@ -244,7 +244,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
           <a
             className="nav-link hover:no-underline"
             onClick={() => {
-              if(router.asPath!='/accounting') {
+              if (router.asPath != "/accounting") {
                 setLoading(true);
               }
               router.push("/accounting");
@@ -280,7 +280,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
                 <a
                   className="collapse-item"
                   onClick={() => {
-                    if(router.asPath!='/statistic/custom') {
+                    if (router.asPath != "/statistic/custom") {
                       setLoading(true);
                     }
                     router.push("/statistic/custom");
@@ -292,7 +292,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
                 <a
                   className="collapse-item"
                   onClick={() => {
-                    if(router.asPath!='/statistic/house') {
+                    if (router.asPath != "/statistic/house") {
                       setLoading(true);
                     }
                     router.push("/statistic/house");
@@ -304,7 +304,7 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
                 <a
                   className="collapse-item"
                   onClick={() => {
-                    if(router.asPath!='/statistic/container') {
+                    if (router.asPath != "/statistic/container") {
                       setLoading(true);
                     }
                     router.push("/statistic/container");
@@ -315,12 +315,12 @@ const Sidebar = ({ Token, toggle, setToggle, setLoading }) => {
               </div>
             </div>
           </li>
-          {Token.admin === 9 && (
+          {Token.admin > 5 && (
             <li className={`nav-item ${router.pathname == "/hr" && "active"}`}>
               <a
                 className="nav-link hover:no-underline"
                 onClick={() => {
-                  if(router.asPath!='/hr') {
+                  if (router.asPath != "/hr") {
                     setLoading(true);
                   }
                   router.push("/hr");

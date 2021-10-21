@@ -199,10 +199,30 @@ export default function search(props) {
                     {ga.CONTACT.map((na) => (
                       <li
                         key={na.EMAIL}
-                        className="ml-3 tracking-wider list-disc uppercase hover:text-red-500 cursor-pointer"
-                        onClick={() => handleDeleteContact(na)}
+                        className="ml-3 tracking-wider list-disc uppercase flex justify-between"
                       >
-                        &#60;{na.NAME}&#62; {na.EMAIL}
+                        <div>
+                          {na.NAME} &#60;{na.EMAIL}&#62;
+                        </div>
+                        <div>
+                          <button
+                            onClick={() =>
+                              window.open(
+                                `mailto:"${na.NAME}" <${na.EMAIL}>`,
+                                "_blank"
+                              )
+                            }
+                            className="bg-gray-200 mx-1 px-1 hover:bg-indigo-600 hover:text-white rounded"
+                          >
+                            Mail
+                          </button>
+                          <button
+                            className="bg-gray-200 px-1 hover:bg-indigo-600 hover:text-white rounded"
+                            onClick={() => handleDeleteContact(na)}
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </li>
                     ))}
                   </ul>

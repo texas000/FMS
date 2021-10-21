@@ -9,9 +9,13 @@ export default async (req, res) => {
     res.send("ACCESS DENIED");
     return;
   }
-  // var qry = `SELECT DISTINCT COMPANY_NAME, COMPANY_ID FROM T_MEMBER_COMPANY WHERE USER_ID='${token.uid}';`;
+  const { id } = req.query;
   var qry = `SELECT DISTINCT COMPANY_NAME, COMPANY_ID FROM T_MEMBER_COMPANY WHERE USER_ID='${token.uid}';
   SELECT * FROM T_COMPANY_CONTACT WHERE UPDATE_USER='${token.uid}';`;
+  if (id) {
+    qry = `SELECT DISTINCT COMPANY_NAME, COMPANY_ID FROM T_MEMBER_COMPANY WHERE USER_ID='${id}';
+    SELECT * FROM T_COMPANY_CONTACT WHERE UPDATE_USER='${id}';`;
+  }
   let pool = new sql.ConnectionPool(process.env.SERVER21);
   try {
     await pool.connect();

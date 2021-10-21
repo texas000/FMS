@@ -9,25 +9,17 @@ export default async (req, res) => {
     res.send("ACCESS DENIED");
     return;
   }
-  const { id, company, pic } = req.query;
-  if (!company || !id) {
+  const { company } = req.query;
+  if (!company) {
     res.send("INVALID ENTRY");
     return;
   }
   let pool = new sql.ConnectionPool(process.env.SERVER21);
-  var safeCompany = company.replace(/'/g, "''");
-  var query = `INSERT INTO T_MEMBER_COMPANY VALUES('${
-    token.uid
-  }','${id}',GETDATE(), N'${decodeURIComponent(safeCompany)}');`;
-  if (pic) {
-    query = `INSERT INTO T_MEMBER_COMPANY VALUES('${pic}','${id}',GETDATE(), N'${decodeURIComponent(
-      safeCompany
-    )}');`;
-  }
+  var qry = `SELECT * FROM T_COMPANY_CONTACT WHERE COMPANY_ID='${company}';`;
   try {
     await pool.connect();
-    let result = await pool.request().query(query);
-    res.send(result);
+    let result = await pool.request().query(qry);
+    res.send(result.recordset);
   } catch (err) {
     res.send(err);
   }
