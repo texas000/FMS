@@ -88,6 +88,9 @@ export default function request(props) {
         <span className="text-green-500 font-bold">ACCOUNTING APPROVED</span>
       );
     }
+    if (data == 131) {
+      return <span className="text-green-500 font-bold">CEO APPROVED</span>;
+    }
   };
 
   const selectOptions = {
@@ -96,6 +99,7 @@ export default function request(props) {
     111: "DIRECTOR",
     120: "ACCOUNTING REJECTED",
     121: "APPROVED",
+    131: "APPROVED BY CEO",
   };
 
   const selectInvoiceOptions = {
@@ -151,7 +155,7 @@ export default function request(props) {
       formatter: (cell) => (
         <div
           className={`rounded text-xs rounded text-center ${
-            cell == 121
+            cell == 121 || 131
               ? "bg-blue-500 text-white"
               : cell == 101
               ? "bg-white border border-gray-800 text-gray-500"

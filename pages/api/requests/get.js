@@ -13,26 +13,23 @@ export default async (req, res) => {
   var query;
   // OPERATOR
   if (token.admin < 6) {
-    query = `SELECT *, (SELECT F_FILENAME FROM T_FILE F WHERE F.F_ID=Attachment) as F1,
-        (SELECT F_FILENAME FROM T_FILE F WHERE F.F_ID=Attachment2) as F2, 
+    query = `SELECT *, 
         (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CreateBy) as Creator,
 		(SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=ModifyBy) as Modifier FROM T_REQUEST 
         WHERE CreateBy='${token.uid}' ORDER BY CreateAt DESC`;
   }
   // IAN
   if (token.admin === 6) {
-    query = `SELECT TOP 1000 *, (SELECT F_FILENAME FROM T_FILE F WHERE F.F_ID=Attachment) as F1,
-        (SELECT F_FILENAME FROM T_FILE F WHERE F.F_ID=Attachment2) as F2, 
+    query = `SELECT TOP 1000 *,
         (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CreateBy) as Creator,
-		(SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=ModifyBy) as Modifier FROM T_REQUEST 
+		(SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=ModifyBy) as Modifier FROM T_REQUEST WHERE Status!='131'
         ORDER BY CreateAt DESC`;
   }
   // ACCOUNTING
   if (token.admin > 6) {
-    query = `SELECT TOP 1000 *, (SELECT F_FILENAME FROM T_FILE F WHERE F.F_ID=Attachment) as F1,
-        (SELECT F_FILENAME FROM T_FILE F WHERE F.F_ID=Attachment2) as F2, 
+    query = `SELECT TOP 1000 *,
         (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CreateBy) as Creator,
-		(SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=ModifyBy) as Modifier FROM T_REQUEST 
+		(SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=ModifyBy) as Modifier FROM T_REQUEST WHERE Status!='131'
         ORDER BY CreateAt DESC`;
   }
   if (ref) {
