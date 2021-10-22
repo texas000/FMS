@@ -155,7 +155,7 @@ export default function request(props) {
       formatter: (cell) => (
         <div
           className={`rounded text-xs rounded text-center ${
-            cell == 121 || 131
+            cell == (121 || 131)
               ? "bg-blue-500 text-white"
               : cell == 101
               ? "bg-white border border-gray-800 text-gray-500"

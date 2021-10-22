@@ -62,6 +62,7 @@ export const Navigation = ({ token }) => {
   const [selectedAccountPayable, setSelectedAccountPayable] = useState([]);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [checkDetails, setCheckDetails] = useState([]);
 
   const options = distinctVendor
@@ -309,6 +310,7 @@ export const Navigation = ({ token }) => {
 
   async function handleAccountPayableSummary() {
     // Assume it is all T_APHD
+    setSubmitLoading(true);
     const res = await fetch("/api/requests/getMultipleAPHD", {
       method: "POST",
       body: JSON.stringify({
@@ -316,19 +318,23 @@ export const Navigation = ({ token }) => {
         vendor: selectedAccountPayable.map((ga) => ga.TBID),
       }),
     });
+
     if (res.status === 200) {
       const blob = await res.blob();
       var file = new Blob([blob], {
         type: blob.type,
       });
       var fileURL = URL.createObjectURL(file);
+      setSubmitLoading(false);
       window.open(fileURL);
     } else {
       alert(await res.text());
+      setSubmitLoading(false);
     }
   }
 
   async function handleUpdateStatus() {
+    setSubmitLoading(true);
     const res = await fetch("/api/requests/updateMultipleAPstatus", {
       method: "POST",
       body: JSON.stringify({
@@ -337,24 +343,15 @@ export const Navigation = ({ token }) => {
     });
     if (res.status == 200) {
       alert("Updated Successfully!");
+      setSubmitLoading(false);
     } else {
       alert(res.status);
+      setSubmitLoading(false);
     }
   }
 
-  var loading = false;
-  if (menu === 1) {
-    loading = !checkList;
-  }
-  if (menu === 2) {
-    loading = !checkList;
-  }
-  if (menu === 3) {
-    loading = !distinctVendor;
-  }
-
   return (
-    <Layout TOKEN={token} TITLE="Accounting" LOADING={loading}>
+    <Layout TOKEN={token} TITLE="Accounting" LOADING={submitLoading}>
       <Navbar
         fixedToTop={false}
         className="my-1 shadow card"
