@@ -38,7 +38,7 @@ export default function blank({ Cookie }) {
     } else {
       //If user is not authorized, then redirect to dashboard page
       alert("YOU ARE NOT AUTORIZED TO ACCESS");
-      router.push("/dashboard");
+      router.push("/");
     }
   }, []);
 

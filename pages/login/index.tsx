@@ -85,7 +85,7 @@ const Login = ({ Firebase, AccessKey }) => {
             const json = jwt.decode(token) as { [key: string]: string };
             Cookie.set("jamesworldwidetoken", token);
             setSuccess(`${json.username.toUpperCase()}, PLEASE WAIT...`);
-            router.push({ pathname: "/dashboard" });
+            router.push({ pathname: "/" });
             // After fetch to slack, redirect to dashboard
             // if (fetchToSlack.status === 200) {
             //   setMessage("");
@@ -166,7 +166,6 @@ const Login = ({ Firebase, AccessKey }) => {
 
       // If the secret code is matched with access key, then grant access
       if (res.secretAdminCode === AccessKey) {
-        router.push({ pathname: "/dashboard" });
         const fetchToSlack = await fetch("/api/slack/sendMessage", {
           method: "POST",
           headers: {
@@ -177,10 +176,10 @@ const Login = ({ Firebase, AccessKey }) => {
           }),
         });
         if (fetchToSlack.status === 200) {
-          router.push({ pathname: "/dashboard" });
+          router.push({ pathname: "/" });
         } else {
           console.log("feching to slack message is failed");
-          router.push({ pathname: "/dashboard" });
+          router.push({ pathname: "/" });
         }
       } else {
         alert("Account is suspended");

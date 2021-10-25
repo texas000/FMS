@@ -2,19 +2,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import sql from "mssql";
 import jwt from "jsonwebtoken";
 
-const SQLconfig = {
-  server: process.env.JWDB_SVR,
-  database: process.env.JWDB_3,
-  user: process.env.JWDB_USER,
-  password: process.env.JWDB_PASS,
-  options: {
-    appName: "test",
-    encrypt: false,
-    enableArithAbort: false,
-    database: process.env.JWDB_2,
-  },
-};
-
 export default function (req: NextApiRequest, res: NextApiResponse) {
   return new Promise(async (resolve) => {
     if (!req.body) {
@@ -22,8 +9,7 @@ export default function (req: NextApiRequest, res: NextApiResponse) {
     }
 
     const { email, displayName, photoURL } = req.body;
-
-    const pool = new sql.ConnectionPool(SQLconfig);
+    const pool = new sql.ConnectionPool(process.env.SERVER21);
     pool.on("error", (err) => {
       console.log("sql error", err);
     });

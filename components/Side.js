@@ -13,10 +13,10 @@ const Sidebar = ({ Token, toggle, setLoading }) => {
       {/* <!-- JW LOGO --> */}
       <a
         onClick={() => {
-          if (router.asPath != "/dashboard") {
+          if (router.asPath != "/") {
             setLoading(true);
           }
-          router.push("/dashboard");
+          router.push("/");
         }}
       >
         <img
@@ -33,15 +33,15 @@ const Sidebar = ({ Token, toggle, setLoading }) => {
         {/* DASHBOARD */}
         <li
           className={`flex flex-column gap-2 text-xs cursor-pointer hover:text-white hover:opacity-100 ${
-            router.asPath == "/dashboard"
+            router.asPath == "/"
               ? "text-white opacity-100 font-bold"
               : "text-gray-200 opacity-75"
           }`}
           onClick={() => {
-            if (router.asPath != "/dashboard") {
+            if (router.asPath != "/") {
               setLoading(true);
             }
-            router.push("/dashboard");
+            router.push("/");
           }}
         >
           <i className="fa fa-clipboard mx-auto"></i>

@@ -35,7 +35,7 @@ export default function blank({ Cookie, Company }) {
       };
     } else {
       alert("YOU ARE NOT AUTORIZED TO ACCESS");
-      router.push("/dashboard");
+      router.push("/");
     }
   }, []);
 

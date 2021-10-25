@@ -1,5 +1,5 @@
 const CACHE_NAME = "simple-cache-v1";
-const urlsToCache = ["/dashboard"];
+const urlsToCache = ["/"];
 
 self.addEventListener("install", (event) => {
   const preLoaded = caches
@@ -14,8 +14,8 @@ self.addEventListener("fetch", (event) => {
     .then((match) => match || fetch(event.request));
   event.respondWith(response);
 });
-
-self.addEventListener("message", (event) => {
+const channel = new BroadcastChannel("sw-messages");
+channel.addEventListener("message", (event) => {
   if (event.data) {
     showLocalNotification("JWI MESSAGE", event.data, self.registration);
   } else {

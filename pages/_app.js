@@ -27,9 +27,9 @@ function MyApp({ Component, pageProps }) {
             console.log(`The service worker sent me a message: ${event.data}`);
           });
 
-          navigator.serviceWorker.ready.then((registration) => {
-            registration.active.postMessage("Hi service worker");
-          });
+          // navigator.serviceWorker.ready.then((registration) => {
+          //   registration.active.postMessage("Hi service worker");
+          // });
         },
         /*catch*/ function (error) {
           console.log("Service worker registration failed:", error);
