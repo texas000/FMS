@@ -36,7 +36,13 @@ export default function dashboard(props) {
   const { data } = useSWR("/api/dashboard/list");
   const { data: invoice } = useSWR("/api/dashboard/invoice");
   const router = useRouter();
+  useEffect(() => {}, []);
   const [loading, setLoading] = useState(false);
+
+  function sendMsg(e) {
+    const channel = new BroadcastChannel("sw-messages");
+    channel.postMessage({ body: e, icon: "/image/JLOGO.png" });
+  }
   return (
     <Layout TOKEN={props.token} TITLE="Dashboard" LOADING={!data || loading}>
       {/* <Notification
@@ -60,6 +66,17 @@ export default function dashboard(props) {
           {invoice && invoice.length && usdFormat(invoice[0].pending)}
         </a>
       </div>
+      {props.token.uid == 14 && (
+        <input
+          type="text"
+          className="p-2 m-2"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              sendMsg(e.target.value);
+            }
+          }}
+        />
+      )}
       {/* RECENT LIST FREIGHT */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         {data && data.length && (
@@ -105,7 +122,8 @@ export default function dashboard(props) {
                           className={`font-weight-bold ${
                             moment()
                               .startOf("day")
-                              .diff(moment(ga.F_ETA).utc(), "days") < 0
+                              .diff(moment(new Date(ga.F_ETA)).utc(), "days") <
+                            0
                               ? "text-danger"
                               : "text-primary"
                           }`}
@@ -166,7 +184,8 @@ export default function dashboard(props) {
                           className={`font-weight-bold ${
                             moment()
                               .startOf("day")
-                              .diff(moment(ga.F_ETA).utc(), "days") < 0
+                              .diff(moment(new Date(ga.F_ETA)).utc(), "days") <
+                            0
                               ? "text-danger"
                               : "text-primary"
                           }`}
@@ -227,7 +246,8 @@ export default function dashboard(props) {
                           className={`font-weight-bold ${
                             moment()
                               .startOf("day")
-                              .diff(moment(ga.F_ETA).utc(), "days") < 0
+                              .diff(moment(new Date(ga.F_ETA)).utc(), "days") <
+                            0
                               ? "text-danger"
                               : "text-primary"
                           }`}
@@ -288,7 +308,8 @@ export default function dashboard(props) {
                           className={`font-weight-bold ${
                             moment()
                               .startOf("day")
-                              .diff(moment(ga.F_ETA).utc(), "days") < 0
+                              .diff(moment(new Date(ga.F_ETA)).utc(), "days") <
+                            0
                               ? "text-danger"
                               : "text-primary"
                           }`}
