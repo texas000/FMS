@@ -1,10 +1,10 @@
 const CACHE_NAME = "simple-cache-v1";
-const urlsToCache = ["/"];
+const CACHE_FILES = ["/", "/login"];
 
 self.addEventListener("install", (event) => {
   const preLoaded = caches
     .open(CACHE_NAME)
-    .then((cache) => cache.addAll(urlsToCache));
+    .then((cache) => cache.addAll(CACHE_FILES));
   event.waitUntil(preLoaded);
 });
 
