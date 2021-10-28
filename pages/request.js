@@ -606,8 +606,26 @@ export default function request(props) {
                   >
                     {({ blob, url, loading, error }) => (
                       <a
-                        href={url}
-                        target="__blank"
+                        onClick={async () => {
+                          // Open the request form first
+                          window.open(url, "_blank");
+                          // Open following backup documents
+                          try {
+                            ap.Files.map(async (ga) => {
+                              const data = await fetch(
+                                `/api/file/get?ref=${
+                                  selected.RefNo
+                                }&file=${encodeURIComponent(ga.FILENAME)}`
+                              );
+                              const blob = await data.blob();
+                              var file = new Blob([blob], { type: blob.type });
+                              var fileURL = URL.createObjectURL(file);
+                              window.open(fileURL, "_blank");
+                            });
+                          } catch (err) {
+                            console.log(err);
+                          }
+                        }}
                         style={{ textDecoration: "none" }}
                       >
                         <Tag

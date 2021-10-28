@@ -71,16 +71,17 @@ const Index = ({ token }) => {
   };
 
   async function imageHandler() {
-    setLoading(true);
     const input = document.createElement("input");
 
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
     input.click();
+    const selection = quill.current.getEditorSelection();
 
     input.onchange = async () => {
       var file = input.files[0];
       if (file) {
+        setLoading(true);
         const formData = new FormData();
         formData.append("userPhoto", file);
         try {
@@ -96,15 +97,15 @@ const Index = ({ token }) => {
             );
           });
 
-          const range = quill.current.getEditorSelection();
-          upload.then((ga) => {
+          upload.then(async (ga) => {
             setLoading(false);
             if (ga.status == 200) {
+              await quill.current.focus();
               console.log("image uploaded");
               quill.current
                 .getEditor()
                 .insertEmbed(
-                  range.index,
+                  selection.index,
                   "image",
                   `https://jwiusa.com/api/file/get?ref=board&file=${file.name}`
                 );
@@ -146,6 +147,9 @@ const Index = ({ token }) => {
     }),
     []
   );
+  // useEffect(() => {
+  //   console.log(quill.current.getEditorSelection());
+  // }, [quill]);
 
   return (
     <Layout TOKEN={token} TITLE="Board" LOADING={loading}>
