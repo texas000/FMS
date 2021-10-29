@@ -8,6 +8,8 @@ import { useRouter } from "next/router";
 import Notification from "../components/Toaster";
 import Checkout from "../components/Dashboard/Payment";
 import usdFormat from "../lib/currencyFormat";
+import axios from "axios";
+import Head from "next/head";
 
 export async function getServerSideProps({ req }) {
   const cookies = cookie.parse(
@@ -37,10 +39,48 @@ export default function dashboard(props) {
   useEffect(() => {}, []);
   const [loading, setLoading] = useState(false);
 
-  function sendMsg(e) {
-    const channel = new BroadcastChannel("sw-messages");
-    channel.postMessage({ body: e, icon: "/image/JLOGO.png" });
+  async function sendMsg(e) {
+    // const channel = new BroadcastChannel("sw-messages");
+    // channel.postMessage({ body: e, icon: "/image/JLOGO.png" });
+    const fet = await fetch("/api/message/oneSignalPostNew", {
+      method: "POST",
+      body: e,
+    });
   }
+  // const handleFileUpload = async (e) => {
+  //   var form = new FormData();
+  //   form.append("userPhoto", e.target.files[0]);
+  //   await axios({
+  //     url: "http://jameswi.com:49991/api/upload/test",
+  //     method: "POST",
+  //     data: form,
+  //   })
+  //     .then((res) => {
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+
+  useEffect(() => {
+    window.OneSignal = window.OneSignal || [];
+    OneSignal.push(function () {
+      OneSignal.init({
+        appId: "4db5fd76-1074-4e1c-ad4b-9c365fea2cf6",
+        safari_web_id:
+          "web.onesignal.auto.215a98b6-2876-4938-a894-401760de5038",
+        notifyButton: {
+          enable: true,
+        },
+      });
+    });
+
+    return () => {
+      window.OneSignal = undefined;
+    };
+  }, []);
+
   return (
     <Layout TOKEN={props.token} TITLE="Dashboard" LOADING={!data || loading}>
       {/* <Notification
@@ -65,15 +105,18 @@ export default function dashboard(props) {
         </a>
       </div>
       {props.token.uid == 14 && (
-        <input
-          type="text"
-          className="p-2 m-2"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              sendMsg(e.target.value);
-            }
-          }}
-        />
+        <>
+          <input
+            type="text"
+            className="p-2 m-2"
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                sendMsg(e.target.value);
+              }
+            }}
+          />
+          {/* <input type="file" onChange={handleFileUpload} /> */}
+        </>
       )}
       {/* RECENT LIST FREIGHT */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">

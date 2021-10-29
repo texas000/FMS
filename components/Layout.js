@@ -87,6 +87,10 @@ const Layout = (props) => {
           name="viewport"
           content="width=device-width, initial-scale=1.0, viewport-fit=cover"
         />
+        <script
+          src="https://cdn.onesignal.com/sdks/OneSignalSDK.js"
+          async=""
+        ></script>
         {/* <link href="/font/Roboto-Regular.ttf" rel="stylesheet"></link> */}
       </Head>
 
