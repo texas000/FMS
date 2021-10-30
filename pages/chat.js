@@ -47,7 +47,8 @@ export default function search(props) {
   const { data: message, mutate: getMessage } = useSWR(
     props.selected
       ? `/api/message/getSingleUserChat?id=${props.selected}`
-      : null
+      : null,
+    { refreshInterval: 1100 }
   );
   useEffect(() => {
     getMessage();
@@ -126,14 +127,8 @@ export default function search(props) {
                           : "hover:bg-indigo-500 hover:text-white cursor-pointer"
                       }
                       onClick={() => {
-                        // if (ga.F_SlackID) {
                         setSelectedUser(ga);
-                        // }
                         router.push(`/chat?user=${ga.F_ID}`);
-                        setTimeout(() => {
-                          console.log(messageBottom.current);
-                          // scrollToBottom();
-                        }, 100);
                       }}
                     >
                       <td className="px-6 py-2 whitespace-nowrap">
