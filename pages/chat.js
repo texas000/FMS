@@ -42,7 +42,7 @@ export default function search(props) {
   const { data: users } = useSWR("/api/message/getChatableUser");
 
   const [selectedUser, setSelectedUser] = useState(false);
-  const [msg, setMsg] = useState(false);
+  const [msg, setMsg] = useState("");
 
   const { data: message, mutate: getMessage } = useSWR(
     props.selected
@@ -50,6 +50,7 @@ export default function search(props) {
       : null
   );
   useEffect(() => {
+    getMessage();
     setTimeout(() => {
       scrollToBottom();
     }, 100);
@@ -59,7 +60,7 @@ export default function search(props) {
       alert("PLEASE SELECT USER TO SEND MESSAGE");
       return;
     }
-    if (!msg) {
+    if (!msg || msg == "") {
       alert("PLEASE TYPE SOMETHING");
       return;
     }
@@ -72,6 +73,9 @@ export default function search(props) {
     });
     if (postMsg.status == 200) {
       getMessage();
+      setMsg("");
+    } else {
+      alert(postMsg.status);
     }
     if (selectedUser.F_SlackID) {
       await fetch(
@@ -233,8 +237,14 @@ export default function search(props) {
                   type="text"
                   placeholder="Write Something"
                   className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-full py-3"
+                  value={msg}
                   onChange={(e) => {
                     setMsg(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      sendMessage();
+                    }
                   }}
                 />
                 <div className="absolute right-0 items-center inset-y-0 hidden sm:flex">

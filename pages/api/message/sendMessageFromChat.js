@@ -15,8 +15,12 @@ export default async (req, res) => {
       await pool.connect();
       let result = await pool.request().query(
         `INSERT INTO T_MESSAGE VALUES
-            (N'${body.message}', '/chat?user=${token.uid}', GETDATE(), '${token.uid}');
-            INSERT INTO T_MESSAGE_RECIPIENT VALUES ('${body.sendto}', NULL, @@IDENTITY, 0);`
+            (N'${body.message.replace(/'/g, "''")}', '/chat?user=${
+          token.uid
+        }', GETDATE(), '${token.uid}');
+            INSERT INTO T_MESSAGE_RECIPIENT VALUES ('${
+              body.sendto
+            }', NULL, @@IDENTITY, 0);`
       );
       res.json(result.recordset);
     } catch (err) {
