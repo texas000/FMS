@@ -11,9 +11,11 @@ export default async (req, res) => {
   }
   let pool = new sql.ConnectionPool(process.env.SERVER21);
   const body = JSON.parse(req.body);
-  var qry = `UPDATE T_MEMBER SET F_FNAME='${
-    body.F_FNAME
-  }', F_LNAME='${body.F_LNAME.replace(
+
+  var qry = `UPDATE T_MEMBER SET F_FNAME='${body.F_FNAME.replace(
+    /'/g,
+    ""
+  )}', F_LNAME='${body.F_LNAME.replace(
     /'/g,
     ""
   )}', F_GROUP='${body.F_GROUP.replace(
@@ -25,19 +27,13 @@ export default async (req, res) => {
   )}', F_FSID='${body.F_FSID.replace(
     /'/g,
     ""
-  )}', F_STATUS='${body.F_STATUS.replace(
-    /'/g,
-    ""
-  )}', F_PhoneNumber='${body.F_PhoneNumber.replace(
-    /'/g,
-    ""
-  )}', F_Address='${body.F_Address.replace(
-    /'/g,
-    ""
-  )}', F_PersonalEmail='${body.F_PersonalEmail.replace(
-    /'/g,
-    ""
-  )}', F_UPDATEDATE=GETDATE() WHERE F_ID='${body.F_ID}';`;
+  )}', F_STATUS='${body.F_STATUS.replace(/'/g, "")}', F_PhoneNumber='${
+    body.F_PhoneNumber ? body.F_PhoneNumber.replace(/'/g, "") : ""
+  }', F_Address='${
+    body.F_Address ? body.F_Address.replace(/'/g, "") : ""
+  }', F_PersonalEmail='${
+    body.F_PersonalEmail ? body.F_PersonalEmail.replace(/'/g, "") : ""
+  }', F_UPDATEDATE=GETDATE() WHERE F_ID='${body.F_ID}';`;
   try {
     await pool.connect();
     let result = await pool.request().query(qry);
