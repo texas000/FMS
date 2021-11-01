@@ -166,6 +166,23 @@ const Sidebar = ({ Token, toggle, setLoading }) => {
           <i className="fa fa-bullhorn mx-auto"></i>
           <span className="mx-auto overflow-hidden">Board</span>
         </li>
+        {/* CHAT */}
+        <li
+          className={`flex flex-column gap-2 text-xs cursor-pointer hover:text-white hover:opacity-100 ${
+            router.pathname.substring(1, 5) == "chat"
+              ? "text-white opacity-100 font-bold"
+              : "text-gray-200 opacity-75"
+          }`}
+          onClick={() => {
+            if (router.asPath != "/chat") {
+              setLoading(true);
+            }
+            router.push("/chat");
+          }}
+        >
+          <i className="fa fa-comment mx-auto"></i>
+          <span className="mx-auto overflow-hidden">Chat</span>
+        </li>
         {/* AUTH HIGHER THAN OPERATOR */}
         {Token.admin > 4 && (
           <>
