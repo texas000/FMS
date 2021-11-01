@@ -51,6 +51,12 @@ export default function search(props) {
     { refreshInterval: 1100 }
   );
   useEffect(() => {
+    if (props.selected && users) {
+      const user = users.filter((user) => user.F_ID == props.selected);
+      if (user.length) {
+        setSelectedUser(user[0]);
+      }
+    }
     getMessage();
     setTimeout(() => {
       scrollToBottom();
@@ -86,7 +92,7 @@ export default function search(props) {
           body: JSON.stringify({
             english: msg,
             title: `MESSAGE FROM ${props.token.first}`,
-            url: `/chat?user?=${props.token.uid}`,
+            url: `/chat?user=${props.token.uid}`,
             to: selectedUser.F_SlackID,
           }),
         }
@@ -100,7 +106,6 @@ export default function search(props) {
       <div className="flex flex-sm-row justify-between">
         <h3 className="dark:text-white mb-3">Chat</h3>
       </div>
-
       <div className="grid grid-flow-col grid-cols-4 gap-4">
         <div className="col-span-1">
           <div className="card overflow-auto">

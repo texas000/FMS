@@ -1,5 +1,6 @@
 import { Dialog } from "@blueprintjs/core";
 import useSWR from "swr";
+import router from "next/router";
 
 export default function Contact({ setOpen, open }) {
   const { data } = useSWR("/api/dashboard/contacts");
@@ -32,9 +33,10 @@ export default function Contact({ setOpen, open }) {
                         : "bg-white dark:bg-gray-600"
                     } px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-2 sm:px-6 hover:text-white hover:bg-indigo-500 cursor-pointer`}
                     key={ga.F_ID}
-                    onClick={() =>
-                      window.open(`mailto:${ga.F_EMAIL}`, "_blank")
-                    }
+                    onClick={() => {
+                      router.push(`/chat?user=${ga.F_ID}`);
+                      setOpen(false);
+                    }}
                   >
                     <dt className="text-sm font-semibold">
                       {ga.F_FNAME} {ga.F_LNAME}
