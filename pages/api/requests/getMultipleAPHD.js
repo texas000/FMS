@@ -185,6 +185,9 @@ export default async (req, res) => {
             <Table data={result.recordset}>
               <TableHeader>
                 <TableCell style={styles.tableCell}>DESCRIPTION</TableCell>
+                <TableCell weighting={0.2} style={styles.tableCell}>
+                  REF
+                </TableCell>
                 <TableCell weighting={0.15} style={styles.tableCell}>
                   INVOICE
                 </TableCell>
@@ -202,6 +205,13 @@ export default async (req, res) => {
                 <DataTableCell
                   style={styles.dataCell}
                   getContent={(d) => d.F_Descript}
+                />
+                <DataTableCell
+                  weighting={0.2}
+                  style={styles.dataCell}
+                  getContent={(d) =>
+                    body.ref[body.vendor.findIndex((ga) => ga == d.F_ID)]
+                  }
                 />
                 <DataTableCell
                   weighting={0.15}

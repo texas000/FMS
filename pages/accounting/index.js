@@ -316,6 +316,7 @@ export const Navigation = ({ token }) => {
       body: JSON.stringify({
         selectedVendor,
         vendor: selectedAccountPayable.map((ga) => ga.TBID),
+        ref: selectedAccountPayable.map((ga) => ga.RefNo),
       }),
     });
 
