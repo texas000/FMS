@@ -18,10 +18,10 @@ export default async (req, res) => {
     try {
       await pool.connect();
       let result = await pool.request().query(
-        `SELECT DISTINCT TOP 50 M.F_UID, M.F_BODY, M.F_DATE, 
+        `SELECT DISTINCT TOP 50 M.F_ID, M.F_UID, M.F_BODY, M.F_DATE, 
                     (SELECT F_FNAME FROM T_MEMBER MEM WHERE MEM.F_ID=M.F_UID) AS CREATOR 
                     FROM T_MESSAGE_RECIPIENT R JOIN T_MESSAGE M on M.F_ID=R.F_MESSAGEID 
-                    WHERE (R.F_UID='${token.uid}' AND M.F_UID='${id}') OR (R.F_UID='${id}' AND M.F_UID='${token.uid}') ORDER BY F_DATE ASC;`
+                    WHERE (R.F_UID='${token.uid}' AND M.F_UID='${id}') OR (R.F_UID='${id}' AND M.F_UID='${token.uid}') ORDER BY F_ID ASC;`
       );
       res.status(200).json(result.recordset);
     } catch (err) {

@@ -39,29 +39,21 @@ export default function dashboard(props) {
   useEffect(() => {}, []);
   const [loading, setLoading] = useState(false);
 
-  async function sendMsg(e) {
-    // const channel = new BroadcastChannel("sw-messages");
-    // channel.postMessage({ body: e, icon: "/image/JLOGO.png" });
-    const fet = await fetch("/api/message/oneSignalPostNew", {
+  const handleFileUpload = async (e) => {
+    var form = new FormData();
+    form.append("userPhoto", e.target.files[0]);
+    await axios({
+      url: "http://jameswi.com:49991/api/upload/test",
       method: "POST",
-      body: e,
-    });
-  }
-  // const handleFileUpload = async (e) => {
-  //   var form = new FormData();
-  //   form.append("userPhoto", e.target.files[0]);
-  //   await axios({
-  //     url: "http://jameswi.com:49991/api/upload/test",
-  //     method: "POST",
-  //     data: form,
-  //   })
-  //     .then((res) => {
-  //       console.log(res);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
+      data: form,
+    })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   useEffect(() => {
     window.OneSignal = window.OneSignal || [];
@@ -107,18 +99,10 @@ export default function dashboard(props) {
       </div>
       {props.token.uid == 14 && (
         <>
-          <input
-            type="text"
-            className="p-2 m-2"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                sendMsg(e.target.value);
-              }
-            }}
-          />
-          {/* <input type="file" onChange={handleFileUpload} /> */}
+          <input type="file" onChange={handleFileUpload} />
         </>
       )}
+
       {/* RECENT LIST FREIGHT */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
         {data && data.length && (

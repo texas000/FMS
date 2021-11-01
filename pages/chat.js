@@ -50,6 +50,13 @@ export default function search(props) {
       : null,
     { refreshInterval: 1100 }
   );
+  async function sendAnnounce(e) {
+    await fetch("/api/message/oneSignalPostNew", {
+      method: "POST",
+      body: e,
+    });
+  }
+
   useEffect(() => {
     if (props.selected && users) {
       const user = users.filter((user) => user.F_ID == props.selected);
@@ -106,9 +113,24 @@ export default function search(props) {
       <div className="flex flex-sm-row justify-between">
         <h3 className="dark:text-white mb-3">Chat</h3>
       </div>
+      <div className="flex my-2">
+        <input
+          type="text"
+          placeholder="Announcement message to all"
+          className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-full py-3 border-2 border-white"
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              sendAnnounce(e.target.value);
+            }
+          }}
+        />
+      </div>
       <div className="grid grid-flow-col grid-cols-4 gap-4">
         <div className="col-span-1">
-          <div className="card overflow-auto">
+          <div
+            className="card overflow-auto"
+            style={{ minHeight: "780px", maxHeight: "780px" }}
+          >
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
@@ -151,10 +173,7 @@ export default function search(props) {
         <div className="col-span-3">
           <div className="card overflow-auto">
             <div className="px-6 py-3 bg-gray-50 text-left text-xs font-bold uppercase tracking-wider border-b border-gray-200">
-              Chat{" "}
-              {/* {users &&
-                props.selected &&
-                users.filter((user) => user.F_ID == props.selected)[0].F_FNAME} */}
+              Chat
             </div>
             <div
               className="flex flex-col space-y-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch"
@@ -196,7 +215,10 @@ export default function search(props) {
                             : "text-left ml-4"
                         }`}
                       >
-                        {moment(ga.F_DATE).utc().format("LT")}
+                        {new Date(ga.F_DATE) <
+                        new Date(new Date().toDateString())
+                          ? moment(ga.F_DATE).utc().format("MM/DD hh:mm A")
+                          : moment(ga.F_DATE).utc().format("LT")}
                       </div>
                       {/* <div className="bg-white dark:bg-gray-700 border border-white dark:border-gray-700 rounded-full float-right -mt-8 mr-0.5 flex shadow items-center cursor-pointer">
                         <img

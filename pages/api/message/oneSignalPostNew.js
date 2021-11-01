@@ -33,6 +33,8 @@ export default async (req, res) => {
   var message = {
     app_id: "4db5fd76-1074-4e1c-ad4b-9c365fea2cf6",
     contents: { en: req.body },
+    name: "Announcement",
+    heading: "Announcement",
     included_segments: ["Subscribed Users"],
   };
 
