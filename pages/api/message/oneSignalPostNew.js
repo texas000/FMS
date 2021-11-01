@@ -4,7 +4,7 @@ export default async (req, res) => {
   var sendNotification = function (data) {
     var headers = {
       "Content-Type": "application/json; charset=utf-8",
-      Authorization: "Basic ZTdiNTU5YjYtOWMwNC00ODkwLTkxMmQtY2YxNzE4OWZkM2E3",
+      Authorization: `Basic ${process.env.ONESIGNALKEY}`,
     };
 
     var options = {
