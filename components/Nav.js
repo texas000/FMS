@@ -209,7 +209,7 @@ const Top = ({ Token, toggle, setToggle }) => {
                 <Link href={ga.F_LINK} key={ga.F_ID}>
                   <a
                     className="p-2 rounded max-w-20 whitespace-nowrap flex align-middle text-gray-700 hover:bg-indigo-50 hover:no-underline"
-                    onClick={markAsRead(ga.F_ID)}
+                    onClick={() => markAsRead(ga.F_ID)}
                   >
                     <div>
                       <span className="font-medium w-80">{ga.CREATOR}</span>
