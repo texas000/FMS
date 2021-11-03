@@ -79,6 +79,27 @@ export default async (req, res) => {
         rel="stylesheet"
         type="text/css"
       />
+      <style>
+      ul {
+        padding: 0px;
+        margin: 0px;
+      }
+      body {
+        font-family: sans-serif;
+      }
+      tr {
+        line-height: 1rem;
+      }
+      td:first-child {
+        padding-left: 20px;
+        padding-right: 0;
+        padding-bottom: 20px;
+      }
+      td:not(:first-child) {
+        border-bottom: 20px solid transparent;
+        padding: 0px;
+      }
+      </style>
     </head>
     <body width="100%">
         <!-- Inbox Preview -->
@@ -86,7 +107,7 @@ export default async (req, res) => {
         style="max-height: 0; overflow: hidden; mso-hide: all"
         aria-hidden="true"
       >
-        [JWI REQUEST SYSTEM]
+        [JAMES WORLDWIDE INVOICE SYSTEM]
       </div>
       <!-- Email Body Begin -->
       <div style="background-color: white; max-width: 600px; margin: 0 auto">
@@ -138,8 +159,13 @@ export default async (req, res) => {
                   font-weight: normal;
                 "
               >
-                ${body.invoice.INVOICE || "INVOICE-"}
+                ${body.invoice.INVOICE || "INVOICE"}
               </h1>
+              ${
+                body.files.length
+                  ? `<p>Please find your attached documents.</p>`
+                  : ""
+              }
               <table
               align="center"
               role="presentation"
@@ -147,46 +173,93 @@ export default async (req, res) => {
               cellpadding="0"
               border="0"
               width="100%"
-              style="margin: auto; padding: 0"
+              style="margin: auto;"
             >
-              <tr style="line-height: 20px">
-                <td width="250">
+            ${
+              body.PO.length
+                ? `<tr>
+                  <td width="250" style="vertical-align: top">
+                    <li>PO:</li>
+                  </td>
+                  <td>
+                  <table
+              align="center"
+              role="presentation"
+              cellspacing="0"
+              cellpadding="0"
+              border="0"
+              width="100%"
+              style="margin: auto; padding-bottom: 20px"
+            >
+                  ${body.PO.map(
+                    (ga, i) =>
+                      `<tr><td style="border-bottom: 1px solid transparent; padding: 0">${ga}</td></tr>`
+                  ).join("")}
+                  </table>
+                  </td>
+                </tr>`
+                : ""
+            }
+              <tr>
+                <td width="250" style="vertical-align: top">
                     <li>Reference Number:</li>
                 </td>
                 <td>
+                <div style="padding-bottom: 20px">
                     ${body.invoice.REFNO}
+                    </div>
                 </td>
               </tr>
-              <tr style="line-height: 20px">
-                <td width="250">
+              <tr>
+                <td width="250" style="vertical-align: top">
                     <li>Master Bill of Lading:</li>
                 </td>
                 <td>
-                    ${body.MBL}
+                <div style="padding-bottom: 20px">
+                  ${body.MBL}
+                </div>
                 </td>
               </tr>
-              <tr style="line-height: 20px">
-                <td width="250">
+              <tr>
+                <td width="250" style="vertical-align: top">
                     <li>House Bill of Lading:</li>
                 </td>
-                <td>
-                    ${body.HBL}
+                <td style="vertical-align: top">
+                  <table
+                    align="center"
+                    role="presentation"
+                    cellspacing="0"
+                    cellpadding="0"
+                    border="0"
+                    width="100%"
+                    style="margin: auto; padding-bottom: 20px"
+                  >
+                  ${body.HBL.map(
+                    (ga) =>
+                      `<tr><td style="border-bottom: 1px solid transparent; padding: 0">${ga}</td></tr>`
+                  ).join("")}
+                  </table>
                 </td>
               </tr>
-              <tr style="line-height: 20px">
-                <td width="250">
+              <tr>
+                <td width="250" style="vertical-align: top">
                     <li>Container:</li>
                 </td>
-                <td>
-                ${body.CONTAINER}
-                </td>
-              </tr>
-              <tr style="line-height: 20px">
-                <td width="250">
-                    <li>Invoice Amount:</li>
-                </td>
-                <td>
-                    ${usdFormat(body.invoiceReq.F_InvoiceAmt)}
+                <td style="vertical-align: top">
+                <table
+                    align="center"
+                    role="presentation"
+                    cellspacing="0"
+                    cellpadding="0"
+                    border="0"
+                    width="100%"
+                    style="margin: auto; padding-bottom: 20px"
+                  >
+                ${body.CONTAINER.map(
+                  (ga) =>
+                    `<tr><td style="border-bottom: 1px solid transparent; padding: 0">${ga}</td></tr>`
+                ).join("")}
+                </table>
                 </td>
               </tr>
             </table>
@@ -203,27 +276,32 @@ export default async (req, res) => {
                 border-top: 1px solid #e0e0e0;
               "
             >
-              <h2
-                style="
-                  margin: 0 0 10px 0;
-                  font-family: sans-serif;
-                  font-size: 18px;
-                  line-height: 22px;
-                  color: #333333;
-                  font-weight: bold;
-                "
-              >
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/190/190411.png"
-                  width="20"
-                  height="20"
-                />
-                Copy of the invoice attached
-              </h2>
+            <table
+              align="center"
+              role="presentation"
+              cellspacing="0"
+              cellpadding="0"
+              border="0"
+              width="100%"
+              style="
+                margin: 0;
+                font-size: 18px;
+                line-height: 22px;
+                color: #333333;
+                font-weight: bold;
+              "
+            >
+              <tr>
+                <td>Invoice Amount:</td>
+                <td style="text-align: right">${usdFormat(
+                  body.invoiceReq.F_InvoiceAmt
+                )}</td>
+              </tr>
+            </table>
             </td>
           </tr>
         </table>
-
+                
         <p style="color: #bebebe; text-align: center">Bank Account: Western Alliance Bank (8827363137)</p>
         <p style="color: #bebebe; text-align: center">Copyright 2021 James Worldwide Inc</p>
         <p style="color: #bebebe; text-align: center">All rights reserved</p>
@@ -241,23 +319,31 @@ export default async (req, res) => {
     try {
       transport.sendMail(mailOptions, function (error, info) {
         if (error) {
-          console.log(error);
-          res.status(400).send(error);
+          res.status(502).send({
+            error: true,
+            msg: JSON.stringify(error),
+          });
         } else {
-          console.log(`Email Sent: ${info.response}`);
-          res.status(200).send("EMAIL SENT TO CUSTOMER!");
+          res.status(200).send({
+            error: false,
+            msg: "The invoice has been sent to customer!",
+            detail: info,
+          });
         }
       });
     } catch (err) {
-      console.log(err);
-      res.status(405).send(err);
+      res.status(405).send({
+        error: true,
+        msg: JSON.stringify(err),
+      });
     }
   } else {
     // Fail - no email to send invoice
-    res.status(200).send(`ERROR - NO EMAIL FOUND FOR ${body.invoice.BILLTO}!`);
+    res.status(404).send({
+      error: true,
+      msg: `ERROR - NO EMAIL FOUND FOR ${body.invoice.BILLTO}!`,
+    });
   }
-  //   console.log(invoiceSubject);
-  //   console.log(body);
   return pool.close();
 };
 

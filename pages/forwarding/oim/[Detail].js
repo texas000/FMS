@@ -163,19 +163,30 @@ const Detail = ({ token, Reference }) => {
   }
 
   async function handleSendInvoice(invoice) {
+    var purchaseOrder = [];
+    data.H.map((ga) => {
+      if (ga.F_CustRefNo) {
+        purchaseOrder.push(ga.F_CustRefNo);
+      }
+    });
     setSubmitLoading(true);
     const sendInvoiceFetch = await fetch(`/api/requests/sendInvoice`, {
-      invoice,
-      invoiceReq: selectedPayment,
-      files: invoiceRequested[1],
-      MBL: data.M.F_MBLNo,
-      HBL: data.H.map((na) => `${na.F_HBLNo} `),
-      CONTAINER: data.C.map((ga) => `${ga.F_ContainerNo} `),
+      method: "POST",
+      body: JSON.stringify({
+        invoice,
+        invoiceReq: selectedPayment,
+        files: invoiceRequested[1],
+        MBL: data.M.F_MBLNo,
+        CONTAINER: data.C.map((ga) => ga.F_ContainerNo) || [],
+        HBL: data.H.map((na) => na.F_HBLNo) || [],
+        PO: purchaseOrder,
+      }),
     });
-    if (sendInvoiceFetch.status == 200) {
-      setMsg(`The invoice has been sent to customer!`);
-    } else {
-      setMsg(`Error: ${sendInvoiceFetch.status}`);
+    const result = await sendInvoiceFetch.json();
+    try {
+      setMsg(result.msg);
+    } catch (err) {
+      setMsg(JSON.stringify(err));
     }
     setShow(true);
     setSubmitLoading(false);
@@ -630,7 +641,8 @@ const Detail = ({ token, Reference }) => {
                           loading={submitLoading}
                           small={true}
                           onClick={() => handleSendInvoice(ga)}
-                          disabled={ga.AUTOSEND == 0}
+                          // disabled={ga.AUTOSEND == 0}
+                          // Testing purpose
                         />
                       )}
                     </div>
@@ -916,7 +928,7 @@ const Detail = ({ token, Reference }) => {
                 setSelectedFile([]);
               }}
               title="Request Credit Debit Approval"
-              className="dark:bg-gray-600 w-50"
+              className="dark:bg-gray-600 min-w-50"
             >
               <div className={Classes.DIALOG_BODY}>
                 {crdrRequested &&
@@ -956,7 +968,7 @@ const Detail = ({ token, Reference }) => {
                         />
                       </div>
                       {/* ONLY IF DIRECTOR APPROVED, THE INVOICE CAN BE SENT TO THE CUSTOMER */}
-                      {ga.STATUS == 111 && (
+                      {/* {ga.STATUS == 111 && (
                         <Button
                           text="Send Invoice (Test)"
                           icon="envelope"
@@ -966,7 +978,7 @@ const Detail = ({ token, Reference }) => {
                           onClick={() => handleSendInvoice(ga)}
                           disabled={ga.AUTOSEND == 0}
                         />
-                      )}
+                      )} */}
                     </div>
                   ))}
                 {crdrRequested &&
@@ -1231,7 +1243,7 @@ const Detail = ({ token, Reference }) => {
                 setSelectedFile([]);
               }}
               title="Request Account Payable Approval"
-              className="dark:bg-gray-600 w-50"
+              className="dark:bg-gray-600 min-w-50"
             >
               <div className={Classes.DIALOG_BODY}>
                 {apRequested &&
