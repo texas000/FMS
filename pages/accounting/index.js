@@ -13,6 +13,7 @@ import filterFactory, {
   textFilter,
   selectFilter,
 } from "react-bootstrap-table2-filter";
+import paginationFactory from "react-bootstrap-table2-paginator";
 import jwt from "jsonwebtoken";
 import Layout from "../../components/Layout";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -64,6 +65,8 @@ export const Navigation = ({ token }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [checkDetails, setCheckDetails] = useState([]);
+
+  const [apSearchResult, setApSearchResult] = useState([]);
 
   const options = distinctVendor
     ? distinctVendor.map((ga) => ({ value: ga, label: ga }))
@@ -308,6 +311,97 @@ export const Navigation = ({ token }) => {
     },
   ];
 
+  const searchAp = [
+    {
+      dataField: "VENDOR",
+      text: "Vendor",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      classes: "truncate sm:px-0 px-4",
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "F_InvoiceNo",
+      text: "Invoice Number",
+      classes: "text-uppercase cursor-pointer",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      classes: "truncate sm:px-0 px-4",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "F_InvoiceAmt",
+      text: "Amount",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      formatter: (cell) => {
+        if (cell) {
+          return usdFormat(cell);
+        }
+      },
+      classes: "truncate sm:px-0 px-4",
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "F_Descript",
+      text: "Description",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "sm:px-0 px-4 text-xs hidden sm:block",
+      }),
+      classes: "truncate sm:px-0 px-4",
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "F_InvoiceDate",
+      text: "Invoice Date",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      classes: "truncate sm:px-0 px-4",
+      headerFormatter: filterHeader,
+      formatter: (cell) => {
+        if (cell) {
+          return moment(cell).utc().format("MM-DD-YYYY");
+        }
+      },
+    },
+    {
+      dataField: "F_CheckNo",
+      text: "Check Number",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      classes: "truncate sm:px-0 px-4 uppercase",
+      headerFormatter: filterHeader,
+    },
+    {
+      dataField: "F_U2ID",
+      text: "PIC",
+      headerClasses:
+        "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
+      filter: textFilter({
+        className: "text-xs text-center hidden sm:block",
+      }),
+      classes: "truncate sm:px-0 px-4 uppercase",
+      headerFormatter: filterHeader,
+    },
+  ];
+
   async function handleAccountPayableSummary() {
     // Assume it is all T_APHD
     setSubmitLoading(true);
@@ -351,6 +445,26 @@ export const Navigation = ({ token }) => {
     }
   }
 
+  async function handleSearchSubmit(e) {
+    setSubmitLoading(true);
+    e.preventDefault();
+    console.log({
+      type: e.target[0].value,
+      value: e.target[1].value,
+    });
+    const res = await fetch("/api/accounting/getSearchAphd", {
+      method: "POST",
+      body: JSON.stringify({
+        type: e.target[0].value,
+        value: e.target[1].value,
+      }),
+    });
+    if (res.status == 200) {
+      setApSearchResult(await res.json());
+    }
+    setSubmitLoading(false);
+  }
+
   return (
     <Layout TOKEN={token} TITLE="Accounting" LOADING={submitLoading}>
       <Navbar
@@ -372,7 +486,21 @@ export const Navigation = ({ token }) => {
                 menu === 3 ? "text-blue-500 font-bold" : "dark:text-gray-200"
               }
             >
-              Account Payable
+              AP Summary
+            </span>
+          </Button>
+          <Button
+            icon="search"
+            small={true}
+            minimal={true}
+            onClick={() => setMenu(4)}
+          >
+            <span
+              className={
+                menu === 4 ? "text-blue-500 font-bold" : "dark:text-gray-200"
+              }
+            >
+              AP Finder
             </span>
           </Button>
           <Button
@@ -763,6 +891,65 @@ export const Navigation = ({ token }) => {
                   bordered={false}
                   // pagination={paginationFactory(pageOption)}
                   selectRow={selectRow}
+                />
+              )}
+            </ToolkitProvider>
+          </div>
+        </>
+      )}
+      {menu === 4 && (
+        <>
+          <form className="flex gap-4 my-3" onSubmit={handleSearchSubmit}>
+            <select
+              className="form-select block w-1/6 p-2 rounded-full"
+              defaultValue="amt"
+            >
+              <option value="amt">Invoice Amount</option>
+              <option value="inv">Invoice Number</option>
+              <option value="pic">Person In Charge</option>
+            </select>
+            <div className="relative flex w-full">
+              <input
+                type="text"
+                placeholder="Search"
+                className="w-full focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 pl-12 bg-gray-200 rounded-full py-3 border-2"
+              />
+              <div className="absolute right-0 items-center inset-y-0 hidden sm:flex">
+                <button
+                  type="submit"
+                  className="inline-flex items-center justify-center rounded-full h-12 w-12 transition duration-500 ease-in-out text-white bg-blue-500 hover:bg-blue-400 focus:outline-none"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    className="h-6 w-6 transform rotate-90"
+                  >
+                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </form>
+          <div className="card border-0 py-3 px-0 shadow mt-3 overflow-hidden">
+            <ToolkitProvider
+              keyField="F_ID"
+              bordered={false}
+              columns={searchAp}
+              data={apSearchResult}
+              exportCSV
+              search
+            >
+              {(props) => (
+                <BootstrapTable
+                  {...props.baseProps}
+                  rowClasses="hover:bg-indigo-500 hover:text-white cursor-pointer dark:bg-gray-700 dark:text-white"
+                  condensed
+                  rowStyle={{ cursor: "pointer" }}
+                  filter={filterFactory()}
+                  wrapperClasses="rounded table-fixed mx-0 px-0"
+                  bordered={false}
+                  pagination={paginationFactory({ hideSizePerPage: true })}
                 />
               )}
             </ToolkitProvider>
