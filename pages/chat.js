@@ -180,7 +180,7 @@ export default function search(props) {
               style={{ minHeight: "660px", maxHeight: "660px" }}
             >
               {message &&
-                message.map((ga, i) => (
+                message.reverse().map((ga, i) => (
                   <div
                     className={`bg-white dark:bg-gray-800 dark:text-gray-200 px-4 pb-0 antialiased flex w-100 ${
                       props.token.uid == ga.F_UID
