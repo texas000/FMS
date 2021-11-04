@@ -23,7 +23,7 @@ import FreightFile from "../../../components/Forwarding/FreightFile";
 import FreightComment from "../../../components/Forwarding/FreightComment";
 import FreightProfit from "../../../components/Forwarding/FreightProfit";
 import Notification from "../../../components/Toaster";
-import CheckRequestForm from "../../../components/Dashboard/CheckRequestForm";
+import CheckRequestForm from "../../../components/Request/ApRequestForm";
 
 const Detail = ({ token, Reference }) => {
   const router = useRouter();
@@ -45,6 +45,7 @@ const Detail = ({ token, Reference }) => {
     }
   }
   const { data } = useSWR(`/api/forwarding/aex/detail?ref=${Reference}`);
+  const { data: paymentMethod } = useSWR("/api/accounting/getPaymentCode");
   const { data: files, mutate: fileMutate } = useSWR(
     "/api/file/list?ref=" + Reference
   );
@@ -364,6 +365,11 @@ const Detail = ({ token, Reference }) => {
       return (
         <span className="font-bold">Current Status: Account Approved</span>
       );
+    }
+    if (data == 131) {
+      return <span className="font-bold">Current Status: CEO Approved</span>;
+    } else {
+      return <span className="font-bold">{data}</span>;
     }
   };
 
@@ -1298,7 +1304,11 @@ const Detail = ({ token, Reference }) => {
                       <BlobProvider
                         document={
                           <CheckRequestForm
-                            pic={selectedPayment.F_U1ID || ""}
+                            pic={
+                              selectedPayment.F_U1ID
+                                ? selectedPayment.F_U1ID.toUpperCase()
+                                : ""
+                            }
                             payto={selectedPayment.VENDOR}
                             amt={selectedPayment.F_InvoiceAmt}
                             oim={Reference.toUpperCase()}
@@ -1335,7 +1345,13 @@ const Detail = ({ token, Reference }) => {
                             small={true}
                             onClick={() => window.open(url, "__blank")}
                             icon="document-open"
-                            disabled={error}
+                            disabled={
+                              error ||
+                              (apRequested &&
+                                apRequested.filter(
+                                  (e) => e.Title == selectedPayment.F_InvoiceNo
+                                ).length)
+                            }
                             loading={loading}
                           />
                         )}
@@ -1467,10 +1483,20 @@ const Detail = ({ token, Reference }) => {
                         onChange={(e) => setSelectedApType(e.target.value)}
                       >
                         <option value={false}>Please select type</option>
-                        <option value="CHECK">Check</option>
-                        <option value="CARD">Card</option>
-                        <option value="ACH">ACH</option>
-                        <option value="WIRE">Wire</option>
+                        {paymentMethod &&
+                          paymentMethod.map((ga, i) => (
+                            <option
+                              key={`${i}-payment`}
+                              disabled={!ga.F_ACTIVE}
+                              value={`${ga.F_PAYMENT_METHOD}${
+                                ga.F_PAYMENT_DETAIL
+                                  ? ` ${ga.F_PAYMENT_DETAIL}`
+                                  : ""
+                              }`}
+                            >
+                              {ga.F_PAYMENT_METHOD} {ga.F_PAYMENT_DETAIL}
+                            </option>
+                          ))}
                       </select>
                       <label className="block text-gray-700 text-sm font-semibold my-2">
                         Files

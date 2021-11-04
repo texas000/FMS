@@ -54,6 +54,9 @@ export const Navigation = ({ token }) => {
   const { data: distinctVendor } = useSWR(
     menu === 3 ? "/api/requests/getDistinctVendors" : null
   );
+  const { data: paymentMethod, mutate: getPaymentMethod } = useSWR(
+    menu === 5 ? "/api/accounting/getPaymentCode" : null
+  );
   const [selectedVendor, setSelectedVendor] = useState(false);
   const { data: accountPayableList } = useSWR(
     selectedVendor
@@ -465,6 +468,34 @@ export const Navigation = ({ token }) => {
     setSubmitLoading(false);
   }
 
+  async function handlePaymentActive(e) {
+    const close = confirm("Would you like to disable payment method?");
+    await fetch(
+      `/api/accounting/updatePaymentCode?id=${e.F_ID}&status=${
+        close ? "0" : "1"
+      }`
+    );
+    getPaymentMethod();
+  }
+
+  async function handleAddPaymentMethod(e) {
+    e.preventDefault();
+    if (!e.target[0].value) {
+      alert("PLESAE FILL THE PAYMENT METHOD");
+      return;
+    }
+    await fetch(`/api/accounting/postPaymentCode`, {
+      method: "POST",
+      body: JSON.stringify({
+        method: e.target[0].value,
+        detail: e.target[1].value,
+        expire: e.target[2].value,
+      }),
+    }).then(() => {
+      getPaymentMethod();
+    });
+  }
+
   return (
     <Layout TOKEN={token} TITLE="Accounting" LOADING={submitLoading}>
       <Navbar
@@ -501,6 +532,20 @@ export const Navigation = ({ token }) => {
               }
             >
               AP Finder
+            </span>
+          </Button>
+          <Button
+            icon="cog"
+            small={true}
+            minimal={true}
+            onClick={() => setMenu(5)}
+          >
+            <span
+              className={
+                menu === 5 ? "text-blue-500 font-bold" : "dark:text-gray-200"
+              }
+            >
+              AP Method
             </span>
           </Button>
           <Button
@@ -953,6 +998,71 @@ export const Navigation = ({ token }) => {
                 />
               )}
             </ToolkitProvider>
+          </div>
+        </>
+      )}
+      {menu === 5 && (
+        <>
+          <div className="card my-4 overflow-hidden">
+            <table className="table border border-gray-800 rounded p-3 mb-0">
+              <thead>
+                <tr>
+                  <th>Payment Method</th>
+                  <th>Payment Detail</th>
+                  <th>Active</th>
+                  <th>Expire</th>
+                </tr>
+              </thead>
+              <tbody>
+                {paymentMethod &&
+                  paymentMethod.map((ga) => (
+                    <tr
+                      key={ga.F_ID}
+                      className="hover:bg-indigo-500 hover:text-white cursor-pointer"
+                      onClick={() => handlePaymentActive(ga)}
+                    >
+                      <td>{ga.F_PAYMENT_METHOD}</td>
+                      <td>{ga.F_PAYMENT_DETAIL}</td>
+                      <td>{ga.F_ACTIVE ? "YES" : "NO"}</td>
+                      <td>
+                        {ga.F_EXPIRE
+                          ? moment(ga.F_EXPIRE).utc().format("MM/YYYY")
+                          : ""}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div className="card my-4 p-2 overflow-hidden">
+            <form
+              className="grid grid-cols-4 gap-4"
+              onSubmit={handleAddPaymentMethod}
+            >
+              <input
+                type="text"
+                placeholder="Payment Method"
+                className="focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 bg-gray-200 rounded-full pl-2 border-2"
+              />
+              <input
+                type="text"
+                placeholder="Payment Detail"
+                className="focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 bg-gray-200 rounded-full pl-2 border-2"
+              />
+              <input
+                type="month"
+                placeholder="Expire"
+                onChange={(e) => console.log(e.target.value)}
+                className="focus:outline-none focus:placeholder-gray-400 text-gray-600 placeholder-gray-600 bg-gray-200 rounded-full pl-2 border-2"
+              />
+              <button
+                type="submit"
+                className="bg-indigo-400 rounded-full text-white hover:bg-indigo-500"
+              >
+                Add New Payment
+              </button>
+            </form>
           </div>
         </>
       )}
