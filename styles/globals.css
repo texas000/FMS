@@ -3,19 +3,22 @@
 @tailwind utilities;
 
 @layer base {
-	h2 {
-		@apply text-3xl;
-	}
-	h3 {
-		@apply text-2xl;
-		@apply text-black;
-	}
-	.card {
-		@apply shadow;
-		@apply rounded-lg;
-		@apply bg-white;
-		@apply dark:text-white;
-		@apply dark:bg-gray-800;
-		@apply border-0;
-	}
+  h2 {
+    @apply text-3xl;
+  }
+  h3 {
+    @apply text-2xl;
+    @apply text-black;
+  }
+  .card {
+    @apply shadow;
+    @apply rounded-lg;
+    @apply bg-white;
+    @apply dark:text-white;
+    @apply dark:bg-gray-800;
+    @apply border-0;
+  }
+  th {
+    font-weight: inherit;
+  }
 }

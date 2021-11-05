@@ -248,12 +248,9 @@ export default function humanResource({ token }) {
           selectedUser.F_ID
         }&company=${encodeURIComponent(companySelected.label)}`
       );
-      if (res.status === 200) {
-        setMsg(`${companySelected.label} assigned to ${selectedUser.F_FNAME}`);
-        mutateAssigned;
-      } else {
-        setMsg(`Error: ${res.status}`);
-      }
+      const ret = await res.json();
+      setMsg(ret.msg);
+      mutateAssigned;
       setShow(true);
     }
   }

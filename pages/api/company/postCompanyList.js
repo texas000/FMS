@@ -6,14 +6,20 @@ export default async (req, res) => {
   const cookies = cookie.parse(req.headers.cookie);
   const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
   if (!token.admin) {
-    res.send("ACCESS DENIED");
+    res.status(401).send({ error: true, msg: "Unauthorized" });
     return;
   }
   const { id, company, pic } = req.query;
   if (!company || !id) {
-    res.send("INVALID ENTRY");
+    res
+      .status(404)
+      .send({
+        error: true,
+        msg: "Selected company is not found! Please try again.",
+      });
     return;
   }
+  // T_MEMBER_COMPANY HAS CONSTRAINT 'UNIQUE_USER_COMPANY'
   let pool = new sql.ConnectionPool(process.env.SERVER21);
   var safeCompany = company.replace(/'/g, "''");
   var query = `INSERT INTO T_MEMBER_COMPANY VALUES('${
@@ -26,10 +32,16 @@ export default async (req, res) => {
   }
   try {
     await pool.connect();
-    let result = await pool.request().query(query);
-    res.send(result);
+    await pool.request().query(query);
+    res
+      .status(200)
+      .send({ error: false, msg: `${safeCompany} assigned successfully!` });
   } catch (err) {
-    res.send(err);
+    // IF THE ERROR OCCUR OR THE QUERY CAUGHT BY CONSTRAINT, RESPONSE WITH ERROR MESSAGE
+    res.status(403).send({
+      error: true,
+      msg: err.originalError?.info?.message || "403 ERROR!",
+    });
   }
   return pool.close();
 };

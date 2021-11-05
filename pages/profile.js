@@ -66,20 +66,15 @@ export default function search(props) {
   }
   async function handleAddEmail(e, customer) {
     e.preventDefault();
-    const check = confirm(
-      `Would you like to add ${e.target[0].value} to ${customer.COMPANY_NAME}`
-    );
-    if (check) {
-      const res = await fetch(
-        `/api/company/addCompanyContact?id=${customer.COMPANY_ID}&email=${e.target[0].value}&name=${e.target[1].value}`
-      );
-      if (res.status === 200) {
-        // alert(`${e.target[1].value}'s information successfully added!`);
+    await fetch(
+      `/api/company/addCompanyContact?id=${customer.COMPANY_ID}&email=${e.target[0].value}&name=${e.target[1].value}`
+    )
+      .then(() => {
         mutate();
-      } else {
-        alert(res.status);
-      }
-    }
+      })
+      .catch((err) => {
+        alert(JSON.stringify(err));
+      });
   }
 
   async function handleRemoveCompany(customer) {
