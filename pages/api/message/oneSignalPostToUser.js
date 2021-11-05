@@ -43,7 +43,7 @@ export default async (req, res) => {
     app_id: "4db5fd76-1074-4e1c-ad4b-9c365fea2cf6",
     contents: { en: body.english },
     name: body.title,
-    heading: body.title,
+    headings: { en: body.title },
     url: `https://jwiusa.com${body.url}`,
     include_player_ids: [body.to],
     data: { message: body.english },

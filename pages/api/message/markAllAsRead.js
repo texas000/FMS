@@ -1,5 +1,5 @@
 // * FRONT
-// NAVBAR NOTIFICATION LIST - DISPLAY WHEN ICON CLICKED
+// NAVBAR NOTIFICATION BADGE
 
 const jwt = require("jsonwebtoken");
 const cookie = require("cookie");
@@ -15,13 +15,12 @@ export default async (req, res) => {
     // CONNECT TO DB
     try {
       await pool.connect();
-      let result = await pool.request().query(
-        `SELECT TOP 99 M.*, 
-                    (SELECT F_FNAME FROM T_MEMBER MEM WHERE MEM.F_ID=M.F_UID) AS CREATOR 
-                    FROM T_MESSAGE_RECIPIENT R JOIN T_MESSAGE M on M.F_ID=R.F_MESSAGEID 
-                    WHERE R.F_READ=0 AND R.F_UID='${token.uid}' ORDER BY M.F_ID DESC;`
-      );
-      res.json(result.recordset);
+      let result = await pool
+        .request()
+        .query(
+          `UPDATE T_MESSAGE_RECIPIENT SET F_READ=1 WHERE F_UID='${token.uid}';`
+        );
+      res.json(result.rowsAffected[0]);
     } catch (err) {
       res.json(err);
     }

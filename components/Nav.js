@@ -28,6 +28,11 @@ const Top = ({ Token, toggle, setToggle }) => {
     console.log(res.status);
     mutate();
   }
+  async function handleMarkAllasRead() {
+    const res = await fetch(`/api/message/markAllAsRead`);
+    console.log(res.status);
+    mutate();
+  }
 
   // ROUTE TO THE FORWARDING SEARCH PAGE WHEN USER SUBMIT AT NAV SERCH BAR - /forwarding?query.search  (FORWARDING SEARCH PAGE)
   const getResult = async () => {
@@ -204,22 +209,27 @@ const Top = ({ Token, toggle, setToggle }) => {
             aria-labelledby="alertsDropdown"
           >
             <h6 className="p-2 font-semibold text-gray-800">Alarm</h6>
-            {msg &&
-              msg.map((ga) => (
-                <Link href={ga.F_LINK} key={ga.F_ID}>
-                  <a
-                    className="p-2 rounded max-w-20 whitespace-nowrap flex align-middle text-gray-700 hover:bg-indigo-50 hover:no-underline"
-                    onClick={() => markAsRead(ga.F_ID)}
-                  >
-                    <div>
-                      <span className="font-medium w-80">{ga.CREATOR}</span>
-                      <div className="text-xs truncate w-80">{ga.F_BODY}</div>
-                    </div>
-                  </a>
-                </Link>
-              ))}
-            <a className="p-2 rounded max-w-20 whitespace-nowrap flex text-center text-gray-700 hover:bg-indigo-50 hover:no-underline">
-              Read More Messages
+            <div className="overflow-y-scroll" style={{ maxHeight: "50vh" }}>
+              {msg &&
+                msg.map((ga) => (
+                  <Link href={ga.F_LINK} key={ga.F_ID}>
+                    <a
+                      className="p-2 rounded max-w-20 whitespace-nowrap flex align-middle text-gray-700 hover:bg-indigo-50 hover:no-underline"
+                      onClick={() => markAsRead(ga.F_ID)}
+                    >
+                      <div>
+                        <span className="font-medium w-80">{ga.CREATOR}</span>
+                        <div className="text-xs truncate w-80">{ga.F_BODY}</div>
+                      </div>
+                    </a>
+                  </Link>
+                ))}
+            </div>
+            <a
+              className="p-2 bg-gray-50 rounded max-w-20 whitespace-nowrap flex text-center text-gray-700 hover:bg-indigo-50 hover:no-underline"
+              onClick={handleMarkAllasRead}
+            >
+              Mark all notification as read
             </a>
           </div>
         </li>

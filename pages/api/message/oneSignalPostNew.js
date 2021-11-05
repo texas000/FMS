@@ -34,7 +34,7 @@ export default async (req, res) => {
     app_id: "4db5fd76-1074-4e1c-ad4b-9c365fea2cf6",
     contents: { en: req.body },
     name: "Announcement",
-    heading: "Announcement",
+    headings: { en: "Announcement" },
     included_segments: ["Subscribed Users"],
   };
 
