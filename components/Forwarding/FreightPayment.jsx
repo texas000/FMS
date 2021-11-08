@@ -6,6 +6,7 @@ export default function FreightPayment({
   CrDr,
   Ap,
   setSelectedPayment,
+  apRequested,
 }) {
   return (
     <Fragment>
@@ -162,7 +163,25 @@ export default function FreightPayment({
               >
                 <td className="px-6 py-2">
                   <div className="flex flex-col">
-                    <span className="text-sm font-bold">{ga.F_InvoiceNo}</span>
+                    <div className="flex flex-row items-center">
+                      <span className="text-sm font-bold">
+                        {ga.F_InvoiceNo}
+                      </span>
+                      {apRequested.filter((ref) => ref.Title == ga.F_InvoiceNo)
+                        .length ? (
+                        <svg
+                          className="fill-current text-green-500 ml-2"
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-1 17l-5-5.299 1.399-1.43 3.574 3.736 6.572-7.007 1.455 1.403-8 8.597z" />
+                        </svg>
+                      ) : (
+                        <span></span>
+                      )}
+                    </div>
                     <span>{ga.VENDOR}</span>
                   </div>
                 </td>

@@ -31,6 +31,7 @@ export default async (req, res) => {
   let pool = new sql.ConnectionPool(process.env.SERVER21);
   await pool.connect();
 
+  // Get Customer Email Address
   let customerEmail = await pool
     .request()
     .query(
@@ -43,8 +44,6 @@ export default async (req, res) => {
         `SELECT F_EMAIL FROM T_MEMBER WHERE F_ID=${body.invoice.CREATEDBY};`
       );
 
-    //   cc: picEmail.recordset[0].F_EMAIL,
-
     let attach = body.files.map((ga) => ({
       filename: ga.FILENAME,
       path: `https://jwiusa.com/api/file/get?ref=${
@@ -52,12 +51,46 @@ export default async (req, res) => {
       }&file=${encodeURIComponent(ga.FILENAME)}`,
     }));
 
+    const data = {
+      mail: {
+        from: "James Worldwide Inc <noreply@jamesworldwide.com>",
+        to: token.email,
+        bcc: "IT TEAM [JW] <it@jamesworldwide.com>",
+        subject: `[JWI] ${body.invoice.INVOICE} (TEST)`,
+        attachments: attach,
+      },
+      info: {
+        invoice: body.invoice.INVOICE,
+        isPurchaseOrder: body.PO.length,
+        isFile: body.files ? body.files.length : false,
+        purchaseOrder: body.PO.map(
+          (ga) =>
+            `<tr><td style="border-bottom: 1px solid transparent; padding: 0">${ga}</td></tr>`
+        ).join(""),
+        reference: body.invoice.REFNO,
+        mbl: body.MBL,
+        hbl: body.HBL.map(
+          (ga) =>
+            `<tr><td style="border-bottom: 1px solid transparent; padding: 0">${ga}</td></tr>`
+        ).join(""),
+        container: body.CONTAINER.map(
+          (ga) =>
+            `<tr><td style="border-bottom: 1px solid transparent; padding: 0">${ga}</td></tr>`
+        ).join(""),
+        invoiceAmount: usdFormat(body.invoiceReq.F_InvoiceAmt),
+        personInCharge: picEmail.recordset[0].F_EMAIL,
+        customerEmail: customerEmail.recordset.map(
+          (ga) => `<${ga.NAME}> ${ga.EMAIL} `
+        ),
+      },
+    };
+
     const mailOptions = {
-      from: "James Worldwide Inc <noreply@jamesworldwide.com>",
-      to: token.email,
-      bcc: "IT TEAM [JW] <it@jamesworldwide.com>",
-      subject: `[JW] ${body.invoice.INVOICE} (TEST)`,
-      attachments: attach,
+      from: data.mail.from,
+      to: data.mail.to,
+      bcc: data.mail.bcc,
+      subject: data.mail.subject,
+      attachments: data.mail.attachments,
       html: `
         <!DOCTYPE html>
   <html
@@ -159,10 +192,10 @@ export default async (req, res) => {
                   font-weight: normal;
                 "
               >
-                ${body.invoice.INVOICE || "INVOICE"}
+                ${data.info.invoice}
               </h1>
               ${
-                body.files.length
+                data.info.isFile
                   ? `<p>Please find your attached documents.</p>`
                   : ""
               }
@@ -176,7 +209,7 @@ export default async (req, res) => {
               style="margin: auto;"
             >
             ${
-              body.PO.length
+              data.info.isPurchaseOrder
                 ? `<tr>
                   <td width="250" style="vertical-align: top">
                     <li>PO:</li>
@@ -191,10 +224,7 @@ export default async (req, res) => {
               width="100%"
               style="margin: auto; padding-bottom: 20px"
             >
-                  ${body.PO.map(
-                    (ga, i) =>
-                      `<tr><td style="border-bottom: 1px solid transparent; padding: 0">${ga}</td></tr>`
-                  ).join("")}
+                  ${data.info.purchaseOrder}
                   </table>
                   </td>
                 </tr>`
@@ -206,7 +236,7 @@ export default async (req, res) => {
                 </td>
                 <td>
                 <div style="padding-bottom: 20px">
-                    ${body.invoice.REFNO}
+                    ${data.info.reference}
                     </div>
                 </td>
               </tr>
@@ -216,7 +246,7 @@ export default async (req, res) => {
                 </td>
                 <td>
                 <div style="padding-bottom: 20px">
-                  ${body.MBL}
+                  ${data.info.mbl}
                 </div>
                 </td>
               </tr>
@@ -234,10 +264,7 @@ export default async (req, res) => {
                     width="100%"
                     style="margin: auto; padding-bottom: 20px"
                   >
-                  ${body.HBL.map(
-                    (ga) =>
-                      `<tr><td style="border-bottom: 1px solid transparent; padding: 0">${ga}</td></tr>`
-                  ).join("")}
+                  ${data.info.hbl}
                   </table>
                 </td>
               </tr>
@@ -255,10 +282,7 @@ export default async (req, res) => {
                     width="100%"
                     style="margin: auto; padding-bottom: 20px"
                   >
-                ${body.CONTAINER.map(
-                  (ga) =>
-                    `<tr><td style="border-bottom: 1px solid transparent; padding: 0">${ga}</td></tr>`
-                ).join("")}
+                ${data.info.container}
                 </table>
                 </td>
               </tr>
@@ -293,29 +317,33 @@ export default async (req, res) => {
             >
               <tr>
                 <td>Invoice Amount:</td>
-                <td style="text-align: right">${usdFormat(
-                  body.invoiceReq.F_InvoiceAmt
-                )}</td>
+                <td style="text-align: right">${data.info.invoiceAmount}</td>
               </tr>
             </table>
             </td>
           </tr>
         </table>
                 
-        <p style="color: #bebebe; text-align: center">Bank Account: Western Alliance Bank (8827363137)</p>
+        
         <p style="color: #bebebe; text-align: center">Copyright 2021 James Worldwide Inc</p>
         <p style="color: #bebebe; text-align: center">All rights reserved</p>
-
-        <p style="color: #bebebe; text-align: center">Test email is sent to selected employee. Email Supposed to be sent to ${
-          picEmail.recordset[0].F_EMAIL
-        } ,${customerEmail.recordset.map(
-        (ga) => `<${ga.NAME}> ${ga.EMAIL} `
-      )}</p>
+        <p style="color: #bebebe; text-align: center"><b>CONFIDENTIALITY NOTICE</b></p>
+        <p style="color: #bebebe; text-align: center">The information contained in this email and any attached documents are intended only for use of the individual or entity named above, and may contain information that is privileged, confidential or exempt from disclosure under applicable law.  If the reader of this message is not the intended recipient, or the employee or agent responsible for delivering it to the intended recipient, you are hereby notified that any dissemination, distribution or copying of this communication is strictly prohibited.  If you have received this communication in error, please immediately notify the sender by responding to this email and immediately deleting this message.</p>
+        
+        <p style="color: #bebebe; text-align: center">Invoice email should be delivered to following email addresses</p>
+        <p style="color: #bebebe; text-align: center">TO_CUSTOMER: ${
+          data.info.customerEmail
+        }</p>
+        <p style="color: #bebebe; text-align: center">CC_PIC: ${
+          data.info.personInCharge
+        }</p>
+        <p style="color: #bebebe; text-align: center">CC_ACCOUNTING: ACCOUNTING@JAMESWORLDWIDE.COM</p>
       </div>
     </body>
   </html>
         `,
     };
+    // <p style="color: #bebebe; text-align: center">Bank Account: Western Alliance Bank (8827363137)</p>
     try {
       transport.sendMail(mailOptions, function (error, info) {
         if (error) {
