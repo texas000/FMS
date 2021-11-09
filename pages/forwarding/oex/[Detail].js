@@ -682,7 +682,7 @@ const Detail = ({ token, Reference }) => {
                 setInvoiceMemo(false);
               }}
               title="Request Invoice Approval"
-              className="dark:bg-gray-600 w-50"
+              className="dark:bg-gray-600 large-dialog"
             >
               <div className={Classes.DIALOG_BODY}>
                 {invoiceRequested &&
@@ -1017,7 +1017,7 @@ const Detail = ({ token, Reference }) => {
                 setSelectedFile([]);
               }}
               title="Request Credit Debit Approval"
-              className="dark:bg-gray-600 w-50"
+              className="dark:bg-gray-600 large-dialog"
             >
               <div className={Classes.DIALOG_BODY}>
                 {crdrRequested &&
@@ -1332,7 +1332,7 @@ const Detail = ({ token, Reference }) => {
                 setSelectedFile([]);
               }}
               title="Request Account Payable Approval"
-              className="dark:bg-gray-600 w-50"
+              className="dark:bg-gray-600 large-dialog"
             >
               <div className={Classes.DIALOG_BODY}>
                 {apRequested &&
