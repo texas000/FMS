@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export const Cover = ({ master }) => {
+export const Cover = ({ master, container }) => {
   var upperTableOhter = [
     {
       row: 1,
@@ -146,6 +146,15 @@ export const Cover = ({ master }) => {
       data2: master.F_C2,
     },
   ];
+  container.map((ga, i) => {
+    upperTableOhter.push({
+      row: 5 + i,
+      first: "CONTAINER#",
+      second: "PACKAGE",
+      data1: ga.F_ContainerNo,
+      data2: ga.F_PKGS,
+    });
+  });
 
   // Adding Containers to the upper table
   var lowerTableOther = [
@@ -198,7 +207,7 @@ export const Cover = ({ master }) => {
       >
         <Image style={styles.logo} src="/image/JLOGO.png" fixed />
         <Text style={styles.pageDescription} fixed>
-          FORM 21.2
+          FORM OTH 21.11
         </Text>
         <View style={styles.section}>
           <Table data={upperTableOhter}>

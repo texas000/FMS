@@ -4,7 +4,7 @@ export default async (req, res) => {
   const { ref } = req.query;
 
   const MASTER = `select (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID =T_AOMMAIN.F_Agent) as AGENT,
-  (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AOMMAIN.F_Carrier) as CARRIER,
+  (select T_CODEAIRLINE.F_Name from T_CODEAIRLINE where T_CODEAIRLINE.F_ID = T_AOMMAIN.F_Carrier) as CARRIER,
   * from T_AOMMAIN WHERE F_RefNo='${ref.replace(/'/g, "''")}';`;
 
   const HOUSE = `SELECT (select T_COMPANY.F_SName from T_COMPANY where T_COMPANY.F_ID = T_AOHMAIN.F_Customer) as CUSTOMER,

@@ -131,7 +131,7 @@ export const Cover = ({ master, house }) => {
       row: 3,
       first: "AIRPORT",
       second: "COMMODITY",
-      data1: `${master.F_LCode} - ${master.F_DCode || master.F_Dcode}`,
+      data1: `${master.F_LCode} - ${master.F_DCode || master.F_Dcode || ""}`,
       data2: house.map((ga) => ga.F_Commodity).join(" "),
     },
     {
