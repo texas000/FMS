@@ -150,7 +150,14 @@ export default function search(props) {
                           type: blob.type,
                         });
                         var fileURL = URL.createObjectURL(file);
-                        window.open(fileURL);
+                        // prevent safari browser block new tab open
+                        var ua = navigator.userAgent.toLowerCase();
+                        if (ua.indexOf("safari") != -1) {
+                          if (ua.indexOf("chrome") == -1) {
+                            window.location.assign(fileURL);
+                          }
+                        }
+                        window.open(fileURL, "_blank");
                       }}
                       style={{
                         textDecoration: "none",

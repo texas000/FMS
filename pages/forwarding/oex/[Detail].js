@@ -24,6 +24,7 @@ import FreightComment from "../../../components/Forwarding/FreightComment";
 import FreightProfit from "../../../components/Forwarding/FreightProfit";
 import Notification from "../../../components/Toaster";
 import CheckRequestForm from "../../../components/Request/ApRequestForm";
+import FreightDetailDialog from "../../../components/Forwarding/FreightDetailDialog";
 
 const Detail = ({ token, Reference }) => {
   const router = useRouter();
@@ -460,6 +461,11 @@ const Detail = ({ token, Reference }) => {
 
                     <MenuDivider title="TOOLS" />
                     <MenuItem
+                      text="Detail"
+                      icon="info-sign"
+                      onClick={() => setSelectedPayment({ type: 100 })}
+                    />
+                    <MenuItem
                       text="Email"
                       icon="envelope"
                       onClick={() => window.open(mailHref, "__blank")}
@@ -523,51 +529,9 @@ const Detail = ({ token, Reference }) => {
                       </td>
                     </tr>
                     <tr>
-                      <td className="px-6 py-2 whitespace-nowrap">COMMODITY</td>
+                      <td className="px-6 py-2 whitespace-nowrap">BOOKING</td>
                       <td className="px-6 py-2 whitespace-nowrap truncate max-w-sm">
-                        {data.H.length ? data.H[0].F_Commodity : ""}
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-indigo-500 hover:text-white cursor-pointer">
-                      <td className="px-6 py-2 whitespace-nowrap">SHIPPER</td>
-                      <td className="px-6 py-2 whitespace-nowrap truncate max-w-sm">
-                        <Popover2
-                          content={
-                            <div className="card p-3 border-2">
-                              {data.H.map((ga) => (
-                                <p className="text-xs p-1">{ga.SHIPPER}</p>
-                              ))}
-                            </div>
-                          }
-                          autoFocus={false}
-                          minimal={true}
-                          interactionKind="hover"
-                          hoverOpenDelay={100}
-                          disabled={data.H.length < 2}
-                        >
-                          {data.H.length ? data.H[0].SHIPPER : ""}
-                        </Popover2>
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-indigo-500 hover:text-white cursor-pointer">
-                      <td className="px-6 py-2 whitespace-nowrap">CONSIGNEE</td>
-                      <td className="px-6 py-2 whitespace-nowrap truncate max-w-sm">
-                        <Popover2
-                          content={
-                            <div className="card p-3 border-2">
-                              {data.H.map((ga) => (
-                                <p className="text-xs p-1">{ga.CONSIGNEE}</p>
-                              ))}
-                            </div>
-                          }
-                          autoFocus={false}
-                          minimal={true}
-                          interactionKind="hover"
-                          hoverOpenDelay={100}
-                          disabled={data.H.length < 2}
-                        >
-                          {data.H.length ? data.H[0].CONSIGNEE : ""}
-                        </Popover2>
+                        {data.M.F_BookingNo}
                       </td>
                     </tr>
                   </tbody>
@@ -639,7 +603,7 @@ const Detail = ({ token, Reference }) => {
                           : ""}
                       </td>
                     </tr>
-                    <tr>
+                    {/* <tr>
                       <td className="px-6 py-2 whitespace-nowrap">CUT OFF</td>
                       <td className="px-6 py-2 font-bold whitespace-nowrap">
                         {data.M.F_PLOFDEL}
@@ -649,8 +613,8 @@ const Detail = ({ token, Reference }) => {
                           ? moment(data.M.F_CutOffDate).utc().format("LL")
                           : ""}
                       </td>
-                    </tr>
-                    <tr>
+                    </tr> */}
+                    {/* <tr>
                       <td className="px-6 py-2 whitespace-nowrap">MOVE TYPE</td>
                       <td
                         colSpan={2}
@@ -658,7 +622,7 @@ const Detail = ({ token, Reference }) => {
                       >
                         {data.M.F_MoveType}
                       </td>
-                    </tr>
+                    </tr> */}
                   </tbody>
                 </table>
               </div>
@@ -1627,7 +1591,18 @@ const Detail = ({ token, Reference }) => {
                 />
               </div>
             </Dialog>
-
+            <Dialog
+              isOpen={selectedPayment.type == 100}
+              onClose={() => {
+                setSelectedPayment(false);
+              }}
+              title="Shipment Detail"
+              className="dark:bg-gray-600 large-dialog"
+            >
+              <div className={Classes.DIALOG_BODY}>
+                <FreightDetailDialog house={data.H} container={data.C} />
+              </div>
+            </Dialog>
             <Notification show={show} setShow={setShow} msg={msg} />
           </div>
         ) : (

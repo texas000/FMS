@@ -66,13 +66,16 @@ export default function FreightFile({
   const Files = ({ File, Level }) => {
     if (File) {
       return (
-        <div>
+        <Fragment>
           {File.map((ga) => {
             if (ga.F_SECURITY == Level) {
               return (
-                <div key={ga.F_ID} className="flex flex-row">
+                <div
+                  key={ga.F_ID}
+                  className="flex flex-row w-100 overflow-hidden"
+                >
                   <button
-                    className="mb-2 w-100 bg-white dark:bg-gray-700 p-1 border border-gray-400 rounded-lg hover:bg-indigo-500 hover:text-white z-0"
+                    className="w-full flex-shrink mb-2 bg-white dark:bg-gray-700 p-1 border border-gray-400 rounded-lg hover:bg-indigo-500 hover:text-white z-0"
                     onClick={async () => {
                       window.location.assign(
                         `/api/file/get?ref=${Reference}&file=${encodeURIComponent(
@@ -81,7 +84,7 @@ export default function FreightFile({
                       );
                     }}
                   >
-                    <div className="flex justify-between px-2 text-xs">
+                    <div className="flex flex-shrink justify-between px-1 text-xs">
                       <span className="uppercase tracking-tight">
                         <svg
                           width="18"
@@ -135,18 +138,13 @@ export default function FreightFile({
                       onClick={() => handleFileHide(ga.F_ID)}
                     >
                       Delete
-                      {/* <img
-                        src="https://cdn-icons-png.flaticon.com/512/126/126497.png"
-                        width="20"
-                        height="20"
-                      /> */}
                     </button>
                   )}
                 </div>
               );
             }
           })}
-        </div>
+        </Fragment>
       );
     } else {
       return <p>PREVENT DEFAULT</p>;

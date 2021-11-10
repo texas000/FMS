@@ -24,6 +24,7 @@ import FreightComment from "../../../components/Forwarding/FreightComment";
 import FreightProfit from "../../../components/Forwarding/FreightProfit";
 import Notification from "../../../components/Toaster";
 import CheckRequestForm from "../../../components/Request/ApRequestForm";
+import FreightDetailDialog from "../../../components/Forwarding/FreightDetailDialog";
 
 const Detail = ({ token, Reference }) => {
   const router = useRouter();
@@ -454,6 +455,11 @@ const Detail = ({ token, Reference }) => {
                     </BlobProvider>
 
                     <MenuDivider title="TOOLS" />
+                    <MenuItem
+                      text="Detail"
+                      icon="info-sign"
+                      onClick={() => setSelectedPayment({ type: 100 })}
+                    />
                     <MenuItem
                       text="Email"
                       icon="envelope"
@@ -1595,7 +1601,18 @@ const Detail = ({ token, Reference }) => {
                 />
               </div>
             </Dialog>
-
+            <Dialog
+              isOpen={selectedPayment.type == 100}
+              onClose={() => {
+                setSelectedPayment(false);
+              }}
+              title="Shipment Detail"
+              className="dark:bg-gray-600 large-dialog"
+            >
+              <div className={Classes.DIALOG_BODY}>
+                <FreightDetailDialog house={data.H} container={[]} />
+              </div>
+            </Dialog>
             <Notification show={show} setShow={setShow} msg={msg} />
           </div>
         ) : (
