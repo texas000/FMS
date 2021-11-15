@@ -28,14 +28,22 @@ export default async (req, res) => {
 
   var query = `INSERT INTO T_REQUEST 
     (RefNo, Status, Title, Body, CreateAt, ModifyAt, CreateBy, ModifyBy, TBName, TBID, Attachment, ApType, Attachment2) 
-    VALUES ('${ref}','101','${body.F_InvoiceNo}',
-	'${body.VENDOR}',GETDATE(),GETDATE(),'${token.uid}','${token.uid}',
+    VALUES ('${ref.replace("'", "''")}','101','${body.F_InvoiceNo.replace(
+    "'",
+    "''"
+  )}',
+	'${body.VENDOR.replace("'", "''")}',GETDATE(),GETDATE(),'${token.uid}','${
+    token.uid
+  }',
 	'T_APHD','${body.F_ID}', '0', '${body.type}', NULL);`;
 
   // ADDING FILE LIST
   query += fileQuery;
   // ADDING MESSAGE TO IAN(22)
-  query += `INSERT INTO T_MESSAGE VALUES ('ACCOUNTING PAYABLE REQUEST FOR ${body.F_InvoiceNo}', '${body.path}', GETDATE(), '${token.uid}');
+  query += `INSERT INTO T_MESSAGE VALUES ('ACCOUNTING PAYABLE REQUEST FOR ${body.F_InvoiceNo.replace(
+    "'",
+    "''"
+  )}', '${body.path}', GETDATE(), '${token.uid}');
 	INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
 
   let pool = new sql.ConnectionPool(process.env.SERVER21);
