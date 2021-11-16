@@ -453,6 +453,28 @@ const Detail = ({ token, Reference }) => {
                       icon="envelope"
                       onClick={() => window.open(mailHref, "__blank")}
                     />
+                    <MenuItem
+                      text="Prev"
+                      icon="circle-arrow-left"
+                      onClick={() => {
+                        var ref = Reference.replace(/[^a-zA-Z]/g, "");
+                        var number = Reference.replace(/^\D+/g, "");
+                        router.push(
+                          `/forwarding/other/${ref}${parseInt(number) - 1}`
+                        );
+                      }}
+                    />
+                    <MenuItem
+                      text="Next"
+                      icon="circle-arrow-right"
+                      onClick={() => {
+                        var ref = Reference.replace(/[^a-zA-Z]/g, "");
+                        var number = Reference.replace(/^\D+/g, "");
+                        router.push(
+                          `/forwarding/other/${ref}${parseInt(number) + 1}`
+                        );
+                      }}
+                    />
                   </Menu>
                 }
                 fill={true}

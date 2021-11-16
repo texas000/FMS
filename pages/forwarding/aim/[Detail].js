@@ -463,6 +463,28 @@ const Detail = ({ token, Reference }) => {
                       icon="envelope"
                       onClick={() => window.open(mailHref, "__blank")}
                     />
+                    <MenuItem
+                      text="Prev"
+                      icon="circle-arrow-left"
+                      onClick={() => {
+                        var ref = Reference.split("-")[0];
+                        var number = Reference.split("-")[1];
+                        router.push(
+                          `/forwarding/aim/${ref}-${parseInt(number) - 1}`
+                        );
+                      }}
+                    />
+                    <MenuItem
+                      text="Next"
+                      icon="circle-arrow-right"
+                      onClick={() => {
+                        var ref = Reference.split("-")[0];
+                        var number = Reference.split("-")[1];
+                        router.push(
+                          `/forwarding/aim/${ref}-${parseInt(number) + 1}`
+                        );
+                      }}
+                    />
                   </Menu>
                 }
                 fill={true}
