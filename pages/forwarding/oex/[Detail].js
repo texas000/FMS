@@ -290,8 +290,7 @@ const Detail = ({ token, Reference }) => {
         headers: { ref: Reference, token: JSON.stringify(token) },
         body: JSON.stringify({
           ...selectedPayment,
-          file: selectedFile.map((ga) => ga.ID),
-          filenames: selectedFile.map((ga) => ga.NAME),
+          file: selectedFile,
           type: selectedApType,
           customer: data.H[0].CUSTOMER,
           path: router.asPath,
@@ -1558,14 +1557,11 @@ const Detail = ({ token, Reference }) => {
                                 className="truncate"
                                 onChange={(e) => {
                                   if (e.target.checked) {
-                                    setSelectedFile((prev) => [
-                                      ...prev,
-                                      { ID: ga.F_ID, NAME: ga.F_FILENAME },
-                                    ]);
+                                    setSelectedFile((prev) => [...prev, ga]);
                                   } else {
                                     var arr = [...selectedFile];
                                     var index = arr.findIndex(
-                                      (i) => i.ID == ga.F_ID
+                                      (i) => i.F_ID == ga.F_ID
                                     );
                                     if (index !== -1) {
                                       arr.splice(index, 1);

@@ -22,7 +22,7 @@ export default async (req, res) => {
   var fileQuery = body.file
     .map(
       (ga) =>
-        `INSERT INTO T_FILEDETAIL VALUES ('${body.F_ID}','T_APHD','${ga}');`
+        `INSERT INTO T_FILEDETAIL VALUES ('${body.F_ID}','T_APHD','${ga.F_ID}');`
     )
     .join(" ");
 
@@ -51,11 +51,11 @@ export default async (req, res) => {
     await pool.connect();
     let result = await pool.request().query(query);
 
-    let attach = body.filenames.map((ga) => ({
-      filename: ga,
-      path: `https://jwiusa.com/api/file/get?ref=${ref}&file=${encodeURIComponent(
-        ga
-      )}`,
+    let attach = body.file.map((ga) => ({
+      filename: ga.F_FILENAME,
+      path: `https://jwiusa.com/api/file/get?ref=${
+        ga.F_REF
+      }&file=${encodeURIComponent(ga.F_FILENAME)}`,
     }));
 
     const mailOptions = {
