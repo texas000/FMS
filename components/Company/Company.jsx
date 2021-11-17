@@ -13,6 +13,7 @@ export default function Company({
   balance,
   invoice,
   companyid,
+  count,
 }) {
   const { data: file, mutate } = useSWR(
     `/api/file/list?ref=COMPANY-${companyid}`
@@ -99,11 +100,45 @@ export default function Company({
       }
     }
   }
+  const CompanyType = () => {
+    if (count && (count.AP || count.INV || count.CR)) {
+      if (count.AP > Math.max(count.INV, count.CR)) {
+        return (
+          <span className="bg-indigo-500 rounded-full text-white p-1">
+            VENDOR
+          </span>
+        );
+      }
+      if (count.CR > Math.max(count.AP, count.INV)) {
+        return (
+          <span className="bg-indigo-500 rounded-full text-white p-1">
+            AGENT
+          </span>
+        );
+      }
+      if (count.INV > Math.max(count.AP, count.CR)) {
+        return (
+          <span className="bg-indigo-500 rounded-full text-white p-1">
+            CUSTOMER
+          </span>
+        );
+      }
+    } else {
+      return (
+        <span className="bg-red-500 rounded-full text-white p-1">
+          NO HISTORY
+        </span>
+      );
+    }
+  };
 
   if (data[0]) {
     return (
       <div>
-        <h3 className="dark:text-white">{data[0].F_FName}</h3>
+        <div className="flex flex-row items-center">
+          <h3 className="dark:text-white mr-2">{data[0].F_FName}</h3>
+          <CompanyType />
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-3">
           <div className="card col-span-2 overflow-auto">
             <table className="min-w-full divide-y divide-gray-200">
