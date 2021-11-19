@@ -59,7 +59,7 @@ export default async (req, res) => {
       let files = await pool2
         .request()
         .query(
-          `SELECT DISTINCT * , (SELECT F_FILENAME FROM T_FILE F WHERE F.F_ID=F_FILE) AS FILENAME FROM T_FILEDETAIL WHERE F_TBName='${table}' AND F_TBID='${id}';`
+          `select * from T_FILEDETAIL inner join T_FILE on T_FILE.F_ID=T_FILEDETAIL.F_FILE where F_TBID='${id}' and F_TBName='${table}' order by T_FILE.F_ID desc;`
         );
       output.Files = files.recordset;
       res.status(200).send(output);

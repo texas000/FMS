@@ -12,13 +12,12 @@ import filterFactory, {
   textFilter,
   selectFilter,
 } from "react-bootstrap-table2-filter";
-import { Dialog, Classes, Tag, Button } from "@blueprintjs/core";
-import { useState } from "react";
-import usdFormat from "../lib/currencyFormat";
+import { Dialog, Classes, Button } from "@blueprintjs/core";
+import { Fragment, useState } from "react";
+
 import moment from "moment";
-import { BlobProvider } from "@react-pdf/renderer";
-import CheckRequestForm from "../components/Request/ApRequestForm";
 import router from "next/router";
+import ApManageDialog from "../components/Request/ApManageDialog";
 
 export async function getServerSideProps({ req }) {
   const cookies = cookie.parse(
@@ -65,33 +64,6 @@ export default function request(props) {
       </div>
     );
   }
-
-  const Status = ({ data }) => {
-    if (data == 101) {
-      return <span className="text-green-500 font-bold">REQUESTED</span>;
-    }
-    if (data == 110) {
-      return <span className="text-red-500 font-bold">DIRECTOR REJECTED</span>;
-    }
-    if (data == 111) {
-      return (
-        <span className="text-green-500 font-bold">DIRECTOR APPROVED</span>
-      );
-    }
-    if (data == 120) {
-      return (
-        <span className="text-red-500 font-bold">ACCOUNTING REJECTED</span>
-      );
-    }
-    if (data == 121) {
-      return (
-        <span className="text-green-500 font-bold">ACCOUNTING APPROVED</span>
-      );
-    }
-    if (data == 131) {
-      return <span className="text-green-500 font-bold">CEO APPROVED</span>;
-    }
-  };
 
   const selectOptions = {
     101: "REQUESTED",
@@ -524,135 +496,7 @@ export default function request(props) {
         className="dark:bg-gray-600"
       >
         <div className={`${Classes.DIALOG_BODY} h-100`}>
-          <h5>Would you like to accept request?</h5>
-          <div className="card my-2">
-            <div className="d-flex justify-content-between bg-gray-100 text-black dark:bg-gray-500 dark:text-white rounded-t shadow-inner p-2">
-              <span className="font-extrabold text-lg px-2">
-                {selected.Title}
-              </span>
-            </div>
-            {/* RefNo */}
-            <div className="leading-8 p-3">
-              <p className="font-bold">Reference: {selected.RefNo}</p>
-              <p>
-                Status: <Status data={selected.Status} />
-              </p>
-              <p>
-                Type: <mark className="text-uppercase">{selected.ApType}</mark>
-              </p>
-              {/* {JSON.stringify(selected)} */}
-              {/* <p>Customer: {selected.Body}</p> */}
-              {ap ? (
-                <div>
-                  <p>Customer: {ap.Customer}</p>
-                  <p>Vendor : {selected.Body}</p>
-                  <p>
-                    Total Amount:{" "}
-                    <mark className="font-bold">
-                      {usdFormat(ap.F_InvoiceAmt)}
-                    </mark>
-                  </p>
-                  <ul className="my-2 px-2 divide-y divide-gray-300 rounded border border-gray-100">
-                    {ap.Detail.length &&
-                      ap.Detail.map((ga) => (
-                        <li key={ga.F_ID} className="flex justify-between">
-                          <span>{ga.F_Description}</span>
-                          <span>{usdFormat(ga.F_Amount)}</span>
-                        </li>
-                      ))}
-                  </ul>
-                  {ap.Files.length &&
-                    ap.Files.map((ga, i) => (
-                      <Tag
-                        key={`FILE${i}`}
-                        icon="cloud-download"
-                        interactive={true}
-                        intent="primary"
-                        className="p-2 my-2 mx-1"
-                        onClick={() => {
-                          window.location.assign(
-                            `/api/file/get?ref=${
-                              selected.RefNo
-                            }&file=${encodeURIComponent(ga.FILENAME)}`
-                          );
-                        }}
-                      >
-                        {ga.FILENAME}
-                      </Tag>
-                    ))}
-                  <BlobProvider
-                    document={
-                      <CheckRequestForm
-                        oim={selected.RefNo}
-                        pic={selected.Creator}
-                        payto={ap.Vendor}
-                        customer={ap.Customer}
-                        amt={ap.F_InvoiceAmt}
-                        type={selected.ApType.toUpperCase()}
-                        desc={ap.Detail.map(
-                          (ga) => `\t\t${ga.F_Description}\n`
-                        ).join("")}
-                        inv={ap.F_InvoiceNo}
-                        due={
-                          ap.F_DueDate
-                            ? moment(ap.F_DueDate).utc().format("L")
-                            : ""
-                        }
-                        approved={
-                          selected.Status === 111 || selected.Status === 121
-                        }
-                      />
-                    }
-                  >
-                    {({ blob, url, loading, error }) => (
-                      <a
-                        onClick={async () => {
-                          // Open the request form first
-                          window.open(url, "_blank");
-                          // Open following backup documents
-                          try {
-                            ap.Files.map(async (ga) => {
-                              const data = await fetch(
-                                `/api/file/get?ref=${
-                                  selected.RefNo
-                                }&file=${encodeURIComponent(ga.FILENAME)}`
-                              );
-                              const blob = await data.blob();
-                              var file = new Blob([blob], { type: blob.type });
-                              var fileURL = URL.createObjectURL(file);
-                              window.open(fileURL, "_blank");
-                            });
-                          } catch (err) {
-                            console.log(err);
-                          }
-                        }}
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Tag
-                          icon="cloud-download"
-                          interactive={true}
-                          intent="primary"
-                          className="p-2 my-2 mx-1"
-                        >
-                          Form
-                        </Tag>
-                      </a>
-                    )}
-                  </BlobProvider>
-                </div>
-              ) : (
-                <div></div>
-              )}
-              <p className="mt-2">
-                Requested: {moment(selected.CreateAt).utc().format("LLL")} by{" "}
-                {selected.Creator}
-              </p>
-              <p>
-                Approved: {moment(selected.ModifyAt).utc().format("LLL")} by{" "}
-                {selected.Modifier}
-              </p>
-            </div>
-          </div>
+          <ApManageDialog selected={selected} ap={ap} />
         </div>
 
         <div
