@@ -14,6 +14,7 @@ export default function Company({
   invoice,
   companyid,
   count,
+  depo,
 }) {
   const { data: file, mutate } = useSWR(
     `/api/file/list?ref=COMPANY-${companyid}`
@@ -343,7 +344,7 @@ export default function Company({
                   <tr>
                     <th
                       scope="col"
-                      colSpan="3"
+                      colSpan="4"
                       className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
                     >
                       Pending Invoice
@@ -354,19 +355,56 @@ export default function Company({
                   {invoice &&
                     invoice.map((ga, i) => (
                       <tr key={`${i}-invoice`}>
-                        <td className="py-1 whitespace-nowrap pl-3">
-                          {ga.F_InvoiceNo}
+                        <td className="py-1 whitespace-nowrap pl-6">
+                          {ga.F_InvoiceNo || ga.F_ID}
                         </td>
+                        <td className="py-1 whitespace-nowrap">{ga.PIC}</td>
                         <td className="py-1 whitespace-nowrap text-right">
                           Due {moment(ga.F_DueDate).fromNow()}
                         </td>
-                        <td className="py-1 whitespace-nowrap text-right pr-3">
+                        <td className="py-1 whitespace-nowrap text-right pr-6">
                           {usdFormat(ga.F_InvoiceAmt)}
                         </td>
                       </tr>
                     ))}
                 </tbody>
               </table>
+            </div>
+            <div className="card flex-auto overflow-hidden mt-3">
+              <table className="min-w-full divide-y divide-gray-200">
+                <thead className="bg-gray-50 dark:bg-gray-700">
+                  <tr>
+                    <th
+                      scope="col"
+                      colSpan="3"
+                      className="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider"
+                    >
+                      Recent Payment History
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 text-xs text-gray-500 dark:text-white">
+                  {depo &&
+                    depo.map((ga, i) => (
+                      <tr key={`${i}-depo`} className="px-6">
+                        <td className="py-1 whitespace-nowrap pl-6">
+                          {ga.F_Type == "C"
+                            ? `Payment Sent by ${ga.F_CheckNo} at 
+                          ${moment(ga.F_PostDate).utc().format("l")}`
+                            : `Payment Recevied by ${ga.F_CheckNo} at ${moment(
+                                ga.F_PostDate
+                              )
+                                .utc()
+                                .format("l")}`}
+                        </td>
+                        <td className="py-1 whitespace-nowrap text-right pr-6">
+                          {moment(ga.F_U1Date, "YYYY-MM-DD HH:mm:ss").fromNow()}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+              {/* {JSON.stringify(depo)} */}
             </div>
           </div>
           <div className="flex-grow-0 card flex-auto overflow-auto">

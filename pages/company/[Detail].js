@@ -32,6 +32,8 @@ export default function company({ token, q }) {
   const { data: balance } = useSWR(`/api/company/balance?q=${q}`);
   const { data: invoice } = useSWR(`/api/company/pending?q=${q}`);
   const { data: count } = useSWR(`/api/company/accountingCount?q=${q}`);
+  const { data: depo } = useSWR(`/api/company/getAccountingHistory?q=${q}`);
+
   const router = useRouter();
   if (typeof window !== "undefined" && data) {
     // Define an empty array
@@ -74,6 +76,7 @@ export default function company({ token, q }) {
           invoice={invoice}
           companyid={q}
           count={count}
+          depo={depo}
         />
       )}
     </Layout>
