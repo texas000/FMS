@@ -100,8 +100,8 @@ export default function FreightComment({ Reference, setMsg, setShow, token }) {
   };
 
   return (
-    <div className="card">
-      <div className="w-100 py-2 px-7 font-bold bg-gray-50 dark:bg-gray-700 tracking-wider border-b border-gray-200 mb-2 rounded-t-xl">
+    <div className="card overflow-hidden">
+      <div className="w-100 py-2 px-7 font-bold bg-gray-50 dark:bg-gray-700 tracking-wider border-b border-gray-200 mb-2">
         COMMENT
       </div>
       {ReactQuill && (

@@ -153,8 +153,8 @@ export default function FreightFile({
 
   return (
     <Fragment>
-      <div className="card overflow-visible ">
-        <div className="w-100 py-2 px-7 font-bold bg-gray-50 dark:bg-gray-700 tracking-wider border-b border-gray-200 mb-2 rounded-t-xl">
+      <div className="card overflow-visible">
+        <div className="py-2 px-7 font-bold bg-gray-50 rounded-t-lg dark:bg-gray-700 tracking-wider border-b border-gray-200 mb-2">
           INVOICE FILE
         </div>
         <div className="p-3 grid grid-cols-2 gap-4">
@@ -163,8 +163,13 @@ export default function FreightFile({
             onChange={(e) => setFileTypeSelected(e)}
             defaultValue={{ value: 0, label: "INVOICE FILE TYPE" }}
             styles={{
-              menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+              menuPortal: (base) => ({
+                ...base,
+                zIndex: 9999,
+                fontSize: "0.5rem",
+              }),
               control: (styles) => ({
+                fontSize: "0.8rem",
                 ...styles,
               }),
             }}
@@ -192,7 +197,7 @@ export default function FreightFile({
         </div>
       </div>
       <div className="card overflow-visible">
-        <div className="w-100 py-2 px-7 font-bold bg-gray-50 dark:bg-gray-700 tracking-wider border-b border-gray-200 mb-2 rounded-t-xl">
+        <div className="py-2 px-7 font-bold bg-gray-50 rounded-t-lg dark:bg-gray-700 tracking-wider border-b border-gray-200 mb-2">
           CRDR FILE
         </div>
         <div className="p-3 grid grid-cols-2 gap-4">
@@ -227,7 +232,7 @@ export default function FreightFile({
         </div>
       </div>
       <div className="card overflow-visible">
-        <div className="w-100 py-2 px-7 font-bold bg-gray-50 dark:bg-gray-700 tracking-wider border-b border-gray-200 mb-2 rounded-t-xl">
+        <div className="py-2 px-7 font-bold bg-gray-50 rounded-t-lg dark:bg-gray-700 tracking-wider border-b border-gray-200 mb-2">
           ACCOUNT PAYABLE FILE
         </div>
         <div className="p-3 grid grid-cols-2 gap-4">
