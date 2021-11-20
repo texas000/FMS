@@ -305,6 +305,20 @@ const Detail = ({ token, Reference }) => {
       });
       if (apRequestFetch.status == 200) {
         setMsg(`Requested approval for ${selectedPayment.F_InvoiceNo}`);
+        try {
+          await fetch(`/api/message/oneSignalPostToUser?id=ian`, {
+            method: "POST",
+            body: JSON.stringify({
+              english: `${token.first} requested ${selectedPayment.F_InvoiceNo}`,
+              title: "NEW AP REQUEST",
+              url: `/request`,
+              to: "2f924304-8993-4f19-966b-c901e7c707d1",
+            }),
+          });
+        } catch (err) {
+          console.log(err);
+        }
+
         setSelectedPayment(false);
         setShow(true);
       } else {
@@ -443,7 +457,7 @@ const Detail = ({ token, Reference }) => {
               </div>
               <Popover2
                 content={
-                  <Menu className="card p-3 rounded">
+                  <Menu className="p-3 rounded overflow-hidden">
                     <MenuDivider title="FOLDER COVER" />
                     <BlobProvider
                       document={
