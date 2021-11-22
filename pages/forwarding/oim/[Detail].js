@@ -132,10 +132,23 @@ const Detail = ({ token, Reference }) => {
         }
       );
       if (invoiceRequestFetch.status == 200) {
-        setMsg(`Requested approval for ${selectedPayment.F_InvoiceNo}`);
+        setMsg(await invoiceRequestFetch.text());
+        try {
+          await fetch(`/api/message/oneSignalPostToUser?id=ian`, {
+            method: "POST",
+            body: JSON.stringify({
+              english: `${token.first} requested ${selectedPayment.F_InvoiceNo}`,
+              title: "NEW INVOICE REQUEST",
+              url: `/forwarding/oim/${Reference}`,
+              to: "2f924304-8993-4f19-966b-c901e7c707d1",
+            }),
+          });
+        } catch (err) {
+          console.log(err);
+        }
         setSelectedPayment(false);
       } else {
-        setMsg(`Error: ${invoiceRequestFetch.status}`);
+        setMsg(await invoiceRequestFetch.text());
       }
       setShow(true);
     }
@@ -231,7 +244,20 @@ const Detail = ({ token, Reference }) => {
       });
       if (crdrRequestFetch.status == 200) {
         setMsg(`Requested approval for ${selectedPayment.F_CrDbNo}`);
-        console.log(await crdrRequestFetch.json());
+        try {
+          await fetch(`/api/message/oneSignalPostToUser?id=ian`, {
+            method: "POST",
+            body: JSON.stringify({
+              english: `${token.first} requested ${selectedPayment.F_CrDbNo}`,
+              title: "NEW CRDR REQUEST",
+              url: `/forwarding/oim/${Reference}`,
+              to: "2f924304-8993-4f19-966b-c901e7c707d1",
+            }),
+          });
+        } catch (err) {
+          console.log(err);
+        }
+
         setSelectedPayment(false);
       } else {
         setMsg(`Error: ${selectedPayment.status}`);

@@ -39,220 +39,230 @@ export default async (req, res) => {
       .join(" ");
     // Add request invoice data
     qry += `INSERT INTO T_REQUEST_INV VALUES 
-    (101, '${body.Reference}', GETDATE(), '${token.uid}' , GETDATE(), '${token.uid}',
-    'T_INVOHD', '${body.invoiceReq.F_ID}', N'${sanitizedMemo}', N'${body.invoiceReq.BILLTO}', N'${body.invoiceReq.F_InvoiceNo}', N'${body.path}', '${body.invoiceReq.F_BillTo}', '${body.autosend}');`;
+    (101, '${body.Reference}', GETDATE(), '${token.uid}' , GETDATE(), '${
+      token.uid
+    }',
+    'T_INVOHD', '${
+      body.invoiceReq.F_ID
+    }', N'${sanitizedMemo}', N'${body.invoiceReq.BILLTO.replace(
+      "'",
+      "''"
+    )}', N'${body.invoiceReq.F_InvoiceNo}', N'${body.path}', '${
+      body.invoiceReq.F_BillTo
+    }', '${body.autosend}');`;
     // Add notification message
     qry += `INSERT INTO T_MESSAGE VALUES
     ('INVOICE REQUEST FOR ${body.invoiceReq.F_InvoiceNo}', '${body.path}', GETDATE(), '${token.uid}');
     INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
-
     // When invoice requested, the notification goes to IAN(22)
 
-    let result = await pool.request().query(qry);
+    try {
+      let result = await pool.request().query(qry);
+      let attach = body.fileNames.map((ga) => ({
+        filename: ga,
+        path: `https://jwiusa.com/api/file/get?ref=${
+          body.Reference
+        }&file=${encodeURIComponent(ga)}`,
+      }));
 
-    let attach = body.fileNames.map((ga) => ({
-      filename: ga,
-      path: `https://jwiusa.com/api/file/get?ref=${
-        body.Reference
-      }&file=${encodeURIComponent(ga)}`,
-    }));
-
-    const mailOptions = {
-      from: "JWIUSA <it@jamesworldwide.com>",
-      // to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
-      to: "IAN PYO [JW] <ian@jamesworldwide.com>",
-      subject: `INVOICE REQUEST [${body.invoiceReq.F_InvoiceNo}]`,
-      html: `<!DOCTYPE html>
-  <html
-    lang="en"
-    xmlns="http://www.w3.org/xhtml"
-    xmlns:v="urn:schemas-microsoft-com:vml"
-    xmlns:o="urn:schemas-microsoft-com:office:office"
-  >
-    <head>
-      <meta charset="utf-8" />
-      <meta name="viewport" content="width=device-width" />
-      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-      <meta name="x-apple-disable-message-reformatting" />
-      <meta name="color-scheme" content="light" />
-      <meta name="supported-color-schemes" content="light" />
-      <title></title>
-      <link
-        href="https://fonts.googleapis.com/css?family=Roboto:400,700"
-        rel="stylesheet"
-        type="text/css"
-      />
-    </head>
-    <body width="100%" style="background-color: #fafafa">
-        <!-- Inbox Preview -->
-       <div
-        style="max-height: 0; overflow: hidden; mso-hide: all"
-        aria-hidden="true"
-      >
-        [JWI REQUEST SYSTEM]
-      </div>
-      <!-- Email Body Begin -->
-      <div style="background-color: white; max-width: 600px; margin: 0 auto">
-        <table
-          align="center"
-          role="presentation"
-          cellspacing="0"
-          cellpadding="0"
-          border="0"
-          width="100%"
-          style="margin: auto; border: 1px solid #dedede"
+      const mailOptions = {
+        from: "JWIUSA <it@jamesworldwide.com>",
+        // to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
+        to: "IAN PYO [JW] <ian@jamesworldwide.com>",
+        subject: `INVOICE REQUEST [${body.invoiceReq.F_InvoiceNo}]`,
+        html: `<!DOCTYPE html>
+    <html
+      lang="en"
+      xmlns="http://www.w3.org/xhtml"
+      xmlns:v="urn:schemas-microsoft-com:vml"
+      xmlns:o="urn:schemas-microsoft-com:office:office"
+    >
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="x-apple-disable-message-reformatting" />
+        <meta name="color-scheme" content="light" />
+        <meta name="supported-color-schemes" content="light" />
+        <title></title>
+        <link
+          href="https://fonts.googleapis.com/css?family=Roboto:400,700"
+          rel="stylesheet"
+          type="text/css"
+        />
+      </head>
+      <body width="100%" style="background-color: #fafafa">
+          <!-- Inbox Preview -->
+         <div
+          style="max-height: 0; overflow: hidden; mso-hide: all"
+          aria-hidden="true"
         >
-          <!-- Email Header : BEGIN -->
-          <tr>
-            <td style="padding: 20px 0; text-align: center">
-              <img
-                src="https://jwiusa.com/image/Logo-lg.png"
-                width="200"
-                height="50"
-                alt="jamesworldwide"
-                border="0"
+          [JWI REQUEST SYSTEM]
+        </div>
+        <!-- Email Body Begin -->
+        <div style="background-color: white; max-width: 600px; margin: 0 auto">
+          <table
+            align="center"
+            role="presentation"
+            cellspacing="0"
+            cellpadding="0"
+            border="0"
+            width="100%"
+            style="margin: auto; border: 1px solid #dedede"
+          >
+            <!-- Email Header : BEGIN -->
+            <tr>
+              <td style="padding: 20px 0; text-align: center">
+                <img
+                  src="https://jwiusa.com/image/Logo-lg.png"
+                  width="200"
+                  height="50"
+                  alt="jamesworldwide"
+                  border="0"
+                  style="
+                    height: auto;
+                    font-family: sans-serif;
+                    font-size: 15px;
+                    line-height: 15px;
+                  "
+                />
+              </td>
+            </tr>
+            <tr>
+              <td
                 style="
-                  height: auto;
+                  padding: 20px;
                   font-family: sans-serif;
                   font-size: 15px;
-                  line-height: 15px;
-                "
-              />
-            </td>
-          </tr>
-          <tr>
-            <td
-              style="
-                padding: 20px;
-                font-family: sans-serif;
-                font-size: 15px;
-                line-height: 20px;
-                color: #555555;
-                border-top: 1px solid #e0e0e0;
-              "
-            >
-              <h1
-                style="
-                  margin: 0 0 20px 0;
-                  font-family: sans-serif;
-                  font-size: 25px;
-                  line-height: 30px;
-                  color: #333333;
-                  font-weight: normal;
+                  line-height: 20px;
+                  color: #555555;
+                  border-top: 1px solid #e0e0e0;
                 "
               >
-                Request Summary
-              </h1>
-              <table
-              align="center"
-              role="presentation"
-              cellspacing="0"
-              cellpadding="0"
-              border="0"
-              width="100%"
-              style="margin: auto; padding: 0"
-            >
-              <tr style="line-height: 0">
-                <td width="200">
-                  <ul style="list-style-type: circle">
-                    <li>Reference Number:</li>
-                  </ul>
-                </td>
-                <td>
-                  <a href="https://jwiusa.com${body.path}">${body.Reference}</a>
-                </td>
-              </tr>
-              <tr style="line-height: 0">
-                <td width="200">
-                  <ul style="list-style-type: circle">
-                    <li>Requested By:</li>
-                  </ul>
-                </td>
-                <td>${token.first}</td>
-              </tr>
-              <tr style="line-height: 0">
-                <td width="200">
-                  <ul style="list-style-type: circle">
-                    <li>Invoice Customer:</li>
-                  </ul>
-                </td>
-                <td style="line-height: 22px">${body.invoiceReq.BILLTO}</td>
-              </tr>
-              <tr style="line-height: 0">
-                <td width="200">
-                  <ul style="list-style-type: circle">
-                    <li>Invoice Number:</li>
-                  </ul>
-                </td>
-                <td>${body.invoiceReq.F_InvoiceNo}</td>
-              </tr>
-              <tr style="line-height: 0">
-                <td width="200">
-                  <ul style="list-style-type: circle">
-                    <li>Note:</li>
-                  </ul>
-                </td>
-                <td style="line-height: 22px">${sanitizedMemo}</td>
-              </tr>
-            </table>
-            </td>
-          </tr>
-          <tr>
-            <td
-              style="
-                padding: 20px;
-                font-family: sans-serif;
-                font-size: 15px;
-                line-height: 20px;
-                color: #555555;
-                border-top: 1px solid #e0e0e0;
-              "
-            >
-              <h2
+                <h1
+                  style="
+                    margin: 0 0 20px 0;
+                    font-family: sans-serif;
+                    font-size: 25px;
+                    line-height: 30px;
+                    color: #333333;
+                    font-weight: normal;
+                  "
+                >
+                  Request Summary
+                </h1>
+                <table
+                align="center"
+                role="presentation"
+                cellspacing="0"
+                cellpadding="0"
+                border="0"
+                width="100%"
+                style="margin: auto; padding: 0"
+              >
+                <tr style="line-height: 0">
+                  <td width="200">
+                    <ul style="list-style-type: circle">
+                      <li>Reference Number:</li>
+                    </ul>
+                  </td>
+                  <td>
+                    <a href="https://jwiusa.com${body.path}">${body.Reference}</a>
+                  </td>
+                </tr>
+                <tr style="line-height: 0">
+                  <td width="200">
+                    <ul style="list-style-type: circle">
+                      <li>Requested By:</li>
+                    </ul>
+                  </td>
+                  <td>${token.first}</td>
+                </tr>
+                <tr style="line-height: 0">
+                  <td width="200">
+                    <ul style="list-style-type: circle">
+                      <li>Invoice Customer:</li>
+                    </ul>
+                  </td>
+                  <td style="line-height: 22px">${body.invoiceReq.BILLTO}</td>
+                </tr>
+                <tr style="line-height: 0">
+                  <td width="200">
+                    <ul style="list-style-type: circle">
+                      <li>Invoice Number:</li>
+                    </ul>
+                  </td>
+                  <td>${body.invoiceReq.F_InvoiceNo}</td>
+                </tr>
+                <tr style="line-height: 0">
+                  <td width="200">
+                    <ul style="list-style-type: circle">
+                      <li>Note:</li>
+                    </ul>
+                  </td>
+                  <td style="line-height: 22px">${sanitizedMemo}</td>
+                </tr>
+              </table>
+              </td>
+            </tr>
+            <tr>
+              <td
                 style="
-                  margin: 0 0 10px 0;
+                  padding: 20px;
                   font-family: sans-serif;
-                  font-size: 18px;
-                  line-height: 22px;
-                  color: #333333;
-                  font-weight: bold;
+                  font-size: 15px;
+                  line-height: 20px;
+                  color: #555555;
+                  border-top: 1px solid #e0e0e0;
                 "
               >
-                <img
-                  src="https://cdn-icons-png.flaticon.com/512/190/190411.png"
-                  width="20"
-                  height="20"
-                />
-                Your request has been submitted!
-              </h2>
-            </td>
-          </tr>
-        </table>
-      </div>
-    </body>
-  </html>`,
-      cc: token.email,
-      attachments: attach,
-    };
+                <h2
+                  style="
+                    margin: 0 0 10px 0;
+                    font-family: sans-serif;
+                    font-size: 18px;
+                    line-height: 22px;
+                    color: #333333;
+                    font-weight: bold;
+                  "
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/190/190411.png"
+                    width="20"
+                    height="20"
+                  />
+                  Your request has been submitted!
+                </h2>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </body>
+    </html>`,
+        cc: token.email,
+        attachments: attach,
+      };
 
-    try {
-      transport.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-          res.status(400).send(error);
-        } else {
-          console.log("Email Sent: " + info.response);
-          //   res.status(200).json([]);
-          res.status(200).send(result);
-        }
-      });
+      try {
+        transport.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            res.status(400).send(JSON.stringify(error));
+          } else {
+            res
+              .status(200)
+              .send(`Requested approval for ${body.invoiceReq.F_InvoiceNo}`);
+          }
+        });
+      } catch (err) {
+        res.status(403).send(JSON.stringify(err));
+      }
     } catch (err) {
-      console.log("EMAIL ERROR");
-      console.log(err);
-      res.status(405).send(err);
+      // Error from SQL Pool
+      return res.status(409).send(err.toString());
     }
   } catch (err) {
-    console.log(err);
+    // Error from SQL Connection
+    res.status(403).send(JSON.stringify(err));
   }
   return pool.close();
 };

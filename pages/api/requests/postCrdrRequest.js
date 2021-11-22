@@ -29,7 +29,11 @@ export default async (req, res) => {
     .join(" ");
   // Add request crdr data
   qry += `INSERT INTO T_REQUEST_CRDR VALUES 
-    ('${body.Reference}', 101, '${body.request.F_CrDbNo}', '${body.request.AGENT}', GETDATE(), GETDATE(), '${token.uid}' ,'${token.uid}',
+    ('${body.Reference}', 101, '${
+    body.request.F_CrDbNo
+  }', '${body.request.AGENT.replace("'", "''")}', GETDATE(), GETDATE(), '${
+    token.uid
+  }' ,'${token.uid}',
     'T_CRDBHD', '${body.request.F_ID}', N'${sanitizedMemo}', N'${body.path}');`;
   // Add notification message
   qry += `INSERT INTO T_MESSAGE VALUES
