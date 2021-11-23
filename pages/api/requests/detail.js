@@ -22,7 +22,7 @@ export default async (req, res) => {
 
   // GET APHD TABLE
   var query = `SELECT TOP 1 A.F_InvoiceAmt, A.F_InvoiceNo, 
-  A.F_DueDate, A.F_TBName, A.F_TBID, 
+  A.F_DueDate, A.F_TBName, A.F_TBID, A.F_PayTo,
   (SELECT F_SName from T_COMPANY C WHERE C.F_ID=A.F_PayTo) AS Vendor 
   FROM ${table} A WHERE A.F_ID='${id}';`;
 

@@ -48,7 +48,12 @@ export default function ApManageDialog({ selected, ap }) {
           <ul className="my-2 px-2 divide-y divide-gray-300 rounded border border-gray-100">
             <li className="flex justify-between">
               <span>Invoice Number</span>
-              <span className="text-indigo-500 font-bold tracking-wider">
+              <span
+                className="text-indigo-500 font-bold tracking-wider hover:text-indigo-700 cursor-pointer"
+                onClick={() => {
+                  window.open(`/ap/${selected.TBID}`, "_blank");
+                }}
+              >
                 {selected.Title || "EMPTY"}
               </span>
             </li>
@@ -68,7 +73,12 @@ export default function ApManageDialog({ selected, ap }) {
                 </li>
                 <li className="flex justify-between">
                   <span>Vendor</span>
-                  <span className="pl-3 truncate text-indigo-500 font-bold tracking-wider">
+                  <span
+                    className="pl-3 truncate text-indigo-500 font-bold tracking-wider hover:text-indigo-700 cursor-pointer"
+                    onClick={() => {
+                      window.open(`/company/${ap.F_PayTo}`, "_blank");
+                    }}
+                  >
                     {selected.Body}
                   </span>
                 </li>

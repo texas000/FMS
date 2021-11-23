@@ -1519,7 +1519,7 @@ const Detail = ({ token, Reference }) => {
                                             />
                                           </svg>
                                           <label
-                                            class="flex items-center"
+                                            className="flex items-center"
                                             onChange={(e) => {
                                               if (e.target.checked) {
                                                 setSelectedFile((prev) => [
@@ -1540,9 +1540,9 @@ const Detail = ({ token, Reference }) => {
                                           >
                                             <input
                                               type="checkbox"
-                                              class="form-checkbox"
+                                              className="form-checkbox"
                                             />
-                                            <span class="ml-2">
+                                            <span className="ml-2">
                                               {ga.F_FILENAME}
                                             </span>
                                           </label>
@@ -1722,7 +1722,7 @@ const Detail = ({ token, Reference }) => {
                                   />
                                 </svg>
                                 <label
-                                  class="flex items-center"
+                                  className="flex items-center"
                                   onChange={(e) => {
                                     if (e.target.checked) {
                                       setSelectedFile((prev) => [...prev, ga]);
@@ -1740,9 +1740,9 @@ const Detail = ({ token, Reference }) => {
                                 >
                                   <input
                                     type="checkbox"
-                                    class="form-checkbox"
+                                    className="form-checkbox"
                                   />
-                                  <span class="ml-2">
+                                  <span className="ml-2">
                                     [{ga.F_LABEL.toUpperCase()}] {ga.F_FILENAME}
                                   </span>
                                 </label>

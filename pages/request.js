@@ -358,7 +358,6 @@ export default function request(props) {
   const invoiceRowEvents = {
     onClick: (e, row, rowIndex) => {
       router.push(row.PATH);
-      router.push("/", "", "_blank");
     },
   };
 

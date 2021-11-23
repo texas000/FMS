@@ -209,13 +209,13 @@ export default function search(props) {
                   >
                     <a
                       className="sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6 hover:text-white"
-                      onClick={() => router.push(`/invoice/${ga.F_InvoiceNo}`)}
+                      onClick={() => router.push(`/${ga.F_Type}/${ga.F_TBID}`)}
                       style={{
                         textDecoration: "none",
                       }}
                     >
                       <dt className="font-medium uppercase">
-                        {ga.F_InvoiceNo}
+                        {ga.F_Type} - {ga.F_InvoiceNo}
                       </dt>
                     </a>
                   </dl>

@@ -14,19 +14,17 @@ export default async (req, res) => {
     let result = await pool
       .request()
       .query(
-        `select top 1 *, (SELECT F_SName FROM T_COMPANY WHERE F_ID=T_INVOHD.F_BillTo) as BILLTO, (SELECT F_SName FROM T_COMPANY WHERE F_ID=T_INVOHD.F_ShipTo) as SHIPTO from T_INVOHD where F_ID='${q}';`
+        `select top 1 *, (SELECT F_SName FROM T_COMPANY WHERE F_ID=T_APHD.F_PayTo) as VENDOR from T_APHD where F_ID='${q}';`
       );
     if (result.recordset.length) {
       let detail = await pool
         .request()
         .query(
-          `SELECT * FROM T_INVODETAIL WHERE F_INVOHDID='${result.recordset[0].F_ID}'`
+          `SELECT * FROM T_APDETAIL WHERE F_APHDID='${result.recordset[0].F_ID}'`
         );
       let summary = await pool
         .request()
-        .query(
-          `SELECT * FROM V_INVO WHERE F_ID='${result.recordset[0].F_ID}';`
-        );
+        .query(`SELECT * FROM V_AP WHERE F_ID='${result.recordset[0].F_ID}';`);
       res.status(200).send({
         ...result.recordset[0],
         error: false,

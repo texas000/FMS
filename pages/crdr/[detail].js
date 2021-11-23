@@ -95,11 +95,11 @@ const MasterTable = ({ mas }) => (
       <dl
         className="p-2 grid grid-cols-3 hover:text-indigo-500 cursor-pointer"
         onClick={() => {
-          router.push(`/company/${mas.F_BillTo}`);
+          router.push(`/company/${mas.F_Agent}`);
         }}
       >
-        <dt className="col-span-1">BILL PARTY :</dt>
-        <dd className="col-span-2">{mas.BILLTO}</dd>
+        <dt className="col-span-1">AGENT :</dt>
+        <dd className="col-span-2">{mas.AGENT}</dd>
       </dl>
       <dl className="p-2 grid grid-cols-3">
         <dt className="col-span-1">CREATED BY :</dt>
@@ -107,9 +107,7 @@ const MasterTable = ({ mas }) => (
       </dl>
       <dl className="p-2 grid grid-cols-3">
         <dt className="col-span-1">INVOICE AMOUNT :</dt>
-        <dd className="col-span-2 text-blue-500">
-          {usdFormat(mas.F_InvoiceAmt)}
-        </dd>
+        <dd className="col-span-2 text-blue-500">{usdFormat(mas.F_Total)}</dd>
       </dl>
       <dl className="p-2 grid grid-cols-3">
         <dt className="col-span-1">PAID AMOUNT :</dt>
@@ -147,19 +145,13 @@ const HouseTable = ({ hus }) => (
       <thead className="py-3">
         <tr>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
-            CODE
-          </th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
             DESCRIPTION
           </th>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
-            RATE
+            DEBIT
           </th>
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
-            QTY
-          </th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
-            AMOUNT
+            CREDIT
           </th>
         </tr>
       </thead>
@@ -167,19 +159,13 @@ const HouseTable = ({ hus }) => (
         {hus.map((ga) => (
           <tr key={ga.F_ID}>
             <td className="px-6 py-2 whitespace-nowrap dark:text-gray-300">
-              {ga.F_BillingCode}
-            </td>
-            <td className="px-6 py-2 whitespace-nowrap dark:text-gray-300">
               {ga.F_Description}
             </td>
             <td className="px-6 py-2 whitespace-nowrap dark:text-gray-300">
-              {usdFormat(ga.F_Rate)}
+              {usdFormat(ga.F_Debit)}
             </td>
             <td className="px-6 py-2 whitespace-nowrap dark:text-gray-300">
-              {ga.F_Qty}
-            </td>
-            <td className="px-6 py-2 whitespace-nowrap dark:text-gray-300">
-              {usdFormat(ga.F_Amount)}
+              {usdFormat(ga.F_Credit)}
             </td>
           </tr>
         ))}
@@ -197,7 +183,7 @@ const Requested = ({ req }) => {
             <thead className="py-3">
               <tr>
                 <th
-                  colSpan="5"
+                  colSpan="4"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider dark:text-white"
                 >
                   REQUEST
@@ -229,12 +215,12 @@ const Requested = ({ req }) => {
 };
 
 export default function invoice(props) {
-  const { data } = useSWR(`/api/invoice/detail?q=${props.q}`);
+  const { data } = useSWR(`/api/invoice/crdr?q=${props.q}`);
   const { data: request } = useSWR(
-    data ? `/api/requests/invoice/list_id?id=${props.q}` : null
+    data ? `/api/requests/crdr/list_id?id=${props.q}` : null
   );
   const { data: files } = useSWR(
-    data ? `/api/file/listFromDetail?tbid=${props.q}&tbname=T_INVOHD` : null
+    data ? `/api/file/listFromDetail?tbid=${props.q}&tbname=T_CRDBHD` : null
   );
   const router = useRouter();
   if (typeof window !== "undefined") {
@@ -244,14 +230,14 @@ export default function invoice(props) {
     var history = localStorage.getItem("pageHistory");
     // If the page history is empty
     if (history == null) {
-      arr.unshift({ path: router.asPath, ref: data?.F_InvoiceNo || props.q });
+      arr.unshift({ path: router.asPath, ref: data?.F_CrDbNo || props.q });
       localStorage.setItem("pageHistory", JSON.stringify(arr));
     } else {
       arr = JSON.parse(history);
       // If the page history is exist, check the most recent history
       // If the reference is same as current reference, do not store data
-      if (arr[0].ref != (data?.F_InvoiceNo || props.q)) {
-        arr.unshift({ path: router.asPath, ref: data?.F_InvoiceNo || props.q });
+      if (arr[0].ref != (data?.F_CrDbNo || props.q)) {
+        arr.unshift({ path: router.asPath, ref: data?.F_CrDbNo || props.q });
         localStorage.setItem("pageHistory", JSON.stringify(arr));
       }
     }
@@ -260,7 +246,7 @@ export default function invoice(props) {
   return (
     <Layout
       TOKEN={props.token}
-      TITLE={data?.F_InvoiceNo || props.q}
+      TITLE={data?.F_CrDbNo || props.q}
       LOADING={!data}
     >
       {data && data.error ? (
@@ -281,13 +267,14 @@ export default function invoice(props) {
         <>
           <div className="flex justify-between">
             <div className="flex flex-row items-center">
-              <h3 className="dark:text-white mr-2">{data?.F_InvoiceNo}</h3>
-              {data?.F_InvoiceAmt == data?.F_PaidAmt &&
-              data?.F_PaidAmt !== 0 ? (
+              <h3 className="dark:text-white mr-2">
+                {data?.F_CrDbNo || "NO CRDR NUMBER"}
+              </h3>
+              {data?.F_Total == data?.F_PaidAmt && data?.F_PaidAmt !== 0 ? (
                 <Popover2
                   content={
                     <div className="card p-2 rounded-sm">
-                      {data?.BILLTO} paid {usdFormat(data?.F_InvoiceAmt)}
+                      Paid with {data?.F_CheckNo}
                     </div>
                   }
                   autoFocus={false}
@@ -309,7 +296,7 @@ export default function invoice(props) {
                 <Popover2
                   content={
                     <div className="card p-2 rounded-sm">
-                      {data?.BILLTO} has not made payment yet
+                      {data?.AGENT} has not made payment yet
                     </div>
                   }
                   autoFocus={false}
@@ -360,6 +347,7 @@ export default function invoice(props) {
               </svg>
             </div>
           </div>
+
           <MasterTable mas={data} />
           <HouseTable hus={data?.detail} />
           <Files files={files} />

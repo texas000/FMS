@@ -95,11 +95,11 @@ const MasterTable = ({ mas }) => (
       <dl
         className="p-2 grid grid-cols-3 hover:text-indigo-500 cursor-pointer"
         onClick={() => {
-          router.push(`/company/${mas.F_BillTo}`);
+          router.push(`/company/${mas.F_PayTo}`);
         }}
       >
-        <dt className="col-span-1">BILL PARTY :</dt>
-        <dd className="col-span-2">{mas.BILLTO}</dd>
+        <dt className="col-span-1">VENDOR :</dt>
+        <dd className="col-span-2">{mas.VENDOR}</dd>
       </dl>
       <dl className="p-2 grid grid-cols-3">
         <dt className="col-span-1">CREATED BY :</dt>
@@ -152,12 +152,7 @@ const HouseTable = ({ hus }) => (
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
             DESCRIPTION
           </th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
-            RATE
-          </th>
-          <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
-            QTY
-          </th>
+
           <th className="px-6 py-3 text-left text-xs font-medium text-gray-800 dark:text-white uppercase tracking-wider">
             AMOUNT
           </th>
@@ -171,12 +166,6 @@ const HouseTable = ({ hus }) => (
             </td>
             <td className="px-6 py-2 whitespace-nowrap dark:text-gray-300">
               {ga.F_Description}
-            </td>
-            <td className="px-6 py-2 whitespace-nowrap dark:text-gray-300">
-              {usdFormat(ga.F_Rate)}
-            </td>
-            <td className="px-6 py-2 whitespace-nowrap dark:text-gray-300">
-              {ga.F_Qty}
             </td>
             <td className="px-6 py-2 whitespace-nowrap dark:text-gray-300">
               {usdFormat(ga.F_Amount)}
@@ -197,7 +186,7 @@ const Requested = ({ req }) => {
             <thead className="py-3">
               <tr>
                 <th
-                  colSpan="5"
+                  colSpan="4"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider dark:text-white"
                 >
                   REQUEST
@@ -208,11 +197,10 @@ const Requested = ({ req }) => {
               {req?.data?.map((ga, i) => (
                 <tr key={`${i}-file`}>
                   <td className="px-6 py-2 whitespace-nowrap">
-                    <Status data={ga.STATUS} />
+                    <Status data={ga.Status} />
                   </td>
                   <td>{ga.CREATOR}</td>
-                  <td>{ga.MESSAGE}</td>
-                  <td>{ga.REFNO}</td>
+                  <td>{ga.RefNo}</td>
                   <td>{moment(ga.UPDATED).utc().format("lll")}</td>
                 </tr>
               ))}
@@ -229,12 +217,12 @@ const Requested = ({ req }) => {
 };
 
 export default function invoice(props) {
-  const { data } = useSWR(`/api/invoice/detail?q=${props.q}`);
+  const { data } = useSWR(`/api/invoice/ap?q=${props.q}`);
   const { data: request } = useSWR(
-    data ? `/api/requests/invoice/list_id?id=${props.q}` : null
+    data ? `/api/requests/ap/list_id?id=${props.q}` : null
   );
   const { data: files } = useSWR(
-    data ? `/api/file/listFromDetail?tbid=${props.q}&tbname=T_INVOHD` : null
+    data ? `/api/file/listFromDetail?tbid=${props.q}&tbname=T_APHD` : null
   );
   const router = useRouter();
   if (typeof window !== "undefined") {
@@ -281,13 +269,15 @@ export default function invoice(props) {
         <>
           <div className="flex justify-between">
             <div className="flex flex-row items-center">
-              <h3 className="dark:text-white mr-2">{data?.F_InvoiceNo}</h3>
+              <h3 className="dark:text-white mr-2">
+                {data?.F_InvoiceNo || "NO INVOICE NUMBER"}
+              </h3>
               {data?.F_InvoiceAmt == data?.F_PaidAmt &&
               data?.F_PaidAmt !== 0 ? (
                 <Popover2
                   content={
                     <div className="card p-2 rounded-sm">
-                      {data?.BILLTO} paid {usdFormat(data?.F_InvoiceAmt)}
+                      Paid with {data?.F_CheckNo}
                     </div>
                   }
                   autoFocus={false}
@@ -309,7 +299,7 @@ export default function invoice(props) {
                 <Popover2
                   content={
                     <div className="card p-2 rounded-sm">
-                      {data?.BILLTO} has not made payment yet
+                      We have not made payment yet
                     </div>
                   }
                   autoFocus={false}
@@ -360,6 +350,7 @@ export default function invoice(props) {
               </svg>
             </div>
           </div>
+
           <MasterTable mas={data} />
           <HouseTable hus={data?.detail} />
           <Files files={files} />
