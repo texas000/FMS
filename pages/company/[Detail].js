@@ -77,6 +77,7 @@ export default function company({ token, q }) {
           companyid={q}
           count={count}
           depo={depo}
+          token={token}
         />
       )}
     </Layout>

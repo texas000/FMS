@@ -2,19 +2,17 @@ import moment from "moment";
 import { useState } from "react";
 import useSWR from "swr";
 
-export default function FreightComment({ Reference, setMsg, setShow, token }) {
-  const { data: comment, mutate: commentMutate } = useSWR(
-    Reference ? `/api/comment/list?ref=${Reference}` : null
+export default function Comments({ tbname, tbid, uid }) {
+  const { data: comment, mutate } = useSWR(
+    tbname && tbid ? `/api/comments/list?tbid=${tbid}&tbname=${tbname}` : null
   );
-
   // For Comment Textfield
   const ReactQuill =
     typeof window === "object" ? require("react-quill") : () => false;
   const [commentHtml, setCommentHtml] = useState("");
-
   async function handleCommentPost() {
-    const fetchCommentPost = await fetch(
-      `/api/comment/post?ref=${Reference.toUpperCase()}`,
+    const postComment = await fetch(
+      `/api/comments/post?tbid=${tbid}&tbname=${tbname}`,
       {
         method: "POST",
         headers: {
@@ -23,23 +21,17 @@ export default function FreightComment({ Reference, setMsg, setShow, token }) {
         body: JSON.stringify({ content: commentHtml }),
       }
     );
-    if (fetchCommentPost.status == 200) {
-      commentMutate();
+    if (postComment.status == 200) {
+      mutate();
       setCommentHtml("");
-      setMsg("Message Uploaded");
-      setShow(true);
     }
   }
-
   async function handleCommentHide(id) {
-    const fetchCommentPost = await fetch(`/api/comment/hide?id=${id}`);
-    if (fetchCommentPost.status == 200) {
-      commentMutate();
-      setMsg("Message Deleted");
-      setShow(true);
+    const hideComment = await fetch(`/api/comments/hide?id=${id}`);
+    if (hideComment.status == 200) {
+      mutate();
     }
   }
-
   const Comments = ({ Comment }) => {
     if (Comment) {
       return (
@@ -62,22 +54,15 @@ export default function FreightComment({ Reference, setMsg, setShow, token }) {
                       </div>
                       <div
                         className="text-normal leading-snug md:leading-normal"
-                        dangerouslySetInnerHTML={{ __html: ga.F_Content }}
+                        dangerouslySetInnerHTML={{ __html: ga.F_Comment }}
                       ></div>
                     </div>
                     <div className="text-sm ml-4 mt-0.5 text-gray-500 dark:text-gray-400">
                       {moment(moment(ga.F_Date).utc().format("LLL")).fromNow()}
                     </div>
-                    <div className="bg-white dark:bg-gray-700 border border-white dark:border-gray-700 rounded-full float-right -mt-8 mr-0.5 flex shadow items-center cursor-pointer">
-                      <img
-                        src="https://cdn-icons-png.flaticon.com/512/126/126497.png"
-                        width="20"
-                        height="20"
-                      />
-                    </div>
-                    {token && token.uid == ga.F_UID && (
+                    {uid == ga.F_UserID && (
                       <div
-                        className="bg-white dark:bg-gray-700 border border-white dark:border-gray-700 rounded-full float-right -mt-8 mr-0.5 flex shadow items-center cursor-pointer"
+                        className="bg-white dark:bg-gray-700 border border-white dark:border-gray-700 rounded-full float-right -mt-10 mr-0.5 flex shadow items-center cursor-pointer"
                         onClick={() => handleCommentHide(ga.F_ID)}
                       >
                         <img
@@ -101,13 +86,16 @@ export default function FreightComment({ Reference, setMsg, setShow, token }) {
 
   return (
     <div className="card overflow-hidden">
-      <div className="w-100 py-2 px-7 font-bold bg-gray-50 dark:bg-gray-700 tracking-wider border-b border-gray-200 mb-2">
+      <div className="px-6 py-2 font-bold text-left text-gray-800 uppercase tracking-wider dark:text-white bg-gray-50 dark:bg-gray-800 border-b border-gray-200">
         COMMENT
       </div>
+      {/* <div className="w-100 py-2 px-7 font-bold bg-gray-50 dark:bg-gray-700 tracking-wider border-b border-gray-200 mb-2">
+        COMMENT
+      </div> */}
       {ReactQuill && (
         <div className="p-3">
           <ReactQuill
-            className="dark:text-white"
+            className="dark:text-white dark:placeholder-white"
             value={commentHtml}
             placeholder="Add a comment..."
             modules={{

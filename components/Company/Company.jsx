@@ -7,6 +7,7 @@ import axios, { post } from "axios";
 import { Fragment, useCallback, useMemo, useState } from "react";
 import Notification from "../Toaster";
 import useSWR from "swr";
+import Comments from "../Utils/Comment";
 export default function Company({
   data,
   contact,
@@ -15,6 +16,7 @@ export default function Company({
   companyid,
   count,
   depo,
+  token,
 }) {
   const { data: file, mutate } = useSWR(
     `/api/file/list?ref=COMPANY-${companyid}`
@@ -135,7 +137,7 @@ export default function Company({
 
   if (data[0]) {
     return (
-      <div>
+      <div className="pb-14">
         <div className="flex flex-row items-center">
           <h3 className="dark:text-white mr-2">{data[0].F_FName}</h3>
           <CompanyType />
@@ -443,6 +445,7 @@ export default function Company({
             </table>
           </div>
         </div>
+        <Comments tbname="T_COMPANY" tbid={data[0]?.F_ID} uid={token.uid} />
         <Notification setShow={setShow} show={show} msg={msg} />
       </div>
     );

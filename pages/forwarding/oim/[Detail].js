@@ -22,10 +22,10 @@ import moment from "moment";
 import { useRouter } from "next/router";
 import FreightPayment from "../../../components/Forwarding/FreightPayment";
 import FreightFile from "../../../components/Forwarding/FreightFile";
-import FreightComment from "../../../components/Forwarding/FreightComment";
 import FreightProfit from "../../../components/Forwarding/FreightProfit";
 import Notification from "../../../components/Toaster";
 import FreightDetailDialog from "../../../components/Forwarding/FreightDetailDialog";
+import Comments from "../../../components/Utils/Comment";
 
 const Detail = ({ token, Reference }) => {
   const router = useRouter();
@@ -694,11 +694,10 @@ const Detail = ({ token, Reference }) => {
             </div>
             {/* COMMENT + PROFIT GRID */}
             <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-flow-col my-4 gap-4">
-              <FreightComment
-                Reference={Reference}
-                setMsg={setMsg}
-                setShow={setShow}
-                token={token}
+              <Comments
+                tbid={data.M?.F_ID}
+                tbname="T_OIMMAIN"
+                uid={token.uid}
               />
               <FreightProfit
                 Profit={data.P}

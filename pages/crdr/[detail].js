@@ -9,6 +9,7 @@ import { Popover2 } from "@blueprintjs/popover2";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 import Files from "../../components/Accounting/Files";
 import router from "next/router";
+import Comments from "../../components/Utils/Comment";
 export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
@@ -178,7 +179,7 @@ const Requested = ({ req }) => {
   if (req) {
     if (!req.error) {
       return (
-        <div className="card col-span-2 rounded-xl mt-3 text-gray-800 overflow-hidden">
+        <div className="card col-span-2 rounded-xl mt-3 text-gray-800 overflow-hidden mb-4">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="py-3">
               <tr>
@@ -223,7 +224,7 @@ export default function invoice(props) {
     data ? `/api/file/listFromDetail?tbid=${props.q}&tbname=T_CRDBHD` : null
   );
   const router = useRouter();
-  if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" && data?.F_CrDbNo) {
     // Define an empty array
     var arr = [];
     // Initial value is null value but change to empty array string
@@ -352,6 +353,7 @@ export default function invoice(props) {
           <HouseTable hus={data?.detail} />
           <Files files={files} />
           <Requested req={request} />
+          <Comments tbname="T_CRDBHD" tbid={data?.F_ID} uid={props.token.uid} />
         </>
       )}
     </Layout>

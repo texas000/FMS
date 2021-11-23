@@ -9,6 +9,7 @@ import { Popover2 } from "@blueprintjs/popover2";
 import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
 import Files from "../../components/Accounting/Files";
 import router from "next/router";
+import Comments from "../../components/Utils/Comment";
 export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
     req ? req.headers.cookie || "" : window.document.cookie
@@ -192,7 +193,7 @@ const Requested = ({ req }) => {
   if (req) {
     if (!req.error) {
       return (
-        <div className="card col-span-2 rounded-xl mt-3 text-gray-800 overflow-hidden">
+        <div className="card col-span-2 rounded-xl mt-3 text-gray-800 overflow-hidden mb-4">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="py-3">
               <tr>
@@ -237,21 +238,27 @@ export default function invoice(props) {
     data ? `/api/file/listFromDetail?tbid=${props.q}&tbname=T_INVOHD` : null
   );
   const router = useRouter();
-  if (typeof window !== "undefined") {
+  if (typeof window !== "undefined" && data?.F_InvoiceNo) {
     // Define an empty array
     var arr = [];
     // Initial value is null value but change to empty array string
     var history = localStorage.getItem("pageHistory");
     // If the page history is empty
     if (history == null) {
-      arr.unshift({ path: router.asPath, ref: data?.F_InvoiceNo || props.q });
+      arr.unshift({
+        path: router.asPath,
+        ref: data?.F_InvoiceNo,
+      });
       localStorage.setItem("pageHistory", JSON.stringify(arr));
     } else {
       arr = JSON.parse(history);
       // If the page history is exist, check the most recent history
       // If the reference is same as current reference, do not store data
-      if (arr[0].ref != (data?.F_InvoiceNo || props.q)) {
-        arr.unshift({ path: router.asPath, ref: data?.F_InvoiceNo || props.q });
+      if (arr[0].ref != data?.F_InvoiceNo) {
+        arr.unshift({
+          path: router.asPath,
+          ref: data?.F_InvoiceNo,
+        });
         localStorage.setItem("pageHistory", JSON.stringify(arr));
       }
     }
@@ -364,6 +371,7 @@ export default function invoice(props) {
           <HouseTable hus={data?.detail} />
           <Files files={files} />
           <Requested req={request} />
+          <Comments tbname="T_INVOHD" tbid={data?.F_ID} uid={props.token.uid} />
         </>
       )}
     </Layout>
