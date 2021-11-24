@@ -6,6 +6,7 @@ import { useDropzone } from "react-dropzone";
 import axios, { post } from "axios";
 import { Fragment, useCallback, useMemo, useState } from "react";
 import Notification from "../Toaster";
+import router from "next/router";
 import useSWR from "swr";
 import Comments from "../Utils/Comment";
 export default function Company({
@@ -134,6 +135,22 @@ export default function Company({
       );
     }
   };
+
+  function handleInvoiceClick(inv) {
+    switch (inv.F_TBName) {
+      case "T_INVOHD":
+        router.push(`/invoice/${inv.F_ID}`);
+        break;
+      case "T_APHD":
+        router.push(`/ap/${inv.F_ID}`);
+        break;
+      case "T_CRDBHD":
+        router.push(`/crdr/${inv.F_ID}`);
+        break;
+      default:
+        alert(inv.F_TBName);
+    }
+  }
 
   if (data[0]) {
     return (
@@ -356,7 +373,11 @@ export default function Company({
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 text-xs text-gray-500 dark:text-white">
                   {invoice &&
                     invoice.map((ga, i) => (
-                      <tr key={`${i}-invoice`}>
+                      <tr
+                        key={`${i}-invoice`}
+                        className="hover:bg-indigo-500 hover:text-white cursor-pointer"
+                        onClick={() => handleInvoiceClick(ga)}
+                      >
                         <td className="py-1 whitespace-nowrap pl-6">
                           {ga.F_InvoiceNo || ga.F_ID}
                         </td>

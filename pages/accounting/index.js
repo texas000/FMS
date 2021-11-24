@@ -22,6 +22,7 @@ import "@blueprintjs/core/lib/css/blueprint.css";
 import React, { useState } from "react";
 import useSWR from "swr";
 import Select from "react-select";
+import AccountingAging from "../../components/Accounting/AccountingAging";
 
 export async function getServerSideProps({ req }) {
   const cookies = cookie.parse(
@@ -45,7 +46,7 @@ export async function getServerSideProps({ req }) {
 }
 
 export const Navigation = ({ token }) => {
-  const [menu, setMenu] = useState(3);
+  const [menu, setMenu] = useState(6);
   const { data: checkList } = useSWR("/api/accounting/getCheckList");
   const { data: depositList } = useSWR(
     menu === 2 ? "/api/accounting/getDepositList" : null
@@ -56,6 +57,9 @@ export const Navigation = ({ token }) => {
   );
   const { data: paymentMethod, mutate: getPaymentMethod } = useSWR(
     menu === 5 ? "/api/accounting/getPaymentCode" : null
+  );
+  const { data: aging } = useSWR(
+    menu === 6 ? "/api/accounting/getAgingSummary" : null
   );
   const [selectedVendor, setSelectedVendor] = useState(false);
   const { data: accountPayableList } = useSWR(
@@ -506,6 +510,20 @@ export const Navigation = ({ token }) => {
         <NavbarGroup align={Alignment.LEFT}>
           <NavbarHeading>Accounting</NavbarHeading>
           <NavbarDivider />
+          <Button
+            icon="numbered-list"
+            small={true}
+            minimal={true}
+            onClick={() => setMenu(6)}
+          >
+            <span
+              className={
+                menu === 6 ? "text-blue-500 font-bold" : "dark:text-gray-200"
+              }
+            >
+              Realtime Againg
+            </span>
+          </Button>
           <Button
             icon="issue-new"
             small={true}
@@ -1066,6 +1084,7 @@ export const Navigation = ({ token }) => {
           </div>
         </>
       )}
+      {menu === 6 && <AccountingAging aging={aging} />}
     </Layout>
   );
 };
