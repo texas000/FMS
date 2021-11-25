@@ -9,6 +9,7 @@ export default async (req, res) => {
 
   let pool = new sql.ConnectionPool(process.env.SERVER21);
   // REPLACE THE SINGLE QUOTE TO EMPTY STRING TO PREVENT THE SQL INJECTION
+
   const qry = `SELECT TOP 100 * FROM T_FILE 
 	WHERE F_FILENAME like '%${decodeURIComponent(q.replace(/'/g, "''"))}%';`;
   try {

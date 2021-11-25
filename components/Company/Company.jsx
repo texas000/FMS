@@ -113,14 +113,14 @@ export default function Company({
           </span>
         );
       }
-      if (count.CR > Math.max(count.AP, count.INV)) {
+      if (count.CR >= Math.max(count.AP, count.INV)) {
         return (
           <span className="bg-indigo-500 rounded-full text-white p-1">
             AGENT
           </span>
         );
       }
-      if (count.INV > Math.max(count.AP, count.CR)) {
+      if (count.INV >= Math.max(count.AP, count.CR)) {
         return (
           <span className="bg-indigo-500 rounded-full text-white p-1">
             CUSTOMER
@@ -157,6 +157,7 @@ export default function Company({
       <div className="pb-14">
         <div className="flex flex-row items-center">
           <h3 className="dark:text-white mr-2">{data[0].F_FName}</h3>
+          {/* {JSON.stringify(count)} */}
           <CompanyType />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-3">
