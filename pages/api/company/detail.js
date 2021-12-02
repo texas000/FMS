@@ -12,9 +12,14 @@ export default async (req, res) => {
   try {
     await pool.connect();
     let result = await pool.request().query(qry);
-    res.json(result.recordsets);
+    var data = {
+      error: !Boolean(result.recordset.length),
+      ...result.recordset[0],
+      contact: result.recordsets[1],
+    };
+    res.status(200).send(data);
   } catch (err) {
-    res.json(err);
+    res.status(400).send(err.toString());
   }
   return pool.close();
 };

@@ -2,8 +2,15 @@ import cookie from "cookie";
 import Layout from "../../components/Layout";
 import jwt from "jsonwebtoken";
 import useSWR from "swr";
-import Company from "../../components/Company/Company";
 import { useRouter } from "next/router";
+import { Fragment, useState } from "react";
+import CalculatedType from "../../components/Company/CalculatedType";
+import CompanyInfo from "../../components/Company/CompanyInfo";
+import CompanyBalance from "../../components/Company/CompanyBalance";
+import CompanyFile from "../../components/Company/CompanyFile";
+import CompanyRecentPayment from "../../components/Company/CompanyRecentPayment";
+import CompanyContact from "../../components/Company/CompanyContact";
+import Comments from "../../components/Utils/Comment";
 
 export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
@@ -33,6 +40,7 @@ export default function company({ token, q }) {
   const { data: invoice } = useSWR(`/api/company/pending?q=${q}`);
   const { data: count } = useSWR(`/api/company/accountingCount?q=${q}`);
   const { data: depo } = useSWR(`/api/company/getAccountingHistory?q=${q}`);
+  const { data: pendingSum } = useSWR(`/api/company/pendingByTerms?q=${q}`);
   const router = useRouter();
   if (typeof window !== "undefined" && data) {
     // Define an empty array
@@ -43,41 +51,68 @@ export default function company({ token, q }) {
     if (history == null) {
       arr.unshift({
         path: router.asPath,
-        ref: data[0] && data[0][0] ? data[0][0].F_FName : q,
+        ref: data ? data.F_FName : q,
       });
       localStorage.setItem("pageHistory", JSON.stringify(arr));
     } else {
       arr = JSON.parse(history);
       // If the page history is exist, check the most recent history
       // If the reference is same as current reference, do not store data
-      if (arr[0].ref != (data[0] && data[0][0] ? data[0][0].F_FName : q)) {
+      if (arr[0].ref != (data ? data.F_FName : q)) {
         arr.unshift({
           path: router.asPath,
-          ref: data[0] && data[0][0] ? data[0][0].F_FName : q,
+          ref: data ? data.F_FName : q,
         });
         localStorage.setItem("pageHistory", JSON.stringify(arr));
       }
     }
   }
+  const [loading, setLoading] = useState(false);
   return (
     <Layout
       TOKEN={token}
-      TITLE={(data && data[0] && data[0][0] && data[0][0].F_FName) || "Company"}
-      LOADING={!data}
+      TITLE={data ? data.F_FName : "Company not found"}
+      LOADING={!data || loading}
     >
-      {!data ? (
-        <></>
+      {data ? (
+        data.error ? (
+          <section className="flex items-center justify-center py-10 text-white sm:py-16 md:py-24 lg:py-32">
+            <div className="relative max-w-3xl px-10 text-center text-white auto lg:px-0">
+              <div className="flex justify-between">
+                <h1 className="relative flex flex-col text-6xl font-extrabold text-left text-black">
+                  Company
+                  <span>Not</span>
+                  <span>Found</span>
+                </h1>
+              </div>
+              <div className="my-16 border-b border-gray-300 lg:my-24"></div>
+              <h2 className="text-left text-gray-500 xl:text-xl"></h2>
+            </div>
+          </section>
+        ) : (
+          <div>
+            <div className="flex flex-row items-center">
+              <h3 className="dark:text-white mr-2">{data.F_FName}</h3>
+              <CalculatedType count={count} />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-3">
+              <CompanyInfo data={data} />
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-2 gap-4 my-3">
+              <CompanyBalance
+                balance={balance}
+                pendingSum={pendingSum}
+                id={q}
+              />
+              <CompanyFile id={q} />
+              <CompanyRecentPayment depo={depo} />
+              <CompanyContact contact={data && data.contact} />
+            </div>
+            <Comments tbname="T_COMPANY" tbid={data?.F_ID} uid={token.uid} />
+          </div>
+        )
       ) : (
-        <Company
-          data={data[0]}
-          contact={data[1]}
-          balance={balance}
-          invoice={invoice}
-          companyid={q}
-          count={count}
-          depo={depo}
-          token={token}
-        />
+        <Fragment />
       )}
     </Layout>
   );
