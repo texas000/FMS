@@ -1,10 +1,13 @@
 import { useDropzone } from "react-dropzone";
 import axios, { post } from "axios";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
+import Notification from "../Toaster";
 
 export default function CompanyFile({ id }) {
   const { data: file, mutate } = useSWR(`/api/file/list?ref=COMPANY-${id}`);
+  const [show, setShow] = useState(false);
+  const [msg, setMsg] = useState(false);
   const onDrop = useCallback((acceptedFiles) => {
     acceptedFiles.forEach(async (file) => {
       const formData = new FormData();
@@ -138,7 +141,6 @@ export default function CompanyFile({ id }) {
                   <td
                     className="px-6 py-2 text-center whitespace-nowrap hover:bg-indigo-500 hover:text-white w-1/6 cursor-pointer"
                     onClick={async () => {
-                      setLoading(true);
                       const data = await fetch(
                         `/api/file/get?ref=COMPANY-${id}&file=${encodeURIComponent(
                           ga.F_FILENAME
@@ -150,7 +152,6 @@ export default function CompanyFile({ id }) {
                       });
                       var fileURL = URL.createObjectURL(file);
                       window.open(fileURL);
-                      setLoading(false);
                     }}
                   >
                     Open
@@ -168,6 +169,7 @@ export default function CompanyFile({ id }) {
           </tbody>
         </table>
       </div>
+      <Notification show={show} msg={msg} setShow={setShow} intent="primary" />
     </div>
   );
 }
