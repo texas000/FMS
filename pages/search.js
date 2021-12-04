@@ -5,6 +5,7 @@ import useSWR from "swr";
 import Link from "next/link";
 import { useState } from "react";
 import router from "next/router";
+import { Spinner } from "reactstrap";
 
 export async function getServerSideProps({ req, query }) {
   const cookies = cookie.parse(
@@ -55,9 +56,15 @@ export default function search(props) {
       ? `/api/invoice/search?q=${encodeURIComponent(props.word)}`
       : null
   );
+  const { data: container } = useSWR(
+    props.word
+      ? `/api/forwarding/searchContainer?q=${encodeURIComponent(props.word)}`
+      : null
+  );
   const [collapseShip, setCollapseShip] = useState(false);
   const [collapseFile, setCollapseFile] = useState(false);
   const [collapseInvo, setCollapseInvo] = useState(false);
+  const [collapseCont, setCollapseCont] = useState(false);
   return (
     <Layout TOKEN={props.token} TITLE="Search">
       <div className="flex flex-sm-row justify-between">
@@ -73,7 +80,7 @@ export default function search(props) {
           </h3>
         </div>
         <div className="border-t border-gray-200">
-          {forwarding &&
+          {forwarding ? (
             forwarding.map((ga, i) => {
               if (i < 10 || (i >= 10 && collapseShip)) {
                 return (
@@ -99,7 +106,12 @@ export default function search(props) {
                   </dl>
                 );
               }
-            })}
+            })
+          ) : (
+            <div className="text-center">
+              <Spinner size="sm" />
+            </div>
+          )}
         </div>
         {forwarding && forwarding.length > 9 ? (
           <div
@@ -127,7 +139,7 @@ export default function search(props) {
           </h3>
         </div>
         <div className="border-t border-gray-200">
-          {file &&
+          {file ? (
             file.map((ga, i) => {
               if (i < 10 || (i >= 10 && collapseFile))
                 return (
@@ -169,7 +181,12 @@ export default function search(props) {
                     </a>
                   </dl>
                 );
-            })}
+            })
+          ) : (
+            <div className="text-center">
+              <Spinner size="sm" />
+            </div>
+          )}
         </div>
         {file && file.length > 9 ? (
           <div
@@ -197,7 +214,7 @@ export default function search(props) {
           </h3>
         </div>
         <div className="border-t border-gray-200">
-          {invoice &&
+          {invoice ? (
             invoice.map((ga, i) => {
               if (i < 10 || (i >= 10 && collapseInvo))
                 return (
@@ -220,7 +237,12 @@ export default function search(props) {
                     </a>
                   </dl>
                 );
-            })}
+            })
+          ) : (
+            <div className="text-center">
+              <Spinner size="sm" />
+            </div>
+          )}
         </div>
         {invoice && invoice.length > 9 ? (
           <div
@@ -241,6 +263,66 @@ export default function search(props) {
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl my-3">
         <div className="px-4 py-3 sm:px-6">
           <h3 className="text-base leading-6 font-medium text-gray-900">
+            Container
+            <p className="text-xs">
+              {(container && container.length) || "0"} search results
+            </p>
+          </h3>
+        </div>
+        <div className="border-t border-gray-200">
+          {container ? (
+            container.map((ga, i) => {
+              if (i < 10 || (i >= 10 && collapseCont))
+                return (
+                  <dl
+                    key={i + "CONTAINER"}
+                    className={`${
+                      i % 2 ? "bg-gray-200" : "bg-gray-50"
+                    } p-2 text-gray-800 hover:text-white hover:bg-indigo-500 group`}
+                  >
+                    <a
+                      className="sm:grid sm:grid-cols-1 sm:gap-4 sm:px-6 hover:text-white"
+                      onClick={() =>
+                        router.push(`/forwarding/${ga.Link}/${ga.RefNo}`)
+                      }
+                      style={{
+                        textDecoration: "none",
+                      }}
+                    >
+                      <dt className="font-medium uppercase">
+                        {`${ga.F_ContainerNo} ${
+                          ga.F_SealNo ? `SEAL# ${ga.F_SealNo}` : ""
+                        }`}
+                      </dt>
+                    </a>
+                  </dl>
+                );
+            })
+          ) : (
+            <div className="text-center">
+              <Spinner size="sm" />
+            </div>
+          )}
+        </div>
+        {container && container.length > 9 ? (
+          <div
+            className="text-center hover:bg-indigo-500 hover:text-white cursor-pointer"
+            onClick={() => setCollapseCont(!collapseCont)}
+          >
+            <i
+              className={`fa ${
+                collapseCont ? "fa-chevron-up" : "fa-chevron-down"
+              } `}
+            ></i>
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
+
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl my-3">
+        <div className="px-4 py-3 sm:px-6">
+          <h3 className="text-base leading-6 font-medium text-gray-900">
             Company
             <p className="text-xs">
               {(company && company.length) || "0"} search results
@@ -248,7 +330,7 @@ export default function search(props) {
           </h3>
         </div>
         <div className="border-t border-gray-200">
-          {company &&
+          {company ? (
             company.map((ga, i) => (
               <dl
                 key={i + "COMPANY"}
@@ -269,7 +351,12 @@ export default function search(props) {
                   </a>
                 </Link>
               </dl>
-            ))}
+            ))
+          ) : (
+            <div className="text-center">
+              <Spinner size="sm" />
+            </div>
+          )}
         </div>
       </div>
       <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl my-3">
