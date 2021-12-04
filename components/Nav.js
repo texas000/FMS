@@ -2,12 +2,13 @@ import { useRouter } from "next/router";
 import moment from "moment";
 import firebase from "firebase/app";
 import "firebase/auth";
-import { useState, useEffect } from "react";
+import { useState, useEffect, createRef, useMemo } from "react";
 import NavSearch from "./NavSearch";
 import Setting from "./Setting";
 import Contact from "./Contact";
 import useSWR from "swr";
 import Link from "next/link";
+import { useHotkeys } from "@blueprintjs/core";
 
 const Top = ({ Token, toggle, setToggle }) => {
   const { data: unread, mutate } = useSWR("/api/message/unread");
@@ -52,8 +53,28 @@ const Top = ({ Token, toggle, setToggle }) => {
     router.push("/login");
   }
 
+  const hotkeys = useMemo(
+    () => [
+      {
+        combo: "ctrl+shift+s",
+        global: true,
+        label: "Search Modal",
+        onKeyDown: () => setSearchAlertToggle(!searchAlertToggle),
+      },
+      {
+        combo: "shift+c",
+        global: true,
+        label: "Open Contact",
+        onKeyDown: () => setContactOpen(!contactOpen),
+      },
+    ],
+    [searchAlertToggle, contactOpen]
+  );
+  const { handleKeyDown, handleKeyUp } = useHotkeys(hotkeys);
+
   return (
     <nav className="flex content-between px-3 h-16 static-top w-100 bg-gray-100 d-print-none dark:bg-gray-600 dark:text-white">
+      <div tabIndex={0} onKeyDown={handleKeyDown} onKeyUp={handleKeyUp}></div>
       {/* navbar navbar-expand */}
       {/* <!-- Sidebar Toggle (Topbar) --> */}
       <button className="block md:hidden" onClick={collapse}>
