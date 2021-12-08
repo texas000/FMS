@@ -10,7 +10,7 @@ export default async (req, res) => {
     return;
   }
   let pool = new sql.ConnectionPool(process.env.SERVER21);
-  var query = `select distinct Body from T_REQUEST;`;
+  var query = `select distinct VENDOR from T_REQUEST_AP;`;
   try {
     await pool.connect();
     let result = await pool.request().query(query);
@@ -18,8 +18,9 @@ export default async (req, res) => {
     res
       .status(200)
       .send(
-        Object.keys(result.recordset).map((ga) => result.recordset[ga].Body) ||
-          []
+        Object.keys(result.recordset).map(
+          (ga) => result.recordset[ga].VENDOR
+        ) || []
       );
   } catch (err) {
     console.log(err);

@@ -8,7 +8,7 @@ export default async (req, res) => {
   }
 
   let pool = new sql.ConnectionPool(process.env.SERVER21);
-  const qry = `select *, (select F_FNAME from T_MEMBER where T_MEMBER.F_ID=T_REQUEST.CreateBy) as CREATOR from T_REQUEST where TBID=${id}`;
+  const qry = `select *, (select F_FNAME from T_MEMBER where T_MEMBER.F_ID=T_REQUEST_AP.CREATEDBY) as CREATOR from T_REQUEST_AP where TBID=${id}`;
   try {
     await pool.connect();
     let result = await pool.request().query(qry);

@@ -14,7 +14,7 @@ export default async (req, res) => {
     res.status(400).json([]);
     return;
   }
-  var query = `SELECT * FROM T_REQUEST WHERE Body='${vendor}' AND Status='121' ORDER BY CreateAt DESC`;
+  var query = `SELECT * FROM T_REQUEST_AP WHERE VENDOR='${vendor}' AND STATUS='121' ORDER BY CREATED DESC`;
   let pool = new sql.ConnectionPool(process.env.SERVER21);
   try {
     await pool.connect();

@@ -26,25 +26,22 @@ export default async (req, res) => {
     )
     .join(" ");
 
-  var query = `INSERT INTO T_REQUEST 
-    (RefNo, Status, Title, Body, CreateAt, ModifyAt, CreateBy, ModifyBy, TBName, TBID, Attachment, ApType, Attachment2) 
-    VALUES ('${ref.replace("'", "''")}','101','${body.F_InvoiceNo.replace(
-    "'",
-    "''"
-  )}',
-	'${body.VENDOR.replace("'", "''")}',GETDATE(),GETDATE(),'${token.uid}','${
-    token.uid
-  }',
-	'T_APHD','${body.F_ID}', '0', '${body.type}', NULL);`;
+  var query = `INSERT INTO T_REQUEST_AP  
+    VALUES ('${ref.replace("'", "''")}','101',
+    '${body.F_InvoiceNo.replace("'", "''")}',
+	'${body.VENDOR.replace("'", "''")}',GETDATE(),GETDATE(),'${token.uid}',
+	'T_APHD','${body.F_ID}', '${body.type}', NULL, NULL, NULL);`;
 
   // ADDING FILE LIST
   query += fileQuery;
-  // ADDING MESSAGE TO IAN(22)
-  query += `INSERT INTO T_MESSAGE VALUES ('ACCOUNTING PAYABLE REQUEST FOR ${body.F_InvoiceNo.replace(
-    "'",
-    "''"
-  )}', '${body.path}', GETDATE(), '${token.uid}');
-	INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
+
+  // ADDING MESSAGE TO IAN(22) - Deprecated
+  // query += `INSERT INTO T_MESSAGE VALUES
+  // ('ACCOUNTING PAYABLE REQUEST FOR
+  // ${body.F_InvoiceNo.replace("'","''")}',
+  // '${body.path}', GETDATE(), '${token.uid}');
+  // `;
+  // INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);
 
   let pool = new sql.ConnectionPool(process.env.SERVER21);
   try {
@@ -59,9 +56,11 @@ export default async (req, res) => {
     }));
 
     const mailOptions = {
-      from: "JWIUSA <it@jamesworldwide.com>",
-      // to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
-      to: "IAN PYO [JW] <ian@jamesworldwide.com>",
+      from: "JWIUSA <noreply@jamesworldwide.com>",
+      to: "MANAGER [JW] <manager@jamesworldwide.com>",
+      // TO MANAGER GROUP
+      cc: token.email,
+      // CC PIC EMAIL
       subject: `ACCOUNT PAYABLE REQUEST [${body.F_InvoiceNo}]`,
       html: `<!DOCTYPE html>
 <html
@@ -187,8 +186,8 @@ export default async (req, res) => {
     </div>
   </body>
 </html>`,
-      cc: token.email,
       attachments: attach,
+      // INITIAL REQUEST HAS ATTACHEMENT INCLUDED IN EMAIL
     };
 
     // TRY SEND EMAIL NOTIFICATION

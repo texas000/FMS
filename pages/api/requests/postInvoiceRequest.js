@@ -33,8 +33,8 @@ export default async (req, res) => {
     //If there is no file exists, the qry will be empty string
     var qry = body.selectedFile
       .map(
-        (ga) =>
-          `INSERT INTO T_FILEDETAIL VALUES ('${body.invoiceReq.F_ID}','T_INVOHD','${ga}');`
+        (ga) => `INSERT INTO T_FILEDETAIL 
+      VALUES ('${body.invoiceReq.F_ID}','T_INVOHD','${ga}');`
       )
       .join(" ");
     // Add request invoice data
@@ -51,13 +51,13 @@ export default async (req, res) => {
       body.invoiceReq.F_BillTo
     }', '${body.autosend}');`;
     // Add notification message
-    qry += `INSERT INTO T_MESSAGE VALUES
-    ('INVOICE REQUEST FOR ${body.invoiceReq.F_InvoiceNo}', '${body.path}', GETDATE(), '${token.uid}');
-    INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
+    // qry += `INSERT INTO T_MESSAGE VALUES
+    // ('INVOICE REQUEST FOR ${body.invoiceReq.F_InvoiceNo}', '${body.path}', GETDATE(), '${token.uid}');
+    // INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
     // When invoice requested, the notification goes to IAN(22)
 
     try {
-      let result = await pool.request().query(qry);
+      await pool.request().query(qry);
       let attach = body.fileNames.map((ga) => ({
         filename: ga,
         path: `https://jwiusa.com/api/file/get?ref=${
@@ -66,9 +66,9 @@ export default async (req, res) => {
       }));
 
       const mailOptions = {
-        from: "JWIUSA <it@jamesworldwide.com>",
+        from: "JWIUSA <noreply@jamesworldwide.com>",
         // to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
-        to: "IAN PYO [JW] <ian@jamesworldwide.com>",
+        to: "MANAGER [JW] <manager@jamesworldwide.com>",
         subject: `INVOICE REQUEST [${body.invoiceReq.F_InvoiceNo}]`,
         html: `<!DOCTYPE html>
     <html

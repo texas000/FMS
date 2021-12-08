@@ -299,8 +299,8 @@ const Detail = ({ token, Reference }) => {
     if (apRequested) {
       // Check if the current request has accounting approved, director approved, or requested
       const approved = apRequested.map((ga) => {
-        if (ga.Title == selectedPayment.F_InvoiceNo) {
-          if (ga.Status == 121 || ga.Status == 111 || ga.Status == 101) {
+        if (ga.INVOICE == selectedPayment.F_InvoiceNo) {
+          if (ga.STATUS == 121 || ga.STATUS == 111 || ga.STATUS == 101) {
             return true;
           }
         }
@@ -320,7 +320,7 @@ const Detail = ({ token, Reference }) => {
       // Success
       const apRequestFetch = await fetch("/api/requests/postRequest", {
         method: "POST",
-        headers: { ref: Reference, token: JSON.stringify(token) },
+        headers: { ref: Reference },
         body: JSON.stringify({
           ...selectedPayment,
           file: selectedFile,
@@ -331,19 +331,19 @@ const Detail = ({ token, Reference }) => {
       });
       if (apRequestFetch.status == 200) {
         setMsg(`Requested approval for ${selectedPayment.F_InvoiceNo}`);
-        try {
-          await fetch(`/api/message/oneSignalPostToUser?id=ian`, {
-            method: "POST",
-            body: JSON.stringify({
-              english: `${token.first} requested ${selectedPayment.F_InvoiceNo}`,
-              title: "NEW AP REQUEST",
-              url: `/request`,
-              to: "2f924304-8993-4f19-966b-c901e7c707d1",
-            }),
-          });
-        } catch (err) {
-          console.log(err);
-        }
+        // try {
+        //   await fetch(`/api/message/oneSignalPostToUser?id=ian`, {
+        //     method: "POST",
+        //     body: JSON.stringify({
+        //       english: `${token.first} requested ${selectedPayment.F_InvoiceNo}`,
+        //       title: "NEW AP REQUEST",
+        //       url: `/request`,
+        //       to: "2f924304-8993-4f19-966b-c901e7c707d1",
+        //     }),
+        //   });
+        // } catch (err) {
+        //   console.log(err);
+        // }
 
         setSelectedPayment(false);
         setShow(true);
@@ -735,7 +735,7 @@ const Detail = ({ token, Reference }) => {
                           disabled={
                             submitLoading ||
                             ga.STATUS == 111 ||
-                            token.admin != 6
+                            !(token.admin == 6 || token.admin == 5)
                           }
                           loading={submitLoading}
                           onClick={() => handleInvoiceUpdate(true, ga.ID)}
@@ -748,7 +748,7 @@ const Detail = ({ token, Reference }) => {
                           disabled={
                             submitLoading ||
                             ga.STATUS == 111 ||
-                            token.admin != 6
+                            !(token.admin == 6 || token.admin == 5)
                           }
                           loading={submitLoading}
                           onClick={() => handleInvoiceUpdate(false, ga.ID)}
@@ -1070,7 +1070,7 @@ const Detail = ({ token, Reference }) => {
                           disabled={
                             submitLoading ||
                             ga.STATUS == 111 ||
-                            token.admin != 6
+                            !(token.admin == 6 || token.admin == 5)
                           }
                           loading={submitLoading}
                           onClick={() => handleCrdrUpdate(true, ga.ID)}
@@ -1083,7 +1083,7 @@ const Detail = ({ token, Reference }) => {
                           disabled={
                             submitLoading ||
                             ga.STATUS == 111 ||
-                            token.admin != 6
+                            !(token.admin == 6 || token.admin == 5)
                           }
                           loading={submitLoading}
                           onClick={() => handleCrdrUpdate(false, ga.ID)}
@@ -1371,14 +1371,12 @@ const Detail = ({ token, Reference }) => {
               <div className={Classes.DIALOG_BODY}>
                 {apRequested &&
                   apRequested.map((ga) => {
-                    if (ga.Title == selectedPayment.F_InvoiceNo) {
+                    if (ga.INVOICE == selectedPayment.F_InvoiceNo) {
                       return (
                         <div className="card p-2 mb-2" key={ga.ID}>
                           <div className="flex justify-between">
-                            <Status data={ga.Status} />
-                            <span>
-                              {moment(ga.CreateAt).utc().format("LLL")}
-                            </span>
+                            <Status data={ga.STATUS} />
+                            <span>{moment(ga.CREAED).utc().format("LLL")}</span>
                           </div>
                         </div>
                       );
@@ -1439,7 +1437,8 @@ const Detail = ({ token, Reference }) => {
                               error ||
                               (apRequested &&
                                 apRequested.filter(
-                                  (e) => e.Title == selectedPayment.F_InvoiceNo
+                                  (e) =>
+                                    e.INVOICE == selectedPayment.F_InvoiceNo
                                 ).length)
                             }
                             loading={loading}

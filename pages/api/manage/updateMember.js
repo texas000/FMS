@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 export default async (req, res) => {
   const cookies = cookie.parse(req.headers.cookie);
   const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
-  if (token.admin < 6) {
+  if (token.admin < 4) {
     res.status(200).send([]);
     return;
   }

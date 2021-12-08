@@ -198,10 +198,10 @@ const Requested = ({ req }) => {
               {req?.data?.map((ga, i) => (
                 <tr key={`${i}-file`}>
                   <td className="px-6 py-2 whitespace-nowrap">
-                    <Status data={ga.Status} />
+                    <Status data={ga.STATUS} />
                   </td>
                   <td>{ga.CREATOR}</td>
-                  <td>{ga.RefNo}</td>
+                  <td>{ga.REFNO}</td>
                   <td>{moment(ga.UPDATED).utc().format("lll")}</td>
                 </tr>
               ))}

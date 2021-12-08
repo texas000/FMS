@@ -12,28 +12,33 @@ export default async (req, res) => {
   }
   var query;
   // OPERATOR
-  if (token.admin < 6) {
-    query = `SELECT *, 
-        (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CreateBy) as Creator,
-		(SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=ModifyBy) as Modifier FROM T_REQUEST 
-        WHERE CreateBy='${token.uid}' ORDER BY CreateAt DESC`;
-  }
-  // IAN
-  if (token.admin === 6) {
+  if (token.admin < 5) {
     query = `SELECT TOP 1000 *,
-        (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CreateBy) as Creator,
-		(SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=ModifyBy) as Modifier FROM T_REQUEST WHERE Status!='131'
-        ORDER BY CreateAt DESC`;
+    (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CREATEDBY) as Creator, 
+    (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=USER2) as USER_2,
+    (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=USER3) as USER_3
+    FROM T_REQUEST_AP WHERE CREATEDBY='${token.uid}' ORDER BY CREATED DESC`;
+  }
+  // DIRECTOR / MANAGER
+  if (token.admin === 6 || token.admin === 5) {
+    query = `SELECT TOP 1000 *,
+    (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CREATEDBY) as Creator, 
+    (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=USER2) as USER_2,
+    (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=USER3) as USER_3
+    FROM T_REQUEST_AP WHERE Status!='131'
+    ORDER BY CREATED DESC`;
   }
   // ACCOUNTING
   if (token.admin > 6) {
     query = `SELECT TOP 1000 *,
-        (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CreateBy) as Creator,
-		(SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=ModifyBy) as Modifier FROM T_REQUEST WHERE Status!='131'
-        ORDER BY CreateAt DESC`;
+        (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CREATEDBY) as Creator, 
+        (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=USER2) as USER_2,
+        (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=USER3) as USER_3
+        FROM T_REQUEST_AP WHERE Status!='131'
+        ORDER BY CREATED DESC`;
   }
   if (ref) {
-    query = `SELECT * FROM T_REQUEST WHERE RefNo='${ref}'`;
+    query = `SELECT * FROM T_REQUEST_AP WHERE RefNo='${ref}'`;
   }
   let pool = new sql.ConnectionPool(process.env.SERVER21);
   try {

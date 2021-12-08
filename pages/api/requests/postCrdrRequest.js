@@ -36,9 +36,9 @@ export default async (req, res) => {
   }' ,'${token.uid}',
     'T_CRDBHD', '${body.request.F_ID}', N'${sanitizedMemo}', N'${body.path}');`;
   // Add notification message
-  qry += `INSERT INTO T_MESSAGE VALUES
-  ('INVOICE REQUEST FOR ${body.request.F_CrDbNo}', '${body.path}', GETDATE(), '${token.uid}');
-  INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
+  // qry += `INSERT INTO T_MESSAGE VALUES
+  // ('INVOICE REQUEST FOR ${body.request.F_CrDbNo}', '${body.path}', GETDATE(), '${token.uid}');
+  // INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
 
   let attach = body.fileNames.map((ga) => ({
     filename: ga,
@@ -48,9 +48,10 @@ export default async (req, res) => {
   }));
 
   const mailOptions = {
-    from: "JWIUSA <it@jamesworldwide.com>",
-    // to: "RYAN KIM [JW] <ryan.kim@jamesworldwide.com>",
-    to: "IAN PYO [JW] <ian@jamesworldwide.com>",
+    from: "JWIUSA <noreply@jamesworldwide.com>",
+    to: "MANAGER [JW] <manager@jamesworldwide.com>",
+    cc: token.email,
+    attachments: attach,
     subject: `CREDIT DEBIT REQUEST [${body.request.F_CrDbNo}]`,
     html: `<!DOCTYPE html>
 <html
@@ -221,8 +222,6 @@ export default async (req, res) => {
     </div>
   </body>
 </html>`,
-    cc: token.email,
-    attachments: attach,
   };
 
   let transport = nodemailer.createTransport({

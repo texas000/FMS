@@ -295,6 +295,7 @@ export default function search(props) {
                 </select>
               </div>
             </div>
+            {/* {JSON.stringify(companyDetail)} */}
             {companyDetail && (
               <div className="card p-2 mt-3">
                 <iframe
@@ -302,15 +303,15 @@ export default function search(props) {
                   loading="lazy"
                   allowFullScreen
                   src={`https://www.google.com/maps/embed/v1/search?q=${encodeURIComponent(
-                    companyDetail[0][0].F_Addr +
+                    companyDetail.F_Addr +
                       "+" +
-                      companyDetail[0][0].F_City +
+                      companyDetail.F_City +
                       "+" +
-                      companyDetail[0][0].F_State +
+                      companyDetail.F_State +
                       "+" +
-                      companyDetail[0][0].F_ZipCode +
+                      companyDetail.F_ZipCode +
                       "+" +
-                      companyDetail[0][0].F_Country
+                      companyDetail.F_Country
                   )}&key=AIzaSyDti1yLvLp4RYMBR2hHBDk7jltZU44xJqc`}
                 ></iframe>
               </div>

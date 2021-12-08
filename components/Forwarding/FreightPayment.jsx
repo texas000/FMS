@@ -167,8 +167,9 @@ export default function FreightPayment({
                       <span className="text-sm font-bold">
                         {ga.F_InvoiceNo}
                       </span>
-                      {apRequested.filter((ref) => ref.Title == ga.F_InvoiceNo)
-                        .length ? (
+                      {apRequested.filter(
+                        (ref) => ref.INVOICE == ga.F_InvoiceNo
+                      ).length ? (
                         <svg
                           className="fill-current text-green-500 ml-2"
                           xmlns="http://www.w3.org/2000/svg"

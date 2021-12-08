@@ -3,7 +3,7 @@ import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import useSWR from "swr";
 import BootstrapTable from "react-bootstrap-table-next";
-import ToolkitProvider from "react-bootstrap-table2-toolkit";
+import ToolkitProvider, { CSVExport } from "react-bootstrap-table2-toolkit";
 import paginationFactory, {
   PaginationProvider,
   PaginationListStandalone,
@@ -46,7 +46,7 @@ export default function request(props) {
   const { data: crdr } = useSWR("api/requests/getCrdrList");
   const { data: ap } = useSWR(
     selected
-      ? `/api/requests/detail?table=${selected.TBName}&id=${selected.TBID}`
+      ? `/api/requests/detail?table=${selected.TBNAME}&id=${selected.TBID}`
       : null
   );
 
@@ -82,7 +82,7 @@ export default function request(props) {
 
   const column = [
     {
-      dataField: "RefNo",
+      dataField: "REFNO",
       text: "REFERENCE",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
@@ -93,7 +93,7 @@ export default function request(props) {
       headerFormatter: filterHeader,
     },
     {
-      dataField: "Body",
+      dataField: "VENDOR",
       text: "VENDOR",
       classes: "text-uppercase cursor-pointer",
       headerClasses:
@@ -105,7 +105,7 @@ export default function request(props) {
       headerFormatter: filterHeader,
     },
     {
-      dataField: "Title",
+      dataField: "INVOICE",
       text: "INVOICE",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
@@ -116,7 +116,7 @@ export default function request(props) {
       headerFormatter: filterHeader,
     },
     {
-      dataField: "Status",
+      dataField: "STATUS",
       text: "STATUS",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
@@ -153,7 +153,7 @@ export default function request(props) {
       headerFormatter: filterHeader,
     },
     {
-      dataField: "CreateAt",
+      dataField: "CREATED",
       text: "CREATED",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
@@ -363,13 +363,17 @@ export default function request(props) {
 
   async function updateRequest(approve) {
     // UPDATE STATUS AND SEND MAIL TO RELATED
-    const res = await fetch(
-      `/api/requests/update?id=${selected.ID}&approve=${approve}`
-    );
-    console.log(res.status);
-    mutate();
-    setSelected(false);
+    const res = await fetch(`/api/requests/update?approve=${approve}`, {
+      method: "POST",
+      body: JSON.stringify(selected),
+    });
+    if (res.ok) {
+      mutate();
+      setSelected(false);
+    }
   }
+
+  const { ExportCSVButton } = CSVExport;
 
   return (
     <Layout TOKEN={props.token} TITLE="Dashboard" LOADING={!data}>
@@ -391,6 +395,18 @@ export default function request(props) {
                 <div className="flex flex-col">
                   <div className="flex flex-row-reverse mr-2">
                     <PaginationListStandalone {...paginationProps} />
+                    <ExportCSVButton {...props.csvProps}>
+                      <svg
+                        width="24"
+                        height="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        className="fill-current text-indigo-500"
+                      >
+                        <path d="M16.965 2.381c3.593 1.946 6.035 5.749 6.035 10.119 0 6.347-5.153 11.5-11.5 11.5s-11.5-5.153-11.5-11.5c0-4.37 2.442-8.173 6.035-10.119l.608.809c-3.353 1.755-5.643 5.267-5.643 9.31 0 5.795 4.705 10.5 10.5 10.5s10.5-4.705 10.5-10.5c0-4.043-2.29-7.555-5.643-9.31l.608-.809zm-4.965-2.381v14.826l3.747-4.604.753.666-5 6.112-5-6.101.737-.679 3.763 4.608v-14.828h1z" />
+                      </svg>
+                    </ExportCSVButton>
                   </div>
                   <BootstrapTable
                     {...props.baseProps}
@@ -429,6 +445,18 @@ export default function request(props) {
                 <div className="flex flex-col">
                   <div className="flex flex-row-reverse mr-2">
                     <PaginationListStandalone {...paginationProps} />
+                    <ExportCSVButton {...props.csvProps}>
+                      <svg
+                        width="24"
+                        height="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        className="fill-current text-indigo-500"
+                      >
+                        <path d="M16.965 2.381c3.593 1.946 6.035 5.749 6.035 10.119 0 6.347-5.153 11.5-11.5 11.5s-11.5-5.153-11.5-11.5c0-4.37 2.442-8.173 6.035-10.119l.608.809c-3.353 1.755-5.643 5.267-5.643 9.31 0 5.795 4.705 10.5 10.5 10.5s10.5-4.705 10.5-10.5c0-4.043-2.29-7.555-5.643-9.31l.608-.809zm-4.965-2.381v14.826l3.747-4.604.753.666-5 6.112-5-6.101.737-.679 3.763 4.608v-14.828h1z" />
+                      </svg>
+                    </ExportCSVButton>
                   </div>
                   <BootstrapTable
                     {...props.baseProps}
@@ -467,6 +495,18 @@ export default function request(props) {
                 <div className="flex flex-col">
                   <div className="flex flex-row-reverse mr-2">
                     <PaginationListStandalone {...paginationProps} />
+                    <ExportCSVButton {...props.csvProps}>
+                      <svg
+                        width="24"
+                        height="24"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill-rule="evenodd"
+                        clip-rule="evenodd"
+                        className="fill-current text-indigo-500"
+                      >
+                        <path d="M16.965 2.381c3.593 1.946 6.035 5.749 6.035 10.119 0 6.347-5.153 11.5-11.5 11.5s-11.5-5.153-11.5-11.5c0-4.37 2.442-8.173 6.035-10.119l.608.809c-3.353 1.755-5.643 5.267-5.643 9.31 0 5.795 4.705 10.5 10.5 10.5s10.5-4.705 10.5-10.5c0-4.043-2.29-7.555-5.643-9.31l.608-.809zm-4.965-2.381v14.826l3.747-4.604.753.666-5 6.112-5-6.101.737-.679 3.763 4.608v-14.828h1z" />
+                      </svg>
+                    </ExportCSVButton>
                   </div>
                   <BootstrapTable
                     {...props.baseProps}
@@ -506,10 +546,10 @@ export default function request(props) {
             fill={true}
             onClick={() => updateRequest(true)}
             disabled={
-              props.token.admin === 6
-                ? !(selected.Status === 101 || selected.Status === 110)
+              props.token.admin === 6 || props.token.admin === 5
+                ? !(selected.STATUS === 101 || selected.STATUS === 110)
                 : props.token.admin === 9
-                ? selected.Status !== 111
+                ? selected.STATUS !== 111
                 : true
             }
           />
@@ -519,10 +559,10 @@ export default function request(props) {
             minimal={true}
             onClick={() => updateRequest(false)}
             disabled={
-              props.token.admin === 6
-                ? selected.Status !== 101
+              props.token.admin === 6 || props.token.admin === 5
+                ? selected.STATUS !== 101
                 : props.token.admin === 9
-                ? selected.Status !== 111
+                ? selected.STATUS !== 111
                 : true
             }
           />

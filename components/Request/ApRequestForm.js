@@ -37,6 +37,8 @@ export const CheckRequestForm = ({
   consignee,
   due,
   approved,
+  user2,
+  user3,
 }) => (
   <Document
     title={`AP FOR ${oim}`}
@@ -101,8 +103,8 @@ export const CheckRequestForm = ({
             {
               dummy: "",
               creator: pic,
-              director: approved ? "IAN" : "",
-              account: approved ? "KEVIN" : "",
+              director: user2 ? user2 : "",
+              account: user3 ? user3 : "",
             },
           ]}
         >
@@ -125,7 +127,7 @@ export const CheckRequestForm = ({
                 padding: "5px 0 5px",
               }}
             >
-              DIRECTOR
+              MANAGER
             </TableCell>
             <TableCell
               style={{

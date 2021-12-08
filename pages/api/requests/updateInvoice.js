@@ -19,13 +19,9 @@ export default async (req, res) => {
   // Default status is
   var status = 101;
   // If approve, status is director approved, otherwise, director rejected
-  if (token.admin === 6) {
+  if (token.admin) {
     approve == "true" ? (status = 111) : (status = 110);
   }
-  //temporary for testing purpose
-  //   if (token.admin > 6) {
-  //     approve == "true" ? (status = 111) : (status = 110);
-  //   }
   let pool = new sql.ConnectionPool(process.env.SERVER21);
   var query = `UPDATE T_REQUEST_INV SET STATUS='${status}', UPDATEDBY='${token.uid}', UPDATED=GETDATE() WHERE ID='${id}';
     SELECT TOP 1 *, (SELECT F_EMAIL FROM T_MEMBER M WHERE M.F_ID=T_REQUEST_INV.CREATEDBY) AS CREATOR FROM T_REQUEST_INV WHERE ID='${id}';`;
@@ -58,8 +54,8 @@ export default async (req, res) => {
     }
 
     const mailOptions = {
-      from: "JWIUSA <it@jamesworldwide.com>",
-      to: `IAN PYO [JW] <ian@jamesworldwide.com>, ${result.recordset[0].CREATOR}`,
+      from: "JWIUSA <noreply@jamesworldwide.com>",
+      to: `MANAGER [JW] <manager@jamesworldwide.com>, ${result.recordset[0].CREATOR}`,
       subject: `INVOICE REQUEST [${result.recordset[0].INVOICE}]`,
       html: `<!DOCTYPE html>
             <html

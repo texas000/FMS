@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 export default async (req, res) => {
   var cookies = cookie.parse(req.headers.cookie);
   const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
-  if (token.admin < 6) {
+  if (token.admin < 4) {
     res.status(400).json("Unauthorized");
     return;
   }
@@ -23,7 +23,7 @@ export default async (req, res) => {
   });
   id = id.join("");
   let pool = new sql.ConnectionPool(process.env.SERVER21);
-  var query = `UPDATE T_REQUEST SET Status='131' WHERE ${id}`;
+  var query = `UPDATE T_REQUEST_AP SET STATUS='131' WHERE ${id}`;
   try {
     await pool.connect();
     let result = await pool.request().query(query);

@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
 export default async (req, res) => {
-  var { id, approve } = req.query;
+  var { approve } = req.query;
   var cookies = cookie.parse(req.headers.cookie);
   const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
   if (!token.admin) {
@@ -18,23 +18,39 @@ export default async (req, res) => {
       pass: process.env.FTP_KEY,
     },
   });
-  var status = 101;
-
-  if (token.admin == 6) {
-    // If approve, status is director approved otherwise, director rejected
-    approve == "true" ? (status = 111) : (status = 110);
+  const body = JSON.parse(req.body);
+  var newStatus = "101";
+  var query = "";
+  if (body.STATUS == 101) {
+    approve == "true" ? (newStatus = 111) : (newStatus = 110);
+    query = `UPDATE T_REQUEST_AP SET STATUS='${newStatus}', USER2='${token.uid}', UPDATED=GETDATE() WHERE ID='${body.ID}';
+	SELECT TOP 1 F_EMAIL FROM T_MEMBER WHERE F_ID='${body.CREATEDBY}';`;
   }
-  if (token.admin > 6) {
-    // If approve, status is accounting approved otherwise, accounting rejected
-    approve == "true" ? (status = 121) : (status = 120);
+  if (body.STATUS == 111) {
+    approve == "true" ? (newStatus = 121) : (newStatus = 120);
+    query = `UPDATE T_REQUEST_AP SET STATUS='${newStatus}', USER3='${token.uid}', UPDATED=GETDATE() WHERE ID='${body.ID}';
+	SELECT TOP 1 F_EMAIL FROM T_MEMBER WHERE F_ID='${body.CREATEDBY}';`;
   }
-  //   if (token.admin == CEO) {
-  // need another code for CEO approval or rejection
-  //   }
 
   function Status(data) {
     if (data == 101) {
-      return `<mark>REQUESTED</mark>`;
+      return `<h2
+	  style="
+		margin: 0 0 10px 0;
+		font-family: sans-serif;
+		font-size: 18px;
+		line-height: 22px;
+		color: #333333;
+		font-weight: bold;
+	  "
+	>
+	  <img
+		src="https://cdn-icons-png.flaticon.com/512/190/190406.png"
+		width="20"
+		height="20"
+	  />
+	  Your request has been submitted!
+	</h2>`;
     }
     if (data == 110) {
       return `<h2
@@ -114,9 +130,6 @@ export default async (req, res) => {
     }
   }
 
-  var query = `UPDATE T_REQUEST SET Status='${status}', ModifyBy='${token.uid}', ModifyAt=GETDATE() WHERE ID='${id}'; 
-    SELECT R.Title, R.Body, R.Status, R.ApType, R.RefNo, (SELECT F_EMAIL FROM T_MEMBER M WHERE M.F_ID=R.CreateBy) AS Notify FROM T_REQUEST R WHERE ID='${id}';`;
-
   // ADDING MESSAGE TO KEVIN(18)
   // if(token.admin == 6) {
   // 	query += `INSERT INTO T_MESSAGE VALUES ('ACCOUNTING PAYABLE REQUEST FOR ${body.F_InvoiceNo}', '${body.path}', GETDATE(), '${token.uid}');
@@ -127,12 +140,13 @@ export default async (req, res) => {
   try {
     await pool.connect();
     let result = await pool.request().query(query);
+    console.log(result.recordset);
     res.status(200).send(result.recordset || []);
-    // if(result.recordset.length)
     const mailOptions = {
-      from: "JWIUSA <it@jamesworldwide.com>",
-      to: `${result.recordset[0].Notify}, ACCOUNTING [JW] <accounting@jamesworldwide.com>`,
-      subject: `ACCOUNT PAYABLE REQUEST [${result.recordset[0].Title}]`,
+      from: "JWIUSA <noreply@jamesworldwide.com>",
+      to: `${result.recordset[0].F_EMAIL}, ACCOUNTING [JW] <accounting@jamesworldwide.com>`,
+      cc: token.email,
+      subject: `ACCOUNT PAYABLE REQUEST [${body.INVOICE}]`,
       html: `
 	  <!DOCTYPE html>
 	  <html
@@ -216,13 +230,12 @@ export default async (req, res) => {
 					Request Summary
 				  </h1>
 				  <ul style="margin: 0 0 10px 0; list-style-type: circle">
-					<li style="margin: 0 0 10px">Reference Number: ${result.recordset[0].RefNo}</li>
+					<li style="margin: 0 0 10px">Reference Number: ${body.REFNO}</li>
+					<li style="margin: 0 0 10px">Requested By:&nbsp;${body.Creator}</li>
 					<li style="margin: 0 0 10px">Updated By:&nbsp;${token.first}</li>
-					<li style="margin: 0 0 10px">Request Type: Account Payable - ${
-            result.recordset[0].ApType
-          }</li>
-					<li style="margin: 0 0 10px">Invoice Vendor: ${result.recordset[0].Body}</li>
-					<li style="margin: 0 0 10px">Invoice Number: ${result.recordset[0].Title}</li>
+					<li style="margin: 0 0 10px">Request Type: Account Payable - ${body.TYPE}</li>
+					<li style="margin: 0 0 10px">Invoice Vendor: ${body.VENDOR}</li>
+					<li style="margin: 0 0 10px">Invoice Number: ${body.INVOICE}</li>
 				  </ul>
 				</td>
 			  </tr>
@@ -237,27 +250,23 @@ export default async (req, res) => {
 					border-top: 1px solid #e0e0e0;
 				  "
 				>
-					${Status(status)}
+					${Status(newStatus)}
 				</td>
 			  </tr>
 			</table>
 		  </div>
 		</body>
 	  </html>`,
-      cc: token.email,
     };
     transport.sendMail(mailOptions, function (error, info) {
       if (error) {
-        console.log(error);
         res.status(500).send(error);
       } else {
         console.log("Email Sent: " + info.response);
-        res.status(200).send(info.response);
       }
     });
   } catch (err) {
-    console.log(err);
-    res.json([]);
+    res.status(500).send(err);
   }
   pool.close();
 };

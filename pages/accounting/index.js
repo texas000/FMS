@@ -230,7 +230,7 @@ export const Navigation = ({ token }) => {
 
   const apColumns = [
     {
-      dataField: "RefNo",
+      dataField: "REFNO",
       text: "REFERENCE",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
@@ -241,7 +241,7 @@ export const Navigation = ({ token }) => {
       headerFormatter: filterHeader,
     },
     {
-      dataField: "Body",
+      dataField: "VENDOR",
       text: "VENDOR",
       classes: "text-uppercase cursor-pointer",
       headerClasses:
@@ -253,7 +253,7 @@ export const Navigation = ({ token }) => {
       headerFormatter: filterHeader,
     },
     {
-      dataField: "Title",
+      dataField: "INVOICE",
       text: "INVOICE",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
@@ -264,7 +264,7 @@ export const Navigation = ({ token }) => {
       headerFormatter: filterHeader,
     },
     {
-      dataField: "Status",
+      dataField: "STATUS",
       text: "STATUS",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
@@ -290,7 +290,7 @@ export const Navigation = ({ token }) => {
       headerFormatter: filterHeader,
     },
     {
-      dataField: "CreateAt",
+      dataField: "CREATED",
       text: "CREATED",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
@@ -306,7 +306,7 @@ export const Navigation = ({ token }) => {
       },
     },
     {
-      dataField: "ApType",
+      dataField: "TYPE",
       text: "AP",
       headerClasses:
         "text-center px-4 align-middle pb-0 font-weight-bold w-40 min-w-full",
@@ -899,6 +899,7 @@ export const Navigation = ({ token }) => {
           </Dialog>
         </>
       )}
+      {/* AP SUMMARY */}
       {menu === 3 && (
         <>
           <Select

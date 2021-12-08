@@ -267,8 +267,8 @@ const Detail = ({ token, Reference }) => {
     if (apRequested) {
       // Check if the current request has accounting approved, director approved, or requested
       const approved = apRequested.map((ga) => {
-        if (ga.Title == selectedPayment.F_InvoiceNo) {
-          if (ga.Status == 121 || ga.Status == 111 || ga.Status == 101) {
+        if (ga.INVOICE == selectedPayment.F_InvoiceNo) {
+          if (ga.STATUS == 121 || ga.STATUS == 111 || ga.STATUS == 101) {
             return true;
           }
         }
@@ -710,7 +710,7 @@ const Detail = ({ token, Reference }) => {
                           disabled={
                             submitLoading ||
                             ga.STATUS == 111 ||
-                            token.admin != 6
+                            !(token.admin == 6 || token.admin == 5)
                           }
                           loading={submitLoading}
                           onClick={() => handleInvoiceUpdate(true, ga.ID)}
@@ -723,7 +723,7 @@ const Detail = ({ token, Reference }) => {
                           disabled={
                             submitLoading ||
                             ga.STATUS == 111 ||
-                            token.admin != 6
+                            !(token.admin == 6 || token.admin == 5)
                           }
                           loading={submitLoading}
                           onClick={() => handleInvoiceUpdate(false, ga.ID)}
@@ -1045,7 +1045,7 @@ const Detail = ({ token, Reference }) => {
                           disabled={
                             submitLoading ||
                             ga.STATUS == 111 ||
-                            token.admin != 6
+                            !(token.admin == 6 || token.admin == 5)
                           }
                           loading={submitLoading}
                           onClick={() => handleCrdrUpdate(true, ga.ID)}
@@ -1058,7 +1058,7 @@ const Detail = ({ token, Reference }) => {
                           disabled={
                             submitLoading ||
                             ga.STATUS == 111 ||
-                            token.admin != 6
+                            !(token.admin == 6 || token.admin == 5)
                           }
                           loading={submitLoading}
                           onClick={() => handleCrdrUpdate(false, ga.ID)}
@@ -1346,13 +1346,13 @@ const Detail = ({ token, Reference }) => {
               <div className={Classes.DIALOG_BODY}>
                 {apRequested &&
                   apRequested.map((ga) => {
-                    if (ga.Title == selectedPayment.F_InvoiceNo) {
+                    if (ga.INVOICE == selectedPayment.F_InvoiceNo) {
                       return (
                         <div className="card p-2 mb-2" key={ga.ID}>
                           <div className="flex justify-between">
-                            <Status data={ga.Status} />
+                            <Status data={ga.STATUS} />
                             <span>
-                              {moment(ga.CreateAt).utc().format("LLL")}
+                              {moment(ga.CREATED).utc().format("LLL")}
                             </span>
                           </div>
                         </div>
@@ -1414,7 +1414,8 @@ const Detail = ({ token, Reference }) => {
                               error ||
                               (apRequested &&
                                 apRequested.filter(
-                                  (e) => e.Title == selectedPayment.F_InvoiceNo
+                                  (e) =>
+                                    e.INVOICE == selectedPayment.F_InvoiceNo
                                 ).length)
                             }
                             loading={loading}

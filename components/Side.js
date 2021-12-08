@@ -261,12 +261,6 @@ const Sidebar = ({ Token, toggle, setLoading }) => {
                 </div>
               </div>
             </li>
-          </>
-        )}
-        {/* AUTH HIGHER THAN MANAGER */}
-        {Token.admin > 5 && (
-          <>
-            {/* HR */}
             <li
               className={`flex flex-column gap-2 text-xs cursor-pointer hover:text-white hover:opacity-100 ${
                 router.pathname == "/hr"

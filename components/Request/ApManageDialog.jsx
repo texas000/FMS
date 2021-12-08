@@ -34,12 +34,12 @@ export default function ApManageDialog({ selected, ap }) {
   return (
     <Fragment>
       <div className="card rounded mb-2 py-1 text-center">
-        <Status data={selected.Status} />
+        <Status data={selected.STATUS} />
       </div>
       <div className="card my-2">
         {/* CARD HEADER   */}
         <div className="flex justify-between bg-gray-100 text-black dark:bg-gray-500 dark:text-white rounded-t shadow-inner font-semibold text-lg px-3 py-3">
-          <span>{selected.RefNo}</span>
+          <span>{selected.REFNO}</span>
           <span>{selected.Creator}</span>
         </div>
         {/* CARD BODY */}
@@ -54,13 +54,13 @@ export default function ApManageDialog({ selected, ap }) {
                   window.open(`/ap/${selected.TBID}`, "_blank");
                 }}
               >
-                {selected.Title || "EMPTY"}
+                {selected.INVOICE || "EMPTY"}
               </span>
             </li>
             <li className="flex justify-between">
               <span>Payment method</span>
               <span className="text-indigo-500 font-bold tracking-wider">
-                {selected.ApType}
+                {selected.TYPE}
               </span>
             </li>
             {ap && (
@@ -79,7 +79,7 @@ export default function ApManageDialog({ selected, ap }) {
                       window.open(`/company/${ap.F_PayTo}`, "_blank");
                     }}
                   >
-                    {selected.Body}
+                    {selected.VENDOR}
                   </span>
                 </li>
               </Fragment>
@@ -120,7 +120,7 @@ export default function ApManageDialog({ selected, ap }) {
                     onClick={async () => {
                       const data = await fetch(
                         `/api/file/get?ref=${
-                          selected.RefNo
+                          selected.REFNO
                         }&file=${encodeURIComponent(ga.F_FILENAME)}`
                       );
                       const blob = await data.blob();
@@ -162,7 +162,7 @@ export default function ApManageDialog({ selected, ap }) {
                     onClick={() => {
                       window.location.assign(
                         `/api/file/get?ref=${
-                          selected.RefNo
+                          selected.REFNO
                         }&file=${encodeURIComponent(ga.F_FILENAME)}`
                       );
                     }}
@@ -176,12 +176,12 @@ export default function ApManageDialog({ selected, ap }) {
               <BlobProvider
                 document={
                   <CheckRequestForm
-                    oim={selected.RefNo}
+                    oim={selected.REFNO}
                     pic={selected.Creator}
                     payto={ap.Vendor}
                     customer={ap.Customer}
                     amt={ap.F_InvoiceAmt}
-                    type={selected.ApType.toUpperCase()}
+                    type={selected.TYPE.toUpperCase()}
                     desc={ap.Detail.map(
                       (ga) => `\t\t${ga.F_Description}\n`
                     ).join("")}
@@ -190,8 +190,10 @@ export default function ApManageDialog({ selected, ap }) {
                       ap.F_DueDate ? moment(ap.F_DueDate).utc().format("L") : ""
                     }
                     approved={
-                      selected.Status === 111 || selected.Status === 121
+                      selected.STATUS === 111 || selected.STATUS === 121
                     }
+                    user2={selected.USER_2}
+                    user3={selected.USER_3}
                   />
                 }
               >
@@ -232,13 +234,15 @@ export default function ApManageDialog({ selected, ap }) {
         </div>
       </div>
       <p className="text-center text-xs text-gray-300 mb-2">
-        Requested: {moment(selected.CreateAt).utc().format("LLL")} by{" "}
+        Requested: {moment(selected.CREATED).utc().format("LLL")} by{" "}
         {selected.Creator}
       </p>
-      <p className="text-center text-xs text-gray-300">
-        Approved: {moment(selected.ModifyAt).utc().format("LLL")} by{" "}
-        {selected.Modifier}
-      </p>
+      {selected.USER2 && (
+        <p className="text-center text-xs text-gray-300">
+          Approved: {moment(selected.UPDATED).utc().format("LLL")} by{" "}
+          {selected.USER_3 || selected.USER_2}
+        </p>
+      )}
     </Fragment>
   );
 }

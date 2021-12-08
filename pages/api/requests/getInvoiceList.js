@@ -14,11 +14,11 @@ export default async (req, res) => {
   let pool = new sql.ConnectionPool(process.env.SERVER21);
   // OPERATOR
   var query;
-  if (token.admin < 6) {
+  if (token.admin < 5) {
     query = `SELECT * , (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CREATEDBY) AS CREATOR FROM T_REQUEST_INV WHERE CREATEDBY='${token.uid}' ORDER BY CREATED DESC;`;
   }
   // IAN
-  if (token.admin === 6) {
+  if (token.admin === 6 || token.admin === 5) {
     query = `SELECT TOP 1000* , (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CREATEDBY) AS CREATOR FROM T_REQUEST_INV ORDER BY CREATED DESC;`;
   }
   // ACCOUNTING
