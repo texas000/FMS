@@ -4,65 +4,77 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
 export default async (req, res) => {
-  var cookies = cookie.parse(req.headers.cookie);
-  const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
-  if (!token.admin) {
-    res.status(400).json([]);
-    return;
-  }
-  let transport = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.SENT_EMAIL_KEY,
-      pass: process.env.FTP_KEY,
-    },
-  });
-  const body = JSON.parse(req.body);
-  const ref = req.headers.ref;
-  var fileQuery = body.file
-    .map(
-      (ga) =>
-        `INSERT INTO T_FILEDETAIL VALUES ('${body.F_ID}','T_APHD','${ga.F_ID}');`
-    )
-    .join(" ");
+	var cookies = cookie.parse(req.headers.cookie);
+	const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
+	if (!token.admin) {
+		res.status(400).json([]);
+		return;
+	}
+	let transport = nodemailer.createTransport({
+		service: "gmail",
+		auth: {
+			user: process.env.SENT_EMAIL_KEY,
+			pass: process.env.FTP_KEY,
+		},
+	});
+	const body = JSON.parse(req.body);
+	const ref = req.headers.ref;
+	var fileQuery = body.file
+		.map(
+			(ga) =>
+				`INSERT INTO T_FILEDETAIL VALUES ('${body.F_ID}','T_APHD','${ga.F_ID}');`
+		)
+		.join(" ");
 
-  var query = `INSERT INTO T_REQUEST_AP  
+	var query = `INSERT INTO T_REQUEST_AP  
     VALUES ('${ref.replace("'", "''")}','101',
     '${body.F_InvoiceNo.replace("'", "''")}',
 	'${body.VENDOR.replace("'", "''")}',GETDATE(),GETDATE(),'${token.uid}',
-	'T_APHD','${body.F_ID}', '${body.type}', NULL, NULL, NULL);`;
+	'T_APHD','${body.F_ID}', '${body.type}', '${body.memo.replace(
+		"'",
+		"''"
+	)}', NULL, NULL);`;
 
-  // ADDING FILE LIST
-  query += fileQuery;
+	// ADDING FILE LIST
+	query += fileQuery;
 
-  // ADDING MESSAGE TO IAN(22) - Deprecated
-  // query += `INSERT INTO T_MESSAGE VALUES
-  // ('ACCOUNTING PAYABLE REQUEST FOR
-  // ${body.F_InvoiceNo.replace("'","''")}',
-  // '${body.path}', GETDATE(), '${token.uid}');
-  // `;
-  // INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);
+	// ADDING MESSAGE TO IAN(22) - Deprecated
+	// query += `INSERT INTO T_MESSAGE VALUES
+	// ('ACCOUNTING PAYABLE REQUEST FOR
+	// ${body.F_InvoiceNo.replace("'","''")}',
+	// '${body.path}', GETDATE(), '${token.uid}');
+	// `;
+	// INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);
 
-  let pool = new sql.ConnectionPool(process.env.SERVER21);
-  try {
-    await pool.connect();
-    let result = await pool.request().query(query);
+	let pool = new sql.ConnectionPool(process.env.SERVER21);
+	try {
+		await pool.connect();
+		let result = await pool.request().query(query);
 
-    let attach = body.file.map((ga) => ({
-      filename: ga.F_FILENAME,
-      path: `https://jwiusa.com/api/file/get?ref=${
-        ga.F_REF
-      }&file=${encodeURIComponent(ga.F_FILENAME)}`,
-    }));
+		let attach = body.file.map((ga) => ({
+			filename: ga.F_FILENAME,
+			path: `https://jwiusa.com/api/file/get?ref=${
+				ga.F_REF
+			}&file=${encodeURIComponent(ga.F_FILENAME)}`,
+		}));
 
-    const mailOptions = {
-      from: "JWIUSA <noreply@jamesworldwide.com>",
-      to: "MANAGER [JW] <manager@jamesworldwide.com>",
-      // TO MANAGER GROUP
-      cc: token.email,
-      // CC PIC EMAIL
-      subject: `ACCOUNT PAYABLE REQUEST [${body.F_InvoiceNo}]`,
-      html: `<!DOCTYPE html>
+		const mailOptions = {
+			from: "JWIUSA <noreply@jamesworldwide.com>",
+			to: "MANAGER [JW] <manager@jamesworldwide.com>",
+			// TO MANAGER GROUP
+			cc: token.email,
+			// CC PIC EMAIL
+			subject: `${body.urgent && "[URGENT]"} ACCOUNT PAYABLE REQUEST [${
+				body.F_InvoiceNo
+			}]`,
+			headers: body.urgent
+				? {
+						"x-priority": "1",
+						"x-msmail-priority": "High",
+						importance: "high",
+				  }
+				: {},
+			html: `<!DOCTYPE html>
 <html
   lang="en"
   xmlns="http://www.w3.org/xhtml"
@@ -144,11 +156,24 @@ export default async (req, res) => {
               Request Summary
             </h1>
             <ul style="margin: 0 0 10px 0; list-style-type: circle">
-              <li style="margin: 0 0 10px">Reference Number: <a href="https://jwiusa.com${body.path}">${ref}</a></li>
-              <li style="margin: 0 0 10px">Requested By:&nbsp;${token.first}</li>
-              <li style="margin: 0 0 10px">Request Type: Account Payable - ${body.type}</li>
+              <li style="margin: 0 0 10px">Reference Number: <a href="https://jwiusa.com${
+								body.path
+							}">${ref}</a></li>
+              <li style="margin: 0 0 10px">Requested By:&nbsp;${
+								token.first
+							}</li>
+              <li style="margin: 0 0 10px">Request Type: Account Payable - ${
+								body.type
+							}</li>
               <li style="margin: 0 0 10px">Payable Vendor: ${body.VENDOR}</li>
-              <li style="margin: 0 0 10px">Invoice Number: ${body.F_InvoiceNo}</li>
+              <li style="margin: 0 0 10px">Invoice Number: ${
+								body.F_InvoiceNo
+							}</li>
+              ${
+								body.memo
+									? `<li style="margin: 0 0 10px">Memo: ${body.memo}</li>`
+									: ""
+							}
             </ul>
           </td>
         </tr>
@@ -186,36 +211,36 @@ export default async (req, res) => {
     </div>
   </body>
 </html>`,
-      attachments: attach,
-      // INITIAL REQUEST HAS ATTACHEMENT INCLUDED IN EMAIL
-    };
+			attachments: attach,
+			// INITIAL REQUEST HAS ATTACHEMENT INCLUDED IN EMAIL
+		};
 
-    // TRY SEND EMAIL NOTIFICATION
-    try {
-      transport.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-          res.status(404).send(error);
-        } else {
-          console.log("Email Sent: " + info.response);
-          res.status(200).send(result.recordset || []);
-          // res.status(200).send(info.response);
-        }
-      });
-    } catch (err) {
-      console.log("EMAIL ERROR");
-      console.log(err);
-      res.status(405).send(error);
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(406).send(err);
-  }
-  return pool.close();
+		// TRY SEND EMAIL NOTIFICATION
+		try {
+			transport.sendMail(mailOptions, function (error, info) {
+				if (error) {
+					console.log(error);
+					res.status(404).send(error);
+				} else {
+					console.log("Email Sent: " + info.response);
+					res.status(200).send(result.recordset || []);
+					// res.status(200).send(info.response);
+				}
+			});
+		} catch (err) {
+			console.log("EMAIL ERROR");
+			console.log(err);
+			res.status(405).send(error);
+		}
+	} catch (err) {
+		console.log(err);
+		res.status(406).send(err);
+	}
+	return pool.close();
 };
 
 export const config = {
-  api: {
-    externalResolver: true,
-  },
+	api: {
+		externalResolver: true,
+	},
 };
