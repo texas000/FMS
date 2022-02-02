@@ -61,6 +61,11 @@ const Detail = ({ token, Reference }) => {
   const [selectedFile, setSelectedFile] = useState([]);
   const [submitLoading, setSubmitLoading] = useState(false);
 
+// ML * 02/01/22 - Urgent Flag + Memo 
+const [selectedUrgent, setSelectedUrgent] = useState(false);
+const [ApMemo, setApMemo] = useState("");
+
+
   const { data: invoiceRequested } = useSWR(
     selectedPayment.type == 10
       ? `/api/requests/getInvoiceRequestDetail?tbid=${selectedPayment.F_ID}`
@@ -293,6 +298,8 @@ const Detail = ({ token, Reference }) => {
         headers: { ref: Reference, token: JSON.stringify(token) },
         body: JSON.stringify({
           ...selectedPayment,
+          memo: ApMemo,
+          urgent: selectedUrgent,
           file: selectedFile,
           type: selectedApType,
           customer: data.H[0].CUSTOMER,
@@ -1546,6 +1553,40 @@ const Detail = ({ token, Reference }) => {
                       </table>
                     </div>
                     <hr className="mt-4" />
+                    <div className="px-3 pt-3">
+                    <label
+                        className="block text-gray-700 text-sm font-semibold mb-2"
+                        htmlFor="urgent"
+                      >
+                        Urgent
+                      </label>
+                      <Checkbox
+                        label="Urgent Account Payable"
+                        id="urgent"
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedUrgent(true);
+                          } else {
+                            setSelectedUrgent(false);
+                          }
+                        }}
+                      />
+                    <label
+                        className="block text-gray-700 text-sm font-semibold mb-2"
+                        htmlFor="memo"
+                      >
+                        Memo
+                      </label>
+                      <input
+                        className="shadow appearance-none border rounded w-full py-2 px-3 my-1 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="memo"
+                        type="text"
+                        maxLength="100"
+                        placeholder="Write Memo"
+                        onChange={(e) => setApMemo(e.target.value)}
+                      />  
+                    </div>
+
                     <div className="p-3">
                       <label
                         className="block text-gray-700 text-sm font-semibold mb-2"
