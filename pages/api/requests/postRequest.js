@@ -64,7 +64,7 @@ export default async (req, res) => {
 			// TO MANAGER GROUP
 			cc: token.email,
 			// CC PIC EMAIL
-			subject: `${body.urgent && "[URGENT]"} ACCOUNT PAYABLE REQUEST [${
+			subject: `${body.urgent ? "[URGENT]" : ""} ACCOUNT PAYABLE REQUEST [${
 				body.F_InvoiceNo
 			}]`,
 			headers: body.urgent
