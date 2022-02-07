@@ -26,14 +26,29 @@ export default async (req, res) => {
 		)
 		.join(" ");
 
-	var query = `INSERT INTO T_REQUEST_AP  
+	var query = `INSERT INTO T_REQUEST_AP (REFNO,STATUS,INVOICE,VENDOR,CREATED,UPDATED,CREATEDBY,TBNAME,TBID,TYPE,MESSAGE,USER2,USER3,URGENT)
     VALUES ('${ref.replace("'", "''")}','101',
     '${body.F_InvoiceNo.replace("'", "''")}',
 	'${body.VENDOR.replace("'", "''")}',GETDATE(),GETDATE(),'${token.uid}',
 	'T_APHD','${body.F_ID}', '${body.type}', '${body.memo.replace(
 		"'",
 		"''"
-	)}', NULL, NULL);`;
+	)}', NULL, NULL, '${body.urgent?'1':'0'}');`;
+
+// REFNO,
+// STATUS,
+// INVOICE,
+// VENDOR,
+// CREATED,
+// UPDATED,
+// CREATEDBY,
+// TBNAME,
+// TBID,
+// TYPE,
+// MESSAGE,
+// USER2,
+// USER3,
+// URGENT
 
 	// ADDING FILE LIST
 	query += fileQuery;
