@@ -3,38 +3,50 @@ const cookie = require("cookie");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
-export default async (req, res) => {
-  var { approve } = req.query;
-  var cookies = cookie.parse(req.headers.cookie);
-  const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
-  if (!token.admin) {
-    res.status(400).json([]);
-    return;
-  }
-  let transport = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.SENT_EMAIL_KEY,
-      pass: process.env.FTP_KEY,
-    },
-  });
-  const body = JSON.parse(req.body);
-  var newStatus = "101";
-  var query = "";
-  if (body.STATUS == 101) {
-    approve == "true" ? (newStatus = 111) : (newStatus = 110);
-    query = `UPDATE T_REQUEST_AP SET STATUS='${newStatus}', USER2='${token.uid}', UPDATED=GETDATE() WHERE ID='${body.ID}';
-	SELECT TOP 1 F_EMAIL FROM T_MEMBER WHERE F_ID='${body.CREATEDBY}';`;
-  }
-  if (body.STATUS == 111) {
-    approve == "true" ? (newStatus = 121) : (newStatus = 120);
-    query = `UPDATE T_REQUEST_AP SET STATUS='${newStatus}', USER3='${token.uid}', UPDATED=GETDATE() WHERE ID='${body.ID}';
-	SELECT TOP 1 F_EMAIL FROM T_MEMBER WHERE F_ID='${body.CREATEDBY}';`;
-  }
+// WHEN CURRENT EXISTING AP UPDATE ITS STATUS, THIS API WILL BE USED
 
-  function Status(data) {
-    if (data == 101) {
-      return `<h2
+export default async (req, res) => {
+	var { approve } = req.query;
+	var cookies = cookie.parse(req.headers.cookie);
+	const token = jwt.verify(cookies.jamesworldwidetoken, process.env.JWT_KEY);
+	if (!token.admin) {
+		res.status(400).json([]);
+		return;
+	}
+	let transport = nodemailer.createTransport({
+		service: "gmail",
+		auth: {
+			user: process.env.SENT_EMAIL_KEY,
+			pass: process.env.FTP_KEY,
+		},
+	});
+	const body = JSON.parse(req.body);
+	var newStatus = "101";
+	var query = "";
+	if (body.STATUS == 101) {
+		approve == "true" ? (newStatus = 111) : (newStatus = 110);
+
+		// RYAN
+		// IF REQUESTED PREVIOUSLY
+		// UPDATE AP STATUS + GET REQUESTOR EMAIL
+
+		query = `UPDATE T_REQUEST_AP SET STATUS='${newStatus}', USER2='${token.uid}', UPDATED=GETDATE() WHERE ID='${body.ID}';
+	SELECT TOP 1 F_EMAIL FROM T_MEMBER WHERE F_ID='${body.CREATEDBY}';`;
+	}
+	if (body.STATUS == 111) {
+		approve == "true" ? (newStatus = 121) : (newStatus = 120);
+
+		// RYAN
+		// IF APPROVED PREVIOUSLY
+		// UPDATE AP STATUS + GET REQUESTOR EMAIL
+
+		query = `UPDATE T_REQUEST_AP SET STATUS='${newStatus}', USER3='${token.uid}', UPDATED=GETDATE() WHERE ID='${body.ID}';
+	SELECT TOP 1 F_EMAIL FROM T_MEMBER WHERE F_ID='${body.CREATEDBY}';`;
+	}
+
+	function Status(data) {
+		if (data == 101) {
+			return `<h2
 	  style="
 		margin: 0 0 10px 0;
 		font-family: sans-serif;
@@ -51,9 +63,9 @@ export default async (req, res) => {
 	  />
 	  Your request has been submitted!
 	</h2>`;
-    }
-    if (data == 110) {
-      return `<h2
+		}
+		if (data == 110) {
+			return `<h2
 		style="
 		  margin: 0 0 10px 0;
 		  font-family: sans-serif;
@@ -70,9 +82,9 @@ export default async (req, res) => {
 		/>
 		Your request has been reviewed by director and rejected!
 	  </h2>`;
-    }
-    if (data == 111) {
-      return `<h2
+		}
+		if (data == 111) {
+			return `<h2
 	  style="
 		margin: 0 0 10px 0;
 		font-family: sans-serif;
@@ -89,9 +101,9 @@ export default async (req, res) => {
 	  />
 	  Your request has been reviewed by director and approved!
 	</h2>`;
-    }
-    if (data == 120) {
-      return `<h2
+		}
+		if (data == 120) {
+			return `<h2
 	  style="
 		margin: 0 0 10px 0;
 		font-family: sans-serif;
@@ -108,9 +120,9 @@ export default async (req, res) => {
 	  />
 	  Your request has been reviewed by accounting and rejected!
 	</h2>`;
-    }
-    if (data == 121) {
-      return `<h2
+		}
+		if (data == 121) {
+			return `<h2
 	  style="
 		margin: 0 0 10px 0;
 		font-family: sans-serif;
@@ -127,27 +139,36 @@ export default async (req, res) => {
 	  />
 	  Your request has been reviewed by accounting and approved!
 	</h2>`;
-    }
-  }
+		}
+	}
 
-  // ADDING MESSAGE TO KEVIN(18)
-  // if(token.admin == 6) {
-  // 	query += `INSERT INTO T_MESSAGE VALUES ('ACCOUNTING PAYABLE REQUEST FOR ${body.F_InvoiceNo}', '${body.path}', GETDATE(), '${token.uid}');
-  // 	INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
-  // }
+	// ADDING MESSAGE TO KEVIN(18)
+	// if(token.admin == 6) {
+	// 	query += `INSERT INTO T_MESSAGE VALUES ('ACCOUNTING PAYABLE REQUEST FOR ${body.F_InvoiceNo}', '${body.path}', GETDATE(), '${token.uid}');
+	// 	INSERT INTO T_MESSAGE_RECIPIENT VALUES ('22', NULL, @@IDENTITY, 0);`;
+	// }
 
-  let pool = new sql.ConnectionPool(process.env.SERVER21);
-  try {
-    await pool.connect();
-    let result = await pool.request().query(query);
-    console.log(result.recordset);
-    res.status(200).send(result.recordset || []);
-    const mailOptions = {
-      from: "JWIUSA <noreply@jamesworldwide.com>",
-      to: `${result.recordset[0].F_EMAIL}, ACCOUNTING [JW] <accounting@jamesworldwide.com>`,
-      cc: token.email,
-      subject: `ACCOUNT PAYABLE REQUEST [${body.INVOICE}]`,
-      html: `
+	let pool = new sql.ConnectionPool(process.env.SERVER21);
+	try {
+		await pool.connect();
+		let result = await pool.request().query(query);
+		console.log(result.recordset);
+		res.status(200).send(result.recordset || []);
+		const mailOptions = {
+			from: "JWIUSA <noreply@jamesworldwide.com>",
+			to: `${result.recordset[0].F_EMAIL}, ACCOUNTING [JW] <accounting@jamesworldwide.com>`,
+			cc: token.email,
+			subject: `${body.URGENT ? "[URGENT]" : ""} ACCOUNT PAYABLE REQUEST [${
+				body.INVOICE
+			}]`,
+			headers: body.URGENT
+				? {
+						"x-priority": "1",
+						"x-msmail-priority": "High",
+						importance: "high",
+				  }
+				: {},
+			html: `
 	  <!DOCTYPE html>
 	  <html
 		lang="en"
@@ -236,6 +257,7 @@ export default async (req, res) => {
 					<li style="margin: 0 0 10px">Request Type: Account Payable - ${body.TYPE}</li>
 					<li style="margin: 0 0 10px">Invoice Vendor: ${body.VENDOR}</li>
 					<li style="margin: 0 0 10px">Invoice Number: ${body.INVOICE}</li>
+					<li style="margin: 0 0 10px">Memo: ${body.MESSAGE}</li>
 				  </ul>
 				</td>
 			  </tr>
@@ -257,22 +279,22 @@ export default async (req, res) => {
 		  </div>
 		</body>
 	  </html>`,
-    };
-    transport.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        res.status(500).send(error);
-      } else {
-        console.log("Email Sent: " + info.response);
-      }
-    });
-  } catch (err) {
-    res.status(500).send(err);
-  }
-  pool.close();
+		};
+		transport.sendMail(mailOptions, function (error, info) {
+			if (error) {
+				res.status(500).send(error);
+			} else {
+				console.log("Email Sent: " + info.response);
+			}
+		});
+	} catch (err) {
+		res.status(500).send(err);
+	}
+	pool.close();
 };
 
 export const config = {
-  api: {
-    externalResolver: true,
-  },
+	api: {
+		externalResolver: true,
+	},
 };
