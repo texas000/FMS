@@ -19,28 +19,35 @@ export default function (req: NextApiRequest, res: NextApiResponse) {
     });
     await pool.connect();
 
-    const USER = `SELECT * from T_MEMBER WHERE F_ACCOUNT='${safeUsername}' AND F_PASSWORD='${safePassword}';`;
-    const UPDATEQRY = `UPDATE T_MEMBER SET F_ISLOGIN='TRUE', F_BROWSER='${
-      req.headers["user-agent"]
-    }', F_LASTACCESSDATE=GETDATE(), F_IP='${req.connection.remoteAddress.replace(
-      "::ffff:",
-      ""
-    )}' WHERE F_ACCOUNT='${safeUsername}' AND F_PASSWORD='${safePassword}';`;
+    const query = `SELECT * from T_MEMBER WHERE F_ACCOUNT='${safeUsername}' AND F_PASSWORD='${safePassword}';
+    UPDATE T_MEMBER SET F_ISLOGIN='TRUE', F_LASTACCESSDATE=GETDATE() WHERE F_ACCOUNT='${safeUsername}' AND F_PASSWORD='${safePassword}';`;
 
     try {
-      let result = await pool.request().query(USER + UPDATEQRY);
+      let result = await pool.request().query(query);
       if (result.rowsAffected[0]) {
+        const user = result.recordset[0];
+        
+        // logout before login
+        await fetch(`http://jwi.synology.me:5000/webapi/auth.cgi?api=SYNO.API.Auth&version=3&method=logout&session=FileStation`)
+
+        var url = `http://jwi.synology.me:5000/webapi/auth.cgi?api=SYNO.API.Auth&version=3&method=login&account=${user.F_Address}&passwd=${user.F_PersonalEmail}&session=FileStation&format=sid`;
+        const reqSid = await fetch(url)
+        const sidjson = await reqSid.json();
+        console.log(sidjson)
         res.json({
           token: jwt.sign(
             {
               username: safeUsername,
-              uid: result.recordset[0].F_ID,
-              admin: parseInt(result.recordset[0].F_STATUS),
-              group: parseInt(result.recordset[0].F_GROUP),
-              email: result.recordset[0].F_EMAIL || false,
-              first: result.recordset[0].F_FNAME,
-              last: result.recordset[0].F_LNAME,
-              fsid: result.recordset[0].F_FSID,
+              uid: user.F_ID,
+              admin: parseInt(user.F_STATUS),
+              group: parseInt(user.F_GROUP),
+              email: user.F_EMAIL || false,
+              first: user.F_FNAME,
+              last: user.F_LNAME,
+              fsid: user.F_FSID,
+              nas_account: user.F_Address,
+              nas_passwd: user.F_PersonalEmail,
+              sid: sidjson.success ? sidjson.data.sid : false,
             },
             process.env.JWT_KEY
           ),

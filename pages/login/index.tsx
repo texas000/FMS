@@ -176,7 +176,7 @@ const Login = ({ Firebase, AccessKey }) => {
           }),
         });
         if (fetchToSlack.status === 200) {
-          router.push({ pathname: "/" });
+          router.push({ pathname: "/file" });
         } else {
           console.log("feching to slack message is failed");
           router.push({ pathname: "/" });
