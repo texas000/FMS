@@ -98,7 +98,7 @@ export default function file(props) {
 					path: decodeURIComponent(props.q),
 				},
 			}).then((res) => {
-				console.log(res);
+				// console.log(res);
 				mutate();
 			});
 		}

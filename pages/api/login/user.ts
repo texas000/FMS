@@ -33,7 +33,6 @@ export default function (req: NextApiRequest, res: NextApiResponse) {
         var url = `http://jwi.synology.me:5000/webapi/auth.cgi?api=SYNO.API.Auth&version=3&method=login&account=${user.F_Address}&passwd=${user.F_PersonalEmail}&session=FileStation&format=sid`;
         const reqSid = await fetch(url)
         const sidjson = await reqSid.json();
-        console.log(sidjson)
         res.json({
           token: jwt.sign(
             {
