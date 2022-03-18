@@ -50,7 +50,7 @@ export default async (req, res) => {
          ) A
       UNION ALL
       SELECT * FROM(
-      SELECT TOP 1000 * , (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CREATEDBY) as Creator, 
+      SELECT TOP 2000 * , (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=CREATEDBY) as Creator, 
           (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=USER2) as USER_2,
           (SELECT F_FNAME FROM T_MEMBER M WHERE M.F_ID=USER3) as USER_3 from T_REQUEST_AP  where not ((status = '101' or status = '111') and urgent=1) ORDER BY ID DESC
           ) B`;
