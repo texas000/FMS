@@ -28,9 +28,9 @@ export default function (req: NextApiRequest, res: NextApiResponse) {
         const user = result.recordset[0];
         
         // logout before login
-        await fetch(`http://jwi.synology.me:5000/webapi/auth.cgi?api=SYNO.API.Auth&version=3&method=logout&session=FileStation`)
+        await fetch(`${process.env.SYNOLOGY_BASEURL}webapi/auth.cgi?api=SYNO.API.Auth&version=3&method=logout&session=FileStation`)
 
-        var url = `http://jwi.synology.me:5000/webapi/auth.cgi?api=SYNO.API.Auth&version=3&method=login&account=${user.F_Address}&passwd=${user.F_PersonalEmail}&session=FileStation&format=sid`;
+        var url = `${process.env.SYNOLOGY_BASEURL}webapi/auth.cgi?api=SYNO.API.Auth&version=3&method=login&account=${user.F_Address}&passwd=${user.F_PersonalEmail}&session=FileStation&format=sid`;
         const reqSid = await fetch(url)
         const sidjson = await reqSid.json();
         res.json({

@@ -132,6 +132,8 @@ const Login = ({ Firebase, AccessKey }) => {
 
   // Login with Account Id and Password
   async function submitForm() {
+    setMessage("");
+    setSuccess(`PLEASE WAIT...`);
     // Note that some characters are restricted for username, password.
     const res = await fetch("api/login/user", {
       method: "POST",
@@ -146,11 +148,10 @@ const Login = ({ Firebase, AccessKey }) => {
     const token = res.token;
     // Login Success
     if (token) {
-      setMessage("");
       // Set Cookie with encoded token
       Cookie.set("jamesworldwidetoken", token);
       // Display success message before redirect to dashboard
-      setSuccess(`PLEASE WAIT...`);
+      setSuccess(`REDIRECTING...`);
 
       // Get first name from token
       const { first } = jwt.decode(token) as { [key: string]: string };
@@ -176,7 +177,7 @@ const Login = ({ Firebase, AccessKey }) => {
           }),
         });
         if (fetchToSlack.status === 200) {
-          router.push({ pathname: "/file" });
+          router.push({ pathname: "/" });
         } else {
           console.log("feching to slack message is failed");
           router.push({ pathname: "/" });

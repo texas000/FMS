@@ -4,6 +4,7 @@ import useSWR from "swr";
 import { useState } from "react";
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
+import Listing from "../../components/File/Listing";
 
 export async function getServerSideProps({ req }) {
 	const cookies = cookie.parse(
@@ -27,28 +28,10 @@ export async function getServerSideProps({ req }) {
 }
 
 export default function file(props) {
-	const { data } = useSWR(`/api/synology/list`);
-	const router = useRouter();
+	const { data, error } = useSWR(`/api/synology/list`);
 	return (
-		<Layout TOKEN={props.token} TITLE="Dashboard" LOADING={false}>
-			{/* {JSON.stringify(props.token)} */}
-			{data &&
-				data.data &&
-				data.data.shares?.map((ga) => {
-					return (
-						<div
-							key={ga.path}
-							className={`cursor-pointer hover:text-gray-300 ${
-								ga.isdir ? "text-blue-500" : "text-gray-500"
-							}`}
-							onClick={() => {
-								router.push(`/file/${encodeURIComponent(ga.path)}`);
-							}}
-						>
-							{ga.name}
-						</div>
-					);
-				})}
+		<Layout TOKEN={props.token} TITLE="Dashboard" LOADING={!data}>
+			<Listing data={data} />
 		</Layout>
 	);
 }

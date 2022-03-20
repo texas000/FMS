@@ -62,7 +62,6 @@ const File = ({ file, path }) => (
 						const link = document.createElement("a");
 						link.target = "_blank";
 						link.href = fileURL;
-						link.download = file;
 
 						// Append to html link element page
 						document.body.appendChild(link);
